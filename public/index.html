@@ -28,14 +28,18 @@
             <div class="col">
                 <form id="main-form" method="GET" action="">
                     <fieldset>
-                        <div class="boxcard card" style="width: 18rem;">
-                            <div class="card-body">
-                                <h5 class="card-title">Showing...</h5>
-                                <p class="card-text checkboxes"></p>
-                                <a href="#" class="btn btn-primary">Go somewhere</a>
-                            </div>
+                        <div class="boxcards">
+                        <div class="boxcard checkcard">
+                            <label>Showing...</label>
+                            <br/>
+                            <p class="checkboxes1"></p>
                         </div>
-
+                        <div class="boxcard checkcard">
+                            <label>&nbsp;</label>
+                            <br/>
+                            <p class="checkboxes2"></p>
+                        </div>
+        
                         <div class="boxcard">
                             <label htmlFor="word">Enter Word</label>
 
@@ -43,10 +47,14 @@
                             <input id='word-input' type="text" class="form-control" name="word" placeholder="">
 
                             <!-- create submit button -->
-                            <input value="Submit" type="submit" style="margin: 10px" class="btn btn-primary" />
+                            <input value="Submit" type="submit" style="margin: 10px; vertical-align: bottom;" class="btn btn-primary" />
+                        </div>
                         </div>
                     </fieldset>
                 </form>
+            </div>
+            <div class="col">
+                &nbsp;
             </div>
         </div>
         <div class="row justify-content-center">

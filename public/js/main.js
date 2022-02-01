@@ -69,14 +69,16 @@ $(document).ready(function(){
         });
     };
 
-    let chbs = document.querySelector('.checkboxes');
-    addCheckbox(chbs, "synonyms", true);
-    addCheckbox(chbs, "also", false);
-    addCheckbox(chbs, "attribute", false);
-    addCheckbox(chbs, "similar to", false);
-    addCheckbox(chbs, "antonyms", false);
-    addCheckbox(chbs, "derivation", false);
-    addCheckbox(chbs, "examples", true);
+    let chbs1 = document.querySelector('.checkboxes1');
+    let chbs2 = document.querySelector('.checkboxes2');
+    addCheckbox(chbs1, "synonyms", true);
+    addCheckbox(chbs1, "also", false);
+    addCheckbox(chbs1, "attribute", false);
+    addCheckbox(chbs1, "similar to", false);
+    addCheckbox(chbs2, "antonyms", false);
+    addCheckbox(chbs2, "derivation", false);
+    addCheckbox(chbs2, "type of", false);
+    addCheckbox(chbs2, "examples", true);
 
     
     async function dosubmit(word) {

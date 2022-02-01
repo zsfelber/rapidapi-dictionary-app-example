@@ -40,15 +40,27 @@ main {
     display: block;
 }
 
+.form-check-input {
+    margin-left: 5px;
+}
+
+.boxcards {
+    display: inline-block;
+    width: 45rem;
+    vertical-align: top;
+}
+
 .boxcard {
+    vertical-align: top;
     display: inline-block;
+    width: 18rem;
 }
 
-.checkboxes {
-    display: inline-block;
+.checkcard {
+    width: 12rem;
 }
 
-.list-row {
+.checkboxes1,.checkboxes2,.list-row {
     display: inline-block;
 }
 
