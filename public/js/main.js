@@ -3,14 +3,19 @@ var lastresult;
 var update_to;
 var col=2,wordInfoTbl,wordInfoRow;
 
-function isch(chid) {
-    var chh = $("#"+chid);
-    return chh.val()=="true";
+function isch(id) {
+    id = id.replace(" ", "_");
+    var chh = $("#"+id);
+    if (chh.length) {
+        return chh.val()=="true";
+    } else {
+        alert("unknown label : "+id);
+    }
 }
 
-function checha(chid) {
-    var ch = $("#_"+chid);
-    var chh = $("#"+chid);
+function checha(id) {
+    var ch = $("#_"+id);
+    var chh = $("#"+id);
     chh.val(ch.is(':checked'));
 
     if (update_to) {
@@ -180,7 +185,7 @@ $(document).ready(function(){
     addCheckbox(chbs2, "has types", false);
     addCheckbox(chbs2, "substance of", false);
     addCheckbox(chbs2, "has substances", false);
-    addCheckbox(chbs3, "parts of", false);
+    addCheckbox(chbs3, "part of", false);
     addCheckbox(chbs3, "has parts", false);
     addCheckbox(chbs3, "member of", false);
     addCheckbox(chbs3, "has members", false);
