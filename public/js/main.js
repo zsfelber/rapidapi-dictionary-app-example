@@ -84,6 +84,9 @@ function update() {
         return wordInfoTbl.appendChild(document.createTextNode('No results matched.'));
     }
 
+    col=2;
+    wordInfoRow=null;
+
     // clears the word container if it had
     // previous data
     $('#word-info').empty();
