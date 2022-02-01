@@ -4,7 +4,7 @@ var update_to;
 var col=2,wordInfoTbl,wordInfoRow;
 
 function isch(id) {
-    id = id.replace(" ", "_");
+    id = id.replace(/ /g, "_");
     var chh = $("#"+id);
     if (chh.length) {
         return chh.val()=="true";
@@ -34,7 +34,7 @@ function ischeckedparam(param, ischeckeddef) {
 
 function addCheckbox(cont, id, ischeckeddef, label) {
     if (!label) label = id;
-    id = id.replace(" ", "_");
+    id = id.replace(/ /g, "_");
     var ischecked = ischeckedparam(id, ischeckeddef);
 
     var panel = $(` <div class='form-check'>
@@ -179,12 +179,14 @@ $(document).ready(function(){
     addCheckbox(chbs1, "similar to", true);
     addCheckbox(chbs1, "antonyms", true);
     addCheckbox(chbs1, "derivation", false);
+    addCheckbox(chbs1, "pertains to", false);
     addCheckbox(chbs2, "in category", false);
     addCheckbox(chbs2, "has categories", false);
     addCheckbox(chbs2, "type of", false);
     addCheckbox(chbs2, "has types", false);
     addCheckbox(chbs2, "substance of", false);
     addCheckbox(chbs2, "has substances", false);
+    addCheckbox(chbs2, "part of speech", false);
     addCheckbox(chbs3, "part of", false);
     addCheckbox(chbs3, "has parts", false);
     addCheckbox(chbs3, "member of", false);
