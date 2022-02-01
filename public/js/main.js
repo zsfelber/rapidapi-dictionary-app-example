@@ -62,7 +62,7 @@ function createa(word0) {
     return a;
 }
 function createas(cont, words, sep) {
-    words.forEach(word => {
+    if (words) words.forEach(word => {
         const a = createa(word);
         const sp = document.createTextNode(sep);
 
@@ -186,7 +186,7 @@ $(document).ready(function(){
     addCheckbox(chbs2, "has types", false);
     addCheckbox(chbs2, "substance of", false);
     addCheckbox(chbs2, "has substances", false);
-    addCheckbox(chbs2, "part of speech", false);
+    addCheckbox(chbs2, "part of speech", true);
     addCheckbox(chbs3, "part of", false);
     addCheckbox(chbs3, "has parts", false);
     addCheckbox(chbs3, "member of", false);
