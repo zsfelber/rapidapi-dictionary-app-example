@@ -1,4 +1,10 @@
 
+function checha(chid) {
+    var ch = $("#_"+chid);
+    var chh = $("#"+chid);
+    chh.val(ch.val())
+}
+
 // Specifies a function to execute when the DOM is fully loaded.
 $(document).ready(function(){
     $.urlParam = function(name){
@@ -15,21 +21,22 @@ $(document).ready(function(){
     // word info container
     let wordInfoTbl = document.querySelector('#word-info');
 
-    var isoverriden=(param, expected)=>{
+    var isoverriden=(param, ischeckeddef)=>{
         var v = $.urlParam(param);
         if (v === false) {
-            return false;
+            return ischeckeddef;
         }
-        return v != expected;
+        return v == (""+ischeckeddef) ? ischeckeddef : !ischeckeddef;
     };
 
     var addCheckbox=(cont, id, ischeckeddef, label)=>{
         if (!label) label = id;
-        var ischecked = isoverriden(id, ""+ischeckeddef) ? !ischeckeddef : ischeckeddef;
-        var checked = ischecked ? "checked" : "";
+        id = id.replace(" ", "_");
+        var checked = isoverriden(id, ischeckeddef) ? "checked" : "";
 
         var panel = $(` <div class='form-check'>
-                <input class='form-check-input' type='checkbox' value='' id='${id}' name='${id}' ${checked}>
+                <input type='hidden' id='${id}' name='${id}' value='${ischecked}'>
+                <input class='form-check-input' type='checkbox' id='_${id}' ${checked} onchange="checha('${id}')"/>
                 <label class='form-check-label' for='${id}'>
                 ${label}
                 </label>
@@ -71,16 +78,29 @@ $(document).ready(function(){
 
     let chbs1 = document.querySelector('.checkboxes1');
     let chbs2 = document.querySelector('.checkboxes2');
+    let chbs3 = document.querySelector('.checkboxes3');
     addCheckbox(chbs1, "synonyms", true);
     addCheckbox(chbs1, "also", false);
     addCheckbox(chbs1, "attribute", false);
     addCheckbox(chbs1, "similar to", false);
     addCheckbox(chbs1, "antonyms", false);
-    addCheckbox(chbs2, "derivation", false);
+    addCheckbox(chbs1, "derivation", false);
+    addCheckbox(chbs2, "in category", false);
+    addCheckbox(chbs2, "has categories", false);
     addCheckbox(chbs2, "type of", false);
-    addCheckbox(chbs2, "has", false);
-    addCheckbox(chbs2, "types", false);
-    addCheckbox(chbs2, "examples", true);
+    addCheckbox(chbs2, "has types", false);
+    addCheckbox(chbs2, "substance of", false);
+    addCheckbox(chbs2, "has substances", false);
+    addCheckbox(chbs3, "parts of", false);
+    addCheckbox(chbs3, "has parts", false);
+    addCheckbox(chbs3, "member of", false);
+    addCheckbox(chbs3, "has members", false);
+    addCheckbox(chbs3, "examples", true);
+
+    $('.form-check-input').change(function(){
+        $(this).text() 
+    });
+    
 
     
     async function dosubmit(word) {
