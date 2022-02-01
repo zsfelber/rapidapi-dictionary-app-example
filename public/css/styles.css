@@ -1,3 +1,6 @@
+/*https://stackoverflow.com/questions/45999420/how-to-increase-font-size-in-bootstrap-4
+!!! -> rem;
+*/
 html {
     font-size: 12px;
 }
@@ -52,4 +55,11 @@ main {
     font-size: 1.5rem;
     font-weight: 300;
     line-height: 1.7rem;
+}
+
+a.none {
+    margin-right: 3px;
+    padding: 0px;
+    display: inline;
+    text-decoration-style: none;
 }

@@ -1,6 +1,16 @@
 
 // Specifies a function to execute when the DOM is fully loaded.
 $(document).ready(function(){
+    $.urlParam = function(name){
+        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+        if (results==null) {
+           return null;
+        }
+        return decodeURI(results[1]) || 0;
+    }
+    
+    var word0 = $.urlParam('word');
+    $("#word-input").val(word0);
 
     // adds a submit listened to our <form> element
     $("form").submit(async (event) => {
@@ -45,8 +55,17 @@ $(document).ready(function(){
                         // creates new heading-3 element
                         const def = document.createElement('h3');
 
+                        var txt = property.value.toString();
+                        var words = txt.split(" ");
+                        words.forEach(word => {
+                            const a = document.createElement('a');
+                            a.href = "?word="+word;
+                            a.classList.add(['none']);
+                            a.innerText = word;
+                        def.appendChild(a);
+                        });
                         // adds text to the element
-                        def.innerText = property.value;
+                        //def.innerText = property.value;
 
                         // appends class value for styling
                         def.classList.add(['definition']);
