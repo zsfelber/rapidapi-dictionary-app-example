@@ -75,9 +75,11 @@ $(document).ready(function(){
     addCheckbox(chbs1, "also", false);
     addCheckbox(chbs1, "attribute", false);
     addCheckbox(chbs1, "similar to", false);
-    addCheckbox(chbs2, "antonyms", false);
+    addCheckbox(chbs1, "antonyms", false);
     addCheckbox(chbs2, "derivation", false);
     addCheckbox(chbs2, "type of", false);
+    addCheckbox(chbs2, "has", false);
+    addCheckbox(chbs2, "types", false);
     addCheckbox(chbs2, "examples", true);
 
     
