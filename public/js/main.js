@@ -8,19 +8,14 @@ $(document).ready(function(){
         }
         return decodeURI(results[1]) || 0;
     }
-    
-    var word0 = $.urlParam('word');
 
-    // adds a submit listened to our <form> element
-    var dosubmit = (word) => {
+    async function dosubmit(word) {
+
+        $("#word-input").val(word);
 
         // adds the text 'Loading...' to our word 
         // data container for UX purposes
         $('#word-info').html('Loading...');
-
-        // collects the value in the input form element
-        // by the id on the element
-        //const word = $("#word-input").val();
 
         // creates a variable that represents our
         // word info container
@@ -28,8 +23,9 @@ $(document).ready(function(){
 
         try {
 
+            const data0 = await fetch(`/.netlify/functions/getWord?word=${word}`, { mode: 'cors'});
             // asynchronously calls our custome function
-            const data = await (await fetch(`/.netlify/functions/getWord?word=${word}`, { mode: 'cors'})).json();
+            const data = await data0.json();
 
             // logs no results if word data is not found
             if (data.length < 1) {
@@ -53,6 +49,23 @@ $(document).ready(function(){
                         wordInfoTbl.appendChild(wordInfoRow);
                     }
                 };
+                var createa=(word)=>{
+                    const a = document.createElement('a');
+                    word = word.replace(/;$/, "");
+                    a.href = "?word="+word;
+                    a.classList.add(['none']);
+                    a.innerText = word;
+                    return a;
+                };
+                var createas=(cont, words, sep)=>{
+                    words.forEach(word => {
+                        const a = createa(word);
+                        const sp = document.createTextNode(sep);
+
+                        cont.appendChild(a);
+                        cont.appendChild(sp);
+                    });
+                };
 
                 // loops over the values for each definition
                 val.map(property => {
@@ -64,17 +77,8 @@ $(document).ready(function(){
 
                         var txt = property.value.toString();
                         var words = txt.split(" ");
-                        words.forEach(word => {
-                            const a = document.createElement('a');
-                            a.href = "?word="+word;
-                            a.classList.add(['none']);
-                            a.innerText = word;
+                        createas(def, words, " ");
 
-                            const sp = document.createTextNode(" ");
-
-                            def.appendChild(a);
-                            def.appendChild(sp);
-                        });
                         // adds text to the element
                         //def.innerText = property.value;
 
@@ -95,7 +99,9 @@ $(document).ready(function(){
                         label.innerText = property.label;
                         label.className = 'col-sm-3';
                         const value = document.createElement('dd');
-                        value.innerText = property.value.join(', ');
+
+                        createas(value, property.value, ", ");
+
                         value.className = 'col-sm-9';
                         characteristic.appendChild(label);
                         characteristic.appendChild(value);
@@ -114,19 +120,11 @@ $(document).ready(function(){
             // displays message to user if there is an error
             $('#word-info').html('There was an error fetching the word data');
         }
-    };
+    }
 
-    /*$("form").submit(async (event) => {
-
-        // prevents the page from reloading on subject
-        event.preventDefault();
-
-        dosubmit();
-    });*/
-
-    if (word0) {
-        $("#word-input").val(word0);
-        //$("form").submit();
-        dosubmit(word0);
+    var word = $.urlParam('word');
+    // adds a submit listened to our <form> element
+    if (word) {
+        dosubmit(word);
     }
 });
