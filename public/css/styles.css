@@ -40,6 +40,14 @@ main {
     display: block;
 }
 
+.boxcard {
+    display: inline-block;
+}
+
+.checkboxes {
+    display: inline-block;
+}
+
 .list-row {
     display: inline-block;
 }

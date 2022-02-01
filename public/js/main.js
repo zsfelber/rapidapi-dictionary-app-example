@@ -6,9 +6,79 @@ $(document).ready(function(){
         if (results==null) {
            return null;
         }
-        return decodeURI(results[1]) || 0;
+        return decodeURI(results[1]) || false;
     }
 
+    let col=2,wordInfoRow;
+
+    // creates a variable that represents our
+    // word info container
+    let wordInfoTbl = document.querySelector('#word-info');
+
+    var isoverriden=(param, expected)=>{
+        var v = $.urlParam(param);
+        if (v === false) {
+            return false;
+        }
+        return v != expected;
+    };
+
+    var addCheckbox=(cont, id, ischeckeddef, label)=>{
+        if (!label) label = id;
+        var ischecked = isoverriden(id, ""+ischeckeddef) ? !ischeckeddef : ischeckeddef;
+        var checked = ischecked ? "checked" : "";
+
+        var panel = $(` <div class='form-check'>
+                <input class='form-check-input' type='checkbox' value='' id='${id}' name='${id}' ${checked}>
+                <label class='form-check-label' for='${id}'>
+                ${label}
+                </label>
+            </div>`);
+        cont.appendChild(panel[0]);
+    };
+    var newrow=()=>{
+        if (col++%3==2) {
+            wordInfoRow = document.createElement('div');
+            wordInfoRow.classList.add(['list-row']);
+            wordInfoTbl.appendChild(wordInfoRow);
+        }
+    };
+    var createa=(word0)=>{
+        const a = document.createElement('a');
+        const word = word0.replace(/[^a-zA-Z0-9\- ]/g, "");
+        a.href = "?word="+word;
+        a.classList.add(['none']);
+        a.innerText = word0;
+        return a;
+    };
+    var createas=(cont, words, sep)=>{
+        words.forEach(word => {
+            const a = createa(word);
+            const sp = document.createTextNode(sep);
+
+            cont.appendChild(a);
+            cont.appendChild(sp);
+        });
+    };
+    var createaas=(cont, sentences, sep)=>{
+        sentences.forEach(txt => {
+            var words = txt.split(" ");
+            createas(cont, words, " ");
+            const sp = document.createTextNode(sep);
+            cont.appendChild(sp);
+        });
+    };
+
+    let chbs = document.querySelector('.checkboxes');
+    addCheckbox(chbs, "synonyms", true);
+    addCheckbox(chbs, "also", false);
+    addCheckbox(chbs, "attribute", false);
+    addCheckbox(chbs, "similar to", false);
+    addCheckbox(chbs, "antonyms", false);
+    addCheckbox(chbs, "derivation", false);
+    addCheckbox(chbs, "examples", true);
+
+    
     async function dosubmit(word) {
 
         $("#word-input").val(word);
@@ -16,10 +86,6 @@ $(document).ready(function(){
         // adds the text 'Loading...' to our word 
         // data container for UX purposes
         $('#word-info').html('Loading...');
-
-        // creates a variable that represents our
-        // word info container
-        let wordInfoTbl = document.querySelector('#word-info');
 
         try {
 
@@ -40,40 +106,6 @@ $(document).ready(function(){
                 // creates parent li element
                 const li = document.createElement('div');
                 li.classList.add('my-4', 'p-4', 'list-item');
-                var col=2,wordInfoRow;
-
-                var newrow=()=>{
-                    if (col++%3==2) {
-                        wordInfoRow = document.createElement('div');
-                        wordInfoRow.classList.add(['list-row']);
-                        wordInfoTbl.appendChild(wordInfoRow);
-                    }
-                };
-                var createa=(word0)=>{
-                    const a = document.createElement('a');
-                    const word = word0.replace(/[^a-zA-Z0-9\- ]/g, "");
-                    a.href = "?word="+word;
-                    a.classList.add(['none']);
-                    a.innerText = word0;
-                    return a;
-                };
-                var createas=(cont, words, sep)=>{
-                    words.forEach(word => {
-                        const a = createa(word);
-                        const sp = document.createTextNode(sep);
-
-                        cont.appendChild(a);
-                        cont.appendChild(sp);
-                    });
-                };
-                var createaas=(cont, sentences, sep)=>{
-                    sentences.forEach(txt => {
-                        var words = txt.split(" ");
-                        createas(cont, words, " ");
-                        const sp = document.createTextNode(sep);
-                        cont.appendChild(sp);
-                    });
-                };
 
                 // loops over the values for each definition
                 val.map(property => {

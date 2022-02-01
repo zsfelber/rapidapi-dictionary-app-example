@@ -28,13 +28,23 @@
             <div class="col">
                 <form id="main-form" method="GET" action="">
                     <fieldset>
-                        <label htmlFor="word">Enter Word</label>
+                        <div class="boxcard card" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">Showing...</h5>
+                                <p class="card-text checkboxes"></p>
+                                <a href="#" class="btn btn-primary">Go somewhere</a>
+                            </div>
+                        </div>
 
-                        <!-- create text input -->
-                        <input id='word-input' type="text" class="form-control" name="word" placeholder="">
+                        <div class="boxcard">
+                            <label htmlFor="word">Enter Word</label>
 
-                        <!-- create submit button -->
-                        <input value="Submit" type="submit" style="margin: 10px" class="btn btn-primary" />
+                            <!-- create text input -->
+                            <input id='word-input' type="text" class="form-control" name="word" placeholder="">
+
+                            <!-- create submit button -->
+                            <input value="Submit" type="submit" style="margin: 10px" class="btn btn-primary" />
+                        </div>
                     </fieldset>
                 </form>
             </div>
