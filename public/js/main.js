@@ -49,12 +49,12 @@ $(document).ready(function(){
                         wordInfoTbl.appendChild(wordInfoRow);
                     }
                 };
-                var createa=(word)=>{
+                var createa=(word0)=>{
                     const a = document.createElement('a');
-                    word = word.replace(/;$/, "");
+                    const word = word0.replace(/[^a-zA-Z0-9\- ]/g, "");
                     a.href = "?word="+word;
                     a.classList.add(['none']);
-                    a.innerText = word;
+                    a.innerText = word0;
                     return a;
                 };
                 var createas=(cont, words, sep)=>{
@@ -63,6 +63,14 @@ $(document).ready(function(){
                         const sp = document.createTextNode(sep);
 
                         cont.appendChild(a);
+                        cont.appendChild(sp);
+                    });
+                };
+                var createaas=(cont, sentences, sep)=>{
+                    sentences.forEach(txt => {
+                        var words = txt.split(" ");
+                        createas(cont, words, " ");
+                        const sp = document.createTextNode(sep);
                         cont.appendChild(sp);
                     });
                 };
@@ -100,7 +108,11 @@ $(document).ready(function(){
                         label.className = 'col-sm-3';
                         const value = document.createElement('dd');
 
-                        createas(value, property.value, ", ");
+                        if (property.label === 'examples') {
+                            createaas(value, property.value, ", ");
+                        } else {
+                            createas(value, property.value, ", ");
+                        }
 
                         value.className = 'col-sm-9';
                         characteristic.appendChild(label);
