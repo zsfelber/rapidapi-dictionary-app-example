@@ -10,7 +10,7 @@ $(document).ready(function(){
     $.urlParam = function(name){
         var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
         if (results==null) {
-           return null;
+           return false;
         }
         return decodeURI(results[1]) || false;
     }
@@ -33,11 +33,10 @@ $(document).ready(function(){
         if (!label) label = id;
         id = id.replace(" ", "_");
         var ischecked = ischeckedparam(id, ischeckeddef);
-        var checked = ischecked ? "checked" : "";
 
         var panel = $(` <div class='form-check'>
                 <input type='hidden' id='${id}' name='${id}' value='${ischecked}'>
-                <input class='form-check-input' type='checkbox' id='_${id}' name='_${id}' ${checked} onchange="checha('${id}')"/>
+                <input class='form-check-input' type='checkbox' id='_${id}' ${ischecked ? "checked" : ""} onchange="checha('${id}')"/>
                 <label class='form-check-label' for='_${id}'>
                 ${label}
                 </label>
