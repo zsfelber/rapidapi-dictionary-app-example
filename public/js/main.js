@@ -10,7 +10,6 @@ $(document).ready(function(){
     }
     
     var word0 = $.urlParam('word');
-    $("#word-input").val(word0);
 
     // adds a submit listened to our <form> element
     $("form").submit(async (event) => {
@@ -53,7 +52,7 @@ $(document).ready(function(){
                 val.map(property => {
                     if (property.label === 'definition') {
                         // creates new heading-3 element
-                        const def = document.createElement('h3');
+                        const def = document.createElement('div');
 
                         var txt = property.value.toString();
                         var words = txt.split(" ");
@@ -62,7 +61,7 @@ $(document).ready(function(){
                             a.href = "?word="+word;
                             a.classList.add(['none']);
                             a.innerText = word;
-                        def.appendChild(a);
+                            def.appendChild(a);
                         });
                         // adds text to the element
                         //def.innerText = property.value;
@@ -104,4 +103,9 @@ $(document).ready(function(){
             $('#word-info').html('There was an error fetching the word data');
         }
     });
+
+    if (word0) {
+        $("#word-input").val(word0);
+        $("form").submit();
+    }
 });

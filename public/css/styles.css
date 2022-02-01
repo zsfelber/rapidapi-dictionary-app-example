@@ -52,14 +52,24 @@ main {
 }
 
 .definition {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-weight: 300;
-    line-height: 1.7rem;
+    line-height: 2.1rem;
+    float: inherit;
+    text-align: justify;
 }
 
 a.none {
+    float: inherit;
     margin-right: 3px;
     padding: 0px;
     display: inline;
+    text-decoration-style: none;
+    color: inherit;
+    word-wrap: inherit;
+    word-break: inherit;
+}
+
+a:hover.none {
     text-decoration-style: none;
 }
