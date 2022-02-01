@@ -2,7 +2,7 @@
 function checha(chid) {
     var ch = $("#_"+chid);
     var chh = $("#"+chid);
-    chh.val(ch.val())
+    chh.val(ch.is(':checked'));
 }
 
 // Specifies a function to execute when the DOM is fully loaded.
@@ -21,7 +21,7 @@ $(document).ready(function(){
     // word info container
     let wordInfoTbl = document.querySelector('#word-info');
 
-    var isoverriden=(param, ischeckeddef)=>{
+    var ischeckedparam=(param, ischeckeddef)=>{
         var v = $.urlParam(param);
         if (v === false) {
             return ischeckeddef;
@@ -32,12 +32,13 @@ $(document).ready(function(){
     var addCheckbox=(cont, id, ischeckeddef, label)=>{
         if (!label) label = id;
         id = id.replace(" ", "_");
-        var checked = isoverriden(id, ischeckeddef) ? "checked" : "";
+        var ischecked = ischeckedparam(id, ischeckeddef);
+        var checked = ischecked ? "checked" : "";
 
         var panel = $(` <div class='form-check'>
                 <input type='hidden' id='${id}' name='${id}' value='${ischecked}'>
-                <input class='form-check-input' type='checkbox' id='_${id}' ${checked} onchange="checha('${id}')"/>
-                <label class='form-check-label' for='${id}'>
+                <input class='form-check-input' type='checkbox' id='_${id}' name='_${id}' ${checked} onchange="checha('${id}')"/>
+                <label class='form-check-label' for='_${id}'>
                 ${label}
                 </label>
             </div>`);
