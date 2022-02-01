@@ -1,3 +1,7 @@
+html {
+    font-size: 12px;
+}
+
 h1, h2, h3 {
     text-align: center;
 }
@@ -37,10 +41,15 @@ main {
     -moz-border-radius: 5px;
     -ms-border-radius: 5px;
     -o-border-radius: 5px;
+    /*display: inline-block;*/
+    width: 300px;
+    margin: 10px;
+    vertical-align: top;
+    float: left;
 }
 
 .definition {
-    font-size: 2.5rem;
+    font-size: 1.5rem;
     font-weight: 300;
-    line-height: 1.2;
+    line-height: 1.7rem;
 }
