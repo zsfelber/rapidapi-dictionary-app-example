@@ -36,7 +36,18 @@ main {
     margin-top: 50px;
 }
 
+#word-info {
+    display: block;
+}
+
+.list-row {
+    display: inline-block;
+}
+
 .list-item {
+    display: inline-block;
+    /*display: inline-block;*/
+    /*float: left;*/
     background: white;
     color:black;
     border-radius: 5px;
@@ -44,32 +55,32 @@ main {
     -moz-border-radius: 5px;
     -ms-border-radius: 5px;
     -o-border-radius: 5px;
-    /*display: inline-block;*/
     width: 300px;
+    min-width: 200px;
     margin: 10px;
     vertical-align: top;
-    float: left;
 }
 
 .definition {
     font-size: 1.2rem;
     font-weight: 300;
-    line-height: 2.1rem;
-    float: inherit;
+    line-height: 1.4rem;
     text-align: justify;
+    word-wrap: normal;
+    word-break: normal;
 }
 
 a.none {
-    float: inherit;
-    margin-right: 3px;
-    padding: 0px;
+    /*margin-right: 3px;
+    padding: 0px;*/
     display: inline;
-    text-decoration-style: none;
+    text-decoration: none;
     color: inherit;
     word-wrap: inherit;
     word-break: inherit;
+    overflow-inline: inherit;
 }
 
 a:hover.none {
-    text-decoration-style: none;
+    text-decoration: none;
 }

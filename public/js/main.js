@@ -12,10 +12,7 @@ $(document).ready(function(){
     var word0 = $.urlParam('word');
 
     // adds a submit listened to our <form> element
-    $("form").submit(async (event) => {
-
-        // prevents the page from reloading on subject
-        event.preventDefault();
+    var dosubmit = (word) => {
 
         // adds the text 'Loading...' to our word 
         // data container for UX purposes
@@ -23,11 +20,11 @@ $(document).ready(function(){
 
         // collects the value in the input form element
         // by the id on the element
-        const word = $("#word-input").val();
+        //const word = $("#word-input").val();
 
         // creates a variable that represents our
         // word info container
-        let wordInfoList = document.querySelector('#word-info');
+        let wordInfoTbl = document.querySelector('#word-info');
 
         try {
 
@@ -36,7 +33,7 @@ $(document).ready(function(){
 
             // logs no results if word data is not found
             if (data.length < 1) {
-                return wordInfoList.appendChild(document.createTextNode('No results matched.'));
+                return wordInfoTbl.appendChild(document.createTextNode('No results matched.'));
             }
 
             // clears the word container if it had
@@ -45,12 +42,23 @@ $(document).ready(function(){
 
             data.map(val => {
                 // creates parent li element
-                const li = document.createElement('li');
+                const li = document.createElement('div');
                 li.classList.add('my-4', 'p-4', 'list-item');
+                var col=2,wordInfoRow;
+
+                var newrow=()=>{
+                    if (col++%3==2) {
+                        wordInfoRow = document.createElement('div');
+                        wordInfoRow.classList.add(['list-row']);
+                        wordInfoTbl.appendChild(wordInfoRow);
+                    }
+                };
 
                 // loops over the values for each definition
                 val.map(property => {
                     if (property.label === 'definition') {
+                        newrow();
+
                         // creates new heading-3 element
                         const def = document.createElement('div');
 
@@ -61,7 +69,11 @@ $(document).ready(function(){
                             a.href = "?word="+word;
                             a.classList.add(['none']);
                             a.innerText = word;
+
+                            const sp = document.createTextNode(" ");
+
                             def.appendChild(a);
+                            def.appendChild(sp);
                         });
                         // adds text to the element
                         //def.innerText = property.value;
@@ -93,7 +105,7 @@ $(document).ready(function(){
 
                 // appends the list item fully formed to
                 // the word data container
-                wordInfoList.appendChild(li);
+                wordInfoRow.appendChild(li);
             })
         } catch (e) {
             // logs the error if one exists
@@ -102,10 +114,19 @@ $(document).ready(function(){
             // displays message to user if there is an error
             $('#word-info').html('There was an error fetching the word data');
         }
-    });
+    };
+
+    /*$("form").submit(async (event) => {
+
+        // prevents the page from reloading on subject
+        event.preventDefault();
+
+        dosubmit();
+    });*/
 
     if (word0) {
         $("#word-input").val(word0);
-        $("form").submit();
+        //$("form").submit();
+        dosubmit(word0);
     }
 });
