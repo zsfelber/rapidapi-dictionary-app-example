@@ -21,6 +21,11 @@ export async function handler(event, context) {
     // START OF NEW CODE
     // create new array to push data to
     let results = [];
+    let result = {
+      frequency:response.data.frequency,
+      pronunciation:response.data.pronunciation,
+      results
+    };
 
     response.data.results.map(def => {
       let definitionArray = [];
@@ -58,7 +63,7 @@ export async function handler(event, context) {
 
     return {
       statusCode: 200,
-      body: JSON.stringify(response.data),  // modified
+      body: JSON.stringify(result),  // modified
       headers: {
         'Access-Control-Allow-Origin': '*'
       }

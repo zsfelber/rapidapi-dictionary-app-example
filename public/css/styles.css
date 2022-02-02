@@ -56,6 +56,16 @@ main {
     width: 18rem;
 }
 
+.titlcard {
+    vertical-align: top;
+    display: inline-block;
+    width: 18rem;
+}
+
+#info {
+    width: 15rem;
+}
+
 .checkcard {
     width: 12rem;
 }

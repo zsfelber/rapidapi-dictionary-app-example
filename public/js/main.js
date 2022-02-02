@@ -1,7 +1,7 @@
 
 var lastresult;
 var update_to;
-var col=2,wordInfoTbl,wordInfoRow;
+var col=2,wordInfoTbl,wordInfoRow,info;
 
 function isch(id) {
     id = id.replace(/ /g, "_");
@@ -79,6 +79,40 @@ function createaas(cont, sentences, sep) {
     });
 }
 
+function labelled(label, value) {
+    const dl = document.createElement('dl');
+    dl.className = 'row';
+    const dt = document.createElement('dt');
+    dt.innerText = label;
+    dt.className = 'col-sm-3';
+    const dd = document.createElement('dd');
+    dd.innerText = value;
+    dd.className = 'col-sm-9';
+    dl.appendChild(dt);
+    dl.appendChild(dd);
+    return dl;
+}
+
+function proplabel(property, prefix="") {
+    const characteristic = document.createElement('dl');
+    characteristic.className = 'row';
+    const label = document.createElement('dt');
+    label.innerText = prefix + property.label;
+    label.className = 'col-sm-3';
+    const value = document.createElement('dd');
+
+    if (property.label === 'examples') {
+        createaas(value, property.value, ", ");
+    } else {
+        createas(value, property.value, ", ");
+    }
+
+    value.className = 'col-sm-9';
+    characteristic.appendChild(label);
+    characteristic.appendChild(value);
+    return characteristic;
+}
+
 function update() {
     update_to = undefined;
 
@@ -96,7 +130,19 @@ function update() {
     col=2;
     wordInfoRow=null;
 
-    data.map(val => {
+
+    const dlfreq = labelled("frequency", data.frequency);
+    info.appendChild(dlfreq);
+
+    // loops over the values for each definition
+    var prons = [];
+    for (pron in data.pronunciation) {
+        prons.push(pron+":"+data.pronunciation[pron]);
+    }
+    const dlp1 = labelled("pronunciation ", prons.join(", "));
+    info.appendChild(dlp1);
+
+    data.results.map(val => {
         // creates parent li element
         const li = document.createElement('div');
         li.classList.add('my-4', 'p-4', 'list-item');
@@ -127,30 +173,16 @@ function update() {
                 partOfSpeech.classList.add('lead','font-italic');
                 li.appendChild(partOfSpeech);
             } else if (isch(property.label)) {
-                const characteristic = document.createElement('dl');
-                characteristic.className = 'row';
-                const label = document.createElement('dt');
-                label.innerText = property.label;
-                label.className = 'col-sm-3';
-                const value = document.createElement('dd');
+                const characteristic = proplabel(property);
 
-                if (property.label === 'examples') {
-                    createaas(value, property.value, ", ");
-                } else {
-                    createas(value, property.value, ", ");
-                }
-
-                value.className = 'col-sm-9';
-                characteristic.appendChild(label);
-                characteristic.appendChild(value);
                 li.appendChild(characteristic);
             }
-        })
+        });
 
         // appends the list item fully formed to
         // the word data container
         wordInfoRow.appendChild(li);
-    })
+    });
     
 }
 
@@ -168,6 +200,8 @@ $(document).ready(function(){
     // creates a variable that represents our
     // word info container
     wordInfoTbl = document.querySelector('#word-info');
+    info = document.querySelector("#info");
+
 
 
     let chbs1 = document.querySelector('.checkboxes1');
