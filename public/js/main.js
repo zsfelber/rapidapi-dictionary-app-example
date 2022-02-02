@@ -191,6 +191,7 @@ $(document).ready(function(){
     addCheckbox(chbs3, "has parts", false);
     addCheckbox(chbs3, "member of", false);
     addCheckbox(chbs3, "has members", false);
+    addCheckbox(chbs3, "verb group", false);
     addCheckbox(chbs3, "examples", true);
 
     $('.form-check-input').change(function(){
