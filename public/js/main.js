@@ -3,6 +3,48 @@ var lastresult;
 var update_to;
 var col=2,wordInfoTbl,wordInfoRow,info;
 
+var checkboxdata = {
+    "bucket1": {
+        "synonyms": { defchecked: true },
+        "also": { defchecked: true },
+        "attribute": { defchecked: false },
+        "similar to": { defchecked: true },
+        "antonyms": { defchecked: true },
+        "derivation": { defchecked: false },
+        "pertains to": { defchecked: false },
+    },
+    "bucket2": {
+        "in category": { defchecked: false },
+        "has categories": { defchecked: false },
+        "type of": { defchecked: false },
+        "has types": { defchecked: false },
+        "substance of": { defchecked: false },
+        "has substances": { defchecked: false },
+    },
+    "bucket3": {
+        "part of": { defchecked: false },
+        "has parts": { defchecked: false },
+        "member of": { defchecked: false },
+        "has members": { defchecked: false },
+        "usage_of": { defchecked: false },
+        "has_usages": { defchecked: false },
+    },
+    "bucket4": {
+        "instance_of": { defchecked: false },
+        "has_instances": { defchecked: false },
+        "in_region": { defchecked: false },
+    },
+    "bucket5": {
+        "verb": { defchecked: false },
+        "adjective": { defchecked: true },
+        "noun": { defchecked: false },
+        "adverb": { defchecked: false },
+        "preposition": { defchecked: false },
+        "verb group": { defchecked: false },
+        "examples": { defchecked: true }
+    }
+};
+
 function isch(id) {
     id = id.replace(/ /g, "_");
     var chh = $("#"+id);
@@ -62,35 +104,14 @@ function checkp(qs, id, ischeckeddef) {
 }
 function checkps() {
     var qs=[];
-    checkp(qs, "synonyms", true);
-    checkp(qs, "also", true);
-    checkp(qs, "attribute", false);
-    checkp(qs, "similar to", true);
-    checkp(qs, "antonyms", true);
-    checkp(qs, "derivation", false);
-    checkp(qs, "pertains to", false);
-    checkp(qs, "in category", false);
-    checkp(qs, "has categories", false);
-    checkp(qs, "type of", false);
-    checkp(qs, "has types", false);
-    checkp(qs, "substance of", false);
-    checkp(qs, "has substances", false);
-    checkp(qs, "part of", false);
-    checkp(qs, "has parts", false);
-    checkp(qs, "member of", false);
-    checkp(qs, "has members", false);
-    checkp(qs, "usage_of", false);
-    checkp(qs, "has_usages", false);
-    checkp(qs, "instance_of", false);
-    checkp(qs, "has_instances", false);
-    checkp(qs, "in_region", false);
-    checkp(qs, "verb", false);
-    checkp(qs, "adjective", true);
-    checkp(qs, "noun", false);
-    checkp(qs, "adverb", false);
-    checkp(qs, "verb group", false);
-    checkp(qs, "part of speech", true);
-    checkp(qs, "examples", true);
+
+    for (bucketid in checkboxdata) {
+        var bucket = checkboxdata[bucketid];
+        for (chid in bucket) {
+            checkp(qs, chid, bucket[chid].defchecked);
+        }
+    }
+
     return qs.join("&");
 }
 function createa(word0) {
@@ -188,7 +209,7 @@ function update() {
 
     data.results.map(val => {
 
-        if (isch(val.partOfSpeech)) {
+        if (!val.partOfSpeech || isch(val.partOfSpeech)) {
 
             // creates parent li element
             const li = document.createElement('div');
@@ -214,11 +235,11 @@ function update() {
 
                     // adds the element to our list item
                     li.appendChild(def);
-                } else if (property.isString) {
-                    const partOfSpeech = document.createElement('small');
-                    partOfSpeech.innerText = property.value;
-                    partOfSpeech.classList.add('lead','font-italic');
-                    li.appendChild(partOfSpeech);
+                } else if (property.isString || property.label === 'part of speech') {
+                    const italicLabel = document.createElement('small');
+                    italicLabel.innerText = property.value ? property.value : property.label+"?";
+                    italicLabel.classList.add('lead','font-italic');
+                    li.appendChild(italicLabel);
                 } else if (isch(property.label)) {
                     const characteristic = proplabel(property);
 
@@ -258,35 +279,14 @@ $(document).ready(function(){
     let chbs3 = document.querySelector('.checkboxes3');
     let chbs4 = document.querySelector('.checkboxes4');
     let chbs5 = document.querySelector('.checkboxes5');
-    addCheckbox(chbs1, "synonyms", true);
-    addCheckbox(chbs1, "also", true);
-    addCheckbox(chbs1, "attribute", false);
-    addCheckbox(chbs1, "similar to", true);
-    addCheckbox(chbs1, "antonyms", true);
-    addCheckbox(chbs1, "derivation", false);
-    addCheckbox(chbs1, "pertains to", false);
-    addCheckbox(chbs2, "in category", false);
-    addCheckbox(chbs2, "has categories", false);
-    addCheckbox(chbs2, "type of", false);
-    addCheckbox(chbs2, "has types", false);
-    addCheckbox(chbs2, "substance of", false);
-    addCheckbox(chbs2, "has substances", false);
-    addCheckbox(chbs3, "part of", false);
-    addCheckbox(chbs3, "has parts", false);
-    addCheckbox(chbs3, "member of", false);
-    addCheckbox(chbs3, "has members", false);
-    addCheckbox(chbs3, "usage_of", false);
-    addCheckbox(chbs3, "has_usages", false);
-    addCheckbox(chbs4, "instance_of", false);
-    addCheckbox(chbs4, "has_instances", false);
-    addCheckbox(chbs4, "in_region", false);
-    addCheckbox(chbs5, "verb", false);
-    addCheckbox(chbs5, "adjective", true);
-    addCheckbox(chbs5, "noun", false);
-    addCheckbox(chbs5, "adverb", false);
-    addCheckbox(chbs5, "verb group", false);
-    addCheckbox(chbs5, "part of speech", true);
-    addCheckbox(chbs5, "examples", true);
+    var chbuckets = {bucket1:chbs1,bucket2:chbs2,bucket3:chbs3,bucket4:chbs4,bucket5:chbs5};
+
+    for (bucketid in checkboxdata) {
+        var bucket = checkboxdata[bucketid];
+        for (chid in bucket) {
+            addCheckbox(chbuckets[bucketid], chid, bucket[chid].defchecked);
+        }
+    }
 
     //$('.form-check-input').change(function(){
     //    $(this).text() 
