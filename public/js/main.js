@@ -236,7 +236,7 @@ $(document).ready(function(){
     addCheckbox(chbs3, "examples", true);
 
     addCheckbox(chbs4, "verb", false);
-    addCheckbox(chbs4, "adjective", false);
+    addCheckbox(chbs4, "adjective", true);
     addCheckbox(chbs4, "noun", false);
 
     //$('.form-check-input').change(function(){
