@@ -37,7 +37,7 @@ function addCheckbox(cont, id, ischeckeddef, label) {
     id = id.replace(/ /g, "_");
     var ischecked = ischeckedparam(id, ischeckeddef);
 
-    var panel = $(` <div class='form-check'>
+    var panel = $(` <div class='form-check form-check-1'>
             <input type='hidden' id='${id}' name='${id}' value='${ischecked}'>
             <input class='form-check-input' type='checkbox' id='_${id}' ${ischecked ? "checked" : ""} onchange="checha('${id}')"/>
             <label class='form-check-label' for='_${id}'>
@@ -131,17 +131,20 @@ function update() {
     col=2;
     wordInfoRow=null;
 
-
-    const dlfreq = labelled("frequency", data.frequency);
-    info.appendChild(dlfreq);
-
-    // loops over the values for each definition
-    var prons = [];
-    for (pron in data.pronunciation) {
-        prons.push(pron+":"+data.pronunciation[pron]);
+    if (data.frequency) {
+        const dlfreq = labelled("frequency", data.frequency);
+        info.appendChild(dlfreq);
     }
-    const dlp1 = labelled("pronunciation ", prons.join(", "));
-    info.appendChild(dlp1);
+
+    if (data.pronunciation) {
+        // loops over the values for each definition
+        var prons = [];
+        for (pron in data.pronunciation) {
+            prons.push(pron+":"+data.pronunciation[pron]);
+        }
+        const dlp1 = labelled("pronunciation ", prons.join(", "));
+        info.appendChild(dlp1);
+    }
 
     data.results.map(val => {
 
@@ -238,6 +241,9 @@ $(document).ready(function(){
     addCheckbox(chbs4, "verb", false);
     addCheckbox(chbs4, "adjective", true);
     addCheckbox(chbs4, "noun", false);
+    addCheckbox(chbs4, "adverb", false);
+    addCheckbox(chbs3, "usage_of", false);
+    addCheckbox(chbs3, "usages", false);
 
     //$('.form-check-input').change(function(){
     //    $(this).text() 

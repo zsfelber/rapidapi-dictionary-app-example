@@ -46,14 +46,20 @@ main {
     display: block;
 }
 
+.form-check-1 {
+    text-align: left;
+    margin-left: 10px;
+}
+
 .form-check-input {
     margin-left: 5px;
 }
 
 .boxcards {
     display: inline-block;
-    width: 65rem;
+    width: 75rem;
     vertical-align: top;
+    margin-left: 100px;
 }
 
 .boxcard {
