@@ -121,6 +121,7 @@ function update() {
     // clears the word container if it had
     // previous data
     $('#word-info').empty();
+    $('#info').empty();
 
     // logs no results if word data is not found
     if (data.length < 1) {
@@ -143,45 +144,50 @@ function update() {
     info.appendChild(dlp1);
 
     data.results.map(val => {
-        // creates parent li element
-        const li = document.createElement('div');
-        li.classList.add('my-4', 'p-4', 'list-item');
 
-        // loops over the values for each definition
-        val.map(property => {
-            if (property.label === 'definition') {
-                newrow();
+        if (isch(val.partOfSpeech)) {
 
-                // creates new heading-3 element
-                const def = document.createElement('div');
+            // creates parent li element
+            const li = document.createElement('div');
+            li.classList.add('my-4', 'p-4', 'list-item');
 
-                var txt = property.value.toString();
-                var words = txt.split(" ");
-                createas(def, words, " ");
+            // loops over the values for each definition
+            val.properties.map(property => {
+                if (property.label === 'definition') {
+                    newrow();
 
-                // adds text to the element
-                //def.innerText = property.value;
+                    // creates new heading-3 element
+                    const def = document.createElement('div');
 
-                // appends class value for styling
-                def.classList.add(['definition']);
+                    var txt = property.value.toString();
+                    var words = txt.split(" ");
+                    createas(def, words, " ");
 
-                // adds the element to our list item
-                li.appendChild(def);
-            } else if (property.isString) {
-                const partOfSpeech = document.createElement('small');
-                partOfSpeech.innerText = property.value;
-                partOfSpeech.classList.add('lead','font-italic');
-                li.appendChild(partOfSpeech);
-            } else if (isch(property.label)) {
-                const characteristic = proplabel(property);
+                    // adds text to the element
+                    //def.innerText = property.value;
 
-                li.appendChild(characteristic);
-            }
-        });
+                    // appends class value for styling
+                    def.classList.add(['definition']);
 
-        // appends the list item fully formed to
-        // the word data container
-        wordInfoRow.appendChild(li);
+                    // adds the element to our list item
+                    li.appendChild(def);
+                } else if (property.isString) {
+                    const partOfSpeech = document.createElement('small');
+                    partOfSpeech.innerText = property.value;
+                    partOfSpeech.classList.add('lead','font-italic');
+                    li.appendChild(partOfSpeech);
+                } else if (isch(property.label)) {
+                    const characteristic = proplabel(property);
+
+                    li.appendChild(characteristic);
+                }
+            });
+
+            // appends the list item fully formed to
+            // the word data container
+            wordInfoRow.appendChild(li);
+        }
+
     });
     
 }
@@ -207,6 +213,7 @@ $(document).ready(function(){
     let chbs1 = document.querySelector('.checkboxes1');
     let chbs2 = document.querySelector('.checkboxes2');
     let chbs3 = document.querySelector('.checkboxes3');
+    let chbs4 = document.querySelector('.checkboxes4');
     addCheckbox(chbs1, "synonyms", true);
     addCheckbox(chbs1, "also", true);
     addCheckbox(chbs1, "attribute", false);
@@ -227,6 +234,10 @@ $(document).ready(function(){
     addCheckbox(chbs3, "has members", false);
     addCheckbox(chbs3, "verb group", false);
     addCheckbox(chbs3, "examples", true);
+
+    addCheckbox(chbs4, "verb", false);
+    addCheckbox(chbs4, "adjective", false);
+    addCheckbox(chbs4, "noun", false);
 
     //$('.form-check-input').change(function(){
     //    $(this).text() 

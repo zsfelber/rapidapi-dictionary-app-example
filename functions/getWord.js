@@ -29,6 +29,10 @@ export async function handler(event, context) {
 
     response.data.results.map(def => {
       let definitionArray = [];
+      let definition = {
+        partOfSpeech:def.partOfSpeech,
+        properties:definitionArray
+      };
 
       // creates array of keys in object
       const keys = Object.keys(def);
@@ -54,10 +58,10 @@ export async function handler(event, context) {
           isString: typeof value === 'string' ? true : false
         };
 
-        definitionArray.push(newObj)
+        definitionArray.push(newObj);
       })
 
-      results.push(definitionArray)
+      results.push(definition);
     })
     // END NEW CODE
 
