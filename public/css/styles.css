@@ -23,6 +23,12 @@ form {
     text-align: center;
 }
 
+.center {
+    display: block;
+    margin: auto;
+    text-align: center;
+}
+
 #form-row {
     background: black;
 }
@@ -57,11 +63,24 @@ main {
 }
 
 .titlcard {
+}
+
+.tbox {
     vertical-align: top;
+    display: inline-block;
+    margin-left: 10px;
+    text-align: left;
+}
+
+#title {
+    font-size:1.5rem;
 }
 
 #info {
-    width: 15rem;
+}
+
+#info dl dd {
+    margin-bottom: 0.2rem;
 }
 
 .checkcard {
