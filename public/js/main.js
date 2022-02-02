@@ -11,7 +11,6 @@ var checkboxdata = {
         "similar to": { defchecked: true },
         "antonyms": { defchecked: true },
         "derivation": { defchecked: false },
-        "pertains to": { defchecked: false },
     },
     "bucket2": {
         "in category": { defchecked: false },
@@ -33,6 +32,9 @@ var checkboxdata = {
         "instance_of": { defchecked: false },
         "has_instances": { defchecked: false },
         "in_region": { defchecked: false },
+        "pertains to": { defchecked: false },
+        "definition": { defchecked: true },
+        "examples": { defchecked: true }
     },
     "bucket5": {
         "verb": { defchecked: false },
@@ -41,7 +43,6 @@ var checkboxdata = {
         "adverb": { defchecked: false },
         "preposition": { defchecked: false },
         "verb group": { defchecked: false },
-        "examples": { defchecked: true }
     }
 };
 
@@ -223,9 +224,11 @@ function update() {
                     // creates new heading-3 element
                     const def = document.createElement('div');
 
-                    var txt = property.value.toString();
-                    var words = txt.split(" ");
-                    createas(def, words, " ");
+                    if (isch("definition")) {
+                        var txt = property.value.toString();
+                        var words = txt.split(" ");
+                        createas(def, words, " ");
+                    }
 
                     // adds text to the element
                     //def.innerText = property.value;
