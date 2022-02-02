@@ -53,10 +53,50 @@ function newrow() {
         wordInfoTbl.appendChild(wordInfoRow);
     }
 }
+function checkp(qs, id, ischeckeddef) {
+    id = id.replace(/ /g, "_");
+    var ischecked = ischeckedparam(id, ischeckeddef);
+    if (ischecked != ischeckeddef) {
+        qs.push(id+"="+ischecked);
+    }
+}
+function checkps() {
+    var qs=[];
+    checkp(qs, "synonyms", true);
+    checkp(qs, "also", true);
+    checkp(qs, "attribute", false);
+    checkp(qs, "similar to", true);
+    checkp(qs, "antonyms", true);
+    checkp(qs, "derivation", false);
+    checkp(qs, "pertains to", false);
+    checkp(qs, "in category", false);
+    checkp(qs, "has categories", false);
+    checkp(qs, "type of", false);
+    checkp(qs, "has types", false);
+    checkp(qs, "substance of", false);
+    checkp(qs, "has substances", false);
+    checkp(qs, "part of", false);
+    checkp(qs, "has parts", false);
+    checkp(qs, "member of", false);
+    checkp(qs, "has members", false);
+    checkp(qs, "usage_of", false);
+    checkp(qs, "has_usages", false);
+    checkp(qs, "instance_of", false);
+    checkp(qs, "has_instances", false);
+    checkp(qs, "in_region", false);
+    checkp(qs, "verb", false);
+    checkp(qs, "adjective", true);
+    checkp(qs, "noun", false);
+    checkp(qs, "adverb", false);
+    checkp(qs, "verb group", false);
+    checkp(qs, "part of speech", true);
+    checkp(qs, "examples", true);
+    return qs.join("&");
+}
 function createa(word0) {
     const a = document.createElement('a');
     const word = word0.replace(/[^a-zA-Z0-9\- ]/g, "");
-    a.href = "?word="+word;
+    a.href = "?word="+word+"&"+checkps();
     a.classList.add(['none']);
     a.innerText = word0;
     return a;
@@ -202,7 +242,7 @@ $(document).ready(function(){
         if (results==null) {
            return false;
         }
-        return decodeURI(results[1]) || false;
+        return decodeURI(results[1]).replace(/\+/g," ") || false;
     }
 
 
