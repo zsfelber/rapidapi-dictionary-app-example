@@ -84,6 +84,10 @@ function update() {
 
     const data = lastresult;
 
+    // clears the word container if it had
+    // previous data
+    $('#word-info').empty();
+
     // logs no results if word data is not found
     if (data.length < 1) {
         return wordInfoTbl.appendChild(document.createTextNode('No results matched.'));
@@ -91,10 +95,6 @@ function update() {
 
     col=2;
     wordInfoRow=null;
-
-    // clears the word container if it had
-    // previous data
-    $('#word-info').empty();
 
     data.map(val => {
         // creates parent li element
@@ -194,15 +194,16 @@ $(document).ready(function(){
     addCheckbox(chbs3, "verb group", false);
     addCheckbox(chbs3, "examples", true);
 
-    $('.form-check-input').change(function(){
-        $(this).text() 
-    });
+    //$('.form-check-input').change(function(){
+    //    $(this).text() 
+    //});
     
 
     
     async function dosubmit(word) {
 
         $("#word-input").val(word);
+        $("#title").html(word);
 
         // adds the text 'Loading...' to our word 
         // data container for UX purposes
