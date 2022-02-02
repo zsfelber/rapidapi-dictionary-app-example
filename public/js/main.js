@@ -243,7 +243,7 @@ $(document).ready(function(){
     addCheckbox(chbs4, "noun", false);
     addCheckbox(chbs4, "adverb", false);
     addCheckbox(chbs3, "usage_of", false);
-    addCheckbox(chbs3, "usages", false);
+    addCheckbox(chbs3, "has_usages", false);
 
     //$('.form-check-input').change(function(){
     //    $(this).text() 
