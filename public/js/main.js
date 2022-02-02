@@ -40,9 +40,10 @@ var checkboxdata = {
         "verb": { defchecked: false },
         "adjective": { defchecked: true },
         "noun": { defchecked: false },
-        "adverb": { defchecked: false },
-        "preposition": { defchecked: false },
+        "adverb": { defchecked: true },
+        "preposition": { defchecked: true },
         "verb group": { defchecked: false },
+        "entails": { defchecked: false },
     }
 };
 
