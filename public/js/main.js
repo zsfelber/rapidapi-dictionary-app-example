@@ -81,13 +81,13 @@ function createaas(cont, sentences, sep) {
 
 function labelled(label, value) {
     const dl = document.createElement('dl');
-    dl.className = 'row';
+    //dl.className = 'row';
     const dt = document.createElement('dt');
     dt.innerText = label;
-    dt.className = 'col-sm-3';
+    //dt.className = 'col-sm-3';
     const dd = document.createElement('dd');
     dd.innerText = value;
-    dd.className = 'col-sm-9';
+    //dd.className = 'col-sm-9';
     dl.appendChild(dt);
     dl.appendChild(dd);
     return dl;
