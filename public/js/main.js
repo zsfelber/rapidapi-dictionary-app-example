@@ -217,6 +217,7 @@ $(document).ready(function(){
     let chbs2 = document.querySelector('.checkboxes2');
     let chbs3 = document.querySelector('.checkboxes3');
     let chbs4 = document.querySelector('.checkboxes4');
+    let chbs5 = document.querySelector('.checkboxes5');
     addCheckbox(chbs1, "synonyms", true);
     addCheckbox(chbs1, "also", true);
     addCheckbox(chbs1, "attribute", false);
@@ -230,20 +231,22 @@ $(document).ready(function(){
     addCheckbox(chbs2, "has types", false);
     addCheckbox(chbs2, "substance of", false);
     addCheckbox(chbs2, "has substances", false);
-    addCheckbox(chbs2, "part of speech", true);
     addCheckbox(chbs3, "part of", false);
     addCheckbox(chbs3, "has parts", false);
     addCheckbox(chbs3, "member of", false);
     addCheckbox(chbs3, "has members", false);
-    addCheckbox(chbs3, "verb group", false);
-    addCheckbox(chbs3, "examples", true);
-
-    addCheckbox(chbs4, "verb", false);
-    addCheckbox(chbs4, "adjective", true);
-    addCheckbox(chbs4, "noun", false);
-    addCheckbox(chbs4, "adverb", false);
     addCheckbox(chbs3, "usage_of", false);
     addCheckbox(chbs3, "has_usages", false);
+    addCheckbox(chbs4, "instance_of", false);
+    addCheckbox(chbs4, "has_instances", false);
+    addCheckbox(chbs4, "in_region", false);
+    addCheckbox(chbs5, "verb", false);
+    addCheckbox(chbs5, "adjective", true);
+    addCheckbox(chbs5, "noun", false);
+    addCheckbox(chbs5, "adverb", false);
+    addCheckbox(chbs5, "verb group", false);
+    addCheckbox(chbs5, "part of speech", true);
+    addCheckbox(chbs5, "examples", true);
 
     //$('.form-check-input').change(function(){
     //    $(this).text() 
