@@ -12,7 +12,6 @@ var checkboxdata = {
         "antonyms": { defchecked: true },
         "derivation": { defchecked: false },
         "cause": { defchecked: false },
-        "entails": { defchecked: false },
     },
     "bucket2": {
         "in category": { defchecked: false },
@@ -21,22 +20,25 @@ var checkboxdata = {
         "has types": { defchecked: false },
         "substance of": { defchecked: false },
         "has substances": { defchecked: false },
+        "entails": { defchecked: false },
     },
     "bucket3": {
         "part of": { defchecked: false },
         "has parts": { defchecked: false },
         "member of": { defchecked: false },
         "has members": { defchecked: false },
-        "usage_of": { defchecked: false },
-        "has_usages": { defchecked: false },
+        "usage of": { defchecked: false },
+        "has usages": { defchecked: false },
+        "create synonym tree": { defchecked: false },
     },
     "bucket4": {
-        "instance_of": { defchecked: false },
-        "has_instances": { defchecked: false },
-        "in_region": { defchecked: false },
+        "instance of": { defchecked: false },
+        "has instances": { defchecked: false },
+        "in region": { defchecked: false },
         "pertains to": { defchecked: false },
         "definition": { defchecked: true },
-        "examples": { defchecked: true }
+        "examples": { defchecked: true },
+        "verb group": { defchecked: false },
     },
     "bucket5": {
         "verb": { defchecked: true },
@@ -46,7 +48,6 @@ var checkboxdata = {
         "preposition": { defchecked: true },
         "participle": { defchecked: true },
         "conjunction": { defchecked: true },
-        "verb group": { defchecked: false },
     }
 };
 
@@ -79,7 +80,8 @@ function ischeckedparam(param, ischeckeddef) {
     return v == (""+ischeckeddef) ? ischeckeddef : !ischeckeddef;
 }
 
-function addCheckbox(cont, id, ischeckeddef, label) {
+function addCheckbox(cont, id, buckcheck, label) {
+    const ischeckeddef = buckcheck.defchecked;
     if (!label) label = id;
     id = id.replace(/ /g, "_");
     var ischecked = ischeckedparam(id, ischeckeddef);
@@ -100,11 +102,16 @@ function newrow() {
         wordInfoTbl.appendChild(wordInfoRow);
     }
 }
-function checkp(qs, id, ischeckeddef) {
+function checkp(qs, id, buckcheck) {
+    const ischeckeddef = buckcheck.defchecked;
     id = id.replace(/ /g, "_");
-    var ischecked = ischeckedparam(id, ischeckeddef);
-    if (ischecked != ischeckeddef) {
-        qs.push(id+"="+ischecked);
+    if (id == "create_synonym_tree") {
+
+    } else {
+        var ischecked = ischeckedparam(id, ischeckeddef);
+        if (ischecked != ischeckeddef) {
+            qs.push(id+"="+ischecked);
+        }
     }
 }
 function checkps() {
@@ -113,7 +120,7 @@ function checkps() {
     for (bucketid in checkboxdata) {
         var bucket = checkboxdata[bucketid];
         for (chid in bucket) {
-            checkp(qs, chid, bucket[chid].defchecked);
+            checkp(qs, chid, bucket[chid]);
         }
     }
 
@@ -291,7 +298,7 @@ $(document).ready(function(){
     for (bucketid in checkboxdata) {
         var bucket = checkboxdata[bucketid];
         for (chid in bucket) {
-            addCheckbox(chbuckets[bucketid], chid, bucket[chid].defchecked);
+            addCheckbox(chbuckets[bucketid], chid, bucket[chid]);
         }
     }
 
@@ -312,7 +319,8 @@ $(document).ready(function(){
 
         try {
 
-            const data0 = await fetch(`/.netlify/functions/getWord?word=${word}`, { mode: 'cors'});
+            var syn = ischeckedparam("create_synonym_tree", false);
+            const data0 = await fetch(`/.netlify/functions/getWord?word=${word}&create_synonym_tree=${syn}`, { mode: 'cors'});
             // asynchronously calls our custome function
             const data = await data0.json();
 
