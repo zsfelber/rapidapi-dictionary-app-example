@@ -132,8 +132,9 @@ export async function handler(event, context) {
     }
 
     if (create_synonym_tree) {
+      console.log("create_synonym_tree:"+word);
       const by_def = {};
-      const entry = traverse(by_def, word);
+      //const entry = traverse(by_def, word);
 
     }
 
