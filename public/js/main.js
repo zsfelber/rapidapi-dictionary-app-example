@@ -11,6 +11,8 @@ var checkboxdata = {
         "similar to": { defchecked: true },
         "antonyms": { defchecked: true },
         "derivation": { defchecked: false },
+        "cause": { defchecked: false },
+        "entails": { defchecked: false },
     },
     "bucket2": {
         "in category": { defchecked: false },
@@ -37,13 +39,14 @@ var checkboxdata = {
         "examples": { defchecked: true }
     },
     "bucket5": {
-        "verb": { defchecked: false },
+        "verb": { defchecked: true },
         "adjective": { defchecked: true },
-        "noun": { defchecked: false },
+        "noun": { defchecked: true },
         "adverb": { defchecked: true },
         "preposition": { defchecked: true },
+        "participle": { defchecked: true },
+        "conjunction": { defchecked: true },
         "verb group": { defchecked: false },
-        "entails": { defchecked: false },
     }
 };
 
