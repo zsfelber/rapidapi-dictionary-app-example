@@ -29,7 +29,7 @@ var checkboxdata = {
         "has members": { defchecked: false },
         "usage of": { defchecked: false },
         "has usages": { defchecked: false },
-        "create synonym tree": { defchecked: false },
+        "create synonym cluster": { defchecked: false },
     },
     "bucket4": {
         "instance of": { defchecked: false },
@@ -105,7 +105,7 @@ function newrow() {
 function checkp(qs, id, buckcheck) {
     const ischeckeddef = buckcheck.defchecked;
     id = id.replace(/ /g, "_");
-    if (id == "create_synonym_tree") {
+    if (id == "create_synonym_cluster") {
 
     } else {
         var ischecked = ischeckedparam(id, ischeckeddef);
@@ -319,8 +319,8 @@ $(document).ready(function(){
 
         try {
 
-            var syn = ischeckedparam("create_synonym_tree", false);
-            const data0 = await fetch(`/.netlify/functions/getWord?word=${word}&create_synonym_tree=${syn}`, { mode: 'cors'});
+            var syn = ischeckedparam("create_synonym_cluster", false);
+            const data0 = await fetch(`/.netlify/functions/getWord?word=${word}&create_synonym_cluster=${syn}`, { mode: 'cors'});
             // asynchronously calls our custome function
             const data = await data0.json();
 

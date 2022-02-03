@@ -109,7 +109,13 @@ function traverse(by_def, word) {
     if (!by_def[val.definition]) {
       val.synonyms.push(entry.word);
       val.synonyms.sort();
-      by_def[val.definition] = val.synonyms.join(", ");
+      const label = synonyms.join(", ");
+      by_def[val.definition] = {
+          definition:val.definition, 
+          synonyms:val.synonyms, 
+          label, 
+          key:val.synonyms.length+":"+label
+      };
       for (s in val.synonyms) {
         traverse(by_def, s);
       }
@@ -123,19 +129,40 @@ export async function handler(event, context) {
 
   //   extract the word query parameter from the HTTP request
   const word = event.queryStringParameters.word || "";
-  const create_synonym_tree = event.queryStringParameters.create_synonym_tree=="true";
+  const create_synonym_cluster = event.queryStringParameters.create_synonym_cluster=="true";
 
   try {
 
     if (!fs.existsSync("cache/words")){
       fs.mkdirSync("cache/words", { recursive: true });
     }
+    if (!fs.existsSync("cache/clusters")){
+      fs.mkdirSync("cache/clusters");
+    }
 
-    if (create_synonym_tree) {
-      console.log("create_synonym_tree:"+word);
+    if (create_synonym_cluster) {
+      console.log("create_synonym_cluster:"+word);
       const by_def = {};
+      const by_key = [];
       //const entry = traverse(by_def, word);
+      for (def in by_def) {
+        const defobj = by_def[def];
+        by_key.push(defobj);
+      }
+      by_key.sort((firstEl, secondEl) => {
+        return firstEl.key.compare(secondEl.key);
+      } );
 
+      const cfpath = `cache/clusters/${word}`;
+      const cjson = JSON.stringify(by_key);  // original
+      fs.writeFile(cfpath, cjson, (err) => {
+        if (err) {
+          console.error("Cluster file "+cfpath+"  write failure : "+err+"\n");
+        } else {
+          console.log("Cluster file "+cfpath+"  written successfully\n");
+        }
+      });
+  
     }
 
     const json = load(wfpath, false);
