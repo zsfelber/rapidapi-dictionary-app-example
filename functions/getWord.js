@@ -1,12 +1,27 @@
-const axios = require('axios')
+const axios = require('axios');
+const fs = require('fs');
 
 export async function handler(event, context) {
 
 //   extract the word query parameter from the HTTP request
-  const word = event.queryStringParameters.word || "automobile";
+  const word = event.queryStringParameters.word || "";
 
   try {
 
+    const wfpath = "cache/words/${word}";
+    if (fs.existsSync(wfpath)) {
+      fs.readFile(wfpath);
+      var ijson = fs.readFileSync(wfpath);
+
+      return {
+        statusCode: 200,
+        body: ijson,
+        headers: {
+          'Access-Control-Allow-Origin': '*'
+        }
+      }
+
+    }
     // send request to the WordsAPI
     const response = await axios({
       "method":"GET",
@@ -65,13 +80,17 @@ export async function handler(event, context) {
     })
     // END NEW CODE
 
+    const ojson = JSON.stringify(result);  // modified
+    fs.writeFile(wfpath, ojson);
+
     return {
       statusCode: 200,
-      body: JSON.stringify(result),  // modified
+      body: ojson,  // modified
       headers: {
         'Access-Control-Allow-Origin': '*'
       }
     }
+
   } catch (err) {
     console.log(err)
     return { statusCode: 500, body: err.toString() }

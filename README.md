@@ -9,6 +9,8 @@ Example application built with RapidAPI and the WordsAPI for a blog post.
 
 netlify link 
 
+netlify dev
+
 netlify deploy --prod
 
 https://app.netlify.com/sites/epic-morse-69bbe0/deploys
