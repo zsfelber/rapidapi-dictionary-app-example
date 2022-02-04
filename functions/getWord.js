@@ -169,9 +169,14 @@ async function loadDictionaryAndChildren(tresult, word, traversion) {
 
     const entry = await loadSingleWord(word, true);
 
-    if (!tresult.master) {
+    if (tresult.master) {
+      if (entry.frequency && entry.frequency>=400) {
+        return true;
+      }
+    } else {
       tresult.master = entry;
     }
+
 
     for (let key in entry.results) {
       const val = entry.results[key]; 
