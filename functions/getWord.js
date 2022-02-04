@@ -1,6 +1,6 @@
 const axios = require('axios');
 const fs = require('fs');
-const MAX_WORDS = 10;
+const MAX_WORDS = 100;
 const CACHE_CLUSTERS = false;
 
 function singleWordToDisplay(data) {
