@@ -1,6 +1,6 @@
 const axios = require('axios');
 const fs = require('fs');
-const MAX_DEFINITIONS = 10;
+const MAX_WORDS = 10;
 const CACHE_CLUSTERS = false;
 
 function singleWordToDisplay(data) {
@@ -106,19 +106,25 @@ async function loadSingleWord(word, asobject) {
 
 async function traverseCluster(tresult, word) {
 
-    if (!tresult.noDefinitions) {
-      tresult.noDefinitions = 0;
-    }
+  const wfpath = `cache/words/${word}`;
+  const by_def = tresult.by_def;
+  const by_w = tresult.by_w;
 
-    if (tresult.noDefinitions >= MAX_DEFINITIONS) {
-      return false;
-    } else {
-      console.log(tresult.noDefinitions + "/" + MAX_DEFINITIONS);
-    }
+  if (!tresult.noWords) {
+    tresult.noWords = 0;
+  }
+  const val = entry.results[key]; 
 
-    const wfpath = `cache/words/${word}`;
+  if (by_w[word]) {
+    return true;
+  } else if (tresult.noWords >= MAX_WORDS) {
+    return false;
+  } else {
+    console.log(tresult.noWords + "/" + MAX_WORDS);
+    tresult.noWords++;
+    by_w[word] = 1;
+
     const entry = await loadSingleWord(word, true);
-    const by_def = tresult.by_def;
 
     if (!tresult.master) {
       tresult.master = entry;
@@ -128,7 +134,7 @@ async function traverseCluster(tresult, word) {
       const val = entry.results[key]; 
 
       if (!by_def[val.definition]) {
-      
+          
           let definition = val.definition; 
           let synonyms = [];
           let similar = [];
@@ -156,6 +162,7 @@ async function traverseCluster(tresult, word) {
     }
 
     return true;
+  }
 }
 
 async function loadCluster(word, asobject) {
@@ -175,10 +182,11 @@ async function loadCluster(word, asobject) {
   } else {
 
     const by_def = {};
+    const by_w = {};
     const by_key = [];
     let tresult = {
-      by_def
-    };
+      by_def,
+      by_w    };
     const entry = await traverseCluster(tresult, word);
     by_key.push.apply(by_key, Object.values(by_def));
     by_key.sort((firstEl, secondEl) => {
