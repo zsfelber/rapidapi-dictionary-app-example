@@ -106,14 +106,12 @@ async function loadSingleWord(word, asobject) {
 
 async function traverseCluster(tresult, word) {
 
-  const wfpath = `cache/words/${word}`;
   const by_def = tresult.by_def;
   const by_w = tresult.by_w;
 
   if (!tresult.noWords) {
     tresult.noWords = 0;
   }
-  const val = entry.results[key]; 
 
   if (by_w[word]) {
     return true;
