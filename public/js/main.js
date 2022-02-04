@@ -140,10 +140,10 @@ function createa(word0) {
     a.innerText = word0;
     return a;
 }
-function createas(cont, words, sep, linksIdxLimit=999999999) {
+function createas(cont, words, sep, linksIdxFrom=0, linksIdxTo=999999999) {
     let index=0;
     if (words) words.forEach(word => {
-        const a = index<linksIdxLimit ? createa(word) : document.createTextNode(word);
+        const a = (linksIdxFrom<=index&&index<linksIdxTo) ? createa(word) : document.createTextNode(word);
         const sp = document.createTextNode(sep);
 
         cont.appendChild(a);
@@ -174,7 +174,7 @@ function labelled(label, value) {
     return dl;
 }
 
-function proplabel(property, parselabel=false, linksIdxLimit=9999999, prefix="") {
+function proplabel(property, parselabel=false, linksIdxLabFrom=0, linksIdxValTo=9999999, prefix="") {
     const characteristic = document.createElement('dl');
     characteristic.className = 'row';
     const label = document.createElement('dt');
@@ -182,7 +182,7 @@ function proplabel(property, parselabel=false, linksIdxLimit=9999999, prefix="")
     const value = document.createElement('dd');
 
     if (parselabel) {
-        createas(label, property.label, ", ");
+        createas(label, property.label, ", ", linksIdxLabFrom);
     } else {
         label.innerText = prefix + property.label;
     }
@@ -190,7 +190,7 @@ function proplabel(property, parselabel=false, linksIdxLimit=9999999, prefix="")
     if (!parselabel && property.label === 'examples') {
         createaas(value, property.value, ", ");
     } else {
-        createas(value, property.value, ", ", linksIdxLimit);
+        createas(value, property.value, ", ", 0, linksIdxValTo);
     }
 
     value.className = 'col-sm-9';
@@ -305,11 +305,11 @@ function updateCluster() {
             newbox("list-item-lg");
         }
         const property = {
-            label:val.synonyms, 
+            label:["("+val.level+" "+val.partOfSpeech+")"].concat(val.synonyms), 
             value:val.similar.concat([val.definition])
         };
 
-        const def = proplabel(property, true, val.synonyms.length);
+        const def = proplabel(property, true, 1, val.similar.length);
         wordInfoBox.appendChild(def);
 
     });

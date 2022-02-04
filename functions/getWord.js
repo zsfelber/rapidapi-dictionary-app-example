@@ -103,8 +103,53 @@ async function loadSingleWord(word, asobject) {
 
 }
 
+class TraverseNode {
 
-async function traverseCluster(tresult, word) {
+  entry;val;level;partOfSpeech;
+  definition;synonyms;similar;words;
+  key;
+
+  constructor(by_def, entry, val, level) {
+    this.entry=entry;this.val=val;this.level=level;
+
+    this.definition = val.definition; 
+    this.synonyms = [];
+    this.similar = [];
+    this.words = [];
+
+    this.add(by_def);
+  }
+
+  add(by_def) {
+  
+    this.partOfSpeech = this.val.partOfSpeech;
+    this.synonyms.push.apply(this.synonyms, this.val.synonyms);
+    this.synonyms.push(this.entry.word);
+    this.synonyms.sort();
+  
+    this.similar.push.apply(this.similar, this.val.similarTo);
+    this.similar.sort();
+  
+    this.words.push.apply(this.words, this.synonyms);
+    this.words.push.apply(this.words, this.similar);
+  
+    this.key = synonyms.length+"::::::"+synonyms.join(", ");
+
+    if (!by_def[this.val.definition]) {
+
+      by_def[this.val.definition] = this;
+    }
+  }
+
+  compress() {
+    delete this.val;
+    delete this.key;
+    delete this.words;
+  }
+  
+};
+
+async function loadDictionaryAndChildren(tresult, word, traversion) {
 
   const by_def = tresult.by_def;
   const by_w = tresult.by_w;
@@ -127,40 +172,38 @@ async function traverseCluster(tresult, word) {
     if (!tresult.master) {
       tresult.master = entry;
     }
-  
+
     for (let key in entry.results) {
       const val = entry.results[key]; 
 
-      if (!by_def[val.definition]) {
-          
-          let definition = val.definition; 
-          let synonyms = [];
-          let similar = [];
-          let words = [];
-
-          synonyms.push.apply(synonyms, val.synonyms);
-          synonyms.push(entry.word);
-          synonyms.sort();
-
-          similar.push.apply(similar, val.similarTo);
-          similar.sort();
-
-          words.push.apply(words, synonyms);
-          words.push.apply(words, similar);
-
-          by_def[val.definition] = {
-              definition, synonyms, similar, key:synonyms.length+"::::::"+synonyms.join(", ")
-          };
-
-          for (let w of words) {
-            await traverseCluster(tresult, w);
-          }
-      }
-
+      let node = new TraverseNode(by_def, entry, val, traversion.level);
+      traversion.wordsbreadthfirst.push.apply(traversion.wordsbreadthfirst, node.words);
     }
 
     return true;
   }
+}
+
+async function traverseCluster(tresult, word) {
+
+  let traversion = {
+    level : 1,
+    wordsbreadthfirst : [word]
+  };
+
+  do {
+    var previouslevelchildwords = traversion.wordsbreadthfirst.concat([]);
+    traversion.wordsbreadthfirst = [];
+
+    for (let w of previouslevelchildwords) {
+      let success = await loadDictionaryAndChildren(tresult, w, traversion);
+      if (!success) {
+        return;
+      }
+    }
+    traversion.level++;
+  } while (traversion.wordsbreadthfirst.length);
+
 }
 
 async function loadCluster(word, asobject) {
@@ -192,7 +235,7 @@ async function loadCluster(word, asobject) {
     };
     by_key.sort(cmp);
     for (let defobj of by_key) {
-      delete defobj.key;
+      defobj.compress();
     }
     let result = {
       frequency:tresult.master.frequency,
