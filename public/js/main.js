@@ -276,6 +276,9 @@ function updateCluster() {
     $('#word-info').empty();
     $('#info').empty();
 
+    const dlfreq = labelled("frequency", data.frequency);
+    info.appendChild(dlfreq);
+
 }
 
 function update(firsttime) {

@@ -51,33 +51,6 @@ function singleWordToDisplay(data) {
   return result;
 }
 
-
-function traverseCluster(by_def, word) {
-
-  const wfpath = `cache/words/${word}`;
-  const entry = loadSingleWord(wfpath, true);
-
-  entry.results.map(val => {
-
-    if (!by_def[val.definition]) {
-      val.synonyms.push(entry.word);
-      val.synonyms.sort();
-      const words = synonyms.join(", ");
-      by_def[val.definition] = {
-          definition:val.definition, 
-          //synonyms:val.synonyms, 
-          words, 
-          key:val.synonyms.length+"::::::"+words
-      };
-      for (s in val.synonyms) {
-        traverseCluster(by_def, s);
-      }
-    }
-
-  });
-
-}
-
 function loadSingleWord(wfpath, asobject) {
 
   if (fs.existsSync(wfpath)) {
@@ -126,6 +99,34 @@ function loadSingleWord(wfpath, asobject) {
 
 }
 
+
+
+function traverseCluster(by_def, word) {
+
+  const wfpath = `cache/words/${word}`;
+  const entry = loadSingleWord(wfpath, true);
+
+  entry.results.map(val => {
+
+    if (!by_def[val.definition]) {
+      val.synonyms.push(entry.word);
+      val.synonyms.sort();
+      const words = synonyms.join(", ");
+      by_def[val.definition] = {
+          definition:val.definition, 
+          //synonyms:val.synonyms, 
+          words, 
+          key:val.synonyms.length+"::::::"+words
+      };
+      for (s in val.synonyms) {
+        traverseCluster(by_def, s);
+      }
+    }
+
+  });
+
+}
+
 function loadCluster(word, asobject) {
 
   const cfpath = `cache/clusters/${word}`;
@@ -156,6 +157,12 @@ function loadCluster(word, asobject) {
       delete defobj.key;
     }
 
+    let result = {
+      frequency:response.data.frequency,
+      pronunciation:response.data.pronunciation,
+      results
+    };
+  
     const cjson = JSON.stringify(by_key);
     fs.writeFile(cfpath, cjson, (err) => {
       if (err) {
@@ -189,12 +196,17 @@ export async function handler(event, context) {
       fs.mkdirSync("cache/clusters");
     }
 
+    let json;
     if (create_synonym_cluster) {
       console.log("create_synonym_cluster:"+word);
-  
+
+      json = loadCluster(word, false);
+    } else {
+      const wfpath = `cache/words/${word}`;
+
+      json = loadSingleWord(wfpath, false);
     }
 
-    const json = loadSingleWord(wfpath, false);
 
     return {
       statusCode: 200,
