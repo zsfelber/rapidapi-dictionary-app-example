@@ -9,7 +9,7 @@
     "debug0": "netlify dev --inspect",
     "debug": "netlify dev",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:lambda": "netlify-lambda build functions --config ./webpack.config.dev.js",
+    "build:lambda": "netlify-lambda build functions --config ./webpack.config.dev.js"
   },
   "keywords": [],
   "author": "",
