@@ -309,6 +309,8 @@ function updateCluster() {
 function update(firsttime) {
     update_to = undefined;
 
+    const syn = lastsyn;
+
     if (syn) {
         if (firsttime) {
             updateCluster();
