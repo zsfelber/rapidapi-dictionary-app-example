@@ -40,3 +40,15 @@ module.exports = {
 };
 run dev script and attach a debugger to localhost:9229
 
+a
+    "lambda-serve": "npx --node-arg=--inspect netlify-lambda serve",
+    "lambda-build": "netlify-lambda build functions --config ./webpack.config.dev.js",
+    "debug": "netlify dev",
+    "test": "echo \"Error: no test specified\" && exit 1"
+
+
+b
+    "lambda-serve": "netlify-lambda serve functions",
+    "lambda-build": "netlify-lambda build functions",
+    "debug": "netlify dev",
+    "test": "echo \"Error: no test specified\" && exit 1"
