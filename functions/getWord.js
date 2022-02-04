@@ -2,6 +2,7 @@ const axios = require('axios');
 const fs = require('fs');
 const MAX_WORDS = 100;
 const CACHE_CLUSTERS = false;
+const MAX_NODE_FREQUENCY = 4;
 
 function singleWordToDisplay(data) {
 
@@ -13,7 +14,7 @@ function singleWordToDisplay(data) {
     results, etc:""
   };
 
-  data.results.map(def => {
+  if (data.results) data.results.map(def => {
     let definitionArray = [];
     let definition = {
       partOfSpeech:def.partOfSpeech,
@@ -170,7 +171,7 @@ async function loadDictionaryAndChildren(tresult, word, traversion) {
     const entry = await loadSingleWord(word, true);
 
     if (tresult.master) {
-      if (entry.frequency && entry.frequency>=4) {
+      if (entry.frequency && entry.frequency>=MAX_NODE_FREQUENCY) {
         return true;
       }
     } else {
