@@ -1,6 +1,6 @@
 const axios = require('axios');
 const fs = require('fs');
-const MAX_WORDS = 3000;
+const MAX_WORDS = 10000;
 const CACHE_CLUSTERS = false;
 const MAX_NODE_FREQUENCY = 4;
 
