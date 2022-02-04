@@ -114,13 +114,10 @@ function newbox() {
 function checkp(qs, id, buckcheck) {
     const ischeckeddef = buckcheck.defchecked;
     id = id.replace(/ /g, "_");
-    if (id == "create_synonym_cluster") {
 
-    } else {
-        var ischecked = ischeckedparam(id, ischeckeddef);
-        if (ischecked != ischeckeddef) {
-            qs.push(id+"="+ischecked);
-        }
+    var ischecked = ischeckedparam(id, ischeckeddef);
+    if (ischecked != ischeckeddef) {
+        qs.push(id+"="+ischecked);
     }
 }
 function checkps() {
@@ -175,18 +172,23 @@ function labelled(label, value) {
     return dl;
 }
 
-function proplabel(property, prefix="") {
+function proplabel(property, reversed=false, prefix="") {
     const characteristic = document.createElement('dl');
     characteristic.className = 'row';
     const label = document.createElement('dt');
-    label.innerText = prefix + property.label;
     label.className = 'col-sm-3';
     const value = document.createElement('dd');
 
-    if (property.label === 'examples') {
-        createaas(value, property.value, ", ");
+    if (reversed) {
+        value.innerText = prefix + property.value;
+        createas(label, property.label, ", ");
     } else {
-        createas(value, property.value, ", ");
+        label.innerText = prefix + property.label;
+        if (property.label === 'examples') {
+            createaas(value, property.value, ", ");
+        } else {
+            createas(value, property.value, ", ");
+        }
     }
 
     value.className = 'col-sm-9';
@@ -237,11 +239,12 @@ function updateSingleWord() {
 
         if (!val.partOfSpeech || isch(val.partOfSpeech)) {
 
+            newrow();
+            newbox();
+
             // loops over the values for each definition
             val.properties.map(property => {
                 if (property.label === 'definition') {
-                    newrow();
-                    newbox();
 
                     // creates new heading-3 element
                     const def = document.createElement('div');
@@ -300,7 +303,7 @@ function updateCluster() {
             newbox();
         }
 
-        const characteristic = proplabel({label:val.words, value:val.definition});
+        const characteristic = proplabel({label:val.synonmys, value:val.definition}, true);
         wordInfoBox.appendChild(characteristic);
 
     });

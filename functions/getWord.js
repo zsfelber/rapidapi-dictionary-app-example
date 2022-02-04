@@ -101,7 +101,7 @@ async function loadSingleWord(word, asobject) {
 
 }
 
-
+const MAX_WORDS = 10;
 
 async function traverseCluster(tresult, word) {
 
@@ -110,26 +110,39 @@ async function traverseCluster(tresult, word) {
   const by_def = tresult.by_def;
   if (!tresult.master) {
     tresult.master = entry;
+    tresult.noDefinitions = 0;
   }
 
   for (let key in entry.results) {
     const val = entry.results[key]; 
 
     if (!by_def[val.definition]) {
-      let groupWords = [];
-      groupWords.push.apply(groupWords, val.synonyms);
-      groupWords.push.apply(groupWords, val.similarTo);
-      groupWords.push(entry.word);
-      groupWords.sort();
-      const words = groupWords.join(", ");
-      by_def[val.definition] = {
-          definition:val.definition, 
-          words, 
-          key:groupWords.length+"::::::"+words
-      };
+      if (tresult.noDefinitions < MAX_WORDS) {
 
-      for (s in groupWords) {
-        await traverseCluster(tresult, s);
+        tresult.noDefinitions++;
+
+        let definition = val.definition; 
+        let synonmys = [];
+        let similar = [];
+        let words = [];
+
+        synonmys.push.apply(synonmys, val.synonyms);
+        synonmys.push(entry.word);
+        synonmys.sort();
+
+        similar.push.apply(similar, val.similarTo);
+        similar.sort();
+
+        words.push.apply(words, synonmys);
+        words.push.apply(words, similar);
+
+        by_def[val.definition] = {
+            definition, synonmys, similar, key:synonmys.length+"::::::"+synonmys.join(", ")
+        };
+
+        for (w in words) {
+          await traverseCluster(tresult, w);
+        }
       }
     }
 
@@ -159,7 +172,7 @@ async function loadCluster(word, asobject) {
     let tresult = {
       by_def
     };
-    //const entry = await traverseCluster(tresult, word);
+    const entry = await traverseCluster(tresult, word);
     for (let def in by_def) {
       const defobj = by_def[def];
       by_key.push(defobj);
