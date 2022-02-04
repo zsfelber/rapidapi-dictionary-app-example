@@ -199,6 +199,7 @@ async function traverseCluster(tresult, word) {
       }
     }
     await Promise.all(promises);
+    console.log("Level "+traversion.level+" finished.");
 
     traversion.level++;
   } while (traversion.wordsbreadthfirst.length);
