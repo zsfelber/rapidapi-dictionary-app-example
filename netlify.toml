@@ -1,2 +1,4 @@
 [build]
-  functions = "netlify/functions"
+  functions = "lambda"
+
+  environment = { RAPIDAPI_KEY = "0988c74a30msha4ae981b7427552p13d5cdjsn05c5e4cb2424" }
