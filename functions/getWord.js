@@ -62,44 +62,49 @@ async function loadSingleWord(word, asobject) {
 
     //console.log("From cache file/single "+wfpath+"  asobject:"+asobject+"...\n");
     let ijson = fs.readFileSync(wfpath).toString();
-    let data = JSON.parse(ijson);
+    try {
+      let data = JSON.parse(ijson);
 
-    if (asobject) {
-      return data;
-    } else {
-      let result = singleWordToDisplay(data);
-      const ojson = JSON.stringify(result);         // modified
-      return ojson;
-    }
-
-  } else {
-    // send request to the WordsAPI
-    const response = await axios({
-      "method":"GET",
-      "url":`https://wordsapiv1.p.rapidapi.com/words/${word}`,
-      "headers":{
-      "content-type":"application/octet-stream",
-      "x-rapidapi-host":"wordsapiv1.p.rapidapi.com",
-      "x-rapidapi-key":process.env.RAPIDAPI_KEY
-      }
-    });
-
-    const djson = JSON.stringify(response.data);  // original
-    fs.writeFile(wfpath, djson, (err) => {
-      if (err) {
-        console.error("Cache file/single "+wfpath+"  asobject:"+asobject+" write failure : "+err+"\n");
+      if (asobject) {
+        return data;
       } else {
-        console.log("Cache file/single "+wfpath+"  asobject:"+asobject+" written successfully\n");
+        let result = singleWordToDisplay(data);
+        const ojson = JSON.stringify(result);         // modified
+        return ojson;
       }
-    });
-
-    if (asobject) {
-      return response.data;
-    } else {
-      let result = singleWordToDisplay(response.data);
-      const ojson = JSON.stringify(result);         // modified
-      return ojson;
+  
+    } catch (e) {
+      console.warn("Delete invalid file : "+wfpath, e);
+      fs.unlinkSync(wfpath);
     }
+  }
+
+  // send request to the WordsAPI
+  const response = await axios({
+    "method":"GET",
+    "url":`https://wordsapiv1.p.rapidapi.com/words/${word}`,
+    "headers":{
+    "content-type":"application/octet-stream",
+    "x-rapidapi-host":"wordsapiv1.p.rapidapi.com",
+    "x-rapidapi-key":process.env.RAPIDAPI_KEY
+    }
+  });
+
+  const djson = JSON.stringify(response.data);  // original
+  fs.writeFile(wfpath, djson, (err) => {
+    if (err) {
+      console.error("Cache file/single "+wfpath+"  asobject:"+asobject+" write failure : "+err+"\n");
+    } else {
+      console.log("Cache file/single "+wfpath+"  asobject:"+asobject+" written successfully\n");
+    }
+  });
+
+  if (asobject) {
+    return response.data;
+  } else {
+    let result = singleWordToDisplay(response.data);
+    const ojson = JSON.stringify(result);         // modified
+    return ojson;
   }
 
 }
