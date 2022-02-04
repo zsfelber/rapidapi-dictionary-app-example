@@ -19,3 +19,4 @@ Logs:              https://app.netlify.com/sites/epic-morse-69bbe0/deploys/61f96
 Unique Deploy URL: https://61f961dc385f962dd88e8120--epic-morse-69bbe0.netlify.app
 Website URL:       https://epic-morse-69bbe0.netlify.app
 
+    /*"build_functions": "netlify-lambda build functions/getWord -c webpack.functions.js",*/
