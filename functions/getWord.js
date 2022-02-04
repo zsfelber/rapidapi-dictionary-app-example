@@ -2,7 +2,8 @@ const axios = require('axios');
 const fs = require('fs');
 const MAX_WORDS = 25000;
 const CACHE_CLUSTERS = false;
-const MAX_NODE_FREQUENCY = 4;
+const MAX_NODE_FREQUENCY = 400;
+const TRAVERSE_SIMILAR = true;
 
 function singleWordToDisplay(data) {
 
@@ -170,7 +171,11 @@ async function loadDictionaryAndChildren(tresult, word, traversion) {
     const val = entry.results[key]; 
 
     let node = new TraverseNode(by_def, entry, val, traversion.level);
-    traversion.wordsbreadthfirst.push.apply(traversion.wordsbreadthfirst, node.synonyms);
+    if (TRAVERSE_SIMILAR) {
+      traversion.wordsbreadthfirst.push.apply(traversion.wordsbreadthfirst, node.words);
+    } else {
+      traversion.wordsbreadthfirst.push.apply(traversion.wordsbreadthfirst, node.synonyms);
+    }
   }
 
   return true;
