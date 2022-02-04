@@ -1,6 +1,6 @@
 const axios = require('axios');
 const fs = require('fs');
-const MAX_WORDS = 10;
+const MAX_DEFINITIONS = 10;
 const CACHE_CLUSTERS = false;
 
 function singleWordToDisplay(data) {
@@ -106,50 +106,56 @@ async function loadSingleWord(word, asobject) {
 
 async function traverseCluster(tresult, word) {
 
-  const wfpath = `cache/words/${word}`;
-  const entry = await loadSingleWord(word, true);
-  const by_def = tresult.by_def;
-  if (!tresult.master) {
-    tresult.master = entry;
-    tresult.noDefinitions = 0;
-  }
-
-  for (let key in entry.results) {
-    const val = entry.results[key]; 
-
-    if (!by_def[val.definition]) {
-      if (tresult.noDefinitions < MAX_WORDS) {
-        tresult.noDefinitions++;
-        console.log(tresult.noDefinitions + "/" + MAX_WORDS);
-
-        let definition = val.definition; 
-        let synonyms = [];
-        let similar = [];
-        let words = [];
-
-        synonyms.push.apply(synonyms, val.synonyms);
-        synonyms.push(entry.word);
-        synonyms.sort();
-
-        similar.push.apply(similar, val.similarTo);
-        similar.sort();
-
-        words.push.apply(words, synonyms);
-        words.push.apply(words, similar);
-
-        by_def[val.definition] = {
-            definition, synonyms, similar, key:synonyms.length+"::::::"+synonyms.join(", ")
-        };
-
-        for (let w of words) {
-          await traverseCluster(tresult, w);
-        }
-      }
+    if (!tresult.noDefinitions) {
+      tresult.noDefinitions = 0;
     }
 
-  }
+    if (tresult.noDefinitions >= MAX_DEFINITIONS) {
+      return false;
+    } else {
+      console.log(tresult.noDefinitions + "/" + MAX_DEFINITIONS);
+    }
 
-  return true;
+    const wfpath = `cache/words/${word}`;
+    const entry = await loadSingleWord(word, true);
+    const by_def = tresult.by_def;
+
+    if (!tresult.master) {
+      tresult.master = entry;
+    }
+  
+    for (let key in entry.results) {
+      const val = entry.results[key]; 
+
+      if (!by_def[val.definition]) {
+      
+          let definition = val.definition; 
+          let synonyms = [];
+          let similar = [];
+          let words = [];
+
+          synonyms.push.apply(synonyms, val.synonyms);
+          synonyms.push(entry.word);
+          synonyms.sort();
+
+          similar.push.apply(similar, val.similarTo);
+          similar.sort();
+
+          words.push.apply(words, synonyms);
+          words.push.apply(words, similar);
+
+          by_def[val.definition] = {
+              definition, synonyms, similar, key:synonyms.length+"::::::"+synonyms.join(", ")
+          };
+
+          for (let w of words) {
+            await traverseCluster(tresult, w);
+          }
+      }
+
+    }
+
+    return true;
 }
 
 async function loadCluster(word, asobject) {
@@ -174,13 +180,11 @@ async function loadCluster(word, asobject) {
       by_def
     };
     const entry = await traverseCluster(tresult, word);
-    for (let defobj of by_def) {
-      by_key.push(defobj);
-    }
+    by_key.push.apply(by_key, Object.values(by_def));
     by_key.sort((firstEl, secondEl) => {
       return firstEl.key.compare(secondEl.key);
     } );
-    for (let defobj in by_key) {
+    for (let defobj of by_key) {
       delete defobj.key;
     }
     let result = {
