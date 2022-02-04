@@ -229,7 +229,7 @@ export async function handler(event, context) {
 
   //   extract the word query parameter from the HTTP request
   const word = event.queryStringParameters.word || "";
-  const create_synonym_cluster = event.queryStringParameters.create_synonym_cluster=="true";
+  const synonym_cluster = event.queryStringParameters.synonym_cluster=="true";
 
   try {
 
@@ -241,8 +241,8 @@ export async function handler(event, context) {
     }
 
     let json;
-    if (create_synonym_cluster) {
-      console.log("create_synonym_cluster:"+word);
+    if (synonym_cluster) {
+      console.log("synonym_cluster:"+word);
 
       json = await loadCluster(word, false);
     } else {

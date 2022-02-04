@@ -30,7 +30,7 @@ var checkboxdata = {
         "has members": { defchecked: false },
         "usage of": { defchecked: false },
         "has usages": { defchecked: false },
-        "create synonym cluster": { defchecked: false },
+        "synonym cluster": { defchecked: false },
     },
     "bucket4": {
         "instance of": { defchecked: false },
@@ -105,9 +105,9 @@ function newrow() {
     }
 }
 
-function newbox() {
+function newbox(listitm="list-item") {
     wordInfoBox = document.createElement('div');
-    wordInfoBox.classList.add('my-4', 'p-4', 'list-item');
+    wordInfoBox.classList.add('my-4', 'p-4', listitm);
     wordInfoRow.appendChild(wordInfoBox);
 }
 
@@ -302,7 +302,7 @@ function updateCluster() {
     data.results.map(val => {
         if (itms++%100==99) {
             newrow();
-            newbox();
+            newbox("list-item-lg");
         }
         const property = {
             label:val.synonyms, 
@@ -378,8 +378,8 @@ $(document).ready(function(){
 
         try {
 
-            var syn = ischeckedparam("create_synonym_cluster", false);
-            const data0 = await fetch(`/.netlify/functions/getWord?word=${word}&create_synonym_cluster=${syn}`, { mode: 'cors'});
+            var syn = ischeckedparam("synonym_cluster", false);
+            const data0 = await fetch(`/.netlify/functions/getWord?word=${word}&synonym_cluster=${syn}`, { mode: 'cors'});
             // asynchronously calls our custome function
             const data = await data0.json();
 
