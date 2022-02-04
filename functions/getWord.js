@@ -51,7 +51,9 @@ function singleWordToDisplay(data) {
   return result;
 }
 
-async function loadSingleWord(wfpath, asobject) {
+async function loadSingleWord(word, asobject) {
+
+  const wfpath = `cache/words/${word}`;
 
   if (fs.existsSync(wfpath)) {
 
@@ -104,7 +106,7 @@ async function loadSingleWord(wfpath, asobject) {
 async function traverseCluster(tresult, word) {
 
   const wfpath = `cache/words/${word}`;
-  const entry = await loadSingleWord(wfpath, true);
+  const entry = await loadSingleWord(word, true);
   const by_def = tresult.by_def;
   if (!tresult.master) {
     tresult.master = entry;
@@ -214,9 +216,8 @@ export async function handler(event, context) {
 
       json = await loadCluster(word, false);
     } else {
-      const wfpath = `cache/words/${word}`;
 
-      json = await loadSingleWord(wfpath, false);
+      json = await loadSingleWord(word, false);
     }
 
 
