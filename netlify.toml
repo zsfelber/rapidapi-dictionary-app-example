@@ -3,5 +3,5 @@
 
 
 [build.processing.js]
-  bundle = true
+  bundle = false
   minify = false

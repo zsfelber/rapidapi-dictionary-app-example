@@ -10,7 +10,7 @@ function singleWordToDisplay(data) {
   let result = {
     frequency:data.frequency,
     pronunciation:data.pronunciation,
-    results, etc:""
+    results, etc:"0"
   };
 
   data.results.map(def => {

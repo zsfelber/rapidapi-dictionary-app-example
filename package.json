@@ -8,6 +8,7 @@
     "lambda-build": "netlify-lambda build functions",
     "debug0": "netlify dev --inspect",
     "debug": "netlify dev",
+    "build_functions": "netlify-lambda build functions/getWord -c webpack.functions.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
