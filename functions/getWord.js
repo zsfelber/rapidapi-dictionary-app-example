@@ -183,7 +183,7 @@ async function loadDictionaryAndChildren(tresult, word, traversion) {
       const val = entry.results[key]; 
 
       let node = new TraverseNode(by_def, entry, val, traversion.level);
-      traversion.wordsbreadthfirst.push.apply(traversion.wordsbreadthfirst, node.words);
+      traversion.wordsbreadthfirst.push.apply(traversion.wordsbreadthfirst, node.synonyms);
     }
 
     return true;
