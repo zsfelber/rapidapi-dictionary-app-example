@@ -60,7 +60,7 @@ async function loadSingleWord(word, asobject) {
 
   if (fs.existsSync(wfpath)) {
 
-    console.log("From cache file/single "+wfpath+"  asobject:"+asobject+"...\n");
+    //console.log("From cache file/single "+wfpath+"  asobject:"+asobject+"...\n");
     let ijson = fs.readFileSync(wfpath).toString();
     let data = JSON.parse(ijson);
 
@@ -153,41 +153,22 @@ class TraverseNode {
 async function loadDictionaryAndChildren(tresult, word, traversion) {
 
   const by_def = tresult.by_def;
-  const by_w = tresult.by_w;
+  const entry = await loadSingleWord(word, true);
 
-  if (!tresult.noWords) {
-    tresult.noWords = 0;
-  }
-
-  if (by_w[word]) {
-    return true;
-  } else if (tresult.noWords >= MAX_WORDS) {
-    return false;
-  } else {
-    tresult.noWords++;
-    by_w[word] = 1;
-    console.log(tresult.noWords + "/" + MAX_WORDS);
-
-    const entry = await loadSingleWord(word, true);
-
-    if (tresult.master) {
-      if (entry.frequency && entry.frequency>=MAX_NODE_FREQUENCY) {
-        return true;
-      }
-    } else {
-      tresult.master = entry;
-    }
-
-
-    for (let key in entry.results) {
-      const val = entry.results[key]; 
-
-      let node = new TraverseNode(by_def, entry, val, traversion.level);
-      traversion.wordsbreadthfirst.push.apply(traversion.wordsbreadthfirst, node.synonyms);
-    }
-
+  if (traversion.level > 1 && 
+      entry.frequency && entry.frequency>=MAX_NODE_FREQUENCY) {
     return true;
   }
+
+
+  for (let key in entry.results) {
+    const val = entry.results[key]; 
+
+    let node = new TraverseNode(by_def, entry, val, traversion.level);
+    traversion.wordsbreadthfirst.push.apply(traversion.wordsbreadthfirst, node.synonyms);
+  }
+
+  return true;
 }
 
 async function traverseCluster(tresult, word) {
@@ -196,17 +177,29 @@ async function traverseCluster(tresult, word) {
     level : 1,
     wordsbreadthfirst : [word]
   };
+  tresult.noWords = 0;
+  tresult.master = await loadSingleWord(word, true);
 
   do {
     var previouslevelchildwords = traversion.wordsbreadthfirst.concat([]);
     traversion.wordsbreadthfirst = [];
 
+    let promises = [];
     for (let w of previouslevelchildwords) {
-      let success = await loadDictionaryAndChildren(tresult, w, traversion);
-      if (!success) {
+      if (tresult.by_w[w]) {
+      } else if (tresult.noWords >= MAX_WORDS) {
         return;
+      } else {
+        tresult.noWords++;
+        tresult.by_w[w] = 1;
+        console.log(tresult.noWords + "/" + MAX_WORDS);
+    
+        let nodepromise = loadDictionaryAndChildren(tresult, w, traversion);
+        promises.push(nodepromise);
       }
     }
+    await Promise.all(promises);
+
     traversion.level++;
   } while (traversion.wordsbreadthfirst.length);
 
