@@ -188,6 +188,7 @@ async function traverseCluster(tresult, word) {
     for (let w of previouslevelchildwords) {
       if (tresult.by_w[w]) {
       } else if (tresult.noWords >= MAX_WORDS) {
+        console.log("Level "+traversion.level+" finished. Completed.");
         return;
       } else {
         tresult.noWords++;
