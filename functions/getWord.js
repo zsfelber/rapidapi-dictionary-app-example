@@ -118,9 +118,9 @@ async function traverseCluster(tresult, word) {
   } else if (tresult.noWords >= MAX_WORDS) {
     return false;
   } else {
-    console.log(tresult.noWords + "/" + MAX_WORDS);
     tresult.noWords++;
     by_w[word] = 1;
+    console.log(tresult.noWords + "/" + MAX_WORDS);
 
     const entry = await loadSingleWord(word, true);
 
@@ -187,9 +187,10 @@ async function loadCluster(word, asobject) {
       by_w    };
     const entry = await traverseCluster(tresult, word);
     by_key.push.apply(by_key, Object.values(by_def));
-    by_key.sort((firstEl, secondEl) => {
-      return firstEl.key.compare(secondEl.key);
-    } );
+    const cmp = (firstEl, secondEl) => {
+      return firstEl.key.localeCompare(secondEl.key);
+    };
+    by_key.sort(cmp);
     for (let defobj of by_key) {
       delete defobj.key;
     }
