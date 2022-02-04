@@ -26,3 +26,17 @@ https://github.com/netlify/cli/issues/409
     /*"build_functions": "netlify-lambda build functions/getWord -c webpack.functions.js",*/
 
     "build:lambda": "netlify-lambda build functions --config ./webpack.config.dev.js"
+
+
+Okay I got it working with TypeScript. For anyone wondering:
+
+    "build:lambda": "netlify-lambda build src/lambda --config ./webpack.config.dev.js",
+    "dev": "npx --node-arg=--inspect netlify dev"
+in the webpack.config.dev.js
+
+module.exports = {
+    devtool: 'inline-source-map',
+    optimization: { minimize: false }
+};
+run dev script and attach a debugger to localhost:9229
+
