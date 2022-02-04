@@ -1,5 +1,7 @@
 const axios = require('axios');
 const fs = require('fs');
+const MAX_WORDS = 10;
+const CACHE_CLUSTERS = false;
 
 function singleWordToDisplay(data) {
 
@@ -101,7 +103,6 @@ async function loadSingleWord(word, asobject) {
 
 }
 
-const MAX_WORDS = 10;
 
 async function traverseCluster(tresult, word) {
 
@@ -154,7 +155,7 @@ async function traverseCluster(tresult, word) {
 async function loadCluster(word, asobject) {
 
   const cfpath = `cache/clusters/${word}`;
-  if (fs.existsSync(cfpath)) {
+  if (CACHE_CLUSTERS && fs.existsSync(cfpath)) {
     let ijson = fs.readFileSync(cfpath).toString();
     let result = JSON.parse(ijson);
     console.log("From cache file/cluster "+cfpath+"  asobject:"+asobject+"...\n");
@@ -190,18 +191,24 @@ async function loadCluster(word, asobject) {
       results:by_key
     };
 
-    const cjson = JSON.stringify(result);
-    fs.writeFile(cfpath, cjson, (err) => {
-      if (err) {
-        console.error("Cluster file/cluster "+cfpath+"  write failure : "+err+"\n");
-      } else {
-        console.log("Cluster file/cluster "+cfpath+"  written successfully\n");
-      }
-    });
+    let cjson;
+    if (CACHE_CLUSTERS) {
+      cjson = JSON.stringify(result);
+      fs.writeFile(cfpath, cjson, (err) => {
+        if (err) {
+          console.error("Cluster file/cluster "+cfpath+"  write failure : "+err+"\n");
+        } else {
+          console.log("Cluster file/cluster "+cfpath+"  written successfully\n");
+        }
+      });
+    }
 
     if (asobject) {
       return result;
     } else {
+      if (!cjson) {
+        cjson = JSON.stringify(result);
+      }
       return cjson;
     }
   }
