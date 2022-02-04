@@ -170,7 +170,7 @@ async function loadDictionaryAndChildren(tresult, word, traversion) {
     const entry = await loadSingleWord(word, true);
 
     if (tresult.master) {
-      if (entry.frequency && entry.frequency>=400) {
+      if (entry.frequency && entry.frequency>=4) {
         return true;
       }
     } else {
