@@ -106,8 +106,8 @@ async function traverseCluster(tresult, word) {
   const wfpath = `cache/words/${word}`;
   const entry = await loadSingleWord(wfpath, true);
   const by_def = tresult.by_def;
-  if (!result.master) {
-    result.master = entry;
+  if (!tresult.master) {
+    tresult.master = entry;
   }
 
   for (let key in entry.results) {

@@ -294,8 +294,6 @@ function updateCluster() {
     const dlclust = labelled("word cluster entries", data.noClusterEntries);
     info.appendChild(dlclust);
 
-    printLabel(data);
-
     data.results.map(val => {
         if (itms++%100==99) {
             newrow();
