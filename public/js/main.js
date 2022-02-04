@@ -2,7 +2,7 @@
 var lastresult;
 var lastsyn;
 var update_to;
-var col=2,wordInfoBox,wordInfoTbl,wordInfoRow,info;
+var col=2,wordInfoTbl,wordInfoRow,wordInfoBox,info;
 
 var checkboxdata = {
     "bucket1": {
@@ -97,17 +97,18 @@ function addCheckbox(cont, id, buckcheck, label) {
     cont.appendChild(panel[0]);
 }
 
-function newbox() {
-    wordInfoBox = document.createElement('div');
-    wordInfoBox.classList.add('my-4', 'p-4', 'list-item');
-}
-
 function newrow() {
     if (col++%3==2) {
         wordInfoRow = document.createElement('div');
         wordInfoRow.classList.add(['list-row']);
         wordInfoTbl.appendChild(wordInfoRow);
     }
+}
+
+function newbox() {
+    wordInfoBox = document.createElement('div');
+    wordInfoBox.classList.add('my-4', 'p-4', 'list-item');
+    wordInfoRow.appendChild(wordInfoBox);
 }
 
 function checkp(qs, id, buckcheck) {
@@ -236,12 +237,11 @@ function updateSingleWord() {
 
         if (!val.partOfSpeech || isch(val.partOfSpeech)) {
 
-            newbox();
-
             // loops over the values for each definition
             val.properties.map(property => {
                 if (property.label === 'definition') {
                     newrow();
+                    newbox();
 
                     // creates new heading-3 element
                     const def = document.createElement('div');
@@ -272,9 +272,6 @@ function updateSingleWord() {
                 }
             });
 
-            // appends the list item fully formed to
-            // the word data container
-            wordInfoRow.appendChild(wordInfoBox);
         }
 
     });
@@ -301,8 +298,13 @@ function updateCluster() {
 
     data.results.map(val => {
         if (itms++%100==99) {
+            newrow();
             newbox();
         }
+
+        const characteristic = proplabel({label:val.words, value:val.definition});
+        wordInfoBox.appendChild(characteristic);
+
     });
 }
 
