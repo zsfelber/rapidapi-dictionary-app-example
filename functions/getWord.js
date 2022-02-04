@@ -113,16 +113,18 @@ function traverseCluster(tresult, word) {
   entry.results.map(val => {
 
     if (!by_def[val.definition]) {
-      val.synonyms.push(entry.word);
-      val.synonyms.sort();
-      const words = synonyms.join(", ");
+      let groupWords = [];
+      groupWords.push.apply(groupWords, val.synonyms);
+      groupWords.push.apply(groupWords, val.similarTo);
+      groupWords.push(entry.word);
+      groupWords.sort();
+      const words = groupWords.join(", ");
       by_def[val.definition] = {
           definition:val.definition, 
-          //synonyms:val.synonyms, 
           words, 
-          key:val.synonyms.length+"::::::"+words
+          key:groupWords.length+"::::::"+words
       };
-      for (s in val.synonyms) {
+      for (s in groupWords) {
         traverseCluster(tresult, s);
       }
     }
