@@ -4,11 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "lambda-serve0": "netlify-lambda serve functions",
     "lambda-serve": "npx --node-arg=--inspect netlify-lambda serve",
     "lambda-build": "netlify-lambda build functions --config ./webpack.config.dev.js",
-    "debug0": "netlify dev --inspect",
-    "debug1": "npx --node-options='--inspect netlify' dev",
     "debug": "netlify dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
