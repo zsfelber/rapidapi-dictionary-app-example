@@ -133,7 +133,7 @@ class TraverseNode {
     this.words.push.apply(this.words, this.synonyms);
     this.words.push.apply(this.words, this.similar);
   
-    this.key = synonyms.length+"::::::"+synonyms.join(", ");
+    this.key = this.level+":::::::"+this.synonyms.length+"::::::"+this.synonyms.join(", ");
 
     if (!by_def[this.val.definition]) {
 
