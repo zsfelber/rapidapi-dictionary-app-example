@@ -119,8 +119,8 @@ async function traverseCluster(tresult, word) {
 
     if (!by_def[val.definition]) {
       if (tresult.noDefinitions < MAX_WORDS) {
-
         tresult.noDefinitions++;
+        console.log(tresult.noDefinitions + "/" + MAX_WORDS);
 
         let definition = val.definition; 
         let synonyms = [];
@@ -141,7 +141,7 @@ async function traverseCluster(tresult, word) {
             definition, synonyms, similar, key:synonyms.length+"::::::"+synonyms.join(", ")
         };
 
-        for (w in words) {
+        for (let w in words) {
           await traverseCluster(tresult, w);
         }
       }
