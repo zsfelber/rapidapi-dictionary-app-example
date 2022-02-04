@@ -101,10 +101,14 @@ function loadSingleWord(wfpath, asobject) {
 
 
 
-function traverseCluster(by_def, word) {
+function traverseCluster(tresult, word) {
 
   const wfpath = `cache/words/${word}`;
   const entry = loadSingleWord(wfpath, true);
+  const by_def = tresult.by_def;
+  if (!result.master) {
+    result.master = entry;
+  }
 
   entry.results.map(val => {
 
@@ -119,7 +123,7 @@ function traverseCluster(by_def, word) {
           key:val.synonyms.length+"::::::"+words
       };
       for (s in val.synonyms) {
-        traverseCluster(by_def, s);
+        traverseCluster(tresult, s);
       }
     }
 
@@ -132,11 +136,11 @@ function loadCluster(word, asobject) {
   const cfpath = `cache/clusters/${word}`;
   if (fs.existsSync(cfpath)) {
     let ijson = fs.readFileSync(cfpath).toString();
-    let data = JSON.parse(ijson);
-    console.log("From cache file/cluster "+wfpath+"  asobject:"+asobject+"...\n");
+    let result = JSON.parse(ijson);
+    console.log("From cache file/cluster "+cfpath+"  asobject:"+asobject+"...\n");
 
     if (asobject) {
-      return data;
+      return result;
     } else {
       return ijson;
     }
@@ -145,7 +149,10 @@ function loadCluster(word, asobject) {
 
     const by_def = {};
     const by_key = [];
-    //const entry = traverseCluster(by_def, word);
+    let tresult = {
+      by_def
+    };
+    //const entry = traverseCluster(tresult, word);
     for (let def in by_def) {
       const defobj = by_def[def];
       by_key.push(defobj);
@@ -156,14 +163,13 @@ function loadCluster(word, asobject) {
     for (let defobj in by_key) {
       delete defobj.key;
     }
-
     let result = {
-      frequency:response.data.frequency,
-      pronunciation:response.data.pronunciation,
-      results
+      frequency:tresult.master.frequency,
+      pronunciation:tresult.master.pronunciation,
+      results:by_key
     };
-  
-    const cjson = JSON.stringify(by_key);
+
+    const cjson = JSON.stringify(result);
     fs.writeFile(cfpath, cjson, (err) => {
       if (err) {
         console.error("Cluster file/cluster "+cfpath+"  write failure : "+err+"\n");
@@ -173,7 +179,7 @@ function loadCluster(word, asobject) {
     });
 
     if (asobject) {
-      return by_key;
+      return result;
     } else {
       return cjson;
     }
