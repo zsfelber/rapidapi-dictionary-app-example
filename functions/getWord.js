@@ -59,9 +59,9 @@ async function loadSingleWord(word, asobject) {
 
   if (fs.existsSync(wfpath)) {
 
+    console.log("From cache file/single "+wfpath+"  asobject:"+asobject+"...\n");
     let ijson = fs.readFileSync(wfpath).toString();
     let data = JSON.parse(ijson);
-    console.log("From cache file/single "+wfpath+"  asobject:"+asobject+"...\n");
 
     if (asobject) {
       return data;
@@ -174,8 +174,7 @@ async function loadCluster(word, asobject) {
       by_def
     };
     const entry = await traverseCluster(tresult, word);
-    for (let def in by_def) {
-      const defobj = by_def[def];
+    for (let defobj of by_def) {
       by_key.push(defobj);
     }
     by_key.sort((firstEl, secondEl) => {
