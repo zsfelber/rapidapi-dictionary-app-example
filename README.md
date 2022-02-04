@@ -24,3 +24,5 @@ https://github.com/netlify/cli/issues/409
     "build:lambda": "netlify-lambda build functions --config ./webpack.config.dev.js",
 
     /*"build_functions": "netlify-lambda build functions/getWord -c webpack.functions.js",*/
+
+    "build:lambda": "netlify-lambda build functions --config ./webpack.config.dev.js"
