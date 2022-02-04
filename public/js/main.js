@@ -1,5 +1,6 @@
 
 var lastresult;
+var lastsyn;
 var update_to;
 var col=2,wordInfoTbl,wordInfoRow,info;
 
@@ -69,7 +70,7 @@ function checha(id) {
     if (update_to) {
         clearTimeout(update_to);
     }
-    update_to = setTimeout(update, 1000);
+    update_to = setTimeout(update, 1000, false);
 }
 
 function ischeckedparam(param, ischeckeddef) {
@@ -186,8 +187,7 @@ function proplabel(property, prefix="") {
     return characteristic;
 }
 
-function update() {
-    update_to = undefined;
+function updateSingleWord() {
 
     const data = lastresult;
 
@@ -270,6 +270,26 @@ function update() {
     
 }
 
+function updateCluster() {
+    // clears the word container if it had
+    // previous data
+    $('#word-info').empty();
+    $('#info').empty();
+
+}
+
+function update(firsttime) {
+    update_to = undefined;
+
+    if (syn) {
+        if (firsttime) {
+            updateCluster();
+        }
+    } else {
+        updateSingleWord();
+    }
+}
+
 // Specifies a function to execute when the DOM is fully loaded.
 $(document).ready(function(){
     $.urlParam = function(name){
@@ -324,9 +344,10 @@ $(document).ready(function(){
             // asynchronously calls our custome function
             const data = await data0.json();
 
+            lastsyn = syn;
             lastresult = data;
 
-            update();
+            update(true);
 
         } catch (e) {
             // logs the error if one exists

@@ -1,7 +1,7 @@
 const axios = require('axios');
 const fs = require('fs');
 
-function toDisplay(data) {
+function singleWordToDisplay(data) {
 
   // create new array to push data to
   let results = [];
@@ -51,18 +51,45 @@ function toDisplay(data) {
   return result;
 }
 
-function load(wfpath, asobject) {
+
+function traverseCluster(by_def, word) {
+
+  const wfpath = `cache/words/${word}`;
+  const entry = loadSingleWord(wfpath, true);
+
+  entry.results.map(val => {
+
+    if (!by_def[val.definition]) {
+      val.synonyms.push(entry.word);
+      val.synonyms.sort();
+      const words = synonyms.join(", ");
+      by_def[val.definition] = {
+          definition:val.definition, 
+          //synonyms:val.synonyms, 
+          words, 
+          key:val.synonyms.length+"::::::"+words
+      };
+      for (s in val.synonyms) {
+        traverseCluster(by_def, s);
+      }
+    }
+
+  });
+
+}
+
+function loadSingleWord(wfpath, asobject) {
 
   if (fs.existsSync(wfpath)) {
 
     let ijson = fs.readFileSync(wfpath).toString();
     let data = JSON.parse(ijson);
-    console.log("From cache file "+wfpath+"  asobject:"+asobject+"...\n");
+    console.log("From cache file/single "+wfpath+"  asobject:"+asobject+"...\n");
 
     if (asobject) {
       return data;
     } else {
-      let result = toDisplay(data);
+      let result = singleWordToDisplay(data);
       const ojson = JSON.stringify(result);         // modified
       return ojson;
     }
@@ -82,16 +109,16 @@ function load(wfpath, asobject) {
     const djson = JSON.stringify(response.data);  // original
     fs.writeFile(wfpath, djson, (err) => {
       if (err) {
-        console.error("Cache file "+wfpath+"  asobject:"+asobject+" write failure : "+err+"\n");
+        console.error("Cache file/single "+wfpath+"  asobject:"+asobject+" write failure : "+err+"\n");
       } else {
-        console.log("Cache file "+wfpath+"  asobject:"+asobject+" written successfully\n");
+        console.log("Cache file/single "+wfpath+"  asobject:"+asobject+" written successfully\n");
       }
     });
 
     if (asobject) {
       return response.data;
     } else {
-      let result = toDisplay(response.data);
+      let result = singleWordToDisplay(response.data);
       const ojson = JSON.stringify(result);         // modified
       return ojson;
     }
@@ -99,31 +126,53 @@ function load(wfpath, asobject) {
 
 }
 
-function traverse(by_def, word) {
+function loadCluster(word, asobject) {
 
-  const wfpath = `cache/words/${word}`;
-  const entry = load(wfpath, true);
+  const cfpath = `cache/clusters/${word}`;
+  if (fs.existsSync(cfpath)) {
+    let ijson = fs.readFileSync(cfpath).toString();
+    let data = JSON.parse(ijson);
+    console.log("From cache file/cluster "+wfpath+"  asobject:"+asobject+"...\n");
 
-  entry.results.map(val => {
-
-    if (!by_def[val.definition]) {
-      val.synonyms.push(entry.word);
-      val.synonyms.sort();
-      const label = synonyms.join(", ");
-      by_def[val.definition] = {
-          definition:val.definition, 
-          synonyms:val.synonyms, 
-          label, 
-          key:val.synonyms.length+":"+label
-      };
-      for (s in val.synonyms) {
-        traverse(by_def, s);
-      }
+    if (asobject) {
+      return data;
+    } else {
+      return ijson;
     }
 
-  });
+  } else {
 
+    const by_def = {};
+    const by_key = [];
+    //const entry = traverseCluster(by_def, word);
+    for (let def in by_def) {
+      const defobj = by_def[def];
+      by_key.push(defobj);
+    }
+    by_key.sort((firstEl, secondEl) => {
+      return firstEl.key.compare(secondEl.key);
+    } );
+    for (let defobj in by_key) {
+      delete defobj.key;
+    }
+
+    const cjson = JSON.stringify(by_key);
+    fs.writeFile(cfpath, cjson, (err) => {
+      if (err) {
+        console.error("Cluster file/cluster "+cfpath+"  write failure : "+err+"\n");
+      } else {
+        console.log("Cluster file/cluster "+cfpath+"  written successfully\n");
+      }
+    });
+
+    if (asobject) {
+      return by_key;
+    } else {
+      return cjson;
+    }
+  }
 }
+
 
 export async function handler(event, context) {
 
@@ -142,30 +191,10 @@ export async function handler(event, context) {
 
     if (create_synonym_cluster) {
       console.log("create_synonym_cluster:"+word);
-      const by_def = {};
-      const by_key = [];
-      //const entry = traverse(by_def, word);
-      for (def in by_def) {
-        const defobj = by_def[def];
-        by_key.push(defobj);
-      }
-      by_key.sort((firstEl, secondEl) => {
-        return firstEl.key.compare(secondEl.key);
-      } );
-
-      const cfpath = `cache/clusters/${word}`;
-      const cjson = JSON.stringify(by_key);  // original
-      fs.writeFile(cfpath, cjson, (err) => {
-        if (err) {
-          console.error("Cluster file "+cfpath+"  write failure : "+err+"\n");
-        } else {
-          console.log("Cluster file "+cfpath+"  written successfully\n");
-        }
-      });
   
     }
 
-    const json = load(wfpath, false);
+    const json = loadSingleWord(wfpath, false);
 
     return {
       statusCode: 200,
