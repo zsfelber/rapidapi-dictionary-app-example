@@ -166,6 +166,7 @@ function loadCluster(word, asobject) {
     let result = {
       frequency:tresult.master.frequency,
       pronunciation:tresult.master.pronunciation,
+      noClusterEntries:by_key.length,
       results:by_key
     };
 

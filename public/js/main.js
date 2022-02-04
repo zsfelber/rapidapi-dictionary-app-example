@@ -2,7 +2,7 @@
 var lastresult;
 var lastsyn;
 var update_to;
-var col=2,wordInfoTbl,wordInfoRow,info;
+var col=2,wordInfoBox,wordInfoTbl,wordInfoRow,info;
 
 var checkboxdata = {
     "bucket1": {
@@ -96,6 +96,12 @@ function addCheckbox(cont, id, buckcheck, label) {
         </div>`);
     cont.appendChild(panel[0]);
 }
+
+function newbox() {
+    wordInfoBox = document.createElement('div');
+    wordInfoBox.classList.add('my-4', 'p-4', 'list-item');
+}
+
 function newrow() {
     if (col++%3==2) {
         wordInfoRow = document.createElement('div');
@@ -103,6 +109,7 @@ function newrow() {
         wordInfoTbl.appendChild(wordInfoRow);
     }
 }
+
 function checkp(qs, id, buckcheck) {
     const ischeckeddef = buckcheck.defchecked;
     id = id.replace(/ /g, "_");
@@ -187,23 +194,7 @@ function proplabel(property, prefix="") {
     return characteristic;
 }
 
-function updateSingleWord() {
-
-    const data = lastresult;
-
-    // clears the word container if it had
-    // previous data
-    $('#word-info').empty();
-    $('#info').empty();
-
-    // logs no results if word data is not found
-    if (data.length < 1) {
-        return wordInfoTbl.appendChild(document.createTextNode('No results matched.'));
-    }
-
-    col=2;
-    wordInfoRow=null;
-
+function printLabel(data) {
     if (data.frequency) {
         const dlfreq = labelled("frequency", data.frequency);
         info.appendChild(dlfreq);
@@ -219,13 +210,33 @@ function updateSingleWord() {
         info.appendChild(dlp1);
     }
 
+}
+
+function updateSingleWord() {
+
+    const data = lastresult;
+
+    // clears the word container if it had
+    // previous data
+    $('#word-info').empty();
+    $('#info').empty();
+
+    // logs no results if word data is not found
+    if (data.length < 1) {
+        return wordInfoTbl.appendChild(document.createTextNode('No results matched.'));
+    }
+
+    col=2;
+    wordInfoBox=null;
+    wordInfoRow=null;
+
+    printLabel(data);
+
     data.results.map(val => {
 
         if (!val.partOfSpeech || isch(val.partOfSpeech)) {
 
-            // creates parent li element
-            const li = document.createElement('div');
-            li.classList.add('my-4', 'p-4', 'list-item');
+            newbox();
 
             // loops over the values for each definition
             val.properties.map(property => {
@@ -248,22 +259,22 @@ function updateSingleWord() {
                     def.classList.add(['definition']);
 
                     // adds the element to our list item
-                    li.appendChild(def);
+                    wordInfoBox.appendChild(def);
                 } else if (property.isString || property.label === 'part of speech') {
                     const italicLabel = document.createElement('small');
                     italicLabel.innerText = property.value ? property.value : property.label+"?";
                     italicLabel.classList.add('lead','font-italic');
-                    li.appendChild(italicLabel);
+                    wordInfoBox.appendChild(italicLabel);
                 } else if (isch(property.label)) {
                     const characteristic = proplabel(property);
 
-                    li.appendChild(characteristic);
+                    wordInfoBox.appendChild(characteristic);
                 }
             });
 
             // appends the list item fully formed to
             // the word data container
-            wordInfoRow.appendChild(li);
+            wordInfoRow.appendChild(wordInfoBox);
         }
 
     });
@@ -271,14 +282,28 @@ function updateSingleWord() {
 }
 
 function updateCluster() {
+    const data = lastresult;
+
     // clears the word container if it had
     // previous data
     $('#word-info').empty();
     $('#info').empty();
 
-    const dlfreq = labelled("frequency", data.frequency);
-    info.appendChild(dlfreq);
+    let itms=99;
+    col=2;
+    wordInfoBox=null;
+    wordInfoRow=null;
 
+    const dlclust = labelled("word cluster entries", data.noClusterEntries);
+    info.appendChild(dlclust);
+
+    printLabel(data);
+
+    data.results.map(val => {
+        if (itms++%100==99) {
+            newbox();
+        }
+    });
 }
 
 function update(firsttime) {
