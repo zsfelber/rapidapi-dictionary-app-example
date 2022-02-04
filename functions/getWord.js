@@ -141,7 +141,7 @@ async function traverseCluster(tresult, word) {
             definition, synonyms, similar, key:synonyms.length+"::::::"+synonyms.join(", ")
         };
 
-        for (let w in words) {
+        for (let w of words) {
           await traverseCluster(tresult, w);
         }
       }
