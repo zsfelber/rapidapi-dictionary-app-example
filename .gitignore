@@ -2,10 +2,13 @@ node_modules
 # Local Netlify folder
 .netlify
 cache/words/c.o.d.
+cache/words/d.o.a.
 cache/words/con
 cache/words/robert floyd curl jr.
 cache/words/var.
 cache/words/mich.
+cache/words/lbf.
 cache/words/o.k.
+cache/words/dr.
 cache/words/ut.
 lambda/getWord.js
