@@ -122,22 +122,22 @@ async function traverseCluster(tresult, word) {
         tresult.noDefinitions++;
 
         let definition = val.definition; 
-        let synonmys = [];
+        let synonyms = [];
         let similar = [];
         let words = [];
 
-        synonmys.push.apply(synonmys, val.synonyms);
-        synonmys.push(entry.word);
-        synonmys.sort();
+        synonyms.push.apply(synonyms, val.synonyms);
+        synonyms.push(entry.word);
+        synonyms.sort();
 
         similar.push.apply(similar, val.similarTo);
         similar.sort();
 
-        words.push.apply(words, synonmys);
+        words.push.apply(words, synonyms);
         words.push.apply(words, similar);
 
         by_def[val.definition] = {
-            definition, synonmys, similar, key:synonmys.length+"::::::"+synonmys.join(", ")
+            definition, synonyms, similar, key:synonyms.length+"::::::"+synonyms.join(", ")
         };
 
         for (w in words) {

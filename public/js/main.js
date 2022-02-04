@@ -140,13 +140,15 @@ function createa(word0) {
     a.innerText = word0;
     return a;
 }
-function createas(cont, words, sep) {
+function createas(cont, words, sep, linksIdxLimit=999999999) {
+    let index=0;
     if (words) words.forEach(word => {
-        const a = createa(word);
+        const a = index<linksIdxLimit ? createa(word) : document.createTextNode(word);
         const sp = document.createTextNode(sep);
 
         cont.appendChild(a);
         cont.appendChild(sp);
+        index++;
     });
 }
 function createaas(cont, sentences, sep) {
@@ -172,23 +174,23 @@ function labelled(label, value) {
     return dl;
 }
 
-function proplabel(property, reversed=false, prefix="") {
+function proplabel(property, parselabel=false, linksIdxLimit=9999999, prefix="") {
     const characteristic = document.createElement('dl');
     characteristic.className = 'row';
     const label = document.createElement('dt');
     label.className = 'col-sm-3';
     const value = document.createElement('dd');
 
-    if (reversed) {
-        value.innerText = prefix + property.value;
+    if (parselabel) {
         createas(label, property.label, ", ");
     } else {
         label.innerText = prefix + property.label;
-        if (property.label === 'examples') {
-            createaas(value, property.value, ", ");
-        } else {
-            createas(value, property.value, ", ");
-        }
+    }
+
+    if (!parselabel && property.label === 'examples') {
+        createaas(value, property.value, ", ");
+    } else {
+        createas(value, property.value, ", ", linksIdxLimit);
     }
 
     value.className = 'col-sm-9';
@@ -302,9 +304,13 @@ function updateCluster() {
             newrow();
             newbox();
         }
+        const property = {
+            label:val.synonyms, 
+            value:val.similar.concat([val.definition])
+        };
 
-        const characteristic = proplabel({label:val.synonmys, value:val.definition}, true);
-        wordInfoBox.appendChild(characteristic);
+        const def = proplabel(property, true, val.synonyms.length);
+        wordInfoBox.appendChild(def);
 
     });
 }
