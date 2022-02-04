@@ -6,8 +6,8 @@ function singleWordToDisplay(data) {
   // create new array to push data to
   let results = [];
   let result = {
-    frequency:response.data.frequency,
-    pronunciation:response.data.pronunciation,
+    frequency:data.frequency,
+    pronunciation:data.pronunciation,
     results
   };
 
@@ -101,16 +101,17 @@ async function loadSingleWord(wfpath, asobject) {
 
 
 
-function traverseCluster(tresult, word) {
+async function traverseCluster(tresult, word) {
 
   const wfpath = `cache/words/${word}`;
-  const entry = loadSingleWord(wfpath, true);
+  const entry = await loadSingleWord(wfpath, true);
   const by_def = tresult.by_def;
   if (!result.master) {
     result.master = entry;
   }
 
-  entry.results.map(val => {
+  for (let key in entry.results) {
+    const val = entry.results[key]; 
 
     if (!by_def[val.definition]) {
       let groupWords = [];
@@ -124,16 +125,18 @@ function traverseCluster(tresult, word) {
           words, 
           key:groupWords.length+"::::::"+words
       };
+
       for (s in groupWords) {
-        traverseCluster(tresult, s);
+        await traverseCluster(tresult, s);
       }
     }
 
-  });
+  }
 
+  return true;
 }
 
-function loadCluster(word, asobject) {
+async function loadCluster(word, asobject) {
 
   const cfpath = `cache/clusters/${word}`;
   if (fs.existsSync(cfpath)) {
@@ -154,7 +157,7 @@ function loadCluster(word, asobject) {
     let tresult = {
       by_def
     };
-    //const entry = traverseCluster(tresult, word);
+    //const entry = await traverseCluster(tresult, word);
     for (let def in by_def) {
       const defobj = by_def[def];
       by_key.push(defobj);
@@ -209,11 +212,11 @@ export async function handler(event, context) {
     if (create_synonym_cluster) {
       console.log("create_synonym_cluster:"+word);
 
-      json = loadCluster(word, false);
+      json = await loadCluster(word, false);
     } else {
       const wfpath = `cache/words/${word}`;
 
-      json = loadSingleWord(wfpath, false);
+      json = await loadSingleWord(wfpath, false);
     }
 
 
