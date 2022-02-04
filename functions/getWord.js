@@ -51,7 +51,7 @@ function singleWordToDisplay(data) {
   return result;
 }
 
-function loadSingleWord(wfpath, asobject) {
+async function loadSingleWord(wfpath, asobject) {
 
   if (fs.existsSync(wfpath)) {
 
