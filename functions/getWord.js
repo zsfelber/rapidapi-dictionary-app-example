@@ -26,32 +26,32 @@ export async function handler(event, context) {
     case "most_common_3000":
       console.log("most_common_3000");
 
-      json = await crawler.loadCommonWords3000(false);
+      json = await crawler.loadCommonWords3000(word, false);
       break;
     case "most_common_10000_a-c":
       console.log("most_common_10000_a-c");
 
-      json = await crawler.loadCommonWords10000_a_c(false);
+      json = await crawler.loadCommonWords10000_a_c(word, false);
       break;
     case "most_common_10000_d-h":
       console.log("most_common_10000_d-h");
 
-      json = await crawler.loadCommonWords10000_d_h(false);
+      json = await crawler.loadCommonWords10000_d_h(word, false);
       break;
     case "most_common_10000_i-o":
       console.log("most_common_10000_i-o");
 
-      json = await crawler.loadCommonWords10000_i_o(false);
+      json = await crawler.loadCommonWords10000_i_o(word, false);
       break;
     case "most_common_10000_p-r":
       console.log("most_common_10000_p-r");
 
-      json = await crawler.loadCommonWords10000_p_r(false);
+      json = await crawler.loadCommonWords10000_p_r(word, false);
       break;
     case "most_common_10000_s-z":
       console.log("most_common_10000_s-z");
 
-      json = await crawler.loadCommonWords10000_s_z(false);
+      json = await crawler.loadCommonWords10000_s_z(word, false);
       break;
     case "synonym_cluster":
       console.log("synonym_cluster:"+word);

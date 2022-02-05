@@ -375,11 +375,12 @@ export async function loadCommonWord(result, word, noWords) {
   }
 }
 
-export async function loadCommonWords(words,asobject) {
+export async function loadCommonWords(words, word, asobject) {
 
   // create new array to push data to
   let results = [];
   let result = {
+    word,
     noWords:0,
     noDefinitions:0,
     results
@@ -403,32 +404,32 @@ export async function loadCommonWords(words,asobject) {
   }
 }
 
-export async function loadCommonWords3000(asobject) {
+export async function loadCommonWords3000(word, asobject) {
   const cw = require('./common-words-3000.js');
-  return loadCommonWords(cw.TheMostCommon3000,asobject);
+  return loadCommonWords(cw.TheMostCommon3000, word, asobject);
 }
 
-export async function loadCommonWords10000_a_c(asobject) {
+export async function loadCommonWords10000_a_c(word, asobject) {
   const cw = require('./common-words-10000-a-c.js');
-  return loadCommonWords(cw.TheMostCommon10000,asobject);
+  return loadCommonWords(cw.TheMostCommon10000, word, asobject);
 }
 
-export async function loadCommonWords10000_d_h(asobject) {
+export async function loadCommonWords10000_d_h(word, asobject) {
   const cw = require('./common-words-10000-d-h.js');
-  return loadCommonWords(cw.TheMostCommon10000,asobject);
+  return loadCommonWords(cw.TheMostCommon10000, word, asobject);
 }
 
-export async function loadCommonWords10000_i_o(asobject) {
+export async function loadCommonWords10000_i_o(word, asobject) {
   const cw = require('./common-words-10000-i-o.js');
-  return loadCommonWords(cw.TheMostCommon10000,asobject);
+  return loadCommonWords(cw.TheMostCommon10000, word, asobject);
 }
 
-export async function loadCommonWords10000_p_r(asobject) {
+export async function loadCommonWords10000_p_r(word, asobject) {
   const cw = require('./common-words-10000-p-r.js');
-  return loadCommonWords(cw.TheMostCommon10000,asobject);
+  return loadCommonWords(cw.TheMostCommon10000, word, asobject);
 }
 
-export async function loadCommonWords10000_s_z(asobject) {
+export async function loadCommonWords10000_s_z(word, asobject) {
   const cw = require('./common-words-10000-s-z.js');
-  return loadCommonWords(cw.TheMostCommon10000,asobject);
+  return loadCommonWords(cw.TheMostCommon10000, word, asobject);
 }
