@@ -17,48 +17,50 @@ export async function handler(event, context) {
 
   //   extract the word query parameter from the HTTP request
   const word = event.queryStringParameters.word || "";
-  const synonym_cluster = event.queryStringParameters.synonym_cluster=="true";
-  const most_common_3000 = event.queryStringParameters.most_common_3000=="true";
-  const most_common_10000_a_c = event.queryStringParameters["most_common_10000_a-c"]=="true";
-  const most_common_10000_d_h = event.queryStringParameters["most_common_10000_d-h"]=="true";
-  const most_common_10000_i_o = event.queryStringParameters["most_common_10000_i-o"]=="true";
-  const most_common_10000_p_r = event.queryStringParameters["most_common_10000_p-r"]=="true";
-  const most_common_10000_s_z = event.queryStringParameters["most_common_10000_s-z"]=="true";
+  const mode = event.queryStringParameters.mode || "";
 
   try {
 
     let json;
-    if (most_common_3000) {
+    switch (mode) {
+    case "most_common_3000":
       console.log("most_common_3000");
 
       json = await crawler.loadCommonWords3000(false);
-    } if (most_common_10000_a_c) {
+      break;
+    case "most_common_10000_a-c":
       console.log("most_common_10000_a-c");
 
       json = await crawler.loadCommonWords10000_a_c(false);
-    } if (most_common_10000_d_h) {
+      break;
+    case "most_common_10000_d-h":
       console.log("most_common_10000_d-h");
 
       json = await crawler.loadCommonWords10000_d_h(false);
-    } if (most_common_10000_i_o) {
+      break;
+    case "most_common_10000_i-o":
       console.log("most_common_10000_i-o");
 
       json = await crawler.loadCommonWords10000_i_o(false);
-    } if (most_common_10000_p_r) {
+      break;
+    case "most_common_10000_p-r":
       console.log("most_common_10000_p-r");
 
       json = await crawler.loadCommonWords10000_p_r(false);
-    } if (most_common_10000_s_z) {
+      break;
+    case "most_common_10000_s-z":
       console.log("most_common_10000_s-z");
 
       json = await crawler.loadCommonWords10000_s_z(false);
-    } else if (synonym_cluster) {
+      break;
+    case "synonym_cluster":
       console.log("synonym_cluster:"+word);
 
       json = await crawler.loadCluster(word, false);
-    } else {
-
+      break;
+    default:
       json = await crawler.loadSingleWord(word, false);
+      break;
     }
     if (!json) {
       json = "{}";
