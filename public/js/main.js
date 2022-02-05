@@ -193,10 +193,15 @@ function createa(word0, masterword) {
     a.innerText = word0;
     return a;
 }
+function createi(word) {
+    const i = document.createElement('i');
+    i.innerText = word;
+    return i;
+}
 function createas(cont, words, masterword, sep, linksIdxFrom=0, linksIdxTo=999999999) {
     let index=0;
     if (words) words.forEach(word => {
-        const a = (linksIdxFrom<=index&&index<linksIdxTo) ? createa(word, masterword) : document.createTextNode(word);
+        const a = (linksIdxFrom<=index&&index<linksIdxTo) ? createa(word, masterword) : createi(word);
         const sp = document.createTextNode(sep);
 
         cont.appendChild(a);

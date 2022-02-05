@@ -147,6 +147,9 @@ a.master, a.none {
 a.none {
     font-weight: normal;
 }
+.row dt i {
+    font-weight: normal;
+}
 
 a:hover.none {
     text-decoration: none;
