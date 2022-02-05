@@ -227,7 +227,7 @@ function updateSingleWord() {
     $('#info').empty();
 
     // logs no results if word data is not found
-    if (data.length < 1) {
+    if (!data.results || data.results.length < 1) {
         return wordInfoTbl.appendChild(document.createTextNode('No results matched.'));
     }
 

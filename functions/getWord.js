@@ -31,6 +31,9 @@ export async function handler(event, context) {
     } else {
 
       json = await crawler.loadSingleWord(word, false);
+      if (!json) {
+        json = "{}";
+      }
     }
 
 
