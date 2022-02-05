@@ -4,7 +4,7 @@ const crawler = require('./include/crawler');
 const MAX_WORDS = 10000000;
 const CACHE_CLUSTERS = false;
 const MAX_NODE_FREQUENCY = 1000;
-const TRAVERSE_SIMILAR = true;
+const TRAVERSE_ALL = true;
 
 
 export async function handler(event, context) {
@@ -12,7 +12,7 @@ export async function handler(event, context) {
     MAX_WORDS,
     CACHE_CLUSTERS,
     MAX_NODE_FREQUENCY,
-    TRAVERSE_SIMILAR
+    TRAVERSE_ALL
     );
 
   try {
@@ -29,7 +29,7 @@ export async function handler(event, context) {
 
     for (let cw of cws) {
       for (let commonWord in cw.TheMostCommon10000) {
-        promises.push(crawler.loadCluster(commonWord, false));
+        promises.push(crawler.loadCluster(commonWord, true));
       }
     }
     await Promise.all(promises);

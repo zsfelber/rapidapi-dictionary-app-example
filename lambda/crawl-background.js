@@ -11557,7 +11557,7 @@ const API_DAILY_LIMIT = 25000;
 let MAX_WORDS;
 let CACHE_CLUSTERS;
 let MAX_NODE_FREQUENCY;
-let TRAVERSE_SIMILAR;
+let TRAVERSE_ALL;
 let cacheInitializerCommon;
 let cacheIsInitialized = false;
 let parallelCacheInitRequests = 0;
@@ -11593,11 +11593,11 @@ async function remoteCallInit() {
   }
 }
 
-async function initCrawler(_MAX_WORDS, _CACHE_CLUSTERS, _MAX_NODE_FREQUENCY, _TRAVERSE_SIMILAR) {
+async function initCrawler(_MAX_WORDS, _CACHE_CLUSTERS, _MAX_NODE_FREQUENCY, _TRAVERSE_ALL) {
   MAX_WORDS = _MAX_WORDS;
   CACHE_CLUSTERS = _CACHE_CLUSTERS;
   MAX_NODE_FREQUENCY = _MAX_NODE_FREQUENCY;
-  TRAVERSE_SIMILAR = _TRAVERSE_SIMILAR;
+  TRAVERSE_ALL = _TRAVERSE_ALL;
 
   if (!fs.existsSync("cache/words")) {
     fs.mkdirSync("cache/words", {
@@ -11775,7 +11775,7 @@ async function loadDictionaryAndChildren(tresult, word, traversion) {
     const val = entry.results[key];
     let node = new TraverseNode(by_def, entry, val, traversion.level);
 
-    if (TRAVERSE_SIMILAR) {
+    if (TRAVERSE_ALL) {
       traversion.wordsbreadthfirst.push.apply(traversion.wordsbreadthfirst, node.words);
     } else {
       traversion.wordsbreadthfirst.push.apply(traversion.wordsbreadthfirst, node.synonyms);
@@ -18078,9 +18078,9 @@ const crawler = __webpack_require__(22);
 const MAX_WORDS = 10000000;
 const CACHE_CLUSTERS = false;
 const MAX_NODE_FREQUENCY = 1000;
-const TRAVERSE_SIMILAR = true;
+const TRAVERSE_ALL = true;
 async function handler(event, context) {
-  crawler.initCrawler(MAX_WORDS, CACHE_CLUSTERS, MAX_NODE_FREQUENCY, TRAVERSE_SIMILAR);
+  crawler.initCrawler(MAX_WORDS, CACHE_CLUSTERS, MAX_NODE_FREQUENCY, TRAVERSE_ALL);
 
   try {
     console.log("crawling in the background starting from top 10000 English words...");

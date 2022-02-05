@@ -6,7 +6,7 @@ const API_DAILY_LIMIT = 25000;
 let MAX_WORDS;
 let CACHE_CLUSTERS;
 let MAX_NODE_FREQUENCY;
-let TRAVERSE_SIMILAR;
+let TRAVERSE_ALL;
 
 let cacheInitializerCommon;
 let cacheIsInitialized = false;
@@ -47,13 +47,13 @@ export async function initCrawler(
   _MAX_WORDS,
   _CACHE_CLUSTERS,
   _MAX_NODE_FREQUENCY,
-  _TRAVERSE_SIMILAR
+  _TRAVERSE_ALL
   ) {
 
   MAX_WORDS = _MAX_WORDS;
   CACHE_CLUSTERS = _CACHE_CLUSTERS;
   MAX_NODE_FREQUENCY = _MAX_NODE_FREQUENCY;
-  TRAVERSE_SIMILAR = _TRAVERSE_SIMILAR;
+  TRAVERSE_ALL = _TRAVERSE_ALL;
 
 
   if (!fs.existsSync("cache/words")){
@@ -222,6 +222,13 @@ export class TraverseNode {
   
 };
 
+function appendTo(array, itemOrArray) {
+  if (Array.isArray(itemOrArray)) {
+    array.push.apply(array, itemOrArray);
+  } else if (itemOrArray) {
+    array.push(itemOrArray);
+  }
+}
 export async function loadDictionaryAndChildren(tresult, word, traversion) {
 
   const by_def = tresult.by_def;
@@ -238,10 +245,30 @@ export async function loadDictionaryAndChildren(tresult, word, traversion) {
     const val = entry.results[key]; 
 
     let node = new TraverseNode(by_def, entry, val, traversion.level);
-    if (TRAVERSE_SIMILAR) {
-      traversion.wordsbreadthfirst.push.apply(traversion.wordsbreadthfirst, node.words);
+    if (TRAVERSE_ALL) {
+      appendTo(traversion.wordsbreadthfirst, node.words);
+      appendTo(traversion.wordsbreadthfirst, val.antonyms);
+      appendTo(traversion.wordsbreadthfirst, val.typeOf);
+      appendTo(traversion.wordsbreadthfirst, val.hasTypes);
+      appendTo(traversion.wordsbreadthfirst, val.partOf);
+      appendTo(traversion.wordsbreadthfirst, val.hasParts);
+      appendTo(traversion.wordsbreadthfirst, val.instanceOf);
+      appendTo(traversion.wordsbreadthfirst, val.hasInstances);
+      appendTo(traversion.wordsbreadthfirst, val.also);
+      appendTo(traversion.wordsbreadthfirst, val.entails);
+      appendTo(traversion.wordsbreadthfirst, val.memberOf);
+      appendTo(traversion.wordsbreadthfirst, val.hasMembers);
+      appendTo(traversion.wordsbreadthfirst, val.substanceOf);
+      appendTo(traversion.wordsbreadthfirst, val.hasSubstances);
+      appendTo(traversion.wordsbreadthfirst, val.inCategory);
+      appendTo(traversion.wordsbreadthfirst, val.hasCategories);
+      appendTo(traversion.wordsbreadthfirst, val.usageOf);
+      appendTo(traversion.wordsbreadthfirst, val.hasUsages);
+      appendTo(traversion.wordsbreadthfirst, val.inRegion);
+      appendTo(traversion.wordsbreadthfirst, val.regionOf);
+      appendTo(traversion.wordsbreadthfirst, val.pertainsTo);
     } else {
-      traversion.wordsbreadthfirst.push.apply(traversion.wordsbreadthfirst, node.synonyms);
+      appendTo(traversion.wordsbreadthfirst, node.synonyms);
     }
   }
 

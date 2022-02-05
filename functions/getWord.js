@@ -3,7 +3,7 @@ const crawler = require('./include/crawler.js');
 const MAX_WORDS = 50;
 const CACHE_CLUSTERS = false;
 const MAX_NODE_FREQUENCY = 4;
-const TRAVERSE_SIMILAR = false;
+const TRAVERSE_ALL = false;
 
 
 
@@ -12,7 +12,7 @@ export async function handler(event, context) {
     MAX_WORDS,
     CACHE_CLUSTERS,
     MAX_NODE_FREQUENCY,
-    TRAVERSE_SIMILAR
+    TRAVERSE_ALL
     );
 
   //   extract the word query parameter from the HTTP request
