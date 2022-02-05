@@ -134,7 +134,7 @@ main {
     word-break: normal;
 }
 
-a.none {
+a.master, a.none {
     /*margin-right: 3px;
     padding: 0px;*/
     display: inline;
@@ -143,6 +143,9 @@ a.none {
     word-wrap: inherit;
     word-break: inherit;
     overflow-inline: inherit;
+}
+a.none {
+    font-weight: normal;
 }
 
 a:hover.none {

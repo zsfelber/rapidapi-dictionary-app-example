@@ -404,6 +404,7 @@ export async function loadCommonWord(result, word, noWords) {
       similar.sort();
 
       const definition = {
+        word,
         partOfSpeech: val.partOfSpeech,
         definition: val.definition,
         synonyms, similar

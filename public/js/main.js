@@ -181,18 +181,22 @@ function checkps() {
 
     return qs.join("&");
 }
-function createa(word0) {
+function createa(word0, masterword) {
     const a = document.createElement('a');
     const word = word0.replace(/[^a-zA-Z0-9\- ]/g, "");
     a.href = "?word="+word+"&"+checkps();
-    a.classList.add(['none']);
+    if (masterword==word) {
+        a.classList.add('master');
+    } else {
+        a.classList.add('none');
+    }
     a.innerText = word0;
     return a;
 }
-function createas(cont, words, sep, linksIdxFrom=0, linksIdxTo=999999999) {
+function createas(cont, words, masterword, sep, linksIdxFrom=0, linksIdxTo=999999999) {
     let index=0;
     if (words) words.forEach(word => {
-        const a = (linksIdxFrom<=index&&index<linksIdxTo) ? createa(word) : document.createTextNode(word);
+        const a = (linksIdxFrom<=index&&index<linksIdxTo) ? createa(word, masterword) : document.createTextNode(word);
         const sp = document.createTextNode(sep);
 
         cont.appendChild(a);
@@ -203,7 +207,7 @@ function createas(cont, words, sep, linksIdxFrom=0, linksIdxTo=999999999) {
 function createaas(cont, sentences, sep) {
     sentences.forEach(txt => {
         var words = txt.split(" ");
-        createas(cont, words, " ");
+        createas(cont, words, null, " ");
         const sp = document.createTextNode(sep);
         cont.appendChild(sp);
     });
@@ -223,7 +227,7 @@ function labelled(label, value) {
     return dl;
 }
 
-function proplabel(property, parselabel=false, linksIdxLabFrom=0, linksIdxValTo=9999999, prefix="") {
+function proplabel(property, masterword, parselabel=false, linksIdxLabFrom=0, linksIdxValTo=9999999, prefix="") {
     const characteristic = document.createElement('dl');
     characteristic.className = 'row';
     const label = document.createElement('dt');
@@ -231,7 +235,7 @@ function proplabel(property, parselabel=false, linksIdxLabFrom=0, linksIdxValTo=
     const value = document.createElement('dd');
 
     if (parselabel) {
-        createas(label, property.label, ", ", linksIdxLabFrom);
+        createas(label, property.label, masterword, ", ", linksIdxLabFrom);
     } else {
         label.innerText = prefix + property.label;
     }
@@ -240,7 +244,7 @@ function proplabel(property, parselabel=false, linksIdxLabFrom=0, linksIdxValTo=
         createaas(value, property.value, ", ");
     } else {
         let normal = property.value.slice(0, linksIdxValTo);
-        createas(value, normal, ", ");
+        createas(value, normal, null, ", ");
 
         let remainder = property.value.slice(linksIdxValTo, property.value.length);
         createaas(value, remainder, ", ");
@@ -312,7 +316,7 @@ function updateSingleWord() {
                     if (property.kind === 'definition' || isch("definition")) {
                         var txt = property.value.toString();
                         var words = txt.split(" ");
-                        createas(def, words, " ");
+                        createas(def, words, null, " ");
                     }
 
                     // adds text to the element
@@ -361,7 +365,7 @@ function clusterBody() {
             value:val.similar.concat([val.definition])
         };
 
-        const def = proplabel(property, true, 1, val.similar.length);
+        const def = proplabel(property, val.word, true, 1, val.similar.length);
         wordInfoBox.appendChild(def);
 
     });
