@@ -148,33 +148,38 @@ export async function loadSingleWord(word, asobject) {
     return null;
   }
 
-  // send request to the WordsAPI
-  const response = await axios({
-    "method":"GET",
-    "url":`https://wordsapiv1.p.rapidapi.com/words/${word}`,
-    "headers":{
-    "content-type":"application/octet-stream",
-    "x-rapidapi-host":"wordsapiv1.p.rapidapi.com",
-    "x-rapidapi-key":process.env.RAPIDAPI_KEY
-    }
-  });
+  try {
+    // send request to the WordsAPI
+    const response = await axios({
+      "method":"GET",
+      "url":`https://wordsapiv1.p.rapidapi.com/words/${word}`,
+      "headers":{
+      "content-type":"application/octet-stream",
+      "x-rapidapi-host":"wordsapiv1.p.rapidapi.com",
+      "x-rapidapi-key":process.env.RAPIDAPI_KEY
+      }
+    });
 
-  const djson = JSON.stringify(response.data);  // original
-  fs.writeFile(wfpath, djson, (err) => {
-    if (err) {
-      console.error("Cache file/single "+wfpath+"  asobject:"+asobject+" write failure : "+err+"\n");
+    const djson = JSON.stringify(response.data);  // original
+    fs.writeFile(wfpath, djson, (err) => {
+      if (err) {
+        console.error("Cache file/single "+wfpath+"  asobject:"+asobject+" write failure : "+err+"\n");
+      } else {
+        console.log("Cache file/single "+wfpath+"  asobject:"+asobject+" written successfully\n");
+      }
+    });
+
+    if (asobject) {
+      response.data.fromCache = false;
+      return response.data;
     } else {
-      console.log("Cache file/single "+wfpath+"  asobject:"+asobject+" written successfully\n");
+      let result = singleWordToDisplay(response.data);
+      const ojson = JSON.stringify(result);         // modified
+      return ojson;
     }
-  });
-
-  if (asobject) {
-    response.data.fromCache = false;
-    return response.data;
-  } else {
-    let result = singleWordToDisplay(response.data);
-    const ojson = JSON.stringify(result);         // modified
-    return ojson;
+  } catch (e) {
+    console.warn("API error", e);
+    return null;
   }
 
 }
