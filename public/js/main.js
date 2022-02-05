@@ -245,7 +245,7 @@ function proplabel(property, masterword, parselabel=false, linksIdxLabFrom=0, li
         label.innerText = prefix + property.label;
     }
 
-    if (!parselabel && property.label === 'examples') {
+    if (!parselabel && (property.label === 'examples'||property.kind === 'examples')) {
         createaas(value, property.value, ", ");
     } else {
         let normal = property.value.slice(0, linksIdxValTo);
@@ -372,6 +372,15 @@ function clusterBody(withmainword) {
 
         const def = proplabel(property, withmainword?data.word:val.word, true, 1, val.similar.length);
         wordInfoBox.appendChild(def);
+
+        if (val.examples) {
+            const examplesprop = {
+                kind:"examples", label:"xs", 
+                value:val.examples
+            };
+            const examples = proplabel(examplesprop);
+            wordInfoBox.appendChild(examples);
+        }
 
     });
 }
