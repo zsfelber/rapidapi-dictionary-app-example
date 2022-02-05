@@ -181,11 +181,12 @@ export async function loadSingleWord(word, asobject) {
 export class TraverseNode {
 
   entry;val;level;partOfSpeech;
-  definition;synonyms;similar;words;
+  definition;synonyms;similar;word;words;
   key;
 
   constructor(by_def, entry, val, level) {
     this.entry=entry;this.val=val;this.level=level;
+    this.word=entry.word;
 
     this.definition = val.definition; 
     this.synonyms = [];
@@ -199,7 +200,7 @@ export class TraverseNode {
   
     this.partOfSpeech = this.val.partOfSpeech;
     this.synonyms.push.apply(this.synonyms, this.val.synonyms);
-    this.synonyms.push(this.entry.word);
+    this.synonyms.push(this.word);
     this.synonyms.sort();
   
     this.similar.push.apply(this.similar, this.val.similarTo);
@@ -217,6 +218,7 @@ export class TraverseNode {
   }
 
   compress() {
+    delete this.entry;
     delete this.val;
     delete this.key;
     delete this.words;

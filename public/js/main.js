@@ -345,7 +345,7 @@ function updateSingleWord() {
     
 }
 
-function clusterBody() {
+function clusterBody(withmainword) {
 
     const mode = lastmode;
     const data = lastresult;
@@ -365,7 +365,7 @@ function clusterBody() {
             value:val.similar.concat([val.definition])
         };
 
-        const def = proplabel(property, val.word, true, 1, val.similar.length);
+        const def = proplabel(property, withmainword?data.word:val.word, true, 1, val.similar.length);
         wordInfoBox.appendChild(def);
 
     });
@@ -387,7 +387,7 @@ function updateMostCommon() {
     const dlclust2 = labelled("definitions", data.noDefinitions);
     info.appendChild(dlclust2);
 
-    clusterBody(data);
+    clusterBody(false);
 
 }
 
@@ -410,7 +410,7 @@ function updateCluster() {
     const dlclust = labelled("word cluster entries", data.noClusterEntries);
     info.appendChild(dlclust);
 
-    clusterBody(data);
+    clusterBody(true);
 }
 
 function update(firsttime) {
