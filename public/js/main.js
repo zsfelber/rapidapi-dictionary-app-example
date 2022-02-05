@@ -278,6 +278,7 @@ function updateSingleWord() {
     // previous data
     $('#word-info').empty();
     $('#info').empty();
+    $("#title").html(data.word?data.word:"");
 
     // logs no results if word data is not found
     if (!data.results || data.results.length < 1) {
@@ -372,6 +373,7 @@ function updateMostCommon() {
     // previous data
     $('#word-info').empty();
     $('#info').empty();
+    $("#title").html(mode?mode:"");
 
     const dlclust = labelled("no. common words", data.noWords);
     info.appendChild(dlclust);
@@ -390,6 +392,7 @@ function updateCluster() {
     // previous data
     $('#word-info').empty();
     $('#info').empty();
+    $("#title").html(data.word?data.word:"");
 
     let itms=99;
     col=2;
@@ -408,7 +411,6 @@ function update(firsttime) {
     const mode = lastmode;
     const data = lastresult;
 
-    $("#title").html(data.word?data.word:"");
     $("#word-input").val(data.word?data.word:"");
 
     switch (mode) {
