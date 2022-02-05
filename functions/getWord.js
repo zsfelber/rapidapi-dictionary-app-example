@@ -24,6 +24,9 @@ export async function handler(event, context) {
 
     let json;
     if (most_common_3000) {
+      console.log("most_common_3000");
+
+      json = await crawler.loadCommonWords();
     } else if (synonym_cluster) {
       console.log("synonym_cluster:"+word);
 
@@ -31,9 +34,9 @@ export async function handler(event, context) {
     } else {
 
       json = await crawler.loadSingleWord(word, false);
-      if (!json) {
-        json = "{}";
-      }
+    }
+    if (!json) {
+      json = "{}";
     }
 
 

@@ -1,5 +1,6 @@
 
 var lastresult;
+var last3000;
 var lastsyn;
 var update_to;
 var col=2,wordInfoTbl,wordInfoRow,wordInfoBox,info;
@@ -120,6 +121,7 @@ function checkp(qs, id, buckcheck) {
     if (ischecked != ischeckeddef) {
         qs.push(id+"="+ischecked);
     }
+    return ischecked;
 }
 function checkps() {
     var qs=[];
@@ -291,7 +293,51 @@ function updateSingleWord() {
     
 }
 
+function clusterBody() {
+
+    const data = lastresult;
+
+    let itms=99;
+    col=2;
+    wordInfoBox=null;
+    wordInfoRow=null;
+
+    data.results.map(val => {
+        if (itms++%100==99) {
+            newrow();
+            newbox("list-item-lg");
+        }
+        const property = {
+            label:["("+(val.level?val.level+" ":"")+val.partOfSpeech+")"].concat(val.synonyms), 
+            value:val.similar.concat([val.definition])
+        };
+
+        const def = proplabel(property, true, 1, val.similar.length);
+        wordInfoBox.appendChild(def);
+
+    });
+}
+
+function update3000() {
+
+    const data = lastresult;
+
+    // clears the word container if it had
+    // previous data
+    $('#word-info').empty();
+    $('#info').empty();
+
+    const dlclust = labelled("no. common words", data.noWords);
+    info.appendChild(dlclust);
+    const dlclust2 = labelled("definitions", data.noDefinitions);
+    info.appendChild(dlclust2);
+
+    clusterBody(data);
+
+}
+
 function updateCluster() {
+
     const data = lastresult;
 
     // clears the word container if it had
@@ -307,28 +353,20 @@ function updateCluster() {
     const dlclust = labelled("word cluster entries", data.noClusterEntries);
     info.appendChild(dlclust);
 
-    data.results.map(val => {
-        if (itms++%100==99) {
-            newrow();
-            newbox("list-item-lg");
-        }
-        const property = {
-            label:["("+val.level+" "+val.partOfSpeech+")"].concat(val.synonyms), 
-            value:val.similar.concat([val.definition])
-        };
-
-        const def = proplabel(property, true, 1, val.similar.length);
-        wordInfoBox.appendChild(def);
-
-    });
+    clusterBody(data);
 }
 
 function update(firsttime) {
     update_to = undefined;
 
+    const _3000 = last3000;
     const syn = lastsyn;
 
-    if (syn) {
+    if (_3000) {
+        if (firsttime) {
+            update3000();
+        }
+    } else if (syn) {
         if (firsttime) {
             updateCluster();
         }
@@ -387,13 +425,14 @@ $(document).ready(function(){
         try {
 
             var qs=[`word=${word}`];
-            checkp(qs, "synonym_cluster", {defchecked:false});
-            checkp(qs, "most_common_3000", {defchecked:false});
+            let _3000=checkp(qs, "most_common_3000", {defchecked:false});
+            let syn=checkp(qs, "synonym_cluster", {defchecked:false});
 
             const data0 = await fetch(`/.netlify/functions/getWord?${qs.join("&")}`, { mode: 'cors'});
             // asynchronously calls our custome function
             const data = await data0.json();
 
+            last3000 = _3000;
             lastsyn = syn;
             lastresult = data;
 

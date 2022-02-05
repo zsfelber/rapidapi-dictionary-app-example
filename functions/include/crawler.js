@@ -332,19 +332,21 @@ export async function loadCluster(word, asobject) {
   }
 }
 
-export async function loadCommonWord(definition, word) {
+export async function loadCommonWord(result, word) {
   const entry = await loadSingleWord(word, true);
 
   for (let key in entry.results) {
     const val = entry.results[key]; 
+    const synonyms = [].concat(val.synonyms);
+    synonyms.sort();
 
-    const result = {
-      kind: "definition",
-      label: word,
-      value: val.definition,
-      isString: true
+    const definition = {
+      partOfSpeech: val.partOfSpeech,
+      definition: val.definition,
+      synonyms
     };
-  definition.properties.push(result);
+    result.noDefinitions++;
+    result.results.push(definition);
   }
 }
 
@@ -352,18 +354,16 @@ export async function loadCommonWords() {
   const cw = require('./common-words.js');
 
   // create new array to push data to
-  let definition = {
-    partOfSpeech:"common 3000",
-    properties:[]
-  };
-  let results = [definition];
+  let results = [];
   let result = {
-    results, etc:""
+    noWords:Object.keys(cw.TheMostCommon3000).length,
+    noDefinitions:0,
+    results
   };
 
   let promises = [];
   for (let commonWord in cw.TheMostCommon3000) {
-    promises.push(loadCommonWord(definition, commonWord));
+    promises.push(loadCommonWord(result, commonWord));
   }
   await Promise.all(promises);
 
