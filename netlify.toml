@@ -2,6 +2,9 @@
   functions = "lambda"
   node_bundler = "esbuild"
 
+[functions]
+  included_files = ["include/**"]
+
 [build.processing.js]
   bundle = false
   minify = false
