@@ -14,12 +14,12 @@ let totalWordsLastDay;
 export async function lazyInitCache() {
 
   if (!cacheIsInitialized) {
+    cacheIsInitialized = true;
+
     let curtime = new Date();
 
     // 86400000 milliseconds (24 hours)
     totalWordsLastDay = await finder.findFiles("cache/words", curtime - 86400000);
-  
-    cacheIsInitialized = true;
 
     console.log("lazyInitCache  totalWordsLastDay : "+totalWordsLastDay+" errors:"+finder.errors);
     return totalWordsLastDay;
