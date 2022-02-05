@@ -29,7 +29,7 @@ export async function handler(event, context) {
 
     for (let cw of cws) {
       for (let commonWord in cw.TheMostCommon10000) {
-        promises.push(crawler.loadCluster(commonWord, true));
+        promises.push(crawler.traverseClusterLoadOnly(commonWord));
       }
     }
     await Promise.all(promises);

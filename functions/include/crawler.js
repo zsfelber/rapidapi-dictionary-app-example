@@ -128,6 +128,7 @@ export async function loadSingleWord(word, asobject) {
       let data = JSON.parse(ijson);
 
       if (asobject) {
+        data.fromCache = true;
         return data;
       } else {
         let result = singleWordToDisplay(data);
@@ -167,6 +168,7 @@ export async function loadSingleWord(word, asobject) {
   });
 
   if (asobject) {
+    response.data.fromCache = false;
     return response.data;
   } else {
     let result = singleWordToDisplay(response.data);
@@ -234,10 +236,13 @@ export async function loadDictionaryAndChildren(tresult, word, traversion) {
   const by_def = tresult.by_def;
   const entry = await loadSingleWord(word, true);
 
+  if (entry && !entry.fromCache) {
+    tresult.newWords++;
+  }
   if (!entry ||
       (traversion.level > 1 && 
       entry.frequency && entry.frequency>=MAX_NODE_FREQUENCY)) {
-    return true;
+    return false;
   }
 
 
@@ -275,13 +280,15 @@ export async function loadDictionaryAndChildren(tresult, word, traversion) {
   return true;
 }
 
-export async function traverseCluster(tresult, word) {
+export async function traverseCluster(tresult, word, logdetails=true) {
 
   let traversion = {
     level : 1,
     wordsbreadthfirst : [word]
   };
   tresult.noWords = 0;
+  tresult.newWords = 0;
+
   tresult.master = await loadSingleWord(word, true);
 
   do {
@@ -292,22 +299,24 @@ export async function traverseCluster(tresult, word) {
     for (let w of previouslevelchildwords) {
       if (tresult.by_w[w]) {
       } else if (tresult.noWords >= MAX_WORDS) {
-        console.log("Level "+traversion.level+" finished. Completed.");
+        if (logdetails) console.log(word+" Level "+traversion.level+" finished. Limit reached.");
         return;
       } else {
         tresult.noWords++;
         tresult.by_w[w] = 1;
-        console.log(tresult.noWords + "/" + MAX_WORDS);
+        if (logdetails) console.log(tresult.noWords + "/" + MAX_WORDS);
     
         let nodepromise = loadDictionaryAndChildren(tresult, w, traversion);
         promises.push(nodepromise);
       }
     }
     await Promise.all(promises);
-    console.log("Level "+traversion.level+" finished.");
+    if (logdetails) console.log(word+" Level "+traversion.level+" finished.");
 
     traversion.level++;
   } while (traversion.wordsbreadthfirst.length);
+
+  console.log(word+" Completed  Travesred:"+tresult.noWords+" written:"+tresult.newWords);
 
 }
 
@@ -375,12 +384,21 @@ export async function loadCluster(word, asobject) {
   }
 }
 
+export async function traverseClusterLoadOnly(word) {
+  const by_def = {};
+  const by_w = {};
+  let tresult = {
+    by_def,
+    by_w    };
+  return traverseCluster(tresult, word, false);
+}
+
 export async function loadCommonWord(result, word, noWords) {
 
   const entry = await loadSingleWord(word, true);
 
   if (entry) {
-
+  
     result.noWords++;
     console.log(result.noWords + "/" + noWords);
 
