@@ -4,7 +4,7 @@ const axios = require('axios');
 const fs = require('fs');
 const finder = require('./finder.js');
 
-const API_DAILY_LIMIT = 40000;
+const API_DAILY_LIMIT = 35000;
 let MAX_WORDS;
 let CACHE_CLUSTERS;
 let MAX_NODE_FREQUENCY;
