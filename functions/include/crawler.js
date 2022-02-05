@@ -306,7 +306,7 @@ export async function traverseCluster(tresult, word, themainabstraction=true) {
       } else {
         tresult.noWords++;
         tresult.by_w[w] = 1;
-        console.log(tresult.noWords + "/" + MAX_WORDS);
+        if (themainabstraction || !(tresult.noWords%1000)) console.log(tresult.noWords + "/" + MAX_WORDS);
     
         let nodepromise = loadDictionaryAndChildren(tresult, w, traversion);
         promises.push(nodepromise);
