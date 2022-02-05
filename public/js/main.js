@@ -230,7 +230,7 @@ function updateSingleWord() {
 
     const data = lastresult;
     $("#title").html(data.word);
-    $("#word-input").val(word);
+    $("#word-input").val(data.word);
 
     // clears the word container if it had
     // previous data
@@ -344,7 +344,7 @@ function updateCluster() {
 
     const data = lastresult;
     $("#title").html(data.word);
-    $("#word-input").val(word);
+    $("#word-input").val(data.word);
 
     // clears the word container if it had
     // previous data
