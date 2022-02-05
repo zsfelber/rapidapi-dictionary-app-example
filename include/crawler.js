@@ -1,17 +1,22 @@
 const axios = require('axios');
 const fs = require('fs');
+let API_DAILY_LIMIT;
 let MAX_WORDS;
 let CACHE_CLUSTERS;
 let MAX_NODE_FREQUENCY;
 let TRAVERSE_SIMILAR;
 
+let totalWordsLastDay;
+
 export function initCrawler(
+  _API_DAILY_LIMIT,
   _MAX_WORDS,
   _CACHE_CLUSTERS,
   _MAX_NODE_FREQUENCY,
   _TRAVERSE_SIMILAR
   ) {
 
+    API_DAILY_LIMIT = _API_DAILY_LIMIT;
     MAX_WORDS = _MAX_WORDS;
     CACHE_CLUSTERS = _CACHE_CLUSTERS;
     MAX_NODE_FREQUENCY = _MAX_NODE_FREQUENCY;
@@ -24,6 +29,22 @@ export function initCrawler(
     if (!fs.existsSync("cache/clusters")){
       fs.mkdirSync("cache/clusters");
     }
+
+
+    totalWordsLastDay = 0;
+
+    let wordfilenames = fs.readdirSync("cache/words");
+    let curtime = new Date();
+    for (let file in wordfilenames) {
+      const { mtime/*,birthtime*/ } = fs.statSync(file);
+
+      var diff = curtime - mtime;
+      // 86400000 milliseconds (24 hours)
+      if (diff <= 86400000) {
+        totalWordsLastDay++;
+      }
+    }
+    console.log("initCrawler  totalWordsLastDay : "+totalWordsLastDay);
 }
 
 export function singleWordToDisplay(data) {
@@ -99,6 +120,11 @@ export async function loadSingleWord(word, asobject) {
       console.warn("Delete invalid file : "+wfpath, e);
       fs.unlinkSync(wfpath);
     }
+  }
+
+  if (totalWordsLastDay >= API_DAILY_LIMIT) {
+    console.error("Could not make request to file/single "+wfpath+"  totalWordsLastDay >= API_DAILY_LIMIT :  "+totalWordsLastDay+" >= "+API_DAILY_LIMIT+"\n");
+    return null;
   }
 
   // send request to the WordsAPI
@@ -182,8 +208,9 @@ export async function loadDictionaryAndChildren(tresult, word, traversion) {
   const by_def = tresult.by_def;
   const entry = await loadSingleWord(word, true);
 
-  if (traversion.level > 1 && 
-      entry.frequency && entry.frequency>=MAX_NODE_FREQUENCY) {
+  if (!entry ||
+      (traversion.level > 1 && 
+      entry.frequency && entry.frequency>=MAX_NODE_FREQUENCY)) {
     return true;
   }
 
