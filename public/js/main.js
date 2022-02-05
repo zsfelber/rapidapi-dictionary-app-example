@@ -272,6 +272,7 @@ function printLabel(data) {
 
 function updateSingleWord() {
 
+    const mode = lastmode;
     const data = lastresult;
 
     // clears the word container if it had
@@ -342,6 +343,7 @@ function updateSingleWord() {
 
 function clusterBody() {
 
+    const mode = lastmode;
     const data = lastresult;
 
     let itms=99;
@@ -367,6 +369,7 @@ function clusterBody() {
 
 function updateMostCommon() {
 
+    const mode = lastmode;
     const data = lastresult;
 
     // clears the word container if it had
@@ -386,6 +389,7 @@ function updateMostCommon() {
 
 function updateCluster() {
 
+    const mode = lastmode;
     const data = lastresult;
 
     // clears the word container if it had
