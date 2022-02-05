@@ -142,6 +142,8 @@ export async function loadSingleWord(word, asobject) {
     }
   });
 
+  totalWordsLastDay++;
+
   const djson = JSON.stringify(response.data);  // original
   fs.writeFile(wfpath, djson, (err) => {
     if (err) {
