@@ -1,6 +1,6 @@
 const axios = require('axios');
 const fs = require('fs');
-const FindFiles = require("node-find-files").default;
+const finder = require('./finder.js');
 
 const API_DAILY_LIMIT = 25000;
 let MAX_WORDS;
@@ -31,30 +31,12 @@ export function initCrawler(
     }
 
 
-    totalWordsLastDay = 0;
-
     let curtime = new Date();
 
     // 86400000 milliseconds (24 hours)
-    var finder = new FindFiles({
-        rootFolder : "cache/words",
-        fileModifiedDate : d - 86400000
-    });
+    totalWordsLastDay = await finder.findFiles("cache/words", curtime - 86400000);
 
-    let wordfilenames = fs.readdirSync("cache/words");
-    for (let file in wordfilenames) {
-      try {
-        const { mtime/*,birthtime*/ } = fs.statSync("cache/words/" + file);
-
-        var diff = curtime - mtime;
-        if (diff <= 86400000) {
-          totalWordsLastDay++;
-        }
-      } catch (e) {
-        errors++;
-      }
-    }
-    console.log("initCrawler  totalWordsLastDay : "+totalWordsLastDay+" errors:"+errors);
+    console.log("initCrawler  totalWordsLastDay : "+totalWordsLastDay+" errors:"+finder.errors);
 }
 
 export function singleWordToDisplay(data) {
