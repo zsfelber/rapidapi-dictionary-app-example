@@ -8,6 +8,9 @@ cache/words/w.c.
 cache/words/a.d.
 cache/words/p.a.
 cache/words/i.e.
+cache/words/u.s.
+cache/words/u.s.a.
+cache/words/w.h.o.
 cache/words/con
 cache/words/robert floyd curl jr.
 cache/words/martin luther king jr.
@@ -27,4 +30,6 @@ cache/words/me.
 cache/words/miss.
 cache/words/mr.
 cache/words/mrs.
+cache/words/okla.
+cache/words/ore.
 lambda/getWord.js
