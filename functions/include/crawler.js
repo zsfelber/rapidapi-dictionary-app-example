@@ -19,6 +19,9 @@ let cacheInitIsError = false;
 async function remoteCallInit() {
 
   if (!cacheIsInitialized) {
+    if (parallelCacheInitRequests >= API_DAILY_LIMIT) {
+      return false;
+    }
     parallelCacheInitRequests++;
     if (!cacheInitializerCommon) {
       let curtime = new Date();
