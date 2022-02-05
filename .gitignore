@@ -3,12 +3,14 @@ node_modules
 .netlify
 cache/words/c.o.d.
 cache/words/d.o.a.
+cache/words/o.k.
+cache/words/w.c.
 cache/words/con
 cache/words/robert floyd curl jr.
+cache/words/martin luther king jr.
 cache/words/var.
 cache/words/mich.
 cache/words/lbf.
-cache/words/o.k.
 cache/words/dr.
 cache/words/ut.
 lambda/getWord.js
