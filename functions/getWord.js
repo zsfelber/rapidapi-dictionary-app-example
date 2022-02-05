@@ -1,6 +1,6 @@
 const axios = require('axios');
 const fs = require('fs');
-const crawler = require('crawler');
+const crawler = require('./include/crawler.js');
 
 const MAX_WORDS = 50;
 const CACHE_CLUSTERS = false;

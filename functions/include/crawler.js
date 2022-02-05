@@ -31,19 +31,24 @@ export function initCrawler(
 
 
     totalWordsLastDay = 0;
+    let errors = 0;
 
     let wordfilenames = fs.readdirSync("cache/words");
     let curtime = new Date();
     for (let file in wordfilenames) {
-      const { mtime/*,birthtime*/ } = fs.statSync(file);
+      try {
+        const { mtime/*,birthtime*/ } = fs.statSync("./cache/words/" + file);
 
-      var diff = curtime - mtime;
-      // 86400000 milliseconds (24 hours)
-      if (diff <= 86400000) {
-        totalWordsLastDay++;
+        var diff = curtime - mtime;
+        // 86400000 milliseconds (24 hours)
+        if (diff <= 86400000) {
+          totalWordsLastDay++;
+        }
+      } catch (e) {
+        errors++;
       }
     }
-    console.log("initCrawler  totalWordsLastDay : "+totalWordsLastDay);
+    console.log("initCrawler  totalWordsLastDay : "+totalWordsLastDay+" errors:"+errors);
 }
 
 export function singleWordToDisplay(data) {

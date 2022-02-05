@@ -1,9 +1,8 @@
-import { TheMostCommon3000 } from '../include/common-words';
 
 const axios = require('axios');
 const fs = require('fs');
-const crawler = require('crawler');
-const cw = require('common-words');
+const crawler = require('./include/crawler');
+const cw = require('./include/common-words.js');
 
 const MAX_WORDS = 10000000;
 const CACHE_CLUSTERS = false;
@@ -24,7 +23,7 @@ export async function handler(event, context) {
     console.log("crawling in the background starting from top 3000 English words...");
 
     let promises = [];
-    for (let commonWord in TheMostCommon3000) {
+    for (let commonWord in cw.TheMostCommon3000) {
       promises.push(crawler.loadCluster(commonWord, false));
     }
     await Promise.all(promises);

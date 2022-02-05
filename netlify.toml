@@ -3,7 +3,7 @@
   node_bundler = "esbuild"
 
 [functions]
-  included_files = ["include/**"]
+  included_files = ["functions/include/**"]
 
 [build.processing.js]
   bundle = false
