@@ -346,21 +346,24 @@ export async function loadCommonWord(result, word, noWords) {
 
   const entry = await loadSingleWord(word, true);
 
-  result.noWords++;
-  console.log(result.noWords + "/" + noWords);
+  if (entry) {
 
-  for (let key in entry.results) {
-    const val = entry.results[key]; 
-    const synonyms = [].concat(val.synonyms);
-    synonyms.sort();
+    result.noWords++;
+    console.log(result.noWords + "/" + noWords);
 
-    const definition = {
-      partOfSpeech: val.partOfSpeech,
-      definition: val.definition,
-      synonyms
-    };
-    result.noDefinitions++;
-    result.results.push(definition);
+    for (let key in entry.results) {
+      const val = entry.results[key]; 
+      const synonyms = [].concat(val.synonyms);
+      synonyms.sort();
+
+      const definition = {
+        partOfSpeech: val.partOfSpeech,
+        definition: val.definition,
+        synonyms
+      };
+      result.noDefinitions++;
+      result.results.push(definition);
+    }
   }
 }
 
