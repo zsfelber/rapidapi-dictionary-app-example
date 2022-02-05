@@ -83,6 +83,21 @@ function checha(id) {
     update_to = setTimeout(update, 1000, false);
 }
 
+function chkdict() {
+    let chk = $("#_dictionary").is(':checked');
+    console.log("dictionary is checked:"+chk);
+    $('.checkboxes1 input').prop("disabled", !chk);
+    $('.checkboxes2 input').prop("disabled", !chk);
+    $('.checkboxes3 input').prop("disabled", !chk);
+    $('.checkboxes4 input').prop("disabled", !chk);
+    $('.checkboxes5 input').prop("disabled", !chk);
+}
+
+function racha(id) {
+    chkdict();
+    checha(id);
+}
+
 function ischeckedparam(param, ischeckeddef) {
     var v = $.urlParam(param);
     if (v === false) {
@@ -115,7 +130,7 @@ function addRadio(cont, id, buckcheck, groupid, label) {
 
     var panel = $(` <div class='form-check form-check-1'>
             <input type='hidden' id='${id}' name='${id}' value='${ischecked}'>
-            <input class='form-check-input' type='radio' id='_${id}' name='${groupid}' ${ischecked ? "checked" : ""} onchange="checha('${id}')"/>
+            <input class='form-check-input' type='radio' id='_${id}' name='${groupid}' ${ischecked ? "checked" : ""} onchange="racha('${id}')"/>
             <label class='form-check-label' for='_${id}'>
             ${label}
             </label>
@@ -442,6 +457,7 @@ $(document).ready(function(){
     for (rid in bucket6) {
         addRadio(chbs6, rid, bucket6[rid], "bucket6");
     }
+    $("#_dictionary").change();
 
     //$('.form-check-input').change(function(){
     //    $(this).text() 
