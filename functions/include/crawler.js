@@ -260,7 +260,7 @@ export async function loadDictionaryAndChildren(tresult, word, traversion, paren
   for (let key in entry.results) {
     const val = entry.results[key]; 
     if (parentNode && val.definition == parentNode.definition) {
-      parentNode.examples.push.apply(parentNode.examples, this.val.examples);
+      parentNode.examples.push.apply(parentNode.examples, val.examples);
       parentNode.examples.sort();
       if (!loadChildren) break;
     }
@@ -442,7 +442,7 @@ export async function loadCommonWord(result, word, noWords) {
         word,
         partOfSpeech: val.partOfSpeech,
         definition: val.definition,
-        examples: val.examples,
+        examples: val.examples?[].concat(val.examples):[],
         synonyms, similar
       };
 
