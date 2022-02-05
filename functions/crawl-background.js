@@ -27,12 +27,23 @@ export async function handler(event, context) {
     const cw5 = require('./include/common-words-10000-s-z.js');
     const cws = [cw1, cw2, cw3, cw4, cw5]; 
 
+    const by_def = {};
+    const by_w = {};
+    let tresult = {
+      by_def,
+      by_w    };
+    tresult.noWords = 0;
+    tresult.newWords = 0;
+
     for (let cw of cws) {
       for (let commonWord in cw.TheMostCommon10000) {
-        promises.push(crawler.traverseClusterLoadOnly(commonWord));
+        promises.push(crawler.traverseCluster(tresult, commonWord, false));
       }
     }
+
     await Promise.all(promises);
+
+    console.log("Completed  Travesred:"+tresult.noWords+" written:"+tresult.newWords);
 
     return {
       statusCode: 200,

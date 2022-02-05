@@ -280,14 +280,16 @@ export async function loadDictionaryAndChildren(tresult, word, traversion) {
   return true;
 }
 
-export async function traverseCluster(tresult, word, logdetails=true) {
+export async function traverseCluster(tresult, word, themainabstraction=true) {
 
   let traversion = {
     level : 1,
     wordsbreadthfirst : [word]
   };
-  tresult.noWords = 0;
-  tresult.newWords = 0;
+  if (themainabstraction) {
+    tresult.noWords = 0;
+    tresult.newWords = 0;
+  }
 
   tresult.master = await loadSingleWord(word, true);
 
@@ -299,25 +301,26 @@ export async function traverseCluster(tresult, word, logdetails=true) {
     for (let w of previouslevelchildwords) {
       if (tresult.by_w[w]) {
       } else if (tresult.noWords >= MAX_WORDS) {
-        if (logdetails) console.log(word+" Level "+traversion.level+" finished. Limit reached.");
+        if (themainabstraction) console.log(word+" Level "+traversion.level+" finished. Limit reached.");
         return;
       } else {
         tresult.noWords++;
         tresult.by_w[w] = 1;
-        if (logdetails) console.log(tresult.noWords + "/" + MAX_WORDS);
+        console.log(tresult.noWords + "/" + MAX_WORDS);
     
         let nodepromise = loadDictionaryAndChildren(tresult, w, traversion);
         promises.push(nodepromise);
       }
     }
     await Promise.all(promises);
-    if (logdetails) console.log(word+" Level "+traversion.level+" finished.");
+    if (themainabstraction) console.log(word+" Level "+traversion.level+" finished.");
 
     traversion.level++;
   } while (traversion.wordsbreadthfirst.length);
 
-  console.log(word+" Completed  Travesred:"+tresult.noWords+" written:"+tresult.newWords);
-
+  if (themainabstraction) {
+    console.log(word+" Completed  Travesred:"+tresult.noWords+" written:"+tresult.newWords);
+  }
 }
 
 export async function loadCluster(word, asobject) {
@@ -382,15 +385,6 @@ export async function loadCluster(word, asobject) {
       return cjson;
     }
   }
-}
-
-export async function traverseClusterLoadOnly(word) {
-  const by_def = {};
-  const by_w = {};
-  let tresult = {
-    by_def,
-    by_w    };
-  return traverseCluster(tresult, word, false);
 }
 
 export async function loadCommonWord(result, word, noWords) {
