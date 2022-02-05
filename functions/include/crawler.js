@@ -9,9 +9,9 @@ let MAX_NODE_FREQUENCY;
 let TRAVERSE_SIMILAR;
 
 let cacheIsInitialized = false;
-let totalWordsLastDay;
+let totalWordsLastDay = 0;
 
-export async function lazyInitCache() {
+async function lazyInitCache() {
 
   if (!cacheIsInitialized) {
     cacheIsInitialized = true;
@@ -22,9 +22,15 @@ export async function lazyInitCache() {
     totalWordsLastDay = await finder.findFiles("cache/words", curtime - 86400000);
 
     console.log("lazyInitCache  totalWordsLastDay : "+totalWordsLastDay+" errors:"+finder.errors);
-    return totalWordsLastDay;
   }
-  return totalWordsLastDay;
+
+  if (totalWordsLastDay >= API_DAILY_LIMIT) {
+    console.error("Could not make request to file/single "+wfpath+"  totalWordsLastDay >= API_DAILY_LIMIT :  "+totalWordsLastDay+" >= "+API_DAILY_LIMIT+"\n");
+    return false;
+  } else {
+    totalWordsLastDay++;
+    return true;
+  }
 }
 
 export async function initCrawler(
@@ -124,10 +130,7 @@ export async function loadSingleWord(word, asobject) {
     }
   }
 
-  await lazyInitCache();
-
-  if (totalWordsLastDay >= API_DAILY_LIMIT) {
-    console.error("Could not make request to file/single "+wfpath+"  totalWordsLastDay >= API_DAILY_LIMIT :  "+totalWordsLastDay+" >= "+API_DAILY_LIMIT+"\n");
+  if (!await lazyInitCache()) {
     return null;
   }
 
