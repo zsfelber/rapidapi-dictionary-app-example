@@ -19,6 +19,11 @@ export async function handler(event, context) {
   const word = event.queryStringParameters.word || "";
   const synonym_cluster = event.queryStringParameters.synonym_cluster=="true";
   const most_common_3000 = event.queryStringParameters.most_common_3000=="true";
+  const most_common_10000_a_c = event.queryStringParameters["most_common_10000_a-c"]=="true";
+  const most_common_10000_d_h = event.queryStringParameters["most_common_10000_d-h"]=="true";
+  const most_common_10000_i_o = event.queryStringParameters["most_common_10000_i-o"]=="true";
+  const most_common_10000_p_r = event.queryStringParameters["most_common_10000_p-r"]=="true";
+  const most_common_10000_s_z = event.queryStringParameters["most_common_10000_s-z"]=="true";
 
   try {
 
@@ -27,26 +32,26 @@ export async function handler(event, context) {
       console.log("most_common_3000");
 
       json = await crawler.loadCommonWords3000(false);
-    } if (most_common_10000a_c) {
-      console.log("most_common_10000a_c");
+    } if (most_common_10000_a_c) {
+      console.log("most_common_10000_a-c");
 
-      json = await crawler.loadCommonWords10000a_c(false);
-    } if (most_common_10000d_h) {
-      console.log("most_common_10000d_h");
+      json = await crawler.loadCommonWords10000_a_c(false);
+    } if (most_common_10000_d_h) {
+      console.log("most_common_10000_d-h");
 
-      json = await crawler.loadCommonWords10000d_h(false);
-    } if (most_common_10000i_o) {
-      console.log("most_common_10000i_o");
+      json = await crawler.loadCommonWords10000_d_h(false);
+    } if (most_common_10000_i_o) {
+      console.log("most_common_10000_i-o");
 
-      json = await crawler.loadCommonWords10000i_o(false);
-    } if (most_common_10000p_r) {
-      console.log("most_common_10000p_r");
+      json = await crawler.loadCommonWords10000_i_o(false);
+    } if (most_common_10000_p_r) {
+      console.log("most_common_10000_p-r");
 
-      json = await crawler.loadCommonWords10000p_r(false);
-    } if (most_common_10000s_z) {
-      console.log("most_common_10000s_z");
+      json = await crawler.loadCommonWords10000_p_r(false);
+    } if (most_common_10000_s_z) {
+      console.log("most_common_10000_s-z");
 
-      json = await crawler.loadCommonWords10000s_z(false);
+      json = await crawler.loadCommonWords10000_s_z(false);
     } else if (synonym_cluster) {
       console.log("synonym_cluster:"+word);
 

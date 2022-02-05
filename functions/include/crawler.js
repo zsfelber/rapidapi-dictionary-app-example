@@ -408,27 +408,27 @@ export async function loadCommonWords3000(asobject) {
   return loadCommonWords(cw.TheMostCommon3000,asobject);
 }
 
-export async function loadCommonWords10000a_c(asobject) {
+export async function loadCommonWords10000_a_c(asobject) {
   const cw = require('./common-words-10000-a-c.js');
   return loadCommonWords(cw.TheMostCommon10000,asobject);
 }
 
-export async function loadCommonWords10000d_h(asobject) {
+export async function loadCommonWords10000_d_h(asobject) {
   const cw = require('./common-words-10000-d-h.js');
   return loadCommonWords(cw.TheMostCommon10000,asobject);
 }
 
-export async function loadCommonWords10000i_o(asobject) {
+export async function loadCommonWords10000_i_o(asobject) {
   const cw = require('./common-words-10000-i-o.js');
   return loadCommonWords(cw.TheMostCommon10000,asobject);
 }
 
-export async function loadCommonWords10000p_r(asobject) {
+export async function loadCommonWords10000_p_r(asobject) {
   const cw = require('./common-words-10000-p-r.js');
   return loadCommonWords(cw.TheMostCommon10000,asobject);
 }
 
-export async function loadCommonWords10000s_z(asobject) {
+export async function loadCommonWords10000_s_z(asobject) {
   const cw = require('./common-words-10000-s-z.js');
   return loadCommonWords(cw.TheMostCommon10000,asobject);
 }

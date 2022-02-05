@@ -329,7 +329,7 @@ function clusterBody() {
     });
 }
 
-function update3000() {
+function updateMostCommon() {
 
     const data = lastresult;
 
@@ -377,7 +377,7 @@ function update(firsttime) {
 
     if (_3000) {
         if (firsttime) {
-            update3000();
+            updateMostCommon();
         }
     } else if (syn) {
         if (firsttime) {
@@ -436,17 +436,22 @@ $(document).ready(function(){
         try {
 
             var qs=[`word=${word}`];
-            let _3000=checkp(qs, "most_common_3000", {defchecked:false});
+            let _3000 = checkp(qs, "most_common_3000", {defchecked:false});
+            var _10000a_c = checkp(qs, "most_common_10000_a-c", {defchecked:false});
+            var _10000d_h = checkp(qs, "most_common_10000_d-h", {defchecked:false});
+            var _10000i_o = checkp(qs, "most_common_10000_i-o", {defchecked:false});
+            var _10000p_r = checkp(qs, "most_common_10000_p-r", {defchecked:false});
+            var _10000s_z = checkp(qs, "most_common_10000_s-z", {defchecked:false});
             let syn=checkp(qs, "synonym_cluster", {defchecked:false});
 
             const data0 = await fetch(`/.netlify/functions/getWord?${qs.join("&")}`, { mode: 'cors'});
             // asynchronously calls our custome function
             const data = await data0.json();
 
-            last3000 = _3000;
+            last3000 = _3000||_10000a_c||_10000d_h||_10000i_o||_10000p_r||_10000s_z;
             lastsyn = syn;
             lastresult = data;
-
+            
             update(true);
 
         } catch (e) {
@@ -460,8 +465,16 @@ $(document).ready(function(){
 
     var url_word = $.urlParam('word');
     var url_3000 = $.urlParam('most_common_3000');
+    var url_10000a_c = $.urlParam('most_common_10000_a-c');
+    var url_10000d_h = $.urlParam('most_common_10000_d-h');
+    var url_10000i_o = $.urlParam('most_common_10000_i-o');
+    var url_10000p_r = $.urlParam('most_common_10000_p-r');
+    var url_10000s_z = $.urlParam('most_common_10000_s-z');
     // adds a submit listened to our <form> element
-    if (url_3000=="true" || url_word) {
+    if (url_3000=="true" || 
+        url_10000a_c=="true" || url_10000d_h=="true" || url_10000i_o=="true" || 
+        url_10000p_r=="true" || url_10000s_z=="true" || 
+        url_word) {
         dosubmit(url_word);
     }
 });
