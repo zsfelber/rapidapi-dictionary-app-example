@@ -251,12 +251,15 @@ function updateSingleWord() {
 
             // loops over the values for each definition
             val.properties.map(property => {
-                if (property.label === 'definition') {
 
+                if (property.kind === 'definition') {
+                    const def = proplabel(property);
+                    wordInfoBox.appendChild(def);
+                } else if (property.label === 'definition') {
                     // creates new heading-3 element
                     const def = document.createElement('div');
 
-                    if (isch("definition")) {
+                    if (property.kind === 'definition' || isch("definition")) {
                         var txt = property.value.toString();
                         var words = txt.split(" ");
                         createas(def, words, " ");
