@@ -32,7 +32,6 @@ var checkboxdata = {
         "usage of": { defchecked: false },
         "has usages": { defchecked: false },
         "synonym cluster": { defchecked: false },
-        "most common 3000": { defchecked: false },
     },
     "bucket4": {
         "instance of": { defchecked: false },
@@ -51,6 +50,14 @@ var checkboxdata = {
         "preposition": { defchecked: true },
         "participle": { defchecked: true },
         "conjunction": { defchecked: true },
+    },
+    "bucket6": {
+        "most common 3000": { defchecked: false },
+        "most common 10000 a-c": { defchecked: false },
+        "most common 10000 d-h": { defchecked: false },
+        "most common 10000 i-o": { defchecked: false },
+        "most common 10000 p-r": { defchecked: false },
+        "most common 10000 s-z": { defchecked: false },
     }
 };
 
@@ -404,7 +411,8 @@ $(document).ready(function(){
     let chbs3 = document.querySelector('.checkboxes3');
     let chbs4 = document.querySelector('.checkboxes4');
     let chbs5 = document.querySelector('.checkboxes5');
-    var chbuckets = {bucket1:chbs1,bucket2:chbs2,bucket3:chbs3,bucket4:chbs4,bucket5:chbs5};
+    let chbs6 = document.querySelector('.checkboxes6');
+    var chbuckets = {bucket1:chbs1,bucket2:chbs2,bucket3:chbs3,bucket4:chbs4,bucket5:chbs5,bucket6:chbs6};
 
     for (bucketid in checkboxdata) {
         var bucket = checkboxdata[bucketid];

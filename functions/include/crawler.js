@@ -375,8 +375,7 @@ export async function loadCommonWord(result, word, noWords) {
   }
 }
 
-export async function loadCommonWords(asobject) {
-  const cw = require('./common-words.js');
+export async function loadCommonWords(words,asobject) {
 
   // create new array to push data to
   let results = [];
@@ -387,8 +386,8 @@ export async function loadCommonWords(asobject) {
   };
 
   let promises = [];
-  let noWords = Object.keys(cw.TheMostCommon3000).length;
-  for (let commonWord in cw.TheMostCommon3000) {
+  let noWords = Object.keys(words).length;
+  for (let commonWord in words) {
     promises.push(loadCommonWord(result, commonWord, noWords));
   }
   await Promise.all(promises);
@@ -402,4 +401,34 @@ export async function loadCommonWords(asobject) {
     }
     return cjson;
   }
+}
+
+export async function loadCommonWords3000(asobject) {
+  const cw = require('./common-words-3000.js');
+  return loadCommonWords(cw.TheMostCommon3000,asobject);
+}
+
+export async function loadCommonWords10000a_c(asobject) {
+  const cw = require('./common-words-10000-a-c.js');
+  return loadCommonWords(cw.TheMostCommon10000,asobject);
+}
+
+export async function loadCommonWords10000d_h(asobject) {
+  const cw = require('./common-words-10000-d-h.js');
+  return loadCommonWords(cw.TheMostCommon10000,asobject);
+}
+
+export async function loadCommonWords10000i_o(asobject) {
+  const cw = require('./common-words-10000-i-o.js');
+  return loadCommonWords(cw.TheMostCommon10000,asobject);
+}
+
+export async function loadCommonWords10000p_r(asobject) {
+  const cw = require('./common-words-10000-p-r.js');
+  return loadCommonWords(cw.TheMostCommon10000,asobject);
+}
+
+export async function loadCommonWords10000s_z(asobject) {
+  const cw = require('./common-words-10000-s-z.js');
+  return loadCommonWords(cw.TheMostCommon10000,asobject);
 }
