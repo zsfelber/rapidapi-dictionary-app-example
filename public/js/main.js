@@ -109,7 +109,7 @@ function ischeckedradio(groupid, rid, ischeckeddef) {
     if (v === false) {
         return ischeckeddef;
     }
-    return v == (""+ischeckeddef) ? ischeckeddef : !ischeckeddef;
+    return v;
 }
 
 function addCheckbox(cont, id, buckcheck, label) {
@@ -273,8 +273,6 @@ function printLabel(data) {
 function updateSingleWord() {
 
     const data = lastresult;
-    $("#title").html(data.word);
-    $("#word-input").val(data.word);
 
     // clears the word container if it had
     // previous data
@@ -387,8 +385,6 @@ function updateMostCommon() {
 function updateCluster() {
 
     const data = lastresult;
-    $("#title").html(data.word);
-    $("#word-input").val(data.word);
 
     // clears the word container if it had
     // previous data
@@ -410,6 +406,10 @@ function update(firsttime) {
     update_to = undefined;
 
     const mode = lastmode;
+    const data = lastresult;
+
+    $("#title").html(data.word?data.word:"");
+    $("#word-input").val(data.word?data.word:"");
 
     switch (mode) {
     case "most_common_3000":
@@ -470,6 +470,7 @@ $(document).ready(function(){
     for (rid in bucket6) {
         addRadio(chbs6, rid, bucket6[rid], "mode");
     }
+    chkdict();
 
     //$('.form-check-input').change(function(){
     //    $(this).text() 
