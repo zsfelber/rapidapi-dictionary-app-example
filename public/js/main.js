@@ -31,7 +31,6 @@ var checkboxdata = {
         "has members": { defchecked: false },
         "usage of": { defchecked: false },
         "has usages": { defchecked: false },
-        "synonym cluster": { defchecked: false },
     },
     "bucket4": {
         "instance of": { defchecked: false },
@@ -52,6 +51,8 @@ var checkboxdata = {
         "conjunction": { defchecked: true },
     },
     "bucket6": {
+        "dictionary": { defchecked: true },
+        "synonym cluster": { defchecked: false },
         "most common 3000": { defchecked: false },
         "most common 10000 a-c": { defchecked: false },
         "most common 10000 d-h": { defchecked: false },
@@ -106,6 +107,22 @@ function addCheckbox(cont, id, buckcheck, label) {
     cont.appendChild(panel[0]);
 }
 
+function addRadio(cont, id, buckcheck, groupid, label) {
+    const ischeckeddef = buckcheck.defchecked;
+    if (!label) label = id;
+    id = id.replace(/ /g, "_");
+    var ischecked = ischeckedparam(id, ischeckeddef);
+
+    var panel = $(` <div class='form-check form-check-1'>
+            <input type='hidden' id='${id}' name='${id}' value='${ischecked}'>
+            <input class='form-check-input' type='radio' id='_${id}' value='${groupid}' ${ischecked ? "checked" : ""} onchange="checha('${id}')"/>
+            <label class='form-check-label' for='_${id}'>
+            ${label}
+            </label>
+        </div>`);
+    cont.appendChild(panel[0]);
+}
+
 function newrow() {
     if (col++%3==2) {
         wordInfoRow = document.createElement('div');
@@ -136,7 +153,7 @@ function checkps() {
     for (bucketid in checkboxdata) {
         var bucket = checkboxdata[bucketid];
         for (chid in bucket) {
-            if (chid != "most common 3000") {
+            if (!/^most common/.test(chid)) {
                 checkp(qs, chid, bucket[chid]);
             }
         }
@@ -412,13 +429,17 @@ $(document).ready(function(){
     let chbs4 = document.querySelector('.checkboxes4');
     let chbs5 = document.querySelector('.checkboxes5');
     let chbs6 = document.querySelector('.checkboxes6');
-    var chbuckets = {bucket1:chbs1,bucket2:chbs2,bucket3:chbs3,bucket4:chbs4,bucket5:chbs5,bucket6:chbs6};
+    var chbuckets = {bucket1:chbs1,bucket2:chbs2,bucket3:chbs3,bucket4:chbs4,bucket5:chbs5};
 
     for (bucketid in checkboxdata) {
         var bucket = checkboxdata[bucketid];
         for (chid in bucket) {
             addCheckbox(chbuckets[bucketid], chid, bucket[chid]);
         }
+    }
+    var bucket6 = checkboxdata["bucket6"];
+    for (rid in bucket6) {
+        addRadio(chbs6, rid, bucket6[rid], "bucket6");
     }
 
     //$('.form-check-input').change(function(){
