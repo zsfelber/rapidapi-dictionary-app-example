@@ -373,13 +373,11 @@ function clusterBody(withmainword) {
         const def = proplabel(property, withmainword?data.word:val.word, true, 1, val.similar.length);
         wordInfoBox.appendChild(def);
 
-        if (val.examples) {
-            const examplesprop = {
-                kind:"examples", label:"xs", 
-                value:val.examples
-            };
-            const examples = proplabel(examplesprop);
-            wordInfoBox.appendChild(examples);
+        if (val.examples && val.examples.length) {
+            let b = document.createElement("b");
+            b.innerText = "x:";
+            def.children[1].appendChild(b);
+            createaas(def.children[1], val.examples, ", ");
         }
 
     });
