@@ -34,24 +34,14 @@ export async function handler(event, context) {
     tresult.noWords = 0;
     tresult.newWords = 0;
 
-    let promises = [];
     a:for (let cw of cws) {
       for (let commonWord in cw.TheMostCommon10000) {
-        promises.push(crawler.traverseCluster(tresult, commonWord, false));
-        if (promises.length==10) {
-          await Promise.all(promises);
-          console.log("10 crawlers joined.");
-          promises = [];
-          if (crawler.isApiLimitReached()) {
-            console.log("API limit reached. STOP");
-            break a;
-          }
+        await crawler.traverseCluster(tresult, commonWord, false);
+        if (crawler.isApiLimitReached()) {
+          console.log("API limit reached. STOP");
+          break a;
         }
       }
-    }
-    if (promises.length) {
-      await Promise.all(promises);
-      console.log("remaining "+promises.length+" crawlers joined.");
     }
 
 
