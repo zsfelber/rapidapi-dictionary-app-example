@@ -451,7 +451,8 @@ export async function loadCommonWord(result, word, noWords) {
         partOfSpeech: val.partOfSpeech,
         definition: val.definition,
         examples: val.examples?[].concat(val.examples):[],
-        synonyms, similar
+        synonyms, similar,
+        key:word+":::::::"+synonyms.length+":::::::"+synonyms.join(", ")
       };
 
       let promises = [];
@@ -485,6 +486,11 @@ export async function loadCommonWords(words, word, asobject) {
     promises.push(loadCommonWord(result, commonWord, noWords));
   }
   await Promise.all(promises);
+
+  const cmp = (firstEl, secondEl) => {
+    return firstEl.key.localeCompare(secondEl.key);
+  };
+  result.results.sort(cmp);
 
   console.log("Common words query processed  Travesred:"+result.noWords+" written:"+result.newWords);
 
