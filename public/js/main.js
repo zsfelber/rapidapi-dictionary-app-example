@@ -115,7 +115,7 @@ function addRadio(cont, id, buckcheck, groupid, label) {
 
     var panel = $(` <div class='form-check form-check-1'>
             <input type='hidden' id='${id}' name='${id}' value='${ischecked}'>
-            <input class='form-check-input' type='radio' id='_${id}' value='${groupid}' ${ischecked ? "checked" : ""} onchange="checha('${id}')"/>
+            <input class='form-check-input' type='radio' id='_${id}' name='${groupid}' ${ischecked ? "checked" : ""} onchange="checha('${id}')"/>
             <label class='form-check-label' for='_${id}'>
             ${label}
             </label>
@@ -431,10 +431,11 @@ $(document).ready(function(){
     let chbs6 = document.querySelector('.checkboxes6');
     var chbuckets = {bucket1:chbs1,bucket2:chbs2,bucket3:chbs3,bucket4:chbs4,bucket5:chbs5};
 
-    for (bucketid in checkboxdata) {
+    for (bucketid in chbuckets) {
+        var chbuck = chbuckets[bucketid];
         var bucket = checkboxdata[bucketid];
         for (chid in bucket) {
-            addCheckbox(chbuckets[bucketid], chid, bucket[chid]);
+            addCheckbox(chbuck, chid, bucket[chid]);
         }
     }
     var bucket6 = checkboxdata["bucket6"];

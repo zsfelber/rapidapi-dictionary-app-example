@@ -93,8 +93,12 @@ main {
     width: 12rem;
 }
 
-.checkboxes1,.checkboxes2,.list-row {
+.checkboxes1,.checkboxes2,.checkboxes3,.checkboxes4,.checkboxes5,.checkboxes6.list-row {
     display: inline-block;
+}
+
+.form-check-label {
+    white-space: nowrap;
 }
 
 .list-item, .list-item-lg {
@@ -144,3 +148,4 @@ a.none {
 a:hover.none {
     text-decoration: none;
 }
+
