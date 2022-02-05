@@ -333,6 +333,7 @@ export async function loadCluster(word, asobject) {
 }
 
 export async function loadCommonWord(result, word, noWords) {
+
   const entry = await loadSingleWord(word, true);
 
   result.noWords++;
