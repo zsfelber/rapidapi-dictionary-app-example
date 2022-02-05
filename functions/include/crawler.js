@@ -8,21 +8,27 @@ let CACHE_CLUSTERS;
 let MAX_NODE_FREQUENCY;
 let TRAVERSE_SIMILAR;
 
+let cacheInitializerCommon;
 let cacheIsInitialized = false;
+let parallelCacheInitRequests = 0;
 let totalWordsLastDay = 0;
 let cacheInitIsError = false;
 
-async function lazyInitCache() {
+async function remoteCallInit() {
 
   if (!cacheIsInitialized) {
-    cacheIsInitialized = true;
+    parallelCacheInitRequests++;
+    if (!cacheInitializerCommon) {
+      let curtime = new Date();
 
-    let curtime = new Date();
-
-    // 86400000 milliseconds (24 hours)
-    totalWordsLastDay = await finder.findFiles("cache/words", curtime - 86400000);
-
-    console.log("lazyInitCache  totalWordsLastDay : "+totalWordsLastDay+" errors:"+finder.errors);
+      // 86400000 milliseconds (24 hours)
+      cacheInitializerCommon = finder.findFiles("cache/words", curtime - 86400000);
+      totalWordsLastDay = await cacheInitializerCommon;
+      cacheIsInitialized = true;
+      console.log("remoteCallInit  totalWordsLastDay : "+totalWordsLastDay+" errors:"+finder.errors+" parallelCacheInitRequests:"+parallelCacheInitRequests);
+    } else {
+      await cacheInitializerCommon;
+    }
   }
 
   if (totalWordsLastDay >= API_DAILY_LIMIT) {
@@ -134,7 +140,7 @@ export async function loadSingleWord(word, asobject) {
     }
   }
 
-  let success = await lazyInitCache();
+  let success = await remoteCallInit();
   if (!success) {
     return null;
   }
@@ -149,8 +155,6 @@ export async function loadSingleWord(word, asobject) {
     "x-rapidapi-key":process.env.RAPIDAPI_KEY
     }
   });
-
-  totalWordsLastDay++;
 
   const djson = JSON.stringify(response.data);  // original
   fs.writeFile(wfpath, djson, (err) => {
