@@ -10,6 +10,7 @@ let TRAVERSE_SIMILAR;
 
 let cacheIsInitialized = false;
 let totalWordsLastDay = 0;
+let cacheInitIsError = false;
 
 async function lazyInitCache() {
 
@@ -25,7 +26,10 @@ async function lazyInitCache() {
   }
 
   if (totalWordsLastDay >= API_DAILY_LIMIT) {
-    console.error("Could not make request to file/single "+wfpath+"  totalWordsLastDay >= API_DAILY_LIMIT :  "+totalWordsLastDay+" >= "+API_DAILY_LIMIT+"\n");
+    if (!cacheInitIsError) {
+      console.error("Could not proxy more request to API file/single  totalWordsLastDay >= API_DAILY_LIMIT :  "+totalWordsLastDay+" >= "+API_DAILY_LIMIT+"\n");
+    }
+    cacheInitIsError = true;
     return false;
   } else {
     totalWordsLastDay++;
@@ -130,7 +134,8 @@ export async function loadSingleWord(word, asobject) {
     }
   }
 
-  if (!await lazyInitCache()) {
+  let success = await lazyInitCache();
+  if (!success) {
     return null;
   }
 
