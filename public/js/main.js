@@ -31,6 +31,7 @@ var checkboxdata = {
         "usage of": { defchecked: false },
         "has usages": { defchecked: false },
         "synonym cluster": { defchecked: false },
+        "most common 3000": { defchecked: false },
     },
     "bucket4": {
         "instance of": { defchecked: false },
@@ -382,8 +383,11 @@ $(document).ready(function(){
 
         try {
 
-            var syn = ischeckedparam("synonym_cluster", false);
-            const data0 = await fetch(`/.netlify/functions/getWord?word=${word}&synonym_cluster=${syn}`, { mode: 'cors'});
+            var qs=[`word=${word}`];
+            checkp(qs, "synonym_cluster", {defchecked:false});
+            checkp(qs, "most_common_3000", {defchecked:false});
+
+            const data0 = await fetch(`/.netlify/functions/getWord?${qs.join("&")}`, { mode: 'cors'});
             // asynchronously calls our custome function
             const data = await data0.json();
 

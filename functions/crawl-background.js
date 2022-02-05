@@ -1,6 +1,4 @@
 
-const axios = require('axios');
-const fs = require('fs');
 const crawler = require('./include/crawler');
 const cw = require('./include/common-words.js');
 

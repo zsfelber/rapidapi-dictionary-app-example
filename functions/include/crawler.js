@@ -332,3 +332,31 @@ export async function loadCluster(word, asobject) {
   }
 }
 
+export async function loadCommonWord(results, word) {
+  const entry = await loadSingleWord(word, true);
+
+  for (let key in entry.results) {
+    const val = entry.results[key]; 
+
+  const result = {
+    label: word
+  }
+}
+
+export async function loadCommonWords() {
+  const cw = require('./common-words.js');
+
+  // create new array to push data to
+  let results = [];
+  let result = {
+    results, etc:""
+  };
+
+  let promises = [];
+  for (let commonWord in cw.TheMostCommon3000) {
+    promises.push(loadCommonWord(results, commonWord));
+  }
+  await Promise.all(promises);
+
+  return result;
+}

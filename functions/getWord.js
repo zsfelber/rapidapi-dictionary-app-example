@@ -1,5 +1,3 @@
-const axios = require('axios');
-const fs = require('fs');
 const crawler = require('./include/crawler.js');
 
 const MAX_WORDS = 50;
@@ -20,11 +18,13 @@ export async function handler(event, context) {
   //   extract the word query parameter from the HTTP request
   const word = event.queryStringParameters.word || "";
   const synonym_cluster = event.queryStringParameters.synonym_cluster=="true";
+  const most_common_3000 = event.queryStringParameters.most_common_3000=="true";
 
   try {
 
     let json;
-    if (synonym_cluster) {
+    if (most_common_3000) {
+    } else if (synonym_cluster) {
       console.log("synonym_cluster:"+word);
 
       json = await crawler.loadCluster(word, false);
