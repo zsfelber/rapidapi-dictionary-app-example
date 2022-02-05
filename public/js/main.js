@@ -190,7 +190,11 @@ function proplabel(property, parselabel=false, linksIdxLabFrom=0, linksIdxValTo=
     if (!parselabel && property.label === 'examples') {
         createaas(value, property.value, ", ");
     } else {
-        createas(value, property.value, ", ", 0, linksIdxValTo);
+        let normal = property.value.slice(0, linksIdxValTo);
+        createas(value, normal, ", ");
+
+        let remainder = property.value.slice(linksIdxValTo, property.value.length);
+        createaas(value, remainder, ", ");
     }
 
     value.className = 'col-sm-9';

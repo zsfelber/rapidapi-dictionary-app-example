@@ -8,7 +8,24 @@ let CACHE_CLUSTERS;
 let MAX_NODE_FREQUENCY;
 let TRAVERSE_SIMILAR;
 
+let cacheIsInitialized = false;
 let totalWordsLastDay;
+
+export async function lazyInitCache() {
+
+  if (!cacheIsInitialized) {
+    let curtime = new Date();
+
+    // 86400000 milliseconds (24 hours)
+    totalWordsLastDay = await finder.findFiles("cache/words", curtime - 86400000);
+  
+    cacheIsInitialized = true;
+
+    console.log("lazyInitCache  totalWordsLastDay : "+totalWordsLastDay+" errors:"+finder.errors);
+    return totalWordsLastDay;
+  }
+  return totalWordsLastDay;
+}
 
 export async function initCrawler(
   _MAX_WORDS,
@@ -17,27 +34,19 @@ export async function initCrawler(
   _TRAVERSE_SIMILAR
   ) {
 
-    MAX_WORDS = _MAX_WORDS;
-    CACHE_CLUSTERS = _CACHE_CLUSTERS;
-    MAX_NODE_FREQUENCY = _MAX_NODE_FREQUENCY;
-    TRAVERSE_SIMILAR = _TRAVERSE_SIMILAR;
-  
-
-    if (!fs.existsSync("cache/words")){
-      fs.mkdirSync("cache/words", { recursive: true });
-    }
-    if (!fs.existsSync("cache/clusters")){
-      fs.mkdirSync("cache/clusters");
-    }
+  MAX_WORDS = _MAX_WORDS;
+  CACHE_CLUSTERS = _CACHE_CLUSTERS;
+  MAX_NODE_FREQUENCY = _MAX_NODE_FREQUENCY;
+  TRAVERSE_SIMILAR = _TRAVERSE_SIMILAR;
 
 
-    let curtime = new Date();
+  if (!fs.existsSync("cache/words")){
+    fs.mkdirSync("cache/words", { recursive: true });
+  }
+  if (!fs.existsSync("cache/clusters")){
+    fs.mkdirSync("cache/clusters");
+  }
 
-    // 86400000 milliseconds (24 hours)
-    totalWordsLastDay = await finder.findFiles("cache/words", curtime - 86400000);
-
-    console.log("initCrawler  totalWordsLastDay : "+totalWordsLastDay+" errors:"+finder.errors);
-    return totalWordsLastDay;
 }
 
 export function singleWordToDisplay(data) {
@@ -114,6 +123,8 @@ export async function loadSingleWord(word, asobject) {
       fs.unlinkSync(wfpath);
     }
   }
+
+  await lazyInitCache();
 
   if (totalWordsLastDay >= API_DAILY_LIMIT) {
     console.error("Could not make request to file/single "+wfpath+"  totalWordsLastDay >= API_DAILY_LIMIT :  "+totalWordsLastDay+" >= "+API_DAILY_LIMIT+"\n");
@@ -290,11 +301,13 @@ export async function loadCluster(word, asobject) {
       defobj.compress();
     }
     let result = {
-      frequency:tresult.master.frequency,
-      pronunciation:tresult.master.pronunciation,
       noClusterEntries:by_key.length,
       results:by_key
     };
+    if (tresult.master) {
+      result.frequency = tresult.master.frequency;
+      result.pronunciation = tresult.master.pronunciation;
+    }
 
     let cjson;
     if (CACHE_CLUSTERS) {

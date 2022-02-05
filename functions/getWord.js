@@ -10,7 +10,7 @@ const TRAVERSE_SIMILAR = false;
 
 
 export async function handler(event, context) {
-  await crawler.initCrawler(
+  crawler.initCrawler(
     MAX_WORDS,
     CACHE_CLUSTERS,
     MAX_NODE_FREQUENCY,
