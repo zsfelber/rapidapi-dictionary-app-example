@@ -129,7 +129,9 @@ function checkps() {
     for (bucketid in checkboxdata) {
         var bucket = checkboxdata[bucketid];
         for (chid in bucket) {
-            checkp(qs, chid, bucket[chid]);
+            if (chid != "most common 3000") {
+                checkp(qs, chid, bucket[chid]);
+            }
         }
     }
 
@@ -228,6 +230,7 @@ function updateSingleWord() {
 
     const data = lastresult;
     $("#title").html(data.word);
+    $("#word-input").val(word);
 
     // clears the word container if it had
     // previous data
@@ -341,6 +344,7 @@ function updateCluster() {
 
     const data = lastresult;
     $("#title").html(data.word);
+    $("#word-input").val(word);
 
     // clears the word container if it had
     // previous data
@@ -416,8 +420,6 @@ $(document).ready(function(){
 
     
     async function dosubmit(word) {
-
-        $("#word-input").val(word);
 
         // adds the text 'Loading...' to our word 
         // data container for UX purposes

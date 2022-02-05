@@ -359,7 +359,7 @@ export async function loadCommonWord(result, word, noWords) {
 
     for (let key in entry.results) {
       const val = entry.results[key]; 
-      const synonyms = val.synonyms ? [].concat(val.synonyms) : [];
+      const synonyms = val.synonyms ? [word].concat(val.synonyms) : [word];
       synonyms.sort();
       const similar = val.similarTo ? [].concat(val.similarTo) : [];
       similar.sort();
