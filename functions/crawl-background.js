@@ -19,7 +19,6 @@ export async function handler(event, context) {
 
     console.log("crawling in the background starting from top 10000 English words...");
 
-    let promises = [];
     const cw1 = require('./include/common-words-10000-a-c.js');
     const cw2 = require('./include/common-words-10000-d-h.js');
     const cw3 = require('./include/common-words-10000-i-o.js');
@@ -35,13 +34,26 @@ export async function handler(event, context) {
     tresult.noWords = 0;
     tresult.newWords = 0;
 
-    for (let cw of cws) {
+    let promises = [];
+    a:for (let cw of cws) {
       for (let commonWord in cw.TheMostCommon10000) {
         promises.push(crawler.traverseCluster(tresult, commonWord, false));
+        if (promises.length==10) {
+          await Promise.all(promises);
+          console.log("10 crawlers joined.");
+          promises = [];
+          if (crawler.isApiLimitReached()) {
+            console.log("API limit reached. STOP");
+            break a;
+          }
+        }
       }
     }
+    if (promises.length) {
+      await Promise.all(promises);
+      console.log("remaining "+promises.length+" crawlers joined.");
+    }
 
-    await Promise.all(promises);
 
     console.log("Completed  Travesred:"+tresult.noWords+" written:"+tresult.newWords);
 

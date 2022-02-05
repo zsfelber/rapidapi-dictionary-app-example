@@ -48,6 +48,18 @@ async function remoteCallInit() {
   }
 }
 
+export function isApiLimitReached() {
+  if (cacheIsInitialized) {
+    if (cacheInitializerCommon) {
+      return totalWordsLastDay >= API_DAILY_LIMIT;
+    } else {
+      return false;
+    }
+  } else {
+    return parallelCacheInitRequests >= API_DAILY_LIMIT;
+  }
+}
+
 export async function initCrawler(
   _MAX_WORDS,
   _CACHE_CLUSTERS,
