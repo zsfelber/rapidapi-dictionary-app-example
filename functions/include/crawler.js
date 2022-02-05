@@ -10,7 +10,7 @@ let TRAVERSE_SIMILAR;
 
 let totalWordsLastDay;
 
-export function initCrawler(
+export async function initCrawler(
   _MAX_WORDS,
   _CACHE_CLUSTERS,
   _MAX_NODE_FREQUENCY,
@@ -37,6 +37,7 @@ export function initCrawler(
     totalWordsLastDay = await finder.findFiles("cache/words", curtime - 86400000);
 
     console.log("initCrawler  totalWordsLastDay : "+totalWordsLastDay+" errors:"+finder.errors);
+    return totalWordsLastDay;
 }
 
 export function singleWordToDisplay(data) {
