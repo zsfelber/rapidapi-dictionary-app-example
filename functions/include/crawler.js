@@ -1,10 +1,9 @@
-import { emit } from 'process';
 
 const axios = require('axios');
 const fs = require('fs');
 const finder = require('./finder.js');
 
-const API_DAILY_LIMIT = 35000;
+const API_DAILY_LIMIT = 25000;
 let MAX_WORDS;
 let CACHE_CLUSTERS;
 let MAX_NODE_FREQUENCY;
