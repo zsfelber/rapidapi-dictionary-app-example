@@ -70,6 +70,7 @@ export function singleWordToDisplay(data) {
   // create new array to push data to
   let results = [];
   let result = {
+    word:data.word,
     frequency:data.frequency,
     pronunciation:data.pronunciation,
     results, etc:""
@@ -315,6 +316,7 @@ export async function loadCluster(word, asobject) {
       defobj.compress();
     }
     let result = {
+      word,
       noClusterEntries:by_key.length,
       results:by_key
     };
@@ -359,11 +361,13 @@ export async function loadCommonWord(result, word, noWords) {
       const val = entry.results[key]; 
       const synonyms = [].concat(val.synonyms);
       synonyms.sort();
+      const similar = [].concat(val.similarTo);
+      similar.sort();
 
       const definition = {
         partOfSpeech: val.partOfSpeech,
         definition: val.definition,
-        synonyms
+        synonyms, similar
       };
       result.noDefinitions++;
       result.results.push(definition);
@@ -371,7 +375,7 @@ export async function loadCommonWord(result, word, noWords) {
   }
 }
 
-export async function loadCommonWords() {
+export async function loadCommonWords(asobject) {
   const cw = require('./common-words.js');
 
   // create new array to push data to
@@ -389,5 +393,13 @@ export async function loadCommonWords() {
   }
   await Promise.all(promises);
 
-  return result;
+  let cjson;
+  if (asobject) {
+    return result;
+  } else {
+    if (!cjson) {
+      cjson = JSON.stringify(result);
+    }
+    return cjson;
+  }
 }

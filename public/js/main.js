@@ -227,6 +227,7 @@ function printLabel(data) {
 function updateSingleWord() {
 
     const data = lastresult;
+    $("#title").html(data.word);
 
     // clears the word container if it had
     // previous data
@@ -339,6 +340,7 @@ function update3000() {
 function updateCluster() {
 
     const data = lastresult;
+    $("#title").html(data.word);
 
     // clears the word container if it had
     // previous data
@@ -416,7 +418,6 @@ $(document).ready(function(){
     async function dosubmit(word) {
 
         $("#word-input").val(word);
-        $("#title").html(word);
 
         // adds the text 'Loading...' to our word 
         // data container for UX purposes
@@ -447,9 +448,10 @@ $(document).ready(function(){
         }
     }
 
-    var word = $.urlParam('word');
+    var url_word = $.urlParam('word');
+    var url_3000 = $.urlParam('most_common_3000');
     // adds a submit listened to our <form> element
-    if (word) {
-        dosubmit(word);
+    if (url_3000=="true" || url_word) {
+        dosubmit(url_word);
     }
 });
