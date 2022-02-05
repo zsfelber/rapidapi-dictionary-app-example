@@ -1,6 +1,6 @@
 
 var lastresult;
-var last3000;
+var lastmostcommon;
 var lastsyn;
 var update_to;
 var col=2,wordInfoTbl,wordInfoRow,wordInfoBox,info;
@@ -372,10 +372,10 @@ function updateCluster() {
 function update(firsttime) {
     update_to = undefined;
 
-    const _3000 = last3000;
+    const _mostcommon = lastmostcommon;
     const syn = lastsyn;
 
-    if (_3000) {
+    if (_mostcommon) {
         if (firsttime) {
             updateMostCommon();
         }
@@ -448,7 +448,7 @@ $(document).ready(function(){
             // asynchronously calls our custome function
             const data = await data0.json();
 
-            last3000 = _3000||_10000a_c||_10000d_h||_10000i_o||_10000p_r||_10000s_z;
+            lastmostcommon = _3000||_10000a_c||_10000d_h||_10000i_o||_10000p_r||_10000s_z;
             lastsyn = syn;
             lastresult = data;
             
