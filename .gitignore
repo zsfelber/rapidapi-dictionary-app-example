@@ -5,6 +5,7 @@ cache/words/c.o.d.
 cache/words/d.o.a.
 cache/words/o.k.
 cache/words/w.c.
+cache/words/a.d.
 cache/words/con
 cache/words/robert floyd curl jr.
 cache/words/martin luther king jr.
@@ -13,4 +14,6 @@ cache/words/mich.
 cache/words/lbf.
 cache/words/dr.
 cache/words/ut.
+cache/words/mo.
+cache/words/no.
 lambda/getWord.js
