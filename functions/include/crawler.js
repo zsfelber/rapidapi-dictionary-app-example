@@ -181,7 +181,7 @@ export async function loadSingleWord(word, asobject) {
 export class TraverseNode {
 
   entry;val;level;partOfSpeech;
-  definition;synonyms;similar;word;words;
+  definition;synonyms;similar;word;examples;words;
   key;
 
   constructor(by_def, entry, val, level) {
@@ -192,6 +192,7 @@ export class TraverseNode {
     this.synonyms = [];
     this.similar = [];
     this.words = [];
+    this.examples = [];
 
     this.add(by_def);
   }
@@ -206,6 +207,9 @@ export class TraverseNode {
     this.similar.push.apply(this.similar, this.val.similarTo);
     this.similar.sort();
   
+    this.examples.push.apply(this.examples, this.val.examples);
+    this.examples.sort();
+
     this.words.push.apply(this.words, this.synonyms);
     this.words.push.apply(this.words, this.similar);
   
@@ -233,7 +237,12 @@ function appendTo(array, itemOrArray) {
     array.push(itemOrArray);
   }
 }
-export async function loadDictionaryAndChildren(tresult, word, traversion) {
+
+export async function loadDictionaryAndChildren(tresult, word, traversion, parentNode, loadChildren) {
+
+  if (!parentNode &&  !loadChildren) {
+    return false;
+  }
 
   const by_def = tresult.by_def;
   const entry = await loadSingleWord(word, true);
@@ -250,32 +259,44 @@ export async function loadDictionaryAndChildren(tresult, word, traversion) {
 
   for (let key in entry.results) {
     const val = entry.results[key]; 
+    if (parentNode && val.definition == parentNode.definition) {
+      parentNode.examples.push.apply(parentNode.examples, this.val.examples);
+      parentNode.examples.sort();
+      if (!loadChildren) break;
+    }
 
-    let node = new TraverseNode(by_def, entry, val, traversion.level);
-    if (TRAVERSE_ALL) {
-      appendTo(traversion.wordsbreadthfirst, node.words);
-      appendTo(traversion.wordsbreadthfirst, val.antonyms);
-      appendTo(traversion.wordsbreadthfirst, val.typeOf);
-      appendTo(traversion.wordsbreadthfirst, val.hasTypes);
-      appendTo(traversion.wordsbreadthfirst, val.partOf);
-      appendTo(traversion.wordsbreadthfirst, val.hasParts);
-      appendTo(traversion.wordsbreadthfirst, val.instanceOf);
-      appendTo(traversion.wordsbreadthfirst, val.hasInstances);
-      appendTo(traversion.wordsbreadthfirst, val.also);
-      appendTo(traversion.wordsbreadthfirst, val.entails);
-      appendTo(traversion.wordsbreadthfirst, val.memberOf);
-      appendTo(traversion.wordsbreadthfirst, val.hasMembers);
-      appendTo(traversion.wordsbreadthfirst, val.substanceOf);
-      appendTo(traversion.wordsbreadthfirst, val.hasSubstances);
-      appendTo(traversion.wordsbreadthfirst, val.inCategory);
-      appendTo(traversion.wordsbreadthfirst, val.hasCategories);
-      appendTo(traversion.wordsbreadthfirst, val.usageOf);
-      appendTo(traversion.wordsbreadthfirst, val.hasUsages);
-      appendTo(traversion.wordsbreadthfirst, val.inRegion);
-      appendTo(traversion.wordsbreadthfirst, val.regionOf);
-      appendTo(traversion.wordsbreadthfirst, val.pertainsTo);
-    } else {
-      appendTo(traversion.wordsbreadthfirst, node.synonyms);
+    if (loadChildren) {
+      let node = new TraverseNode(by_def, entry, val, traversion.level);
+      let totwords = [];
+      if (TRAVERSE_ALL) {
+        appendTo(totwords, node.words);
+        appendTo(totwords, val.antonyms);
+        appendTo(totwords, val.typeOf);
+        appendTo(totwords, val.hasTypes);
+        appendTo(totwords, val.partOf);
+        appendTo(totwords, val.hasParts);
+        appendTo(totwords, val.instanceOf);
+        appendTo(totwords, val.hasInstances);
+        appendTo(totwords, val.also);
+        appendTo(totwords, val.entails);
+        appendTo(totwords, val.memberOf);
+        appendTo(totwords, val.hasMembers);
+        appendTo(totwords, val.substanceOf);
+        appendTo(totwords, val.hasSubstances);
+        appendTo(totwords, val.inCategory);
+        appendTo(totwords, val.hasCategories);
+        appendTo(totwords, val.usageOf);
+        appendTo(totwords, val.hasUsages);
+        appendTo(totwords, val.inRegion);
+        appendTo(totwords, val.regionOf);
+        appendTo(totwords, val.pertainsTo);
+      } else {
+        appendTo(totwords, node.synonyms);
+      }
+      for (let word of totwords) {
+        let pair = {parent:node, word};
+        traversion.wordsbreadthfirst.push(pair);
+      }
     }
   }
 
@@ -286,7 +307,7 @@ export async function traverseCluster(tresult, word, themainabstraction=true) {
 
   let traversion = {
     level : 1,
-    wordsbreadthfirst : [word]
+    wordsbreadthfirst : [{word}]
   };
   if (themainabstraction) {
     tresult.noWords = 0;
@@ -300,18 +321,27 @@ export async function traverseCluster(tresult, word, themainabstraction=true) {
     traversion.wordsbreadthfirst = [];
 
     let promises = [];
-    for (let w of previouslevelchildwords) {
+    for (let pair of previouslevelchildwords) {
+      let w = pair.word;
+      let loadChildren;
+
       if (tresult.by_w[w]) {
-      } else if (tresult.noWords >= MAX_WORDS) {
-        if (themainabstraction) console.log(word+" Level "+traversion.level+" finished. Limit reached.");
-        return;
+        loadChildren = false;
       } else {
         tresult.noWords++;
         tresult.by_w[w] = 1;
-        if (themainabstraction || !(tresult.noWords%1000)) console.log(tresult.noWords + "/" + MAX_WORDS);
-    
-        let nodepromise = loadDictionaryAndChildren(tresult, w, traversion);
-        promises.push(nodepromise);
+        loadChildren = tresult.noWords < MAX_WORDS;
+
+        if (!(tresult.noWords%1000)) console.log(tresult.noWords + "/" + MAX_WORDS);
+      }
+
+
+      let nodepromise = loadDictionaryAndChildren(tresult, w, traversion, pair.parent, loadChildren);
+      promises.push(nodepromise);
+
+      if (tresult.noWords >= MAX_WORDS) {
+        if (themainabstraction) console.log(word+" Level "+traversion.level+" finished. Limit reached.");
+        return;
       }
     }
     await Promise.all(promises);
@@ -394,9 +424,12 @@ export async function loadCommonWord(result, word, noWords) {
   const entry = await loadSingleWord(word, true);
 
   if (entry) {
-  
+    if (!entry.fromCache) {
+      result.newWords++;
+    }
+    
     result.noWords++;
-    console.log(result.noWords + "/" + noWords);
+    if (!(result.noWords%1000)) console.log(result.noWords + "/" + noWords);
 
     for (let key in entry.results) {
       const val = entry.results[key]; 
@@ -409,8 +442,17 @@ export async function loadCommonWord(result, word, noWords) {
         word,
         partOfSpeech: val.partOfSpeech,
         definition: val.definition,
+        examples: val.examples,
         synonyms, similar
       };
+
+      let promises = [];
+      for (let syn of val.synonyms) {
+        let nodepromise = loadDictionaryAndChildren(result, syn, {level:0}, definition, false);
+        promises.push(nodepromise);
+      }
+      await Promise.all(promises);
+
       result.noDefinitions++;
       result.results.push(definition);
     }
@@ -424,6 +466,7 @@ export async function loadCommonWords(words, word, asobject) {
   let result = {
     word,
     noWords:0,
+    newWords:0,
     noDefinitions:0,
     results
   };
@@ -435,6 +478,8 @@ export async function loadCommonWords(words, word, asobject) {
   }
   await Promise.all(promises);
 
+  console.log("Common words query processed  Travesred:"+result.noWords+" written:"+result.newWords);
+
   let cjson;
   if (asobject) {
     return result;
@@ -444,6 +489,7 @@ export async function loadCommonWords(words, word, asobject) {
     }
     return cjson;
   }
+
 }
 
 export async function loadCommonWords3000(word, asobject) {
