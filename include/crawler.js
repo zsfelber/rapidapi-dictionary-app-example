@@ -1,6 +1,7 @@
 const axios = require('axios');
 const fs = require('fs');
-let API_DAILY_LIMIT;
+
+const API_DAILY_LIMIT = 25000;
 let MAX_WORDS;
 let CACHE_CLUSTERS;
 let MAX_NODE_FREQUENCY;
@@ -9,14 +10,12 @@ let TRAVERSE_SIMILAR;
 let totalWordsLastDay;
 
 export function initCrawler(
-  _API_DAILY_LIMIT,
   _MAX_WORDS,
   _CACHE_CLUSTERS,
   _MAX_NODE_FREQUENCY,
   _TRAVERSE_SIMILAR
   ) {
 
-    API_DAILY_LIMIT = _API_DAILY_LIMIT;
     MAX_WORDS = _MAX_WORDS;
     CACHE_CLUSTERS = _CACHE_CLUSTERS;
     MAX_NODE_FREQUENCY = _MAX_NODE_FREQUENCY;

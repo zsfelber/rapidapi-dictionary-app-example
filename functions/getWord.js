@@ -2,7 +2,6 @@ const axios = require('axios');
 const fs = require('fs');
 const crawler = require('crawler');
 
-const API_DAILY_LIMIT = 1000000000;
 const MAX_WORDS = 50;
 const CACHE_CLUSTERS = false;
 const MAX_NODE_FREQUENCY = 4;
@@ -12,7 +11,6 @@ const TRAVERSE_SIMILAR = false;
 
 export async function handler(event, context) {
   crawler.initCrawler(
-    API_DAILY_LIMIT,
     MAX_WORDS,
     CACHE_CLUSTERS,
     MAX_NODE_FREQUENCY,
