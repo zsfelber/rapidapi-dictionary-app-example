@@ -118,7 +118,8 @@ export function singleWordToDisplay(data) {
 
 export async function loadSingleWord(word, asobject) {
 
-  const wfpath = `cache/words/${word}`;
+  let fileword = word.replace(/[.,/']/g, "$");
+  const wfpath = `cache/words/${fileword}`;
 
   if (fs.existsSync(wfpath)) {
 
