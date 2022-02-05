@@ -447,7 +447,7 @@ export async function loadCommonWord(result, word, noWords) {
       };
 
       let promises = [];
-      for (let syn of val.synonyms) {
+      for (let syn of (val.synonyms?val.synonyms:[])) {
         let nodepromise = loadDictionaryAndChildren(result, syn, {level:0}, definition, false);
         promises.push(nodepromise);
       }
