@@ -332,8 +332,11 @@ export async function loadCluster(word, asobject) {
   }
 }
 
-export async function loadCommonWord(result, word) {
+export async function loadCommonWord(result, word, noWords) {
   const entry = await loadSingleWord(word, true);
+
+  result.noWords++;
+  console.log(result.noWords + "/" + noWords);
 
   for (let key in entry.results) {
     const val = entry.results[key]; 
@@ -356,14 +359,15 @@ export async function loadCommonWords() {
   // create new array to push data to
   let results = [];
   let result = {
-    noWords:Object.keys(cw.TheMostCommon3000).length,
+    noWords:0,
     noDefinitions:0,
     results
   };
 
   let promises = [];
+  let noWords = Object.keys(cw.TheMostCommon3000).length;
   for (let commonWord in cw.TheMostCommon3000) {
-    promises.push(loadCommonWord(result, commonWord));
+    promises.push(loadCommonWord(result, commonWord, noWords));
   }
   await Promise.all(promises);
 
