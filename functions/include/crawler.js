@@ -1,3 +1,5 @@
+import { emit } from 'process';
+
 const axios = require('axios');
 const fs = require('fs');
 const finder = require('./finder.js');
@@ -178,7 +180,7 @@ export async function loadSingleWord(word, asobject) {
       return ojson;
     }
   } catch (e) {
-    console.warn("API error", e);
+    console.warn("API error (",word, ") ", e&&e.message?e.message:"?");
     return null;
   }
 
