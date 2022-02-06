@@ -499,6 +499,7 @@ $(document).ready(function(){
     let chbs4 = document.querySelector('.checkboxes4');
     let chbs5 = document.querySelector('.checkboxes5');
     let chbs6 = document.querySelector('.checkboxes6');
+    let chbs7 = document.querySelector('.checkboxes7');
     var chbuckets = {bucket1:chbs1,bucket2:chbs2,bucket3:chbs3,bucket4:chbs4,bucket5:chbs5};
 
     for (bucketid in chbuckets) {

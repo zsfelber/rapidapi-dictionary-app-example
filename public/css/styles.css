@@ -57,9 +57,9 @@ main {
 
 .boxcards {
     display: inline-block;
-    width: 100rem;
+    width: 120rem;
     vertical-align: top;
-    margin-left: 100px;
+    margin-left: 0px;
 }
 
 .boxcard {
