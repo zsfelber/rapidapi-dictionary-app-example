@@ -200,27 +200,22 @@ export async function loadSingleWord(word, asobject) {
 
 }
 
-export class TraverseNode {
+export class WordNode {
 
-  entry;val;level;partOfSpeech;
-  definition;synonyms;similar;word;examples;words;
+  entry;val;partOfSpeech;
+  definition;synonyms;similar;word;examples;examplesTmp;words;
   key;
 
-  constructor(by_def, entry, val, level) {
-    this.entry=entry;this.val=val;this.level=level;
-    this.word=entry.word;
+  constructor(entry, val) {
+    this.entry=entry;this.val=val;
 
     this.definition = val.definition; 
     this.synonyms = [];
     this.similar = [];
     this.words = [];
-    this.examples = [];
+    this.examplesTmp = {};
 
-    this.add(by_def);
-  }
-
-  add(by_def) {
-  
+    this.word = this.entry.word;
     this.partOfSpeech = this.val.partOfSpeech;
     this.synonyms.push.apply(this.synonyms, this.val.synonyms);
     this.synonyms.push(this.word);
@@ -229,17 +224,17 @@ export class TraverseNode {
     this.similar.push.apply(this.similar, this.val.similarTo);
     this.similar.sort();
   
-    this.examples.push.apply(this.examples, this.val.examples);
-    this.examples.sort();
+    this.addExamples(this.val.examples);
 
     this.words.push.apply(this.words, this.synonyms);
     this.words.push.apply(this.words, this.similar);
-  
-    this.key = this.level+":::::::"+this.synonyms.length+"::::::"+this.synonyms.join(", ");
 
-    if (!by_def[this.val.definition]) {
+    this.key = this.word+":::::::"+this.synonyms.length+":::::::"+this.synonyms.join(", ");
+  }
 
-      by_def[this.val.definition] = this;
+  addExamples(examples) {
+    for (let x of examples) {
+      this.examplesTmp[x] = 1;
     }
   }
 
@@ -248,6 +243,29 @@ export class TraverseNode {
     delete this.val;
     delete this.key;
     delete this.words;
+    this.examples = [];
+    for (let x of this.examplesTmp) {
+      this.examples.push(x);
+    }
+    delete this.examplesTmp;
+  }
+
+}
+
+export class WordClusterNode extends WordNode {
+
+  level;
+
+  constructor(by_def, entry, val, level) {
+    super(entry, val);
+    this.level=level;
+
+    this.key = this.level+":::::::"+this.synonyms.length+"::::::"+this.synonyms.join(", ");
+
+    if (!by_def[this.val.definition]) {
+
+      by_def[this.val.definition] = this;
+    }
   }
   
 };
@@ -282,13 +300,12 @@ export async function loadDictionaryAndChildren(tresult, word, traversion, paren
   for (let key in entry.results) {
     const val = entry.results[key]; 
     if (parentNode && val.definition == parentNode.definition) {
-      parentNode.examples.push.apply(parentNode.examples, val.examples);
-      parentNode.examples.sort();
+      parentNode.addExamples(val.examples);
       if (!loadChildren) break;
     }
 
     if (loadChildren) {
-      let node = new TraverseNode(by_def, entry, val, traversion.level);
+      let node = new WordClusterNode(by_def, entry, val, traversion.level);
       let totwords = [];
       if (TRAVERSE_ALL) {
         appendTo(totwords, node.words);
@@ -405,8 +422,8 @@ export async function loadCluster(word, asobject) {
       return firstEl.key.localeCompare(secondEl.key);
     };
     by_key.sort(cmp);
-    for (let defobj of by_key) {
-      defobj.compress();
+    for (let node of by_key) {
+      node.compress();
     }
     let result = {
       word,
@@ -455,23 +472,12 @@ export async function loadCommonWord(result, word, noWords) {
 
     for (let key in entry.results) {
       const val = entry.results[key]; 
-      const synonyms = val.synonyms ? [word].concat(val.synonyms) : [word];
-      synonyms.sort();
-      const similar = val.similarTo ? [].concat(val.similarTo) : [];
-      similar.sort();
 
-      const definition = {
-        word,
-        partOfSpeech: val.partOfSpeech,
-        definition: val.definition,
-        examples: val.examples?[].concat(val.examples):[],
-        synonyms, similar,
-        key:word+":::::::"+synonyms.length+":::::::"+synonyms.join(", ")
-      };
+      const wordNode = new WordNode(entry, val);
 
       let promises = [];
       for (let syn of (val.synonyms?val.synonyms:[])) {
-        let nodepromise = loadDictionaryAndChildren(result, syn, {level:0}, definition, false);
+        let nodepromise = loadDictionaryAndChildren(result, syn, {level:0}, wordNode, false);
         promises.push(nodepromise);
       }
       await Promise.all(promises);
@@ -505,6 +511,9 @@ export async function loadCommonWords(words, word, asobject) {
     return firstEl.key.localeCompare(secondEl.key);
   };
   result.results.sort(cmp);
+  for (let node of result.results) {
+    node.compress();
+  }
 
   console.log("Common words query processed  Travesred:"+result.noWords+" written:"+result.newWords);
 
