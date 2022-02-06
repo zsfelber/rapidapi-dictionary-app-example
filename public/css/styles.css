@@ -69,7 +69,28 @@ form {
 .boxcard {
     vertical-align: top;
     display: inline-block;
-    width: 18rem;
+    margin-left: 10px;
+    margin-right: 1px;
+}
+
+.checkcard {
+    vertical-align: top;
+    display: inline-block;
+    margin-left: 10px;
+    margin-right: 1px;
+}
+
+.ltrcard {
+    vertical-align: top;
+    display: inline-block;
+    text-align: justify;
+    margin-left: 10px;
+    margin-right: 1px;
+    width: 6rem;
+}
+
+.boxwmargin {
+    margin-left: 10px;
 }
 
 .titlcard {
@@ -93,11 +114,7 @@ form {
     margin-bottom: 0.2rem;
 }
 
-.checkcard {
-    width: 12rem;
-}
-
-.checkboxes1,.checkboxes2,.checkboxes3,.checkboxes4,.checkboxes5,.checkboxes6 {
+.checkboxes1,.checkboxes2,.checkboxes3,.checkboxes4,.checkboxes5,.checkboxes6,.checkboxes7,.top3000,.top10000 {
     display: inline-block;
 }
 

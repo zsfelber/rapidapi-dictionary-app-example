@@ -460,6 +460,8 @@ function update(firsttime) {
     case "most_common_10000_i-o":
     case "most_common_10000_p-r":
     case "most_common_10000_s-z":
+    case "top3000":
+    case "top10000":
         if (firsttime) {
             updateMostCommon();
         }
