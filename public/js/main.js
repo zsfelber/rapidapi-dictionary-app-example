@@ -376,12 +376,13 @@ function clusterBody(withmainword) {
             newrow();
             newbox("list-item-lg");
         }
+        const prearray = val.level||val.partOfSpeech?["("+(val.level?val.level+" ":"")+val.partOfSpeech+")"]:[];
         const property = {
-            label:["("+(val.level?val.level+" ":"")+val.partOfSpeech+")"].concat(val.synonyms), 
+            label:prearray.concat(val.synonyms), 
             value:val.similar.concat([val.definition])
         };
 
-        const def = proplabel(property, withmainword?data.word:val.word, true, 1, val.similar.length);
+        const def = proplabel(property, withmainword?data.word:val.word, true, prearray.length, val.similar.length);
         wordInfoBox.appendChild(def);
 
         if (val.examples && val.examples.length) {

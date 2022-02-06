@@ -516,9 +516,16 @@ export async function loadCommonWords(words, word, asobject) {
     return firstEl.key.localeCompare(secondEl.key);
   };
   result.results.sort(cmp);
+  let prevnode;
+  let filtered = [];
   for (let node of result.results) {
-    node.compress();
+    if (!prevnode || prevnode.definition!=node.definition) {
+      filtered.push(node);
+      node.compress();
+      prevnode = node;
+    }
   }
+  result.results = filtered;
 
   console.log("Common words query processed  Travesred:"+result.noWords+" written:"+result.newWords);
 
