@@ -526,6 +526,7 @@ export async function loadCommonWords(words, word, asobject) {
     }
   }
   result.results = filtered;
+  result.noDefinitions = filtered.length;
 
   console.log("Common words query processed  Travesred:"+result.noWords+" written:"+result.newWords);
 
