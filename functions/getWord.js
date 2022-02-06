@@ -23,10 +23,20 @@ export async function handler(event, context) {
 
     let json;
     switch (mode) {
-    case "most_common_3000":
-      console.log("most_common_3000");
+    case "most_common_3000_a-e":
+      console.log("most_common_3000_a-e");
 
-      json = await crawler.loadCommonWords3000(word, false);
+      json = await crawler.loadCommonWords3000_a_e(word, false);
+      break;
+    case "most_common_3000_f-p":
+      console.log("most_common_3000_f-p");
+
+      json = await crawler.loadCommonWords3000_f_p(word, false);
+      break;
+    case "most_common_3000_q-z":
+      console.log("most_common_3000_q-z");
+
+      json = await crawler.loadCommonWords3000_q_z(word, false);
       break;
     case "most_common_10000_a-c":
       console.log("most_common_10000_a-c");

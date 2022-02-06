@@ -52,13 +52,17 @@ var checkboxdata = {
     "bucket6": {
         "dictionary": { defchecked: true },
         "synonym cluster": { defchecked: false },
-        "most common 3000": { defchecked: false },
+        "most common 3000 a-e": { defchecked: false },
+        "most common 3000 f-p": { defchecked: false },
+        "most common 3000 q-z": { defchecked: false },
         "most common 10000 a-c": { defchecked: false },
         "most common 10000 d-h": { defchecked: false },
+    },
+    "bucket7": {
         "most common 10000 i-o": { defchecked: false },
         "most common 10000 p-r": { defchecked: false },
         "most common 10000 s-z": { defchecked: false },
-    }
+    },
 };
 
 function isch(id) {
@@ -448,7 +452,9 @@ function update(firsttime) {
     $("#word-input").val(data.word?data.word:"");
 
     switch (mode) {
-    case "most_common_3000":
+    case "most_common_3000-a-e":
+    case "most_common_3000-f-p":
+    case "most_common_3000-q-z":
     case "most_common_10000_a-c":
     case "most_common_10000_d-h":
     case "most_common_10000_i-o":
@@ -505,6 +511,10 @@ $(document).ready(function(){
     var bucket6 = checkboxdata["bucket6"];
     for (rid in bucket6) {
         addRadio(chbs6, rid, bucket6[rid], "mode");
+    }
+    var bucket7 = checkboxdata["bucket7"];
+    for (rid in bucket7) {
+        addRadio(chbs7, rid, bucket7[rid], "mode");
     }
     chkdict();
 

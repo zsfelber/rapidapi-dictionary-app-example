@@ -542,8 +542,18 @@ export async function loadCommonWords(words, word, asobject) {
 
 }
 
-export async function loadCommonWords3000(word, asobject) {
-  const cw = require('./common-words-3000.js');
+export async function loadCommonWords3000_a_e(word, asobject) {
+  const cw = require('./common-words-3000-a-e.js');
+  return loadCommonWords(cw.TheMostCommon3000, word, asobject);
+}
+
+export async function loadCommonWords3000_f_p(word, asobject) {
+  const cw = require('./common-words-3000-f-p.js');
+  return loadCommonWords(cw.TheMostCommon3000, word, asobject);
+}
+
+export async function loadCommonWords3000_q_z(word, asobject) {
+  const cw = require('./common-words-3000-q-z.js');
   return loadCommonWords(cw.TheMostCommon3000, word, asobject);
 }
 
