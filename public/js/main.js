@@ -452,9 +452,9 @@ function update(firsttime) {
     $("#word-input").val(data.word?data.word:"");
 
     switch (mode) {
-    case "most_common_3000-a-e":
-    case "most_common_3000-f-p":
-    case "most_common_3000-q-z":
+    case "most_common_3000_a-e":
+    case "most_common_3000_f-p":
+    case "most_common_3000_q-z":
     case "most_common_10000_a-c":
     case "most_common_10000_d-h":
     case "most_common_10000_i-o":
