@@ -233,7 +233,7 @@ export class WordNode {
   }
 
   addExamples(examples) {
-    for (let x of examples) {
+    if (examples) for (let x of examples) {
       this.examplesTmp[x] = 1;
     }
   }
