@@ -194,10 +194,10 @@ function checkps() {
 
     return qs.join("&");
 }
-function createa(word0, masterword) {
+function createa(word0, masterword, extraarg="") {
     const a = document.createElement('a');
     const word = word0.replace(/[^a-zA-Z0-9\- ]/g, "");
-    a.href = "?word="+word+"&"+checkps();
+    a.href = "?word="+word+extraarg+"&"+checkps();
     if (masterword==word) {
         a.classList.add('master');
     } else {
@@ -517,6 +517,17 @@ $(document).ready(function(){
     for (rid in bucket7) {
         addRadio(chbs7, rid, bucket7[rid], "mode");
     }
+    let top3000 = document.querySelector(".top3000");
+    for (let letter = 'A'; letter<='Z'; letter++) {
+        let a = createa(letter, null, "&top=3000&letter="+letter);
+        top3000.appendChild(a);
+    }
+    let top10000 = document.querySelector(".top10000");
+    for (let letter = 'A'; letter<='Z'; letter++) {
+        let a = createa(letter, null, "&top=10000&letter="+letter);
+        top10000.appendChild(a);
+    }
+
     chkdict();
 
     //$('.form-check-input').change(function(){
@@ -557,6 +568,7 @@ $(document).ready(function(){
 
     var url_word = $.urlParam('word');
     var urlmode = $.urlParam('mode');
+    var urltop = $.urlParam('top');
     // adds a submit listened to our <form> element
     if ((urlmode && urlmode!="dictionary") || url_word) {
         dosubmit(url_word);

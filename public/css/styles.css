@@ -57,9 +57,13 @@ main {
 
 .boxcards {
     display: inline-block;
-    width: 120rem;
+    width: 200rem;
     vertical-align: top;
     margin-left: 0px;
+}
+
+form {
+    text-align: left;
 }
 
 .boxcard {
