@@ -203,7 +203,7 @@ export async function loadSingleWord(word, asobject) {
 export class DefinitionNode {
 
   entry;val;partOfSpeech;
-  definition;synonyms;similar;word;examples;examplesTmp;words;
+  definition;synonyms;similar;word;examples;examplesTmp;
   key;
 
   constructor(entry, val) {
@@ -212,7 +212,6 @@ export class DefinitionNode {
     this.definition = val.definition; 
     this.synonyms = [];
     this.similar = [];
-    this.words = [];
     this.examplesTmp = {};
 
     this.word = this.entry.word;
@@ -225,9 +224,6 @@ export class DefinitionNode {
     this.similar.sort();
   
     this.addExamples(this.val.examples);
-
-    this.words.push.apply(this.words, this.synonyms);
-    this.words.push.apply(this.words, this.similar);
 
     this.key = this.word+":::::::"+this.synonyms.length+":::::::"+this.synonyms.join(", ");
   }
@@ -242,11 +238,11 @@ export class DefinitionNode {
     delete this.entry;
     delete this.val;
     delete this.key;
-    delete this.words;
     this.examples = [];
     for (let x of Object.keys(this.examplesTmp)) {
       this.examples.push(x);
     }
+    this.examples.sort();
     delete this.examplesTmp;
   }
 
@@ -255,10 +251,40 @@ export class DefinitionNode {
 export class ClusterDefinitionNode extends DefinitionNode {
 
   level;
+  words;
 
   constructor(by_def, entry, val, level) {
     super(entry, val);
     this.level=level;
+    
+    this.words = [];
+
+    if (TRAVERSE_ALL) {
+      appendTo(this.words, val.synonyms);
+      appendTo(this.words, val.similarTo);
+      appendTo(this.words, val.antonyms);
+      appendTo(this.words, val.typeOf);
+      appendTo(this.words, val.hasTypes);
+      appendTo(this.words, val.partOf);
+      appendTo(this.words, val.hasParts);
+      appendTo(this.words, val.instanceOf);
+      appendTo(this.words, val.hasInstances);
+      appendTo(this.words, val.also);
+      appendTo(this.words, val.entails);
+      appendTo(this.words, val.memberOf);
+      appendTo(this.words, val.hasMembers);
+      appendTo(this.words, val.substanceOf);
+      appendTo(this.words, val.hasSubstances);
+      appendTo(this.words, val.inCategory);
+      appendTo(this.words, val.hasCategories);
+      appendTo(this.words, val.usageOf);
+      appendTo(this.words, val.hasUsages);
+      appendTo(this.words, val.inRegion);
+      appendTo(this.words, val.regionOf);
+      appendTo(this.words, val.pertainsTo);
+    } else {
+      appendTo(this.words, val.synonyms);
+    }
 
     this.key = this.level+":::::::"+this.synonyms.length+"::::::"+this.synonyms.join(", ");
 
@@ -267,7 +293,11 @@ export class ClusterDefinitionNode extends DefinitionNode {
       by_def[this.val.definition] = this;
     }
   }
-  
+
+  compress() {
+    super.compress();
+    delete this.words;
+  }
 };
 
 function appendTo(array, itemOrArray) {
@@ -306,33 +336,7 @@ export async function loadDictionaryAndChildren(tresult, word, traversion, paren
 
     if (loadChildren) {
       let node = new ClusterDefinitionNode(by_def, entry, val, traversion.level);
-      let totwords = [];
-      if (TRAVERSE_ALL) {
-        appendTo(totwords, node.words);
-        appendTo(totwords, val.antonyms);
-        appendTo(totwords, val.typeOf);
-        appendTo(totwords, val.hasTypes);
-        appendTo(totwords, val.partOf);
-        appendTo(totwords, val.hasParts);
-        appendTo(totwords, val.instanceOf);
-        appendTo(totwords, val.hasInstances);
-        appendTo(totwords, val.also);
-        appendTo(totwords, val.entails);
-        appendTo(totwords, val.memberOf);
-        appendTo(totwords, val.hasMembers);
-        appendTo(totwords, val.substanceOf);
-        appendTo(totwords, val.hasSubstances);
-        appendTo(totwords, val.inCategory);
-        appendTo(totwords, val.hasCategories);
-        appendTo(totwords, val.usageOf);
-        appendTo(totwords, val.hasUsages);
-        appendTo(totwords, val.inRegion);
-        appendTo(totwords, val.regionOf);
-        appendTo(totwords, val.pertainsTo);
-      } else {
-        appendTo(totwords, node.synonyms);
-      }
-      for (let word of totwords) {
+      for (let word of node.words) {
         let pair = {parent:node, word};
         traversion.wordsbreadthfirst.push(pair);
       }
@@ -373,7 +377,6 @@ export async function traverseCluster(tresult, word, themainabstraction=true) {
 
         if (!(tresult.noWords%1000)) console.log(tresult.noWords + "/" + MAX_WORDS);
       }
-
 
       let nodepromise = loadDictionaryAndChildren(tresult, w, traversion, pair.parent, loadChildren);
       promises.push(nodepromise);
