@@ -18,6 +18,7 @@ export async function handler(event, context) {
   //   extract the word query parameter from the HTTP request
   const word = event.queryStringParameters.word || "";
   const mode = event.queryStringParameters.mode || "";
+  const letter = event.queryStringParameters.letter || "";
 
   try {
 
@@ -62,6 +63,16 @@ export async function handler(event, context) {
       console.log("most_common_10000_s-z");
 
       json = await crawler.loadCommonWords10000_s_z(word, false);
+      break;
+    case "top3000":
+      console.log("top3000:"+letter);
+
+      json = await crawler.loadCommonWords3000(word, letter, false);
+      break;
+    case "top10000":
+      console.log("top10000:"+letter);
+
+      json = await crawler.loadCommonWords10000(word, letter, false);
       break;
     case "synonym_cluster":
       console.log("synonym_cluster:"+word);

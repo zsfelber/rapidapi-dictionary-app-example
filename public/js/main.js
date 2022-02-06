@@ -517,15 +517,28 @@ $(document).ready(function(){
     for (rid in bucket7) {
         addRadio(chbs7, rid, bucket7[rid], "mode");
     }
+    let A = 'A'.charCodeAt(0);
+    let Z = 'Z'.charCodeAt(0);
     let top3000 = document.querySelector(".top3000");
-    for (let letter = 'A'; letter<='Z'; letter++) {
+    for (let i = A; i<=Z; i++) {
+        let letter = String.fromCharCode(i);
         let a = createa(letter, null, "&top=3000&letter="+letter);
+        let spc = document.createTextNode("  ");
         top3000.appendChild(a);
+        top3000.appendChild(spc);
     }
     let top10000 = document.querySelector(".top10000");
-    for (let letter = 'A'; letter<='Z'; letter++) {
+    for (let i = A; i<=Z; i++) {
+        let letter = String.fromCharCode(i);
         let a = createa(letter, null, "&top=10000&letter="+letter);
+        let spc = document.createTextNode("  ");
         top10000.appendChild(a);
+        top10000.appendChild(spc);
+    }
+    var urltop = $.urlParam('top');
+    var urlletter = $.urlParam('letter');
+    if (urltop) {
+        $("input[type='radio'][name='mode']:checked").removeAttr('checked');
     }
 
     chkdict();
@@ -546,6 +559,15 @@ $(document).ready(function(){
 
             var qs=[`word=${word}`];
             var mode = $("input[type='radio'][name='mode']:checked").val();
+            if (!mode) {
+                if (urltop) {
+                    mode = `top${urltop}`;
+                    qs.push(`top=${urltop}`);
+                    qs.push(`letter=${urlletter}`);
+                } else {
+                    mode = "dictionary";
+                }
+            }
             qs.push(`mode=${mode}`);
 
             const data0 = await fetch(`/.netlify/functions/getWord?${qs.join("&")}`, { mode: 'cors'});
@@ -570,7 +592,7 @@ $(document).ready(function(){
     var urlmode = $.urlParam('mode');
     var urltop = $.urlParam('top');
     // adds a submit listened to our <form> element
-    if ((urlmode && urlmode!="dictionary") || url_word) {
+    if ((urlmode && urlmode!="dictionary") || urltop || url_word) {
         dosubmit(url_word);
     }
 });
