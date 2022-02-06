@@ -150,6 +150,9 @@ a.none {
 .row dt i {
     font-weight: normal;
 }
+.list-row center {
+    font-weight: bold;
+}
 
 a:hover.none {
     text-decoration: none;

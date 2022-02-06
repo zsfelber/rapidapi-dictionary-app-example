@@ -2,7 +2,7 @@
 var lastresult;
 var lastmode;
 var update_to;
-var col=2,wordInfoTbl,wordInfoRow,wordInfoBox,info;
+var page,col=2,wordInfoTbl,wordInfoRow,wordInfoBox,info;
 
 var checkboxdata = {
     "bucket1": {
@@ -151,7 +151,16 @@ function newrow() {
     }
 }
 
+function finishbox() {
+    if (wordInfoBox) {
+        let pg = document.createElement('center');
+        pg.innerText = page++;
+        wordInfoBox.appendChild(pg);
+    }
+}
+
 function newbox(listitm="list-item") {
+    finishbox();
     wordInfoBox = document.createElement('div');
     wordInfoBox.classList.add('my-4', 'p-4', listitm);
     wordInfoRow.appendChild(wordInfoBox);
@@ -295,6 +304,7 @@ function updateSingleWord() {
         return wordInfoTbl.appendChild(document.createTextNode('No results matched.'));
     }
 
+    page=1;
     col=2;
     wordInfoBox=null;
     wordInfoRow=null;
@@ -347,7 +357,7 @@ function updateSingleWord() {
         }
 
     });
-    
+    finishbox();
 }
 
 function clusterBody(withmainword) {
@@ -356,6 +366,7 @@ function clusterBody(withmainword) {
     const data = lastresult;
 
     let itms=99;
+    page=1;
     col=2;
     wordInfoBox=null;
     wordInfoRow=null;
@@ -381,6 +392,7 @@ function clusterBody(withmainword) {
         }
 
     });
+    finishbox();
 }
 
 function updateMostCommon() {
@@ -415,6 +427,7 @@ function updateCluster() {
     $("#title").html(data.word?data.word:"");
 
     let itms=99;
+    page=1;
     col=2;
     wordInfoBox=null;
     wordInfoRow=null;
