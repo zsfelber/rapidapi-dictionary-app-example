@@ -250,7 +250,7 @@ export class DefinitionNode {
 
 export class ClusterDefinitionNode extends DefinitionNode {
 
-  level;
+  level;defkey;
   words;
 
   constructor(by_def, entry, val, level) {
@@ -286,17 +286,19 @@ export class ClusterDefinitionNode extends DefinitionNode {
       appendTo(this.words, val.synonyms);
     }
 
-    this.key = this.level+":::::::"+this.synonyms.length+"::::::"+this.synonyms.join(", ");
+    this.defkey = this.synonyms.length+"::::::"+this.synonyms.join(", ");
+    this.key = this.level+":::::::"+this.defkey;
 
-    if (!by_def[this.val.definition]) {
+    if (!by_def[this.defkey]) {
 
-      by_def[this.val.definition] = this;
+      by_def[this.defkey] = this;
     }
   }
 
   compress() {
     super.compress();
     delete this.words;
+    delete this.defkey;
   }
 };
 
