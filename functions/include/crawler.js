@@ -200,7 +200,7 @@ export async function loadSingleWord(word, asobject) {
 
 }
 
-export class WordNode {
+export class DefinitionNode {
 
   entry;val;partOfSpeech;
   definition;synonyms;similar;word;examples;examplesTmp;words;
@@ -244,7 +244,7 @@ export class WordNode {
     delete this.key;
     delete this.words;
     this.examples = [];
-    for (let x of this.examplesTmp) {
+    for (let x of Object.keys(this.examplesTmp)) {
       this.examples.push(x);
     }
     delete this.examplesTmp;
@@ -252,7 +252,7 @@ export class WordNode {
 
 }
 
-export class WordClusterNode extends WordNode {
+export class ClusterDefinitionNode extends DefinitionNode {
 
   level;
 
@@ -305,7 +305,7 @@ export async function loadDictionaryAndChildren(tresult, word, traversion, paren
     }
 
     if (loadChildren) {
-      let node = new WordClusterNode(by_def, entry, val, traversion.level);
+      let node = new ClusterDefinitionNode(by_def, entry, val, traversion.level);
       let totwords = [];
       if (TRAVERSE_ALL) {
         appendTo(totwords, node.words);
@@ -473,17 +473,17 @@ export async function loadCommonWord(result, word, noWords) {
     for (let key in entry.results) {
       const val = entry.results[key]; 
 
-      const wordNode = new WordNode(entry, val);
+      const definitionNode = new DefinitionNode(entry, val);
 
       let promises = [];
       for (let syn of (val.synonyms?val.synonyms:[])) {
-        let nodepromise = loadDictionaryAndChildren(result, syn, {level:0}, wordNode, false);
+        let nodepromise = loadDictionaryAndChildren(result, syn, {level:0}, definitionNode, false);
         promises.push(nodepromise);
       }
       await Promise.all(promises);
 
       result.noDefinitions++;
-      result.results.push(definition);
+      result.results.push(definitionNode);
     }
   }
 }
