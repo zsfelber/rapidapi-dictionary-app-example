@@ -18,6 +18,7 @@ let curtime, turntime;
 let cacheInitializerCommon;
 let cacheIsInitialized = false;
 let pendingParallelRequests = 0;
+let admittedParallelRequests = 0;
 let totalWordsLastDay = 0;
 let cacheInitIsError = false;
 
@@ -34,11 +35,12 @@ function timeoutAsPromise(millis) {
 async function parallelBottleneck() {
   pendingParallelRequests++;
   if (!(pendingParallelRequests%1000)) {
-    console.log("++pendingParallelRequests:"+pendingParallelRequests);
+    console.log("++pendingParallelRequests:"+pendingParallelRequests+" admittedParallelRequests:"+admittedParallelRequests);
   }
-  while (pendingParallelRequests > MAX_PARALLEL) {
+  while (admittedParallelRequests >= MAX_PARALLEL) {
     await timeoutAsPromise(20);
   }
+  admittedParallelRequests++;
 }
 
 async function remoteInitBottleneck() {
@@ -50,7 +52,7 @@ async function remoteInitBottleneck() {
       cacheInitializerCommon = finder.findFiles("cache/words", turntime);
       totalWordsLastDay = await cacheInitializerCommon;
       cacheIsInitialized = true;
-      console.log("remoteInitBottleneck  turntime:"+turntime.toUTCString()+"  totalWordsLastDay:"+totalWordsLastDay+" errors:"+finder.errors+" pendingParallelRequests:"+pendingParallelRequests);
+      console.log("remoteInitBottleneck  turntime:"+turntime.toUTCString()+"  totalWordsLastDay:"+totalWordsLastDay+" errors:"+finder.errors+" pendingParallelRequests:"+pendingParallelRequests+" admittedParallelRequests:"+admittedParallelRequests);
     } else {
       await cacheInitializerCommon;
     }
@@ -229,9 +231,9 @@ export async function loadSingleWord(word, asobject) {
 
     fs.writeFile(wfpath, djson, (err) => {
       if (err) {
-        console.error("Cache file/single "+wfpath+"  asobject:"+asobject+" pendingParallelRequests:"+pendingParallelRequests+" write failure : "+err+"\n");
+        console.error("Cache file/single "+wfpath+"  asobject:"+asobject+" pendingParallelRequests:"+pendingParallelRequests+" admittedParallelRequests:"+admittedParallelRequests+" write failure : "+err+"\n");
       } else {
-        console.log("Cache file/single "+wfpath+"  asobject:"+asobject+" pendingParallelRequests:"+pendingParallelRequests+" written successfully\n");
+        console.log("Cache file/single "+wfpath+"  asobject:"+asobject+" pendingParallelRequests:"+pendingParallelRequests+" admittedParallelRequests:"+admittedParallelRequests+" written successfully\n");
       }
       delete pendingObjects[word];
     });
@@ -249,8 +251,9 @@ export async function loadSingleWord(word, asobject) {
     return null;
   } finally {
     pendingParallelRequests--;
+    admittedParallelRequests--;
     if (!(pendingParallelRequests%1000)) {
-      console.log("--pendingParallelRequests:"+pendingParallelRequests);
+      console.log("--pendingParallelRequests:"+pendingParallelRequests+" admittedParallelRequests:"+admittedParallelRequests);
     }
   }
 
