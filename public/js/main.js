@@ -471,6 +471,7 @@ function updateWords() {
     let a = 'a'.charCodeAt(0);
     let z = 'z'.charCodeAt(0);
     let i = a, ln = data.results.length;
+    let group = [];
     for (let wi=0; wi<ln; wi++) {
         let w = data.results[wi];
         let let0 = w[0].toLowerCase().charCodeAt(0);
@@ -478,11 +479,19 @@ function updateWords() {
             let pagenumltr = String.fromCharCode(i);
             finishbox(pagenumltr);
             i++;
+            if (group.length) {
+                createas(wordInfoBox, group, null, ", ");
+            }
+            group = [w];
+        } else {
+            group.push(w);
         }
-        createas(wordInfoBox, data.results, null, ", ");
     }
 
-    finishbox(i);
+    if (group.length) {
+        createas(wordInfoBox, group, null, ", ");
+    }
+    finishbox("1");
 
 }
 
