@@ -704,7 +704,19 @@ export function loadCommonWords10000(word, letter, asobject) {
   return loadCommonWordsLetter(cw.TheMostCommon10000, word, letter, asobject);
 }
 
-export function loadWordsOnly(words, word, asobject) {
+export function loadWordsOnly(words0, word, asobject) {
+  let words;
+  if (Array.isArray(words0)) {
+    words0.sort();
+  
+    words = {};
+    for (let word of words0) {
+      words[word]=1;
+    }
+  } else {
+    words = words0;
+  }
+
   let result = {
     word,
     noWords:Object.keys(words).length,
@@ -739,14 +751,14 @@ export function loadCommon10000_words(word, asobject) {
 
 
 export async function loadAll_words(word0, asobject) {
-  let allwords = {};
+  let allwords0 = [];
   function onFile(strPath, stat) {
     let word = strPath.substring(12);
-    allwords[word] = 1;
+    allwords0.push(word);
   }
   await finder.findFiles("cache/words", 0, onFile);
 
-  return loadWordsOnly(allwords, word0, asobject);
+  return loadWordsOnly(allwords0, word0, asobject);
 }
 
 export async function wordsByFrequency(word0, ffrom, fto=1000000, asobject) {
@@ -757,14 +769,14 @@ export async function wordsByFrequency(word0, ffrom, fto=1000000, asobject) {
   }
   await finder.findFiles("cache/words", 0, onFile);
 
-  let allwords0 = [];
+  let words0 = [];
   let nodat=0,notf=0,fit=0;
   let chkFile = async function(word) {
     let data = await loadSingleWord(word, true, true);
     if (data) {
       let df = data.frequency ? data.frequency : 0;
       if (ffrom <= df && df <= fto) {
-        allwords0.push(word);
+        words0.push(word);
         fit++;
       } else {
         notf++;
@@ -779,15 +791,10 @@ export async function wordsByFrequency(word0, ffrom, fto=1000000, asobject) {
     promises.push(chkFile(file));
   }
   await Promise.all(promises);
-  allwords0.sort();
+
   console.log("Items fit:"+fit+" nonfit:"+notf+" no data:"+nodat);
 
-  let allwords = {};
-  for (let word of allwords0) {
-    allwords[word]=1;
-  }
 
-
-  return loadWordsOnly(allwords, word0, asobject);
+  return loadWordsOnly(words0, word0, asobject);
 }
 
