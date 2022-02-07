@@ -707,20 +707,20 @@ export function loadCommonWords10000(word, letter, asobject) {
 export function loadWordsOnly(words0, word, asobject) {
   let words;
   if (Array.isArray(words0)) {
+    const cmp = (firstEl, secondEl) => {
+      return firstEl.localeCompare(secondEl);
+    };
+    //words.sort(cmp);
     words0.sort();
-  
-    words = {};
-    for (let word of words0) {
-      words[word]=1;
-    }
-  } else {
     words = words0;
+  } else {
+    words = Object.keys(words0);
   }
 
   let result = {
     word,
-    noWords:Object.keys(words).length,
-    results:Object.keys(words)
+    noWords:words.length,
+    results:words
   };
   let cjson;
   if (asobject) {
