@@ -32,15 +32,24 @@ export async function handler(event, context) {
     tresult.noWords = 0;
     tresult.newWords = 0;
 
+    let promises = [];
     a:for (let cw of cws) {
       for (let commonWord in cw.TheMostCommon10000) {
-        let completed = await crawler.traverseCluster(tresult, commonWord, false, true);
-        if (!completed) {
-          console.log("API limit reached. STOP whole crawling");
-          break a;
+        let trpromise = crawler.traverseCluster(tresult, commonWord, false, true);
+        promises.push(trpromise);
+
+        if (promises.length >= 10) {
+          await Promise.all(promises);
+          promises = [];
+          if (crawler.isApiLimitReached()) {
+            console.log("API limit reached. STOP whole crawling");
+            break a;
+          }
         }
       }
     }
+    await Promise.all(promises);
+    promises = [];
 
 
     console.log("Completed  Travesred:"+tresult.noWords+" written:"+tresult.newWords);

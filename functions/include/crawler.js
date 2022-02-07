@@ -252,7 +252,7 @@ export async function loadSingleWord(word, asobject) {
   } finally {
     pendingParallelRequests--;
     admittedParallelRequests--;
-    if (!(pendingParallelRequests%1000)) {
+    if (pendingParallelRequests && !(pendingParallelRequests%1000)) {
       console.log("--pendingParallelRequests:"+pendingParallelRequests+" admittedParallelRequests:"+admittedParallelRequests);
     }
   }
