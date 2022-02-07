@@ -718,8 +718,8 @@ export function loadCommon3000_words(word, asobject) {
   let cw1 = require('./common-words-3000-a-e.js');
   let cw2 = require('./common-words-3000-f-p.js');
   let cw3 = require('./common-words-3000-q-z.js');
-  let TheMostCommon3000 = Object.assign({}, cw1, cw2, cw3);
-  loadWordsOnly(TheMostCommon3000, word, asobject);
+  let TheMostCommon3000 = Object.assign({}, cw1.TheMostCommon3000, cw2.TheMostCommon3000, cw3.TheMostCommon3000);
+  return loadWordsOnly(TheMostCommon3000, word, asobject);
 }
 
 export function loadCommon10000_words(word, asobject) {
@@ -728,6 +728,6 @@ export function loadCommon10000_words(word, asobject) {
   let cw3 = require('./common-words-10000-i-o.js');
   let cw4 = require('./common-words-10000-p-r.js');
   let cw5 = require('./common-words-10000-s-z.js');
-  let TheMostCommon10000 = Object.assign({}, cw1, cw2, cw3, cw4, cw5);
-  loadWordsOnly(TheMostCommon10000, word, asobject);
+  let TheMostCommon10000 = Object.assign({}, cw1.TheMostCommon10000, cw2.TheMostCommon10000, cw3.TheMostCommon10000, cw4.TheMostCommon10000, cw5.TheMostCommon10000);
+  return loadWordsOnly(TheMostCommon10000, word, asobject);
 }

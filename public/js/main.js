@@ -437,21 +437,16 @@ function updateWords() {
     const dlclust = labelled("no. words", data.noWords);
     info.appendChild(dlclust);
 
-
     let itms=999;
     page=1;
     col=2;
     wordInfoBox=null;
     wordInfoRow=null;
 
-    data.results.map(val => {
-        if (itms++%1000==999) {
-            newrow();
-            newbox("list-item-lg");
-        }
-        createas(wordInfoBox, val, ", ");
+    newrow();
+    newbox("list-item-lg");
+    createas(wordInfoBox, data.results, null, ", ");
 
-    });
     finishbox();
 
 }
