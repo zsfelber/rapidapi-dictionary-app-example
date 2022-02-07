@@ -731,3 +731,15 @@ export function loadCommon10000_words(word, asobject) {
   let TheMostCommon10000 = Object.assign({}, cw1.TheMostCommon10000, cw2.TheMostCommon10000, cw3.TheMostCommon10000, cw4.TheMostCommon10000, cw5.TheMostCommon10000);
   return loadWordsOnly(TheMostCommon10000, word, asobject);
 }
+
+
+export async function loadAll_words(word, asobject) {
+  let allwords = {};
+  function onFile(strPath, stat) {
+    allwords[strPath] = 1;
+  }
+  await finder.findFiles("cache/words", 0, onFile);
+
+  return loadWordsOnly(allwords, word, asobject);
+}
+
