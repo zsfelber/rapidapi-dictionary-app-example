@@ -3,11 +3,13 @@ const axios = require('axios');
 const fs = require('fs');
 const finder = require('./finder.js');
 
-const API_DAILY_LIMIT = 25000;
+const API_DAILY_LIMIT = 20000;
+const TURNING_TIME_GMT = [20,55];
 let MAX_WORDS;
 let CACHE_CLUSTERS;
 let MAX_NODE_FREQUENCY;
 let TRAVERSE_ALL;
+let curtime, turntime;
 
 let cacheInitializerCommon;
 let cacheIsInitialized = false;
@@ -23,13 +25,10 @@ async function remoteCallInit() {
     }
     parallelCacheInitRequests++;
     if (!cacheInitializerCommon) {
-      let curtime = new Date();
-
-      // 86400000 milliseconds (24 hours)
-      cacheInitializerCommon = finder.findFiles("cache/words", curtime - 86400000);
+      cacheInitializerCommon = finder.findFiles("cache/words", turntime);
       totalWordsLastDay = await cacheInitializerCommon;
       cacheIsInitialized = true;
-      console.log("remoteCallInit  totalWordsLastDay : "+totalWordsLastDay+" errors:"+finder.errors+" parallelCacheInitRequests:"+parallelCacheInitRequests);
+      console.log("remoteCallInit  turntime:"+turntime.toUTCString()+"  totalWordsLastDay:"+totalWordsLastDay+" errors:"+finder.errors+" parallelCacheInitRequests:"+parallelCacheInitRequests);
     } else {
       await cacheInitializerCommon;
     }
@@ -79,6 +78,16 @@ export async function initCrawler(
     fs.mkdirSync("cache/clusters");
   }
 
+  curtime = new Date();
+  turntime = Date.UTC(curtime.getUTCFullYear(),
+          curtime.getUTCMonth(),curtime.getUTCDate(),
+          TURNING_TIME_GMT[0],TURNING_TIME_GMT[1]);
+  // 86400000 milliseconds (24 hours)
+  if (curtime < turntime) {
+    turntime = new Date(turntime - 86400000);
+  }
+
+  console.log("initCrawler  curtime:"+curtime.toUTCString()+"  turntime:"+turntime.toUTCString());
 }
 
 export function singleWordToDisplay(data) {
