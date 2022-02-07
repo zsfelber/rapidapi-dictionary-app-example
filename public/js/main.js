@@ -197,8 +197,21 @@ function checkps() {
 
     return qs.join("&");
 }
+
+function selectElementContents(el) {
+    if (!el) el = this;
+    var range = document.createRange();
+    range.selectNodeContents(el);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    $(el).trigger("mouseup");
+    //el.focus();
+}
+
 function createa(word0, masterword, extraarg="") {
     const a = document.createElement('a');
+    a.onmouseover = selectElementContents.bind(a, a);
     const word = word0.replace(/[^a-zA-Z0-9\- ]/g, "");
     a.href = "?word="+word+extraarg+"&"+checkps();
     if (masterword==word) {
