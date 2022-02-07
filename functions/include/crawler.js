@@ -8,7 +8,7 @@ const API_LIMIT_EXCEPTION = {
   apiLimitException:1
 };
 
-const API_DAILY_LIMIT = 1500;
+const API_DAILY_LIMIT = 23500;
 const TURNING_TIME_GMT = [20,55];
 const MAX_PARALLEL = 10;
 let MAX_WORDS;
