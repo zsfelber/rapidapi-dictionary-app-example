@@ -762,7 +762,7 @@ export async function wordsByFrequency(word0, ffrom, fto=1000000, asobject) {
   let chkFile = async function(word) {
     let data = await loadSingleWord(word, true, true);
     if (data) {
-      let df = data.frequency ? data.frequency : 2;
+      let df = data.frequency ? data.frequency : 0;
       if (ffrom <= df && df <= fto) {
         allwords0.push(word);
         fit++;
