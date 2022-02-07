@@ -155,6 +155,10 @@ form {
     word-break: normal;
 }
 
+.definition dt {
+    text-align: left;
+}
+
 a.master, a.none {
     /*margin-right: 3px;
     padding: 0px;*/

@@ -390,6 +390,7 @@ function clusterBody(withmainword) {
         };
 
         const def = proplabel(property, withmainword?data.word:val.word, true, prearray.length, val.similar.length);
+        def.classList.add('definition');
         wordInfoBox.appendChild(def);
 
         if (val.examples && val.examples.length) {
@@ -434,6 +435,7 @@ function updateWords() {
     $('#info').empty();
     $("#title").html(mode?mode:"");
 
+
     const dlclust = labelled("no. words", data.noWords);
     info.appendChild(dlclust);
 
@@ -445,6 +447,8 @@ function updateWords() {
 
     newrow();
     newbox("list-item-lg");
+
+    wordInfoBox.classList.add('definition');
     createas(wordInfoBox, data.results, null, ", ");
 
     finishbox();
