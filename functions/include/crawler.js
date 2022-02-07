@@ -163,7 +163,7 @@ export function singleWordToDisplay(data) {
   return result;
 }
 
-export async function loadSingleWord(word, asobject) {
+export async function loadSingleWord(word, asobject, cachedonly=false) {
 
   let fileword = word.replace(/[.,/']/g, "$");
   const wfpath = `cache/words/${fileword}`;
@@ -203,6 +203,10 @@ export async function loadSingleWord(word, asobject) {
     }
   } catch (e) {
     console.warn("Error (",word, ") ", e&&e.message?e.message:"?");
+    return null;
+  }
+
+  if (cachedonly) {
     return null;
   }
 
@@ -733,13 +737,49 @@ export function loadCommon10000_words(word, asobject) {
 }
 
 
-export async function loadAll_words(word, asobject) {
+export async function loadAll_words(word0, asobject) {
   let allwords = {};
   function onFile(strPath, stat) {
-    allwords[strPath.substring(12)] = 1;
+    let word = strPath.substring(12);
+    allwords[word] = 1;
   }
   await finder.findFiles("cache/words", 0, onFile);
 
-  return loadWordsOnly(allwords, word, asobject);
+  return loadWordsOnly(allwords, word0, asobject);
+}
+
+export async function wordsByFrequency(word0, ffrom, fto=1000000, asobject) {
+  let files = [];
+  async function onFile(strPath, stat) {
+    let word = strPath.substring(12);
+    files.push(word);
+  }
+  await finder.findFiles("cache/words", 0, onFile);
+
+  let allwords0 = [];
+  let chkFile = async function(word) {
+    let data = await loadSingleWord(word, true, true);
+    if (data) {
+      if (!data.frequency ||
+          (ffrom <= data.frequency && data.frequency <= fto)) {
+        allwords0.push(word);
+      }
+    }
+  };
+
+  let promises = [];
+  for (let file of files) {
+    promises.push(chkFile(file));
+  }
+  await Promise.all(promises);
+  allwords0.sort();
+
+  let allwords = {};
+  for (let word of allwords0) {
+    allwords[word]=1;
+  }
+
+
+  return loadWordsOnly(allwords, word0, asobject);
 }
 

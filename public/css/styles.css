@@ -54,6 +54,13 @@ main {
 .form-check-input {
     margin-left: 5px;
 }
+label .form-check-input.input-sm {
+    font-size: 0.7rem;
+    margin-left: auto;
+    margin-right: auto;
+    position: unset;
+    float:unset;
+}
 
 .boxcards {
     display: inline-block;

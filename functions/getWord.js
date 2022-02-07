@@ -17,6 +17,8 @@ export async function handler(event, context) {
   const word = event.queryStringParameters.word || "";
   const mode = event.queryStringParameters.mode || "";
   const letter = event.queryStringParameters.letter || "";
+  const ffrom = event.queryStringParameters.ffrom || "";
+  const fto = event.queryStringParameters.fto  || "";
 
   try {
 
@@ -87,6 +89,12 @@ export async function handler(event, context) {
 
       json = await crawler.loadAll_words(word, false);
       break;
+    case "words_by_frequency":
+      console.log("words_by_frequency:"+ffrom+".."+fto);
+
+      json = await crawler.wordsByFrequency(word, Number(ffrom), Number(fto), false);
+      break;
+
     case "synonym_cluster":
       console.log("synonym_cluster:"+word);
 

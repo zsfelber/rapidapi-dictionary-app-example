@@ -97,6 +97,11 @@ function chkdict() {
     $('.checkboxes3 input').prop("disabled", !chk);
     $('.checkboxes4 input').prop("disabled", !chk);
     $('.checkboxes5 input').prop("disabled", !chk);
+
+    let wbf = $("#words_by_frequency").is(':checked');
+    $('#ffrom').prop("disabled", !wbf);
+    $('#fto').prop("disabled", !wbf);
+    
 }
 
 function racha(id) {
@@ -135,7 +140,7 @@ function addCheckbox(cont, id, buckcheck, label) {
     cont.appendChild(panel[0]);
 }
 
-function addRadio(cont, id, buckcheck, groupid, label) {
+function addRadio(cont, id, buckcheck, groupid, label, extraelements="") {
     const ischeckeddef = buckcheck.defchecked;
     if (!label) label = id;
     id = id.replace(/ /g, "_");
@@ -145,6 +150,7 @@ function addRadio(cont, id, buckcheck, groupid, label) {
             <input class='form-check-input' type='radio' id='${id}' name='${groupid}' value='${id}' ${ischecked ? "checked" : ""} onchange="racha('${id}')"/>
             <label class='form-check-label' for='${id}'>
             ${label}
+            ${extraelements}
             </label>
         </div>`);
     cont.appendChild(panel[0]);
@@ -518,6 +524,7 @@ function update(firsttime) {
     case "most_common_3000_words":
     case "most_common_10000_words":
     case "all_words":
+    case "words_by_frequency":
         if (firsttime) {
             updateWords();
         }
@@ -536,12 +543,12 @@ function update(firsttime) {
 
 // Specifies a function to execute when the DOM is fully loaded.
 $(document).ready(function(){
-    $.urlParam = function(name){
+    $.urlParam = function(name, nothing=null){
         var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
         if (results==null) {
-           return false;
+           return nothing;
         }
-        return decodeURI(results[1]).replace(/\+/g," ") || false;
+        return decodeURI(results[1]).replace(/\+/g," ") || nothing;
     }
 
 
@@ -550,6 +557,10 @@ $(document).ready(function(){
     wordInfoTbl = document.querySelector('#word-info');
     info = document.querySelector("#info");
 
+    var urltop = $.urlParam('top');
+    var urlletter = $.urlParam('letter');
+    var urlffrom = $.urlParam('ffrom');
+    var urlfto = $.urlParam('fto');
 
 
     let chbs1 = document.querySelector('.checkboxes1');
@@ -576,6 +587,15 @@ $(document).ready(function(){
     for (rid in bucket7) {
         addRadio(chbs7, rid, bucket7[rid], "mode");
     }
+
+    if (!urlffrom) urlffrom = 5;
+    if (!urlfto) urlfto = 100;
+    let ffromtoinputs=`
+    <input class='form-check-input input-sm' size=1 type='input' id='ffrom' name='ffrom' value='${urlffrom}' placeholder='0'/>..
+    <input class='form-check-input input-sm' size=1 type='input' id='fto' name='fto' value='${urlfto}' placeholder='100'/>`;
+
+    addRadio(chbs7, "words by frequency", {defchecked:false}, "mode", null, ffromtoinputs);
+
     let A = 'A'.charCodeAt(0);
     let Z = 'Z'.charCodeAt(0);
     let top3000 = document.querySelector(".top3000");
@@ -594,8 +614,6 @@ $(document).ready(function(){
         top10000.appendChild(a);
         top10000.appendChild(spc);
     }
-    var urltop = $.urlParam('top');
-    var urlletter = $.urlParam('letter');
     if (urltop) {
         $("input[type='radio'][name='mode']:checked").removeAttr('checked');
     }
