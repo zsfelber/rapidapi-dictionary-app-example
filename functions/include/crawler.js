@@ -21,6 +21,10 @@ let pendingParallelRequests = 0;
 let totalWordsLastDay = 0;
 let cacheInitIsError = false;
 
+let pendingObjects = {
+
+};
+
 function timeoutAsPromise(millis) {
   return new Promise((a,r)=>{
     setTimeout(a, millis);
@@ -52,7 +56,6 @@ async function remoteInitBottleneck() {
   if (isApiLimitReached()) {
     if (!cacheInitIsError) {
       console.error("Could not proxy more request to API file/single  totalWordsLastDay >= API_DAILY_LIMIT :  "+totalWordsLastDay+" >= "+API_DAILY_LIMIT+"\n");
-      //throw API_LIMIT_EXCEPTION;
     }
     cacheInitIsError = true;
     return false;
@@ -188,6 +191,16 @@ export async function loadSingleWord(word, asobject) {
   }
 
   try {
+    if (pendingObjects[word]) {
+      if (asobject) {
+        return pendingObjects[word];
+      } else {
+        let result = singleWordToDisplay(pendingObjects[word]);
+        const ojson = JSON.stringify(result);         // modified
+        return ojson;
+      }
+    }
+
     // send request to the WordsAPI
     const response = await axios({
       "method":"GET",
@@ -199,13 +212,19 @@ export async function loadSingleWord(word, asobject) {
       }
     });
 
+    var copy = Object.assign({}, response.data);
+    copy.fromCache = false;
+    pendingObjects[word] = copy;
+
     const djson = JSON.stringify(response.data);  // original
+
     fs.writeFile(wfpath, djson, (err) => {
       if (err) {
         console.error("Cache file/single "+wfpath+"  asobject:"+asobject+" write failure : "+err+"\n");
       } else {
         console.log("Cache file/single "+wfpath+"  asobject:"+asobject+" written successfully\n");
       }
+      delete pendingObjects[word];
     });
 
     if (asobject) {
@@ -335,7 +354,7 @@ function appendTo(array, itemOrArray) {
   }
 }
 
-function checkAPIlimitAndFinish(promises) {
+async function checkAPIlimitAndFinish(promises) {
   let remainingApiLimit = API_DAILY_LIMIT - (totalWordsLastDay + pendingParallelRequests);
   if (promises.length < remainingApiLimit) {
     return true;
@@ -424,7 +443,7 @@ export async function traverseCluster(tresult, word, themainabstraction=true, st
         let nodepromise = loadDictionaryAndChildren(tresult, w, traversion, pair.parent, loadChildren);
         promises.push(nodepromise);
 
-        if (stopwhenallloaded && !checkAPIlimitAndFinish(promises)) {
+        if (stopwhenallloaded && !await checkAPIlimitAndFinish(promises)) {
           console.log(word+" Level "+traversion.level+" finished. Stop searching. API Limit reached.");
           return false;
         }
