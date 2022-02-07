@@ -52,3 +52,14 @@ b
     "lambda-build": "netlify-lambda build functions",
     "debug": "netlify dev",
     "test": "echo \"Error: no test specified\" && exit 1"
+
+
+words_by_frequency:4.28..100
+Items fit:3088 nonfit:53387 no data:25
+
+~most 3000
+words_by_frequency:4.2..100
+Items fit:3471 nonfit:53004 no data:25
+
+
+

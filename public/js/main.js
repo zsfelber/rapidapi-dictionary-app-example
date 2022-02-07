@@ -516,7 +516,6 @@ function updateWords() {
                 cc = letters[i].charCodeAt(0);
             } while (let0 >= cc);
             i--;
-            cc = letters[i].charCodeAt(0);
 
             if (group.length) {
                 createas(wordInfoBox, group, null, ", ");
