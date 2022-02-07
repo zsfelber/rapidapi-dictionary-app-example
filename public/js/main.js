@@ -164,10 +164,10 @@ function newrow() {
     }
 }
 
-function finishbox() {
+function finishbox(pagenum='') {
     if (wordInfoBox) {
         let pg = document.createElement('center');
-        pg.innerText = page++;
+        pg.innerText = pagenum ? pagenum : page++;
         wordInfoBox.appendChild(pg);
     }
 }
@@ -468,9 +468,21 @@ function updateWords() {
     newbox("list-item-lg");
 
     wordInfoBox.classList.add('definition');
-    createas(wordInfoBox, data.results, null, ", ");
+    let a = 'a'.charCodeAt(0);
+    let z = 'z'.charCodeAt(0);
+    let i = a, ln = data.results.length;
+    for (let wi=0; wi<ln; wi++) {
+        let w = data.results[wi];
+        let let0 = w[0].toLowerCase().charCodeAt(0);
+        if (let0 > i) {
+            let pagenumltr = String.fromCharCode(i);
+            finishbox(pagenumltr);
+            i++;
+        }
+        createas(wordInfoBox, data.results, null, ", ");
+    }
 
-    finishbox();
+    finishbox(i);
 
 }
 
