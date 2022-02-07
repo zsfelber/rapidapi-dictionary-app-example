@@ -58,15 +58,15 @@ async function remoteInitBottleneck() {
   }
 }
 
-export function isApiLimitReached(pending=0) {
+export function isApiLimitReached(pendingBeforeRequest=0) {
   if (cacheIsInitialized) {
     if (cacheInitializerCommon) {
-      return (totalWordsLastDay+pending) >= API_DAILY_LIMIT;
+      return (totalWordsLastDay+pendingParallelRequests+pendingBeforeRequest) >= API_DAILY_LIMIT;
     } else {
       return false;
     }
   } else {
-    return (pendingParallelRequests+pending) >= API_DAILY_LIMIT;
+    return (pendingParallelRequests+pendingBeforeRequest) >= API_DAILY_LIMIT;
   }
 }
 
@@ -336,7 +336,7 @@ function appendTo(array, itemOrArray) {
 export async function loadDictionaryAndChildren(tresult, word, traversion, parentNode, loadChildren) {
 
   if (!parentNode &&  !loadChildren) {
-    return false;
+    return true;
   }
 
   const by_def = tresult.by_def;
@@ -348,7 +348,7 @@ export async function loadDictionaryAndChildren(tresult, word, traversion, paren
   if (!entry ||
       (traversion.level > 1 && 
       entry.frequency && entry.frequency>=MAX_NODE_FREQUENCY)) {
-    return false;
+    return true;
   }
 
 
@@ -364,7 +364,7 @@ export async function loadDictionaryAndChildren(tresult, word, traversion, paren
       for (let word of node.words) {
         if (isApiLimitReached(traversion.wordsbreadthfirst.length)) {
           console.log("API limit reached. STOP traversing");
-          break;
+          return false;
         }
         let pair = {parent:node, word};
         traversion.wordsbreadthfirst.push(pair);
@@ -409,10 +409,13 @@ export async function traverseCluster(tresult, word, themainabstraction=true) {
 
       let nodepromise = loadDictionaryAndChildren(tresult, w, traversion, pair.parent, loadChildren);
       promises.push(nodepromise);
+      if (isApiLimitReached(traversion.wordsbreadthfirst.length)) {
+        return false;
+      }
 
       if (tresult.noWords >= MAX_WORDS) {
         if (themainabstraction) console.log(word+" Level "+traversion.level+" finished. Limit reached.");
-        return;
+        return true;
       }
     }
     await Promise.all(promises);
@@ -424,6 +427,7 @@ export async function traverseCluster(tresult, word, themainabstraction=true) {
   if (themainabstraction) {
     console.log(word+" Completed  Travesred:"+tresult.noWords+" written:"+tresult.newWords);
   }
+  return true;
 }
 
 export async function loadCluster(word, asobject) {

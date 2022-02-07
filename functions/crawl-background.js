@@ -36,8 +36,8 @@ export async function handler(event, context) {
 
     a:for (let cw of cws) {
       for (let commonWord in cw.TheMostCommon10000) {
-        await crawler.traverseCluster(tresult, commonWord, false);
-        if (crawler.isApiLimitReached()) {
+        let completed = await crawler.traverseCluster(tresult, commonWord, false);
+        if (!completed) {
           console.log("API limit reached. STOP");
           break a;
         }
