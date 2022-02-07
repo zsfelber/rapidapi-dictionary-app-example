@@ -17,8 +17,8 @@ export async function handler(event, context) {
   const word = event.queryStringParameters.word || "";
   const mode = event.queryStringParameters.mode || "";
   const letter = event.queryStringParameters.letter || "";
-  const ffrom = event.queryStringParameters.ffrom || "";
-  const fto = event.queryStringParameters.fto  || "";
+  const ffrom = event.queryStringParameters.ffrom || 0;
+  const fto = event.queryStringParameters.fto  || 100;
 
   try {
 

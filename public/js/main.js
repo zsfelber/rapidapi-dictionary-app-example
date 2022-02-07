@@ -646,6 +646,8 @@ $(document).ready(function(){
                 }
             }
             qs.push(`mode=${mode}`);
+            qs.push(`ffrom=${urlffrom}`);
+            qs.push(`fto=${urlfto}`);
 
             const data0 = await fetch(`/.netlify/functions/getWord?${qs.join("&")}`, { mode: 'cors'});
             // asynchronously calls our custome function
