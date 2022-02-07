@@ -1,3 +1,4 @@
+import { NODATA } from 'dns';
 
 const axios = require('axios');
 const fs = require('fs');
@@ -757,13 +758,19 @@ export async function wordsByFrequency(word0, ffrom, fto=1000000, asobject) {
   await finder.findFiles("cache/words", 0, onFile);
 
   let allwords0 = [];
+  let nodat=0,notf=0,fit=0;
   let chkFile = async function(word) {
     let data = await loadSingleWord(word, true, true);
     if (data) {
       if (!data.frequency ||
           (ffrom <= data.frequency && data.frequency <= fto)) {
         allwords0.push(word);
+        fit++;
+      } else {
+        notf++;
       }
+    } else {
+      nodat++;
     }
   };
 
@@ -773,6 +780,7 @@ export async function wordsByFrequency(word0, ffrom, fto=1000000, asobject) {
   }
   await Promise.all(promises);
   allwords0.sort();
+  console.log("Items fit:"+fit+" nonfit:"+notf+" no data:"+nodat);
 
   let allwords = {};
   for (let word of allwords0) {
