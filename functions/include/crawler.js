@@ -736,7 +736,7 @@ export function loadCommon10000_words(word, asobject) {
 export async function loadAll_words(word, asobject) {
   let allwords = {};
   function onFile(strPath, stat) {
-    allwords[strPath] = 1;
+    allwords[strPath.substring(12)] = 1;
   }
   await finder.findFiles("cache/words", 0, onFile);
 
