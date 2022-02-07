@@ -110,7 +110,7 @@ function racha(id) {
 
 function ischeckedparam(param, ischeckeddef) {
     var v = $.urlParam(param);
-    if (v === false) {
+    if (v === null) {
         return ischeckeddef;
     }
     return v == (""+ischeckeddef) ? ischeckeddef : !ischeckeddef;
@@ -118,7 +118,7 @@ function ischeckedparam(param, ischeckeddef) {
 
 function ischeckedradio(groupid, rid, ischeckeddef) {
     var v = $.urlParam(groupid)==rid;
-    if (v === false) {
+    if (v === null) {
         return ischeckeddef;
     }
     return v;
