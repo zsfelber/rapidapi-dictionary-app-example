@@ -5,7 +5,7 @@ const finder = require('./finder.js');
 
 const API_DAILY_LIMIT = 200;
 const TURNING_TIME_GMT = [20,55];
-const MAX_PARALLEL = 20;
+const MAX_PARALLEL = 50;
 let MAX_WORDS;
 let CACHE_CLUSTERS;
 let MAX_NODE_FREQUENCY;
