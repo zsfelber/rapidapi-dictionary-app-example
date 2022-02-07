@@ -52,9 +52,10 @@ async function remoteInitBottleneck() {
   if (isApiLimitReached()) {
     if (!cacheInitIsError) {
       console.error("Could not proxy more request to API file/single  totalWordsLastDay >= API_DAILY_LIMIT :  "+totalWordsLastDay+" >= "+API_DAILY_LIMIT+"\n");
+      //throw API_LIMIT_EXCEPTION;
     }
     cacheInitIsError = true;
-    throw API_LIMIT_EXCEPTION;
+    return false;
   } else {
     totalWordsLastDay++;
     return true;
@@ -334,7 +335,7 @@ function appendTo(array, itemOrArray) {
   }
 }
 
-function runPromisesAtAPIlimit(promises) {
+function checkAPIlimitAndFinish(promises) {
   let remainingApiLimit = API_DAILY_LIMIT - (totalWordsLastDay + pendingParallelRequests);
   if (promises.length < remainingApiLimit) {
     return true;
@@ -384,7 +385,7 @@ export async function loadDictionaryAndChildren(tresult, word, traversion, paren
   return true;
 }
 
-export async function traverseCluster(tresult, word, themainabstraction=true) {
+export async function traverseCluster(tresult, word, themainabstraction=true, stopwhenallloaded=false) {
 
   let traversion = {
     level : 1,
@@ -396,6 +397,9 @@ export async function traverseCluster(tresult, word, themainabstraction=true) {
   }
 
   tresult.master = await loadSingleWord(word, true);
+  if (!tresult.master) {
+    return false;
+  }
 
   do {
     var previouslevelchildwords = traversion.wordsbreadthfirst.concat([]);
@@ -420,7 +424,7 @@ export async function traverseCluster(tresult, word, themainabstraction=true) {
         let nodepromise = loadDictionaryAndChildren(tresult, w, traversion, pair.parent, loadChildren);
         promises.push(nodepromise);
 
-        if (!runPromisesAtAPIlimit(promises)) {
+        if (stopwhenallloaded && !checkAPIlimitAndFinish(promises)) {
           console.log(word+" Level "+traversion.level+" finished. Stop searching. API Limit reached.");
           return false;
         }
@@ -459,7 +463,9 @@ export async function loadCluster(word, asobject) {
   let tresult = {
     by_def,
     by_w    };
-  const entry = await traverseCluster(tresult, word);
+  
+  await traverseCluster(tresult, word);
+
   by_key.push.apply(by_key, Object.values(by_def));
   const cmp = (firstEl, secondEl) => {
     return firstEl.key.localeCompare(secondEl.key);
@@ -509,10 +515,6 @@ export async function loadCommonWord(result, word, noWords) {
         for (let syn of (val.synonyms?val.synonyms:[])) {
           let nodepromise = loadDictionaryAndChildren(result, syn, {level:0}, definitionNode, false);
           promises.push(nodepromise);
-          if (!runPromisesAtAPIlimit(promises)) {
-            console.log(word+" Level "+traversion.level+" finished. Stop searching. API Limit reached.");
-            return false;
-          }
         }
         await Promise.all(promises);
       } catch (e) {
@@ -547,10 +549,6 @@ export async function loadCommonWords(words, word, asobject) {
   for (let commonWord in words) {
     let cwpromise = loadCommonWord(result, commonWord, noWords);
     promises.push(cwpromise);
-    if (!runPromisesAtAPIlimit(promises)) {
-      console.log(word+" Level "+traversion.level+" finished. Stop searching. API Limit reached.");
-      return false;
-    }
   }
   await Promise.all(promises);
 
