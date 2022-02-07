@@ -3,6 +3,10 @@ const axios = require('axios');
 const fs = require('fs');
 const finder = require('./finder.js');
 
+const API_LIMIT_EXCEPTION = {
+  apiLimitException:1
+};
+
 const API_DAILY_LIMIT = 200;
 const TURNING_TIME_GMT = [20,55];
 const MAX_PARALLEL = 50;
@@ -46,12 +50,12 @@ async function remoteInitBottleneck() {
     }
   }
 
-  if (totalWordsLastDay >= API_DAILY_LIMIT) {
+  if (isApiLimitReached()) {
     if (!cacheInitIsError) {
       console.error("Could not proxy more request to API file/single  totalWordsLastDay >= API_DAILY_LIMIT :  "+totalWordsLastDay+" >= "+API_DAILY_LIMIT+"\n");
     }
     cacheInitIsError = true;
-    return false;
+    throw API_LIMIT_EXCEPTION;
   } else {
     totalWordsLastDay++;
     return true;
@@ -362,10 +366,6 @@ export async function loadDictionaryAndChildren(tresult, word, traversion, paren
     if (loadChildren) {
       let node = new ClusterDefinitionNode(by_def, entry, val, traversion.level);
       for (let word of node.words) {
-        if (isApiLimitReached(traversion.wordsbreadthfirst.length)) {
-          console.log("API limit reached. STOP traversing");
-          return false;
-        }
         let pair = {parent:node, word};
         traversion.wordsbreadthfirst.push(pair);
       }
@@ -388,36 +388,54 @@ export async function traverseCluster(tresult, word, themainabstraction=true) {
 
   tresult.master = await loadSingleWord(word, true);
 
+  let remainingApiLimit = API_DAILY_LIMIT - (totalWordsLastDay + pendingParallelRequests);
+
   do {
     var previouslevelchildwords = traversion.wordsbreadthfirst.concat([]);
     traversion.wordsbreadthfirst = [];
 
     let promises = [];
-    for (let pair of previouslevelchildwords) {
-      let w = pair.word;
-      let loadChildren;
+    try {
+      for (let pair of previouslevelchildwords) {
+        let w = pair.word;
+        let loadChildren;
 
-      if (tresult.by_w[w]) {
-        loadChildren = false;
-      } else {
-        tresult.noWords++;
-        tresult.by_w[w] = 1;
-        loadChildren = tresult.noWords < MAX_WORDS;
+        if (tresult.by_w[w]) {
+          loadChildren = false;
+        } else {
+          tresult.noWords++;
+          tresult.by_w[w] = 1;
+          loadChildren = tresult.noWords < MAX_WORDS;
 
-        if (!(tresult.noWords%1000)) console.log(tresult.noWords + "/" + MAX_WORDS);
+          if (!(tresult.noWords%1000)) console.log(tresult.noWords + "/" + MAX_WORDS);
+        }
+
+        let nodepromise = loadDictionaryAndChildren(tresult, w, traversion, pair.parent, loadChildren);
+        promises.push(nodepromise);
+
+        if (tresult.noWords >= MAX_WORDS) {
+          await Promise.all(promises);
+          if (themainabstraction) console.log(word+" Level "+traversion.level+" finished. Search limit reached.");
+          return true;
+        }
+        if (promises.length >= remainingApiLimit) {
+          await Promise.all(promises);
+          remainingApiLimit = API_DAILY_LIMIT - (totalWordsLastDay + pendingParallelRequests);
+          promises = [];
+          if (remainingApiLimit <= 0) {
+            console.log(word+" Level "+traversion.level+" finished. Stop searching. API Limit reached.");
+          }
+        }
       }
-
-      let nodepromise = loadDictionaryAndChildren(tresult, w, traversion, pair.parent, loadChildren);
-      promises.push(nodepromise);
-      if (isApiLimitReached(traversion.wordsbreadthfirst.length)) {
+    } catch (e) {
+      if (e === API_LIMIT_EXCEPTION) {
+        console.log(word+" Level "+traversion.level+" finished. API Limit reached (by exception).");
         return false;
-      }
-
-      if (tresult.noWords >= MAX_WORDS) {
-        if (themainabstraction) console.log(word+" Level "+traversion.level+" finished. Limit reached.");
-        return true;
+      } else {
+        throw e;
       }
     }
+
     await Promise.all(promises);
     if (themainabstraction) console.log(word+" Level "+traversion.level+" finished.");
 
@@ -512,11 +530,20 @@ export async function loadCommonWord(result, word, noWords) {
       const definitionNode = new DefinitionNode(entry, val);
 
       let promises = [];
-      for (let syn of (val.synonyms?val.synonyms:[])) {
-        let nodepromise = loadDictionaryAndChildren(result, syn, {level:0}, definitionNode, false);
-        promises.push(nodepromise);
+      try {
+        for (let syn of (val.synonyms?val.synonyms:[])) {
+          let nodepromise = loadDictionaryAndChildren(result, syn, {level:0}, definitionNode, false);
+          promises.push(nodepromise);
+        }
+        await Promise.all(promises);
+      } catch (e) {
+        if (e === API_LIMIT_EXCEPTION) {
+          console.log(word+" Level "+traversion.level+" finished. API Limit reached (by exception).");
+          return false;
+        } else {
+          throw e;
+        }
       }
-      await Promise.all(promises);
 
       result.noDefinitions++;
       result.results.push(definitionNode);
