@@ -3,8 +3,9 @@ const axios = require('axios');
 const fs = require('fs');
 const finder = require('./finder.js');
 
-const API_DAILY_LIMIT = 20000;
+const API_DAILY_LIMIT = 200;
 const TURNING_TIME_GMT = [20,55];
+const MAX_PARALLEL = 20;
 let MAX_WORDS;
 let CACHE_CLUSTERS;
 let MAX_NODE_FREQUENCY;
@@ -13,22 +14,33 @@ let curtime, turntime;
 
 let cacheInitializerCommon;
 let cacheIsInitialized = false;
-let parallelCacheInitRequests = 0;
+let pendingParallelRequests = 0;
 let totalWordsLastDay = 0;
 let cacheInitIsError = false;
 
-async function remoteCallInit() {
+function timeoutAsPromise(millis) {
+  return new Promise((a,r)=>{
+    setTimeout(a, millis);
+  });
+}
+
+async function parallelBottleneck() {
+  pendingParallelRequests++;
+  while (pendingParallelRequests >= MAX_PARALLEL) {
+    await timeoutAsPromise(20);
+  }
+}
+
+async function remoteInitBottleneck() {
+
+  await parallelBottleneck();
 
   if (!cacheIsInitialized) {
-    if (parallelCacheInitRequests >= API_DAILY_LIMIT) {
-      return false;
-    }
-    parallelCacheInitRequests++;
     if (!cacheInitializerCommon) {
       cacheInitializerCommon = finder.findFiles("cache/words", turntime);
       totalWordsLastDay = await cacheInitializerCommon;
       cacheIsInitialized = true;
-      console.log("remoteCallInit  turntime:"+turntime.toUTCString()+"  totalWordsLastDay:"+totalWordsLastDay+" errors:"+finder.errors+" parallelCacheInitRequests:"+parallelCacheInitRequests);
+      console.log("remoteInitBottleneck  turntime:"+turntime.toUTCString()+"  totalWordsLastDay:"+totalWordsLastDay+" errors:"+finder.errors+" pendingParallelRequests:"+pendingParallelRequests);
     } else {
       await cacheInitializerCommon;
     }
@@ -54,7 +66,7 @@ export function isApiLimitReached() {
       return false;
     }
   } else {
-    return parallelCacheInitRequests >= API_DAILY_LIMIT;
+    return pendingParallelRequests >= API_DAILY_LIMIT;
   }
 }
 
@@ -168,7 +180,7 @@ export async function loadSingleWord(word, asobject) {
     }
   }
 
-  let success = await remoteCallInit();
+  let success = await remoteInitBottleneck();
   if (!success) {
     return null;
   }
@@ -205,6 +217,8 @@ export async function loadSingleWord(word, asobject) {
   } catch (e) {
     console.warn("API error (",word, ") ", e&&e.message?e.message:"?");
     return null;
+  } finally {
+    pendingParallelRequests--;
   }
 
 }
