@@ -58,15 +58,15 @@ async function remoteInitBottleneck() {
   }
 }
 
-export function isApiLimitReached() {
+export function isApiLimitReached(pending=0) {
   if (cacheIsInitialized) {
     if (cacheInitializerCommon) {
-      return totalWordsLastDay >= API_DAILY_LIMIT;
+      return (totalWordsLastDay+pending) >= API_DAILY_LIMIT;
     } else {
       return false;
     }
   } else {
-    return pendingParallelRequests >= API_DAILY_LIMIT;
+    return (pendingParallelRequests+pending) >= API_DAILY_LIMIT;
   }
 }
 
@@ -362,6 +362,10 @@ export async function loadDictionaryAndChildren(tresult, word, traversion, paren
     if (loadChildren) {
       let node = new ClusterDefinitionNode(by_def, entry, val, traversion.level);
       for (let word of node.words) {
+        if (isApiLimitReached(traversion.wordsbreadthfirst.length)) {
+          console.log("API limit reached. STOP traversing");
+          break;
+        }
         let pair = {parent:node, word};
         traversion.wordsbreadthfirst.push(pair);
       }
