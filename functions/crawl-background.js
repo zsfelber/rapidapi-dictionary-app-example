@@ -2,7 +2,6 @@
 const crawler = require('./include/crawler');
 
 const MAX_WORDS = 10000000;
-const CACHE_CLUSTERS = false;
 const MAX_NODE_FREQUENCY = 1000;
 const TRAVERSE_ALL = true;
 
@@ -10,7 +9,6 @@ const TRAVERSE_ALL = true;
 export async function handler(event, context) {
   crawler.initCrawler(
     MAX_WORDS,
-    CACHE_CLUSTERS,
     MAX_NODE_FREQUENCY,
     TRAVERSE_ALL
     );

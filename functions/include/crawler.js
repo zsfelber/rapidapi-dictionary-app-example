@@ -11,7 +11,6 @@ const API_DAILY_LIMIT = 200;
 const TURNING_TIME_GMT = [20,55];
 const MAX_PARALLEL = 50;
 let MAX_WORDS;
-let CACHE_CLUSTERS;
 let MAX_NODE_FREQUENCY;
 let TRAVERSE_ALL;
 let curtime, turntime;
@@ -76,13 +75,11 @@ export function isApiLimitReached(pendingBeforeRequest=0) {
 
 export async function initCrawler(
   _MAX_WORDS,
-  _CACHE_CLUSTERS,
   _MAX_NODE_FREQUENCY,
   _TRAVERSE_ALL
   ) {
 
   MAX_WORDS = _MAX_WORDS;
-  CACHE_CLUSTERS = _CACHE_CLUSTERS;
   MAX_NODE_FREQUENCY = _MAX_NODE_FREQUENCY;
   TRAVERSE_ALL = _TRAVERSE_ALL;
 
@@ -337,6 +334,18 @@ function appendTo(array, itemOrArray) {
   }
 }
 
+function runPromisesAtAPIlimit(promises) {
+  let remainingApiLimit = API_DAILY_LIMIT - (totalWordsLastDay + pendingParallelRequests);
+  if (promises.length < remainingApiLimit) {
+    return true;
+  } else {
+    await Promise.all(promises);
+    remainingApiLimit = API_DAILY_LIMIT - (totalWordsLastDay + pendingParallelRequests);
+    promises = [];
+    return remainingApiLimit > 0;
+  }
+}
+
 export async function loadDictionaryAndChildren(tresult, word, traversion, parentNode, loadChildren) {
 
   if (!parentNode &&  !loadChildren) {
@@ -388,8 +397,6 @@ export async function traverseCluster(tresult, word, themainabstraction=true) {
 
   tresult.master = await loadSingleWord(word, true);
 
-  let remainingApiLimit = API_DAILY_LIMIT - (totalWordsLastDay + pendingParallelRequests);
-
   do {
     var previouslevelchildwords = traversion.wordsbreadthfirst.concat([]);
     traversion.wordsbreadthfirst = [];
@@ -413,18 +420,14 @@ export async function traverseCluster(tresult, word, themainabstraction=true) {
         let nodepromise = loadDictionaryAndChildren(tresult, w, traversion, pair.parent, loadChildren);
         promises.push(nodepromise);
 
+        if (!runPromisesAtAPIlimit(promises)) {
+          console.log(word+" Level "+traversion.level+" finished. Stop searching. API Limit reached.");
+          return false;
+        }
         if (tresult.noWords >= MAX_WORDS) {
           await Promise.all(promises);
           if (themainabstraction) console.log(word+" Level "+traversion.level+" finished. Search limit reached.");
           return true;
-        }
-        if (promises.length >= remainingApiLimit) {
-          await Promise.all(promises);
-          remainingApiLimit = API_DAILY_LIMIT - (totalWordsLastDay + pendingParallelRequests);
-          promises = [];
-          if (remainingApiLimit <= 0) {
-            console.log(word+" Level "+traversion.level+" finished. Stop searching. API Limit reached.");
-          }
         }
       }
     } catch (e) {
@@ -450,65 +453,37 @@ export async function traverseCluster(tresult, word, themainabstraction=true) {
 
 export async function loadCluster(word, asobject) {
 
-  const cfpath = `cache/clusters/${word}`;
-  if (CACHE_CLUSTERS && fs.existsSync(cfpath)) {
-    let ijson = fs.readFileSync(cfpath).toString();
-    let result = JSON.parse(ijson);
-    console.log("From cache file/cluster "+cfpath+"  asobject:"+asobject+"...\n");
+  const by_def = {};
+  const by_w = {};
+  const by_key = [];
+  let tresult = {
+    by_def,
+    by_w    };
+  const entry = await traverseCluster(tresult, word);
+  by_key.push.apply(by_key, Object.values(by_def));
+  const cmp = (firstEl, secondEl) => {
+    return firstEl.key.localeCompare(secondEl.key);
+  };
+  by_key.sort(cmp);
+  for (let node of by_key) {
+    node.compress();
+  }
+  let result = {
+    word,
+    noClusterEntries:by_key.length,
+    results:by_key
+  };
+  if (tresult.master) {
+    result.frequency = tresult.master.frequency;
+    result.pronunciation = tresult.master.pronunciation;
+  }
 
-    if (asobject) {
-      return result;
-    } else {
-      return ijson;
-    }
-
+  let cjson;
+  if (asobject) {
+    return result;
   } else {
-
-    const by_def = {};
-    const by_w = {};
-    const by_key = [];
-    let tresult = {
-      by_def,
-      by_w    };
-    const entry = await traverseCluster(tresult, word);
-    by_key.push.apply(by_key, Object.values(by_def));
-    const cmp = (firstEl, secondEl) => {
-      return firstEl.key.localeCompare(secondEl.key);
-    };
-    by_key.sort(cmp);
-    for (let node of by_key) {
-      node.compress();
-    }
-    let result = {
-      word,
-      noClusterEntries:by_key.length,
-      results:by_key
-    };
-    if (tresult.master) {
-      result.frequency = tresult.master.frequency;
-      result.pronunciation = tresult.master.pronunciation;
-    }
-
-    let cjson;
-    if (CACHE_CLUSTERS) {
-      cjson = JSON.stringify(result);
-      fs.writeFile(cfpath, cjson, (err) => {
-        if (err) {
-          console.error("Cluster file/cluster "+cfpath+"  write failure : "+err+"\n");
-        } else {
-          console.log("Cluster file/cluster "+cfpath+"  written successfully\n");
-        }
-      });
-    }
-
-    if (asobject) {
-      return result;
-    } else {
-      if (!cjson) {
-        cjson = JSON.stringify(result);
-      }
-      return cjson;
-    }
+    cjson = JSON.stringify(result);
+    return cjson;
   }
 }
 
@@ -534,6 +509,10 @@ export async function loadCommonWord(result, word, noWords) {
         for (let syn of (val.synonyms?val.synonyms:[])) {
           let nodepromise = loadDictionaryAndChildren(result, syn, {level:0}, definitionNode, false);
           promises.push(nodepromise);
+          if (!runPromisesAtAPIlimit(promises)) {
+            console.log(word+" Level "+traversion.level+" finished. Stop searching. API Limit reached.");
+            return false;
+          }
         }
         await Promise.all(promises);
       } catch (e) {
@@ -566,7 +545,12 @@ export async function loadCommonWords(words, word, asobject) {
   let promises = [];
   let noWords = Object.keys(words).length;
   for (let commonWord in words) {
-    promises.push(loadCommonWord(result, commonWord, noWords));
+    let cwpromise = loadCommonWord(result, commonWord, noWords);
+    promises.push(cwpromise);
+    if (!runPromisesAtAPIlimit(promises)) {
+      console.log(word+" Level "+traversion.level+" finished. Stop searching. API Limit reached.");
+      return false;
+    }
   }
   await Promise.all(promises);
 
@@ -592,9 +576,7 @@ export async function loadCommonWords(words, word, asobject) {
   if (asobject) {
     return result;
   } else {
-    if (!cjson) {
-      cjson = JSON.stringify(result);
-    }
+    cjson = JSON.stringify(result);
     return cjson;
   }
 
