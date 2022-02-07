@@ -707,10 +707,6 @@ export function loadCommonWords10000(word, letter, asobject) {
 export function loadWordsOnly(words0, word, asobject) {
   let words;
   if (Array.isArray(words0)) {
-    const cmp = (firstEl, secondEl) => {
-      return firstEl.localeCompare(secondEl);
-    };
-    //words.sort(cmp);
     words0.sort();
     words = words0;
   } else {

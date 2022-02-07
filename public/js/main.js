@@ -4,7 +4,7 @@ var lastmode;
 var update_to;
 var page,col=2,wordInfoTbl,wordInfoRow,wordInfoBox,info;
 
-var letters=[String.fromCharCode(0)].concat(numbers()).concat([":"]).concat(ucases()).concat(lcases());
+var letters=[String.fromCharCode(1)].concat(numbers()).concat([":"]).concat(ucases()).concat(lcases());
 
 var checkboxdata = {
     "bucket1": {
@@ -510,8 +510,13 @@ function updateWords() {
             finishbox(i?letters[i]:"~");
             do {
                 i++;
+                if (i==letters.length) {
+                    break;
+                }
                 cc = letters[i].charCodeAt(0);
-            } while (let0 > cc);
+            } while (let0 >= cc);
+            i--;
+            cc = letters[i].charCodeAt(0);
 
             if (group.length) {
                 createas(wordInfoBox, group, null, ", ");
