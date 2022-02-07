@@ -108,6 +108,8 @@ export async function initCrawler(
   // 86400000 milliseconds (24 hours)
   if (curtime < turntime) {
     turntime = new Date(turntime - 86400000);
+  } else {
+    turntime = new Date(turntime);
   }
 
   console.log("initCrawler  curtime:"+curtime.toUTCString()+"  turntime:"+turntime.toUTCString());
