@@ -62,6 +62,9 @@ var checkboxdata = {
         "most common 10000 i-o": { defchecked: false },
         "most common 10000 p-r": { defchecked: false },
         "most common 10000 s-z": { defchecked: false },
+        "most common 3000 words": { defchecked: false },
+        "most common 10000 words": { defchecked: false },
+        "all words": { defchecked: false },
     },
 };
 
@@ -186,7 +189,7 @@ function checkps() {
     for (bucketid in checkboxdata) {
         var bucket = checkboxdata[bucketid];
         for (chid in bucket) {
-            if (!/^most common/.test(chid)) {
+            if (!/^most common/.test(chid) && chid!="all words") {
                 checkp(qs, chid, bucket[chid]);
             }
         }
@@ -420,6 +423,39 @@ function updateMostCommon() {
 
 }
 
+function updateWords() {
+
+    const mode = lastmode;
+    const data = lastresult;
+
+    // clears the word container if it had
+    // previous data
+    $('#word-info').empty();
+    $('#info').empty();
+    $("#title").html(mode?mode:"");
+
+    const dlclust = labelled("no. words", data.noWords);
+    info.appendChild(dlclust);
+
+
+    let itms=999;
+    page=1;
+    col=2;
+    wordInfoBox=null;
+    wordInfoRow=null;
+
+    data.results.map(val => {
+        if (itms++%1000==999) {
+            newrow();
+            newbox("list-item-lg");
+        }
+        createas(wordInfoBox, val, ", ");
+
+    });
+    finishbox();
+
+}
+
 function updateCluster() {
 
     const mode = lastmode;
@@ -466,6 +502,15 @@ function update(firsttime) {
             updateMostCommon();
         }
         break;
+    
+    case "most_common_3000_words":
+    case "most_common_10000_words":
+    case "all_words":
+        if (firsttime) {
+            updateWords();
+        }
+        break;
+
     case "synonym_cluster":
         if (firsttime) {
             updateCluster();

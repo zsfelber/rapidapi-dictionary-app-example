@@ -698,3 +698,36 @@ export function loadCommonWords10000(word, letter, asobject) {
   }
   return loadCommonWordsLetter(cw.TheMostCommon10000, word, letter, asobject);
 }
+
+export function loadWordsOnly(words, word, asobject) {
+  let result = {
+    word,
+    noWords:Object.keys(words).length,
+    results:Object.keys(words)
+  };
+  let cjson;
+  if (asobject) {
+    return result;
+  } else {
+    cjson = JSON.stringify(result);
+    return cjson;
+  }
+}
+
+export function loadCommon3000_words(word, asobject) {
+  let cw1 = require('./common-words-3000-a-e.js');
+  let cw2 = require('./common-words-3000-f-p.js');
+  let cw3 = require('./common-words-3000-q-z.js');
+  let TheMostCommon3000 = Object.assign({}, cw1, cw2, cw3);
+  loadWordsOnly(TheMostCommon3000, word, asobject);
+}
+
+export function loadCommon10000_words(word, asobject) {
+  let cw1 = require('./common-words-10000-a-c.js');
+  let cw2 = require('./common-words-10000-d-h.js');
+  let cw3 = require('./common-words-10000-i-o.js');
+  let cw4 = require('./common-words-10000-p-r.js');
+  let cw5 = require('./common-words-10000-s-z.js');
+  let TheMostCommon10000 = Object.assign({}, cw1, cw2, cw3, cw4, cw5);
+  loadWordsOnly(TheMostCommon10000, word, asobject);
+}

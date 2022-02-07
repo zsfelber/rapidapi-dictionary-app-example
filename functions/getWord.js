@@ -72,6 +72,21 @@ export async function handler(event, context) {
 
       json = await crawler.loadCommonWords10000(word, letter, false);
       break;
+    case "most_common_3000_words":
+      console.log("most_common_3000_words");
+
+      json = await crawler.loadCommon3000_words(word, false);
+      break;
+    case "most_common_10000_words":
+      console.log("most_common_10000_words");
+
+      json = await crawler.loadCommon10000_words(word, false);
+      break;
+    case "all_words":
+      console.log("all_words");
+
+      json = await crawler.loadAll_words(word, false);
+      break;
     case "synonym_cluster":
       console.log("synonym_cluster:"+word);
 
