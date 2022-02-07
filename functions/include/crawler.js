@@ -33,7 +33,10 @@ function timeoutAsPromise(millis) {
 
 async function parallelBottleneck() {
   pendingParallelRequests++;
-  while (pendingParallelRequests >= MAX_PARALLEL) {
+  if (!(pendingParallelRequests%1000)) {
+    console.log("++pendingParallelRequests:"+pendingParallelRequests);
+  }
+  while (pendingParallelRequests > MAX_PARALLEL) {
     await timeoutAsPromise(20);
   }
 }
@@ -55,7 +58,7 @@ async function remoteInitBottleneck() {
 
   if (isApiLimitReached()) {
     if (!cacheInitIsError) {
-      console.error("Could not proxy more request to API file/single  totalWordsLastDay >= API_DAILY_LIMIT :  "+totalWordsLastDay+" >= "+API_DAILY_LIMIT+"\n");
+      console.error("Could not proxy more request to API file/single  totalWordsLastDay+"+pendingParallelRequests+" >= API_DAILY_LIMIT :  "+(totalWordsLastDay+pendingParallelRequests)+" >= "+API_DAILY_LIMIT+"\n");
     }
     cacheInitIsError = true;
     return false;
@@ -185,10 +188,6 @@ export async function loadSingleWord(word, asobject) {
     }
   }
 
-  let success = await remoteInitBottleneck();
-  if (!success) {
-    return null;
-  }
 
   try {
     if (pendingObjects[word]) {
@@ -199,6 +198,16 @@ export async function loadSingleWord(word, asobject) {
         const ojson = JSON.stringify(result);         // modified
         return ojson;
       }
+    }
+  } catch (e) {
+    console.warn("Error (",word, ") ", e&&e.message?e.message:"?");
+    return null;
+  }
+
+  try {
+    let success = await remoteInitBottleneck();
+    if (!success) {
+      return null;
     }
 
     // send request to the WordsAPI
@@ -220,9 +229,9 @@ export async function loadSingleWord(word, asobject) {
 
     fs.writeFile(wfpath, djson, (err) => {
       if (err) {
-        console.error("Cache file/single "+wfpath+"  asobject:"+asobject+" write failure : "+err+"\n");
+        console.error("Cache file/single "+wfpath+"  asobject:"+asobject+" pendingParallelRequests:"+pendingParallelRequests+" write failure : "+err+"\n");
       } else {
-        console.log("Cache file/single "+wfpath+"  asobject:"+asobject+" written successfully\n");
+        console.log("Cache file/single "+wfpath+"  asobject:"+asobject+" pendingParallelRequests:"+pendingParallelRequests+" written successfully\n");
       }
       delete pendingObjects[word];
     });
@@ -240,6 +249,9 @@ export async function loadSingleWord(word, asobject) {
     return null;
   } finally {
     pendingParallelRequests--;
+    if (!(pendingParallelRequests%1000)) {
+      console.log("--pendingParallelRequests:"+pendingParallelRequests);
+    }
   }
 
 }
