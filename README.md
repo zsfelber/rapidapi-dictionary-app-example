@@ -5,6 +5,10 @@ https://slacker.ro/2020/02/18/build-a-dictionary-app-with-the-wordsapi-javascrip
 
 
 
+npm install netlify-cli -g 
+
+
+
 Example application built with RapidAPI and the WordsAPI for a blog post.
 
 netlify link 

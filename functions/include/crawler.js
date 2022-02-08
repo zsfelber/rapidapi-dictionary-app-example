@@ -100,6 +100,9 @@ export async function initCrawler(
   if (!fs.existsSync("cache/clusters")){
     fs.mkdirSync("cache/clusters");
   }
+  if (!fs.existsSync("cache/index")){
+    fs.mkdirSync("cache/index");
+  }
 
   curtime = new Date();
   turntime = Date.UTC(curtime.getUTCFullYear(),
@@ -761,26 +764,54 @@ export async function loadAll_words(word0, asobject) {
 
 export async function wordsByFrequency(word0, ffrom, fto=1000000, asobject) {
   let files = [];
+  const indpath = `cache/index/frequency`;
+
+  let ijson = fs.readFileSync(indpath);
+  let find = JSON.parse(ijson);
+
+  let words0 = [];
+  let notf=0,fit=0;
+
+  for (let df in find) {
+    let a = find[df];
+    if (ffrom <= df && df <= fto) {
+      words0.push.apply(words0, a);
+      fit+=a.length;
+    } else {
+      notf+=a.length;
+    }
+  }
+
+  console.log("Items fit:"+fit+" nonfit:"+notf+" tot:"+(fit+notf));
+
+  return loadWordsOnly(words0, word0, asobject);
+}
+
+
+export async function generateIndexes() {
+  let files = [];
   async function onFile(strPath, stat) {
     let word = strPath.substring(12);
     files.push(word);
   }
-  await finder.findFiles("cache/words", 0, onFile);
+  let nowords = await finder.findFiles("cache/words", 0, onFile);
 
-  let words0 = [];
-  let nodat=0,notf=0,fit=0;
+
+  let cntf = 0;
+  let byf = {};
+  function entry(f) {
+    let e = byf[f];
+    if (!e) {
+      byf[f] = e = [];
+      cntf++;
+    }
+    return e;
+  }
   let chkFile = async function(word) {
     let data = await loadSingleWord(word, true, true);
     if (data) {
       let df = data.frequency ? data.frequency : 0;
-      if (ffrom <= df && df <= fto) {
-        words0.push(word);
-        fit++;
-      } else {
-        notf++;
-      }
-    } else {
-      nodat++;
+      entry(df).push(word);
     }
   };
 
@@ -790,9 +821,27 @@ export async function wordsByFrequency(word0, ffrom, fto=1000000, asobject) {
   }
   await Promise.all(promises);
 
-  console.log("Items fit:"+fit+" nonfit:"+notf+" no data:"+nodat);
+  function sortIdx() {
+    var keys = Object.keys(byf);
+    keys.sort();
+    var sorted = {};
+    for (var i = 0; i < keys.length; i++) {
+        var key = keys[i];
+        var es = byf[key];
+        sorted[key] = es;
+        es.sort();
+    }
+    return sorted;
+  }
+  let byfs = sortIdx();
 
+  console.log("Frequency indexes:"+cntf+"  of no.words:"+nowords);
 
-  return loadWordsOnly(words0, word0, asobject);
+  const indpath = `cache/index/frequency`;
+  const djson = JSON.stringify(byfs);
+
+  console.log("Saving cache file/index "+indpath);
+  fs.writeFileSync(indpath, djson);
+
 }
 

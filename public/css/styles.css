@@ -87,11 +87,19 @@ form {
     margin-right: 1px;
 }
 
-.ltrcard {
+.ltrcard2 {
     vertical-align: top;
     display: inline-block;
     text-align: justify;
     margin-left: 10px;
+    margin-right: 1px;
+    width: 13rem;
+}
+.ltrcard {
+    vertical-align: top;
+    display: inline-block;
+    text-align: justify;
+    margin-left: 1px;
     margin-right: 1px;
     width: 6rem;
 }
