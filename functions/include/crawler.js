@@ -831,10 +831,17 @@ export async function generateIndexes() {
   }
 
   console.log("Frequency indexes:"+cntf+"  of no.words:"+nowords);
+  let lst = 0;
   for (let f of fkeys) {
     let es = byfs[f];
-    console.log("Frequency:"+f+"  cnt:"+(es?es.length:"-"));
+    lst += es?es.length:0;
+    if (lst >= 800) {
+      console.log("Frequency:.."+f+"  cnt:"+lst);
+      lst = 0;
+    }
   }
+  console.log("Frequency:..  cnt:"+lst);
+
   const indpath = `cache/index/frequency`;
   const djson = JSON.stringify(byfs);
 

@@ -5,7 +5,7 @@ var update_to;
 var page,col=2,wordInfoTbl,wordInfoRow,wordInfoBox,info;
 
 var letters=[String.fromCharCode(1)].concat(numbers()).concat([":"]).concat(ucases()).concat(lcases());
-var frqntls=[0, ];
+var frqntls=[0, 1.65, 1.735, 1.745, 1.825, 1.975, 2.035, 2.125, 2.225, 2.305, 2.385, 2.495, 2.595, 2.785, 3.125];
 
 var checkboxdata = {
     "bucket1": {
