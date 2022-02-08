@@ -1,5 +1,6 @@
 const crawler = require('./include/crawler.js');
 
+const API_DAILY_LIMIT = 18000;
 const MAX_WORDS = 50;
 const MAX_NODE_FREQUENCY = 4;
 const TRAVERSE_ALL = false;
@@ -7,11 +8,6 @@ const TRAVERSE_ALL = false;
 
 
 export async function handler(event, context) {
-  crawler.initCrawler(
-    MAX_WORDS,
-    MAX_NODE_FREQUENCY,
-    TRAVERSE_ALL
-    );
 
   //   extract the word query parameter from the HTTP request
   const word = event.queryStringParameters.word || "";
@@ -22,6 +18,25 @@ export async function handler(event, context) {
 
   try {
 
+    switch (mode) {
+      case "dictionary":
+        crawler.initCrawler(
+          100000,//no limit for occasional 1 or 2 single words
+          MAX_WORDS,
+          MAX_NODE_FREQUENCY,
+          TRAVERSE_ALL
+        );
+        break;
+      default:
+        crawler.initCrawler(
+          API_DAILY_LIMIT,
+          MAX_WORDS,
+          MAX_NODE_FREQUENCY,
+          TRAVERSE_ALL
+        );
+        break;
+    }
+  
     let json;
     switch (mode) {
     case "most_common_3000_a-e":

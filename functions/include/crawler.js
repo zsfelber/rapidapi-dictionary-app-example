@@ -8,9 +8,9 @@ const API_LIMIT_EXCEPTION = {
   apiLimitException:1
 };
 
-const API_DAILY_LIMIT = 18000;
 const TURNING_TIME_GMT = [20,55];
 const MAX_PARALLEL = 10;
+let API_DAILY_LIMIT = 18000;
 let MAX_WORDS;
 let MAX_NODE_FREQUENCY;
 let TRAVERSE_ALL;
@@ -84,11 +84,13 @@ export function isApiLimitReached(pendingBeforeRequest=0) {
 }
 
 export async function initCrawler(
+  _API_DAILY_LIMIT,
   _MAX_WORDS,
   _MAX_NODE_FREQUENCY,
   _TRAVERSE_ALL
   ) {
 
+  API_DAILY_LIMIT = _API_DAILY_LIMIT;
   MAX_WORDS = _MAX_WORDS;
   MAX_NODE_FREQUENCY = _MAX_NODE_FREQUENCY;
   TRAVERSE_ALL = _TRAVERSE_ALL;
