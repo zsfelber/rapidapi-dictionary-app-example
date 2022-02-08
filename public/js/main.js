@@ -247,6 +247,7 @@ function selectElementContents(el) {
     var sel = window.getSelection();
     sel.removeAllRanges();
     sel.addRange(range);
+    curword = el.innerText;
     $(el).trigger("mouseup");
     //el.focus();
 }
@@ -604,6 +605,16 @@ function update(firsttime) {
         break;
     }
 }
+
+let curword, collected = {};
+$(document).keypress(function(e){
+    console.log(` code:${e.code} curword:${curword}`);
+    if (e.code==='KeyA' && curword) {
+        console.log(` curword:${curword} added`);
+        collected[curword] = 1;
+        console.log(collected);
+    }
+});
 
 // Specifies a function to execute when the DOM is fully loaded.
 $(document).ready(function(){
