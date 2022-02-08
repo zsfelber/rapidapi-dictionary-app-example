@@ -5,7 +5,10 @@ var update_to;
 var page,col=2,wordInfoTbl,wordInfoRow,wordInfoBox,info;
 
 var letters=[String.fromCharCode(1)].concat(numbers()).concat([":"]).concat(ucases()).concat(lcases());
-var frqntls=[0, 1.605, 1.735, 1.745, 1.825, 1.975, 2.035, 2.125, 2.205, 2.305, 2.385, 2.455, 2.525, 2.595, 2.665, 2.735, 2.805, 2.875, 2.945, 3.025, 3.105, 3.185, 3.265, 3.345, 3.435, 3.535, 3.645, 3.755, 3.875, 3.995, 4.125, 4.295, 4.505, 4.775, 5.315, 100];
+
+var frqntls800=[0, 1.605, 1.735, 1.745, 1.825, 1.975, 2.035, 2.125, 2.205, 2.305, 2.385, 2.455, 2.525, 2.595, 2.665, 2.735, 2.805, 2.875, 2.945, 3.025, 3.105, 3.185, 3.265, 3.345, 3.435, 3.535, 3.645, 3.755, 3.875, 3.995, 4.125, 4.295, 4.505, 4.775, 5.315,100];
+var frqntls3000=[0, 1.745, 2.035, 2.305, 2.545, 2.795, 3.055, 3.345, 3.705, 4.155, 5.195,100];
+var frqntls10000=[0, 2.275, 3.115, 4.505,100];
 
 var checkboxdata = {
     "bucket1": {
@@ -675,14 +678,21 @@ $(document).ready(function(){
         top10000.appendChild(a);
         top10000.appendChild(spc);
     }
-    let freqlabels = document.querySelector(".freqlabels");
-    for (let i=0, fr, pfr=0;  i<frqntls.length;  i++, pfr=fr+0.005) {
-        fr = frqntls[i];
-        let a = createa(""+i, null, "&mode=words_by_frequency&ffrom="+pfr+"&fto="+fr);
-        let spc = document.createTextNode("  ");
-        freqlabels.appendChild(a);
-        freqlabels.appendChild(spc);
+    function createfrlabs(frqntls, freqlabels) {
+        for (let i=0, fr, pfr=0;  i<frqntls.length;  i++, pfr=fr+0.005) {
+            fr = frqntls[i];
+            let a = createa(""+i, null, "&mode=words_by_frequency&ffrom="+pfr+"&fto="+fr);
+            let spc = document.createTextNode("  ");
+            freqlabels.appendChild(a);
+            freqlabels.appendChild(spc);
+        }
     }
+    let freqlabels800 = document.querySelector(".freqlabels800");
+    let freqlabels3000 = document.querySelector(".freqlabels3000");
+    let freqlabels10000 = document.querySelector(".freqlabels10000");
+    createfrlabs(frqntls800, freqlabels800);
+    createfrlabs(frqntls3000, freqlabels3000);
+    createfrlabs(frqntls10000, freqlabels10000);
     
     if (urltop) {
         $("input[type='radio'][name='mode']:checked").removeAttr('checked');
