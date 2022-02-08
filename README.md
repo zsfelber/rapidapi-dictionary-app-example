@@ -66,4 +66,26 @@ words_by_frequency:4.2..100
 Items fit:3471 nonfit:53004 no data:25
 
 
+http://localhost:8888/?word=4&mode=words_by_frequency&ffrom=4.51&fto=100&
+2163
+{
+    "crap": 1,
+    "dear": 1,
+    "dumb": 1,
+    "freak": 1,
+    "jack": 1,
+    "bob": 1,
+    "jerk": 1,
+    "jerry": 1,
+    "jimmy": 1,
+    "lee": 1,
+    "mike": 1,
+    "nick": 1,
+    "nuts": 1,
+    "piss": 1,
+    "roger": 1,
+    "sam": 1
+}
+http://localhost:8888/?word=11&mode=words_by_frequency&ffrom=4.16&fto=4.505
+1510
 
