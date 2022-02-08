@@ -800,12 +800,12 @@ export async function generateIndexes() {
   let cntf = 0;
   let byf = {};
   function entry(f) {
-    let e = byf[f];
-    if (!e) {
-      byf[f] = e = [];
+    let es = byf[f];
+    if (!es) {
+      byf[f] = es = [];
       cntf++;
     }
-    return e;
+    return es;
   }
   let chkFile = async function(word) {
     let data = await loadSingleWord(word, true, true);
@@ -821,23 +821,19 @@ export async function generateIndexes() {
   }
   await Promise.all(promises);
 
-  function sortIdx() {
-    var keys = Object.keys(byf);
-    keys.sort((a,b)=>Number(a)-Number(b));
-    var sorted = {};
-    for (var i = 0; i < keys.length; i++) {
-        var key = keys[i];
-        var es = byf[key];
-        sorted[key] = es;
-        es.sort();
-    }
-    return sorted;
+  var fkeys = [].concat(Object.keys(byf));
+  fkeys.sort((a,b)=>Number(a)-Number(b));
+  var byfs = {};
+  for (let f of fkeys) {
+    let es = byf[f];
+    byfs[f] = es;
+    es.sort();
   }
-  let byfs = sortIdx();
 
   console.log("Frequency indexes:"+cntf+"  of no.words:"+nowords);
-  for (let f in byfs) {
-    console.log("Frequency:"+f+"  cnt:"+byfs[f].length);
+  for (let f of fkeys) {
+    let es = byfs[f];
+    console.log("Frequency:"+f+"  cnt:"+(es?es.length:"-"));
   }
   const indpath = `cache/index/frequency`;
   const djson = JSON.stringify(byfs);
