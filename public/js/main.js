@@ -5,7 +5,7 @@ var update_to;
 var page,col=2,wordInfoTbl,wordInfoRow,wordInfoBox,info;
 
 var letters=[String.fromCharCode(1)].concat(numbers()).concat([":"]).concat(ucases()).concat(lcases());
-var frqntls=[0, 1.65, 1.735, 1.745, 1.825, 1.975, 2.035, 2.125, 2.225, 2.305, 2.385, 2.495, 2.595, 2.785, 3.125];
+var frqntls=[0, 1.605, 1.735, 1.745, 1.825, 1.975, 2.035, 2.125, 2.205, 2.305, 2.385, 2.455, 2.525, 2.595, 2.665, 2.735, 2.805, 2.875, 2.945, 3.025, 3.105, 3.185, 3.265, 3.345, 3.435, 3.535, 3.645, 3.755, 3.875, 3.995, 4.125, 4.295, 4.505, 4.775, 5.315, 100];
 
 var checkboxdata = {
     "bucket1": {
@@ -676,13 +676,9 @@ $(document).ready(function(){
         top10000.appendChild(spc);
     }
     let freqlabels = document.querySelector(".freqlabels");
-    for (let i = -1; i<=24; i++) {
-        let fr = (i*0.25);
-        let t = (i*0.25+0.249);
-        if (i==-1) {fr=0;t=0;}
-        else if (i==0) {fr=0.001;}
-        else if (i==24) t=100;
-        let a = createa(i>=0?fr.toFixed(1):"?", null, "&mode=words_by_frequency&ffrom="+fr+"&fto="+t);
+    for (let i=0, fr, pfr=0;  i<frqntls.length;  i++, pfr=fr+0.005) {
+        fr = frqntls[i];
+        let a = createa(""+i, null, "&mode=words_by_frequency&ffrom="+pfr+"&fto="+fr);
         let spc = document.createTextNode("  ");
         freqlabels.appendChild(a);
         freqlabels.appendChild(spc);

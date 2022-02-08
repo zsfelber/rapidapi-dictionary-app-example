@@ -832,15 +832,23 @@ export async function generateIndexes() {
 
   console.log("Frequency indexes:"+cntf+"  of no.words:"+nowords);
   let lst = 0;
+  let buckets = [0];
   for (let f of fkeys) {
-    let es = byfs[f];
-    lst += es?es.length:0;
-    if (lst >= 800) {
-      console.log("Frequency:.."+f+"  cnt:"+lst);
-      lst = 0;
+    f = Number(f);
+    if (f) {
+      let es = byfs[f];
+      lst += es?es.length:0;
+      if (lst >= 800) {
+        let fpl = f+0.005;
+        let ff = fpl.toFixed(3);
+        console.log("Frequency:.."+f+" "+ff+"  cnt:"+lst);
+        lst = 0;
+        buckets.push(ff);
+      }
     }
   }
   console.log("Frequency:..  cnt:"+lst);
+  console.log("\nvar frqntls=["+buckets.join(", ")+",100];");
 
   const indpath = `cache/index/frequency`;
   const djson = JSON.stringify(byfs);
