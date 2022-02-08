@@ -358,17 +358,17 @@ function updateSingleWord() {
     $('#info').empty();
     $("#title").html(data.word?data.word:"");
 
-    // logs no results if word data is not found
-    if (!data.results || data.results.length < 1) {
-        return wordInfoTbl.appendChild(document.createTextNode('No results matched.'));
-    }
-
     page=1;
     col=2;
     wordInfoBox=null;
     wordInfoRow=null;
 
     printLabel(data);
+
+    // logs no results if word data is not found
+    if (!data.results || data.results.length < 1) {
+        return wordInfoTbl.appendChild(document.createTextNode('No results matched.'));
+    }
 
     data.results.map(val => {
 
