@@ -608,12 +608,14 @@ function update(firsttime) {
 }
 
 let curword, collected = {};
-$(document).keypress(function(e){
+$(document).keypress(async function(e){
     console.log(` code:${e.code} curword:${curword}`);
     if (e.code==='KeyA' && curword) {
         console.log(` curword:${curword} added`);
         collected[curword] = 1;
-        console.log(collected);
+        let s = JSON.stringify(collected, null, 2)
+        console.log(s);
+        await navigator.clipboard.writeText(s);
     }
 });
 
