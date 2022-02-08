@@ -674,6 +674,17 @@ $(document).ready(function(){
         top10000.appendChild(a);
         top10000.appendChild(spc);
     }
+    let freqlabels = document.querySelector(".freqlabels");
+    for (let i = 0; i<=12; i++) {
+        let fr = (i*0.5);
+        let t = (i*0.5+0.499);
+        if (i==12) t=100;
+        let a = createa(fr.toFixed(1), null, "&mode=words_by_frequency&ffrom="+fr+"&fto="+t);
+        let spc = document.createTextNode("  ");
+        freqlabels.appendChild(a);
+        freqlabels.appendChild(spc);
+    }
+    
     if (urltop) {
         $("input[type='radio'][name='mode']:checked").removeAttr('checked');
     }
