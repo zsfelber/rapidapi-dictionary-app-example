@@ -675,11 +675,13 @@ $(document).ready(function(){
         top10000.appendChild(spc);
     }
     let freqlabels = document.querySelector(".freqlabels");
-    for (let i = 0; i<=12; i++) {
-        let fr = (i*0.5);
-        let t = (i*0.5+0.499);
-        if (i==12) t=100;
-        let a = createa(fr.toFixed(1), null, "&mode=words_by_frequency&ffrom="+fr+"&fto="+t);
+    for (let i = -1; i<=24; i++) {
+        let fr = (i*0.25);
+        let t = (i*0.25+0.249);
+        if (i==-1) {fr=0;t=0;}
+        else if (i==0) {fr=0.001;}
+        else if (i==24) t=100;
+        let a = createa(i>=0?fr.toFixed(1):"?", null, "&mode=words_by_frequency&ffrom="+fr+"&fto="+t);
         let spc = document.createTextNode("  ");
         freqlabels.appendChild(a);
         freqlabels.appendChild(spc);
