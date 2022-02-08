@@ -171,7 +171,7 @@ export function singleWordToDisplay(data) {
 
 export async function loadSingleWord(word, asobject, cachedonly=false) {
 
-  let fileword = word.replace(/[.,/']/g, "$");
+  let fileword = word.replace(/[.,/']/g, "$").toLowerCase();
   const wfpath = `cache/words/${fileword}`;
 
   if (fs.existsSync(wfpath)) {
@@ -712,11 +712,11 @@ export function loadCommonWords10000(word, letter, asobject) {
 export function loadWordsOnly(words0, word, asobject) {
   let words;
   if (Array.isArray(words0)) {
-    words0.sort();
     words = words0;
   } else {
-    words = Object.keys(words0);
+    words = [].concat(Object.keys(words0));
   }
+  words.sort();
 
   let result = {
     word,
@@ -823,7 +823,7 @@ export async function generateIndexes() {
 
   function sortIdx() {
     var keys = Object.keys(byf);
-    keys.sort();
+    keys.sort((a,b)=>Number(a)-Number(b));
     var sorted = {};
     for (var i = 0; i < keys.length; i++) {
         var key = keys[i];
@@ -836,7 +836,9 @@ export async function generateIndexes() {
   let byfs = sortIdx();
 
   console.log("Frequency indexes:"+cntf+"  of no.words:"+nowords);
-
+  for (let f in byfs) {
+    console.log("Frequency:"+f+"  cnt:"+byfs[f].length);
+  }
   const indpath = `cache/index/frequency`;
   const djson = JSON.stringify(byfs);
 
