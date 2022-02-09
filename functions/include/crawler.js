@@ -224,6 +224,8 @@ export async function loadSingleWord(word, asobject, cachedonly=false) {
       return null;
     }
 
+    console.error(`ENTER     ${word} axios pending:${pendingParallelRequests} admitted:${admittedParallelRequests}`);
+
     // send request to the WordsAPI
     const response = await axios({
       "method":"GET",
@@ -234,6 +236,8 @@ export async function loadSingleWord(word, asobject, cachedonly=false) {
       "x-rapidapi-key":process.env.RAPIDAPI_KEY
       }
     });
+
+    console.error(`DONE      ${word} axios pending:${pendingParallelRequests} admitted:${admittedParallelRequests}`);
 
     var copy = Object.assign({}, response.data);
     copy.fromCache = false;
