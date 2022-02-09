@@ -768,6 +768,11 @@ export async function loadAll_words(word0, asobject) {
   return loadWordsOnly(allwords0, word0, asobject);
 }
 
+export function loadMyWords(word, asobject) {
+  let cw1 = require('./my-words.js');
+  return loadWordsOnly(cw1.MyWords, word, asobject);
+}
+
 export async function wordsByFrequency(word0, ffrom, fto=1000000, asobject) {
   let files = [];
   const indpath = `cache/index/frequency`;

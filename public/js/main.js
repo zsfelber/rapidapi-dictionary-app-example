@@ -72,6 +72,7 @@ var checkboxdata = {
         "most common 3000 words": { defchecked: false },
         "most common 10000 words": { defchecked: false },
         "all words": { defchecked: false },
+        "my words": { defchecked: false },
     },
 };
 

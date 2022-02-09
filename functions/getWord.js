@@ -104,6 +104,11 @@ export async function handler(event, context) {
 
       json = await crawler.loadAll_words(word, false);
       break;
+    case "my_words":
+      console.log("my_words");
+
+      json = await crawler.loadMyWords(word, false);
+      break;
     case "words_by_frequency":
       console.log("words_by_frequency:"+ffrom+".."+fto);
 
