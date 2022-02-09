@@ -71,8 +71,8 @@ var checkboxdata = {
         "most common 10000 s-z": { defchecked: false },
         "most common 3000 words": { defchecked: false },
         "most common 10000 words": { defchecked: false },
-        "all words": { defchecked: false },
-        "my words": { defchecked: false },
+        "all words": { defchecked: false, classes: "inblock" },
+        "my words": { defchecked: false, classes: "inblock" },
     },
 };
 
@@ -168,7 +168,7 @@ function addCheckbox(cont, id, buckcheck, label) {
     id = id.replace(/ /g, "_");
     var ischecked = ischeckedparam(id, ischeckeddef);
 
-    var panel = $(` <div class='form-check form-check-1'>
+    var panel = $(` <div class='${buckcheck.classes?buckcheck.classes:''} form-check form-check-1'>
             <input type='hidden' id='${id}' name='${id}' value='${ischecked}'>
             <input class='form-check-input' type='checkbox' id='_${id}' ${ischecked ? "checked" : ""} onchange="checha('${id}')"/>
             <label class='form-check-label' for='_${id}'>
@@ -184,7 +184,7 @@ function addRadio(cont, id, buckcheck, groupid, label, extraelements="") {
     id = id.replace(/ /g, "_");
     var ischecked = ischeckedradio(groupid, id, ischeckeddef);
 
-    var panel = $(` <div class='form-check form-check-1'>
+    var panel = $(` <div class='${buckcheck.classes?buckcheck.classes:''} form-check form-check-1'>
             <input class='form-check-input' type='radio' id='${id}' name='${groupid}' value='${id}' ${ischecked ? "checked" : ""} onchange="racha('${id}')"/>
             <label class='form-check-label' for='${id}'>
             ${label}
@@ -591,6 +591,7 @@ function update(firsttime) {
     case "most_common_3000_words":
     case "most_common_10000_words":
     case "all_words":
+    case "my_words":
     case "words_by_frequency":
         if (firsttime) {
             updateWords();

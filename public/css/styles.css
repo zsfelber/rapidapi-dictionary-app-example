@@ -129,6 +129,13 @@ form {
     margin-bottom: 0.2rem;
 }
 
+.inblock {
+    display: inline-block;
+}
+.form-check.inblock {
+    display: inline-block;
+} 
+
 .checkboxes1,.checkboxes2,.checkboxes3,.checkboxes4,.checkboxes5,.checkboxes6,.checkboxes7,.top3000,.top10000 {
     display: inline-block;
 }
