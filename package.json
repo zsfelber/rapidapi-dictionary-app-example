@@ -17,6 +17,7 @@
   "dependencies": {
     "axios": "^0.19.2",
     "netlify-lambda": "^1.6.3",
-    "node-find-files": "^1.0.0"
+    "node-find-files": "^1.0.0",
+    "node-fetch": "^2.6.0"
   }
 }

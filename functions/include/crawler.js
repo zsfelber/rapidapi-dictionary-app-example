@@ -7,6 +7,7 @@ const finder = require('./finder.js');
 const API_LIMIT_EXCEPTION = {
   apiLimitException:1
 };
+const CACHE_DIR = "cache/google";
 
 const TURNING_TIME_GMT = [20,55];
 const MAX_PARALLEL = 20;
@@ -50,7 +51,7 @@ async function remoteInitBottleneck() {
 
   if (!cacheIsInitialized) {
     if (!cacheInitializerCommon) {
-      cacheInitializerCommon = finder.findFiles("cache/words", turntime);
+      cacheInitializerCommon = finder.findFiles(`$(CACHE_DIR)/words`, turntime);
       totalWordsLastDay = await cacheInitializerCommon;
       cacheIsInitialized = true;
       console.log("remoteInitBottleneck  turntime:"+turntime.toUTCString()+"  totalWordsLastDay:"+totalWordsLastDay+" errors:"+finder.errors+" pendingParallelRequests:"+pendingParallelRequests+" admittedParallelRequests:"+admittedParallelRequests);
@@ -96,14 +97,14 @@ export async function initCrawler(
   TRAVERSE_ALL = _TRAVERSE_ALL;
 
 
-  if (!fs.existsSync("cache/words")){
-    fs.mkdirSync("cache/words", { recursive: true });
+  if (!fs.existsSync(`$(CACHE_DIR)/words`)){
+    fs.mkdirSync(`$(CACHE_DIR)/words`, { recursive: true });
   }
-  if (!fs.existsSync("cache/clusters")){
-    fs.mkdirSync("cache/clusters");
+  if (!fs.existsSync(`$(CACHE_DIR)/clusters`)){
+    fs.mkdirSync(`$(CACHE_DIR)/clusters`);
   }
-  if (!fs.existsSync("cache/index")){
-    fs.mkdirSync("cache/index");
+  if (!fs.existsSync(`$(CACHE_DIR)/index`)){
+    fs.mkdirSync(`$(CACHE_DIR)/index`);
   }
 
   curtime = new Date();
@@ -174,7 +175,7 @@ export function singleWordToDisplay(data) {
 export async function loadSingleWord(word, asobject, cachedonly=false) {
 
   let fileword = word.replace(/[.,/']/g, "$").toLowerCase();
-  const wfpath = `cache/words/${fileword}`;
+  const wfpath = `$(CACHE_DIR)/words/${fileword}`;
 
   if (fs.existsSync(wfpath)) {
 
@@ -763,7 +764,7 @@ export async function loadAll_words(word0, asobject) {
     let word = strPath.substring(12);
     allwords0.push(word);
   }
-  await finder.findFiles("cache/words", 0, onFile);
+  await finder.findFiles(`$(CACHE_DIR)/words`, 0, onFile);
 
   return loadWordsOnly(allwords0, word0, asobject);
 }
@@ -775,7 +776,7 @@ export function loadMyWords(word, asobject) {
 
 export async function wordsByFrequency(word0, ffrom, fto=1000000, asobject) {
   let files = [];
-  const indpath = `cache/index/frequency`;
+  const indpath = `$(CACHE_DIR)/index/frequency`;
 
   let ijson = fs.readFileSync(indpath);
   let find = JSON.parse(ijson);
@@ -805,7 +806,7 @@ export async function generateIndexes() {
     let word = strPath.substring(12);
     files.push(word);
   }
-  let nowords = await finder.findFiles("cache/words", 0, onFile);
+  let nowords = await finder.findFiles(`$(CACHE_DIR)/words`, 0, onFile);
 
 
   let cntf = 0;
