@@ -15,9 +15,10 @@ export async function handler(event, context) {
 
   try {
 
-    console.log("crawling in the background starting from top 10000 English words...");
+    console.log("crawling in the background starting from random words...");
 
-    const cs = await loadAll_words("", true).results;
+    const ws0 = await crawler.loadAll_words("", true);
+    const cs = ws0.results;
     console.log("all words:"+cs.length);
 
     // sort randomly
