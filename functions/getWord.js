@@ -1,6 +1,6 @@
 const crawler = require('./include/crawler.js');
 
-const API_DAILY_LIMIT = 18000;
+const API_DAILY_LIMIT = 23000;
 const MAX_WORDS = 50;
 const MAX_NODE_FREQUENCY = 4;
 const TRAVERSE_ALL = false;
