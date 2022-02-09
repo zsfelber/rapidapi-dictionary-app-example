@@ -1,13 +1,14 @@
-import { NODATA } from 'dns';
 
-const axios = require('axios');
 const fs = require('fs');
 const finder = require('./finder.js');
 
 const API_LIMIT_EXCEPTION = {
   apiLimitException:1
 };
+
 const CACHE_DIR = "cache/google";
+const download = require('./googletransapi/google_dict').googleDictionary;
+//const download = require('./wordsapi/wordapi_dict').wordsApiDictionary;
 
 const TURNING_TIME_GMT = [20,55];
 const MAX_PARALLEL = 20;
@@ -51,7 +52,7 @@ async function remoteInitBottleneck() {
 
   if (!cacheIsInitialized) {
     if (!cacheInitializerCommon) {
-      cacheInitializerCommon = finder.findFiles(`$(CACHE_DIR)/words`, turntime);
+      cacheInitializerCommon = finder.findFiles(`${CACHE_DIR}/words`, turntime);
       totalWordsLastDay = await cacheInitializerCommon;
       cacheIsInitialized = true;
       console.log("remoteInitBottleneck  turntime:"+turntime.toUTCString()+"  totalWordsLastDay:"+totalWordsLastDay+" errors:"+finder.errors+" pendingParallelRequests:"+pendingParallelRequests+" admittedParallelRequests:"+admittedParallelRequests);
@@ -97,14 +98,14 @@ export async function initCrawler(
   TRAVERSE_ALL = _TRAVERSE_ALL;
 
 
-  if (!fs.existsSync(`$(CACHE_DIR)/words`)){
-    fs.mkdirSync(`$(CACHE_DIR)/words`, { recursive: true });
+  if (!fs.existsSync(`${CACHE_DIR}/words`)){
+    fs.mkdirSync(`${CACHE_DIR}/words`, { recursive: true });
   }
-  if (!fs.existsSync(`$(CACHE_DIR)/clusters`)){
-    fs.mkdirSync(`$(CACHE_DIR)/clusters`);
+  if (!fs.existsSync(`${CACHE_DIR}/clusters`)){
+    fs.mkdirSync(`${CACHE_DIR}/clusters`);
   }
-  if (!fs.existsSync(`$(CACHE_DIR)/index`)){
-    fs.mkdirSync(`$(CACHE_DIR)/index`);
+  if (!fs.existsSync(`${CACHE_DIR}/index`)){
+    fs.mkdirSync(`${CACHE_DIR}/index`);
   }
 
   curtime = new Date();
@@ -175,27 +176,33 @@ export function singleWordToDisplay(data) {
 export async function loadSingleWord(word, asobject, cachedonly=false) {
 
   let fileword = word.replace(/[.,/']/g, "$").toLowerCase();
-  const wfpath = `$(CACHE_DIR)/words/${fileword}`;
+  const wfpath = `${CACHE_DIR}/words/${fileword}`;
+
+  let data;
 
   if (fs.existsSync(wfpath)) {
-
+  
     //console.log("From cache file/single "+wfpath+"  asobject:"+asobject+"...\n");
     let ijson = fs.readFileSync(wfpath).toString();
     try {
-      let data = JSON.parse(ijson);
+      data = JSON.parse(ijson);
 
-      if (asobject) {
-        data.fromCache = true;
-        return data;
-      } else {
-        let result = singleWordToDisplay(data);
-        const ojson = JSON.stringify(result);         // modified
-        return ojson;
-      }
-  
-    } catch (e) {
+      return data;
+
+  } catch (e) {
       console.warn("Delete invalid file : "+wfpath, e);
       fs.unlinkSync(wfpath);
+    }
+  }
+
+  if (data) {
+    if (asobject) {
+      data.fromCache = true;
+      return data;
+    } else {
+      let result = singleWordToDisplay(data);
+      const ojson = JSON.stringify(result);         // modified
+      return ojson;
     }
   }
 
@@ -225,26 +232,17 @@ export async function loadSingleWord(word, asobject, cachedonly=false) {
       return null;
     }
 
-    console.error(`ENTER     ${word} axios pending:${pendingParallelRequests} admitted:${admittedParallelRequests}`);
+    console.error(`ENTER http download      ${word}   pending:${pendingParallelRequests} admitted:${admittedParallelRequests}`);
 
-    // send request to the WordsAPI
-    const response = await axios({
-      "method":"GET",
-      "url":`https://wordsapiv1.p.rapidapi.com/words/${word}`,
-      "headers":{
-      "content-type":"application/octet-stream",
-      "x-rapidapi-host":"wordsapiv1.p.rapidapi.com",
-      "x-rapidapi-key":process.env.RAPIDAPI_KEY
-      }
-    });
+    data = download(word);
 
-    console.error(`DONE      ${word} axios pending:${pendingParallelRequests} admitted:${admittedParallelRequests}`);
+    console.error(`DONE  http download      ${word}   pending:${pendingParallelRequests} admitted:${admittedParallelRequests}`);
 
-    var copy = Object.assign({}, response.data);
+    var copy = Object.assign({}, data);
     copy.fromCache = false;
     pendingObjects[word] = copy;
 
-    const djson = JSON.stringify(response.data);  // original
+    const djson = JSON.stringify(data);  // original
 
     fs.writeFile(wfpath, djson, (err) => {
       if (err) {
@@ -256,10 +254,10 @@ export async function loadSingleWord(word, asobject, cachedonly=false) {
     });
 
     if (asobject) {
-      response.data.fromCache = false;
-      return response.data;
+      data.fromCache = false;
+      return data;
     } else {
-      let result = singleWordToDisplay(response.data);
+      let result = singleWordToDisplay(data);
       const ojson = JSON.stringify(result);         // modified
       return ojson;
     }
@@ -764,7 +762,7 @@ export async function loadAll_words(word0, asobject) {
     let word = strPath.substring(12);
     allwords0.push(word);
   }
-  await finder.findFiles(`$(CACHE_DIR)/words`, 0, onFile);
+  await finder.findFiles(`${CACHE_DIR}/words`, 0, onFile);
 
   return loadWordsOnly(allwords0, word0, asobject);
 }
@@ -776,7 +774,7 @@ export function loadMyWords(word, asobject) {
 
 export async function wordsByFrequency(word0, ffrom, fto=1000000, asobject) {
   let files = [];
-  const indpath = `$(CACHE_DIR)/index/frequency`;
+  const indpath = `${CACHE_DIR}/index/frequency`;
 
   let ijson = fs.readFileSync(indpath);
   let find = JSON.parse(ijson);
@@ -806,7 +804,7 @@ export async function generateIndexes() {
     let word = strPath.substring(12);
     files.push(word);
   }
-  let nowords = await finder.findFiles(`$(CACHE_DIR)/words`, 0, onFile);
+  let nowords = await finder.findFiles(`${CACHE_DIR}/words`, 0, onFile);
 
 
   let cntf = 0;
