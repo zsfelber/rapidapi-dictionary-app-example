@@ -1747,3 +1747,14 @@ http://localhost:8888/?word=8&mode=words_by_frequency&ffrom=3.35&fto=3.705&
   "zipper": 1,
   "zoom": 1
 }
+
+old 8
+http://localhost:8888/?word=8&mode=words_by_frequency&ffrom=3.35&fto=3.705&
+new 8
+http://localhost:8888/?word=8&mode=words_by_frequency&ffrom=3.12&fto=3.385&
+3000/old 8 -> new 8
+http://localhost:8888/?word=8&mode=words_by_frequency&ffrom=3.12&fto=3.345&
+2645
+
+
+
