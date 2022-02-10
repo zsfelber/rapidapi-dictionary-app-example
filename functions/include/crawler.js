@@ -16,6 +16,7 @@ export function aCrawler() {
   let MAX_WORDS;
   let MAX_NODE_FREQUENCY;
   let TRAVERSE_ALL;
+  let MAX_LEVEL;
   let download, curtime, turntime;
   let TWELVE;
 
@@ -92,7 +93,8 @@ export function aCrawler() {
     _API_DAILY_LIMIT,
     _MAX_WORDS,
     _MAX_NODE_FREQUENCY,
-    _TRAVERSE_ALL
+    _TRAVERSE_ALL,
+    _MAX_LEVEL=100
     ) {
 
     API = _API;
@@ -101,6 +103,7 @@ export function aCrawler() {
     MAX_WORDS = _MAX_WORDS;
     MAX_NODE_FREQUENCY = _MAX_NODE_FREQUENCY;
     TRAVERSE_ALL = _TRAVERSE_ALL;
+    MAX_LEVEL = _MAX_LEVEL;
     TWELVE = (CACHE_DIR+"/words/").length;
 
     switch (_API) {
@@ -515,6 +518,11 @@ export function aCrawler() {
             loadChildren = tresult.noWords < MAX_WORDS;
 
             if (!(tresult.noWords%1000)) console.log(API, tresult.noWords + "/" + MAX_WORDS);
+          }
+
+          if (traversion.level>=MAX_LEVEL) {
+            console.log(API, word+" Level "+traversion.level+" >= "+MAX_LEVEL+". Stop unfolding children.");
+            loadChildren = false;
           }
 
           let nodepromise = loadDictionaryAndChildren(tresult, w, traversion, pair.parent, loadChildren);

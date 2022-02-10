@@ -272,17 +272,27 @@ function selectElementContents(el) {
 }
 
 function createa(word0, masterword, extraarg="") {
+    //https://getbootstrap.com/docs/5.1/components/modal/#live-demo
+    //https://www.tutorialrepublic.com/codelab.php?topic=bootstrap&file=modal-with-remote-url
+    //<!-- Button HTML (to Trigger Modal) -->
+    //<a href="/examples/bootstrap/remote.php" 
+    //    class="btn btn-lg btn-primary" data-toggle="modal" 
+    //    data-target="#myModal">Launch Demo Modal</a>
     const a = document.createElement('a');
     const tmp = $("<div>"+word0+"</div>")[0];
     a.onmouseover = selectElementContents.bind(a, a);
     word0 = tmp.innerText;
     const word = word0.replace(/[^a-zA-Z0-9\- ]/g, "");
-    a.href = "?word="+word+extraarg+"&"+checkps();
+    a.href = "?word="+word+extraarg+"&mode=minimal_cluster&"+checkps();
     if (masterword==word) {
         a.classList.add('master');
     } else {
         a.classList.add('none');
     }
+    
+    a.attributes["data-toggle"]="modal";
+    a.attributes["data-target"]="#myModal";
+
     a.innerHTML = tmp.innerHTML;
     return a;
 }
@@ -376,6 +386,10 @@ function printLabel(data) {
         info.appendChild(dlp1);
     }
 
+}
+
+function showPopup() {
+    
 }
 
 function updateSingleWord() {
@@ -631,6 +645,7 @@ function update(firsttime) {
         break;
 
     case "synonym_cluster":
+    case "minimal_cluster":
         if (firsttime) {
             updateCluster();
         }
@@ -772,7 +787,12 @@ $(document).ready(function(){
                     qs.push(`top=${urltop}`);
                     qs.push(`letter=${urlletter}`);
                 } else {
-                    mode = "dictionary";
+                    var urlmode = $.urlParam('mode');
+                    if (urlmode) {
+                        mode = urlmode;
+                    } else {
+                        mode = "dictionary";
+                    }
                 }
             }
             let apis=[];

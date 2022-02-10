@@ -3,6 +3,7 @@ const API_DAILY_LIMIT = {wordsapi:25000, google:100000000};
 const MAX_WORDS = 50;
 const MAX_NODE_FREQUENCY = 4;
 const TRAVERSE_ALL = false;
+const MAX_LEVEL_MINCL = 2;
 
 
 
@@ -86,6 +87,16 @@ export async function get(api, word, mode, letter, ffrom, fto, stopiterateapis) 
         TRAVERSE_ALL
       );
       break;
+    case "minimal_cluster":
+      crawler.initCrawler(
+        api,
+        API_DAILY_LIMIT[api],
+        MAX_WORDS,
+        MAX_NODE_FREQUENCY,
+        TRAVERSE_ALL,
+        MAX_LEVEL_MINCL
+      );
+      break;
     default:
       crawler.initCrawler(
         api,
@@ -98,90 +109,77 @@ export async function get(api, word, mode, letter, ffrom, fto, stopiterateapis) 
   }
 
   let data;
+  console.log(mode+":" + word+":" + ffrom + ".." + fto);
+
   switch (mode) {
     case "most_common_3000_a-e":
-      console.log("most_common_3000_a-e");
 
       data = await crawler.loadCommonWords3000_a_e(word, true);
       break;
     case "most_common_3000_f-p":
-      console.log("most_common_3000_f-p");
 
       data = await crawler.loadCommonWords3000_f_p(word, true);
       break;
     case "most_common_3000_q-z":
-      console.log("most_common_3000_q-z");
 
       data = await crawler.loadCommonWords3000_q_z(word, true);
       break;
     case "most_common_10000_a-c":
-      console.log("most_common_10000_a-c");
 
       data = await crawler.loadCommonWords10000_a_c(word, true);
       break;
     case "most_common_10000_d-h":
-      console.log("most_common_10000_d-h");
 
       data = await crawler.loadCommonWords10000_d_h(word, true);
       break;
     case "most_common_10000_i-o":
-      console.log("most_common_10000_i-o");
 
       data = await crawler.loadCommonWords10000_i_o(word, true);
       break;
     case "most_common_10000_p-r":
-      console.log("most_common_10000_p-r");
 
       data = await crawler.loadCommonWords10000_p_r(word, true);
       break;
     case "most_common_10000_s-z":
-      console.log("most_common_10000_s-z");
 
       data = await crawler.loadCommonWords10000_s_z(word, true);
       break;
     case "top3000":
-      console.log("top3000:" + letter);
 
       data = await crawler.loadCommonWords3000(word, letter, true);
       break;
     case "top10000":
-      console.log("top10000:" + letter);
 
       data = await crawler.loadCommonWords10000(word, letter, true);
       break;
     case "most_common_3000_words":
-      console.log("most_common_3000_words");
       stopiterateapis.stop = 1;
 
       data = await crawler.loadCommon3000_words(word, true);
       break;
     case "most_common_10000_words":
-      console.log("most_common_10000_words");
       stopiterateapis.stop = 1;
 
       data = await crawler.loadCommon10000_words(word, true);
       break;
     case "all_words":
-      console.log("all_words");
       stopiterateapis.stop = 1;
 
       data = await crawler.loadAll_words(word, true);
       break;
     case "my_words":
-      console.log("my_words");
       stopiterateapis.stop = 1;
 
       data = await crawler.loadMyWords(word, true);
       break;
     case "words_by_frequency":
-      console.log("words_by_frequency:" + ffrom + ".." + fto);
       stopiterateapis.stop = 1;
 
       data = await crawler.wordsByFrequency(word, Number(ffrom), Number(fto), true);
       break;
 
     case "synonym_cluster":
-      console.log("synonym_cluster:" + word);
+    case "minimal_cluster":
 
       data = await crawler.loadCluster(word, true);
       break;
