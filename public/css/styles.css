@@ -144,6 +144,9 @@ form {
     white-space: nowrap;
 }
 
+small.lead {
+    margin-right: 5px;
+}
 .list-item, .list-item-lg {
     display: inline-block;
     /*display: inline-block;*/

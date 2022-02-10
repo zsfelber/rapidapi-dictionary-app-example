@@ -12,7 +12,7 @@ function transformToWordsApiLike(definitions) {
     let result = {
         word:"",
         results:[],
-        pronanciation : {},
+        pronunciation : {},
     };
     let antipron = {};
     let idx=1;
@@ -29,7 +29,7 @@ function transformToWordsApiLike(definitions) {
                 antipron[data.phonetic].push(idx);
                 let item = {
                     partOfSpeech : meaning.partOfSpeech,
-                    pronanciation : {"":data.phonetic},
+                    pronunciation : data.phonetic,
                     definition:  meaningdef.definition,
                     examples: meaningdef.examples?meaningdef.examples:
                             (meaningdef.example?[meaningdef.example]:[]),
@@ -49,7 +49,7 @@ function transformToWordsApiLike(definitions) {
     }
 
     for (let pair of aps) {
-        result.pronanciation[pair.p.join(",")] = pair.a;
+        result.pronunciation[pair.p.join(",")] = pair.a;
     }
 
 

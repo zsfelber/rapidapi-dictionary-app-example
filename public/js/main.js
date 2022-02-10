@@ -19,9 +19,9 @@ var checkboxdata = {
         "definition": { defchecked: true },
         "derivation": { defchecked: false },
         "entails": { defchecked: false },
-        "examples": { defchecked: true },
     },
     "bucket2": {
+        "examples": { defchecked: true },
         "pertains to": { defchecked: false },
         "similar to": { defchecked: true },
         "synonyms": { defchecked: true },
@@ -35,7 +35,6 @@ var checkboxdata = {
         "region of": { defchecked: false },
         "substance of": { defchecked: false },
         "type of": { defchecked: false },
-        "usage of": { defchecked: false },
     },
     "bucket4": {
         "has categories": { defchecked: false },
@@ -45,17 +44,21 @@ var checkboxdata = {
         "in region": { defchecked: false },
         "has substances": { defchecked: false },
         "has types": { defchecked: false },
-        "has usages": { defchecked: false },
     },
     "bucket5": {
+        "usage of": { defchecked: false },
         "adjective": { defchecked: true },
         "adverb": { defchecked: true },
         "conjunction": { defchecked: true },
         "determiner": { defchecked: true },
         "noun": { defchecked: true },
         "participle": { defchecked: true },
+    },
+    "bucket55": {
+        "has usages": { defchecked: false },
         "preposition": { defchecked: true },
         "pronoun": { defchecked: true },
+        "suffix": { defchecked: true },
         "verb": { defchecked: true },
     },
     "bucket6": {
@@ -137,6 +140,7 @@ function chkdict() {
     $('.checkboxes3 input').prop("disabled", !chk);
     $('.checkboxes4 input').prop("disabled", !chk);
     $('.checkboxes5 input').prop("disabled", !chk);
+    $('.checkboxes55 input').prop("disabled", !chk);
 
     let wbf = $("#words_by_frequency").is(':checked');
     $('#ffrom').prop("disabled", !wbf);
@@ -652,9 +656,10 @@ $(document).ready(function(){
     let chbs3 = document.querySelector('.checkboxes3');
     let chbs4 = document.querySelector('.checkboxes4');
     let chbs5 = document.querySelector('.checkboxes5');
+    let chbs55 = document.querySelector('.checkboxes55');
     let chbs6 = document.querySelector('.checkboxes6');
     let chbs7 = document.querySelector('.checkboxes7');
-    var chbuckets = {bucket1:chbs1,bucket2:chbs2,bucket3:chbs3,bucket4:chbs4,bucket5:chbs5};
+    var chbuckets = {bucket1:chbs1,bucket2:chbs2,bucket3:chbs3,bucket4:chbs4,bucket5:chbs5,bucket55:chbs55};
 
     for (bucketid in chbuckets) {
         var chbuck = chbuckets[bucketid];
