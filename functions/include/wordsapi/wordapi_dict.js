@@ -1,6 +1,8 @@
 //const axios = require('axios');
 //const fs = require('fs');
 
+const fetch = require("../fetch");
+
 exports.wordsApiDictionary = async function(word) {
     let url = `https://wordsapiv1.p.rapidapi.com/words/${word}`;
 
@@ -14,17 +16,16 @@ exports.wordsApiDictionary = async function(word) {
         "x-rapidapi-key":process.env.RAPIDAPI_KEY
         }
       });*/
-    let f = await fetch;
-    f = f.default;
-    let response = await f(url, {
-      agent: httpsAgent,
-      "method":"GET",
-      headers: new fetch.Headers({
+
+    let response = await fetch.fetchJson(url,
+      {
+        "method":"GET",
         "content-type":"application/octet-stream",
         "x-rapidapi-host":"wordsapiv1.p.rapidapi.com",
         "x-rapidapi-key":process.env.RAPIDAPI_KEY
-      })
-    });
+      },
+      {word}
+    );
     
-    return response.data;
+    return response;
 };

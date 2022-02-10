@@ -1,14 +1,9 @@
 const fs = require('fs'),
 	_ = require('lodash'),
-	https = require('https'),
 
 	utils = require('./utils.js'),
 	errors = require('../errors.js'),
-	fetch = require('../fetch.js'),
-
-	httpsAgent = new https.Agent({ keepAlive: true });
-
-//import fetch from 'node-fetch';
+	fetch = require('../fetch.js');
 
 export function transformV2toV1 (data) {
 	return data.map((entry) => {
@@ -145,35 +140,27 @@ async function queryInternet (word, language) {
 
 	url = url.toString();
 
-	let response0 = await fetch.fetchJson(url, {
+	let info = 		{ word, language };
 
-	let response = await f(url, {
-		agent: httpsAgent,
-		headers: new fetch.Headers({
+	let data = await fetch.fetchJson(url, 
+		{
 			"accept": "*/*",
 			"accept-encoding": "gzip, deflate, br",
 			"accept-language": "en-US,en;q=0.9",
 			"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36"
-		})
-	});
+		},
+		info
+	);
 
-	if (response.status === 404) { throw new errors.NoDefinitionsFound({ word, language, reason: 'Website returned 404.'}); }
-
-	if (response.status === 429) { throw new errors.RateLimitError(); }
-
-	if (response.status !== 200) { throw new errors.NoDefinitionsFound({ word, language, reason: 'Threw non 200 status code.'}); }
-
-	let body = await response.text(),
-		data = JSON.parse(body.substring(4)),
-		single_results = _.get(data, 'feature-callback.payload.single_results', []),
+	let single_results = _.get(data, 'feature-callback.payload.single_results', []),
 			error = _.chain(single_results)
 					.find('widget')
 					.get('widget.error')
 					.value()
 
-	if (single_results.length === 0) { throw new errors.NoDefinitionsFound({ word, language }); }
+	if (single_results.length === 0) { throw new errors.NoDefinitionsFound(info); }
 
-	if (error === 'TERM_NOT_FOUND_ERROR') { throw new errors.NoDefinitionsFound({ word, language }); }
+	if (error === 'TERM_NOT_FOUND_ERROR') { throw new errors.NoDefinitionsFound(info); }
 
 	if (error) { throw new errors.UnexpectedError({ error }); }
 
