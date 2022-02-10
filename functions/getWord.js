@@ -1,5 +1,5 @@
 
-const API_DAILY_LIMIT = 23000;
+const API_DAILY_LIMIT = {wordsapi:25000, google:100000000};
 const MAX_WORDS = 50;
 const MAX_NODE_FREQUENCY = 4;
 const TRAVERSE_ALL = false;
@@ -89,7 +89,7 @@ export async function get(api, word, mode, letter, ffrom, fto, stopiterateapis) 
     default:
       crawler.initCrawler(
         api,
-        API_DAILY_LIMIT,
+        API_DAILY_LIMIT[api],
         MAX_WORDS,
         MAX_NODE_FREQUENCY,
         TRAVERSE_ALL
