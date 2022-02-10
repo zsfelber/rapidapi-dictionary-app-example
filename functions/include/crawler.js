@@ -10,6 +10,7 @@ export function aCrawler() {
 
   const TURNING_TIME_GMT = [20,55];
   const MAX_PARALLEL = 20;
+  let API;
   let CACHE_DIR;
   let API_DAILY_LIMIT;
   let MAX_WORDS;
@@ -38,7 +39,7 @@ export function aCrawler() {
   async function parallelBottleneck() {
     pendingParallelRequests++;
     if (!(pendingParallelRequests%1000)) {
-      console.log("++pendingParallelRequests:"+pendingParallelRequests+" admittedParallelRequests:"+admittedParallelRequests);
+      console.log(API, "++pendingParallelRequests:"+pendingParallelRequests+" admittedParallelRequests:"+admittedParallelRequests);
     }
     while (admittedParallelRequests >= MAX_PARALLEL) {
       await timeoutAsPromise(20);
@@ -55,7 +56,7 @@ export function aCrawler() {
         cacheInitializerCommon = finder.findFiles(`${CACHE_DIR}/words`, turntime);
         totalWordsLastDay = await cacheInitializerCommon;
         cacheIsInitialized = true;
-        console.log("remoteInitBottleneck  turntime:"+turntime.toUTCString()+"  totalWordsLastDay:"+totalWordsLastDay+" errors:"+finder.errors+" pendingParallelRequests:"+pendingParallelRequests+" admittedParallelRequests:"+admittedParallelRequests);
+        console.log(API, "remoteInitBottleneck  turntime:"+turntime.toUTCString()+"  totalWordsLastDay:"+totalWordsLastDay+" errors:"+finder.errors+" pendingParallelRequests:"+pendingParallelRequests+" admittedParallelRequests:"+admittedParallelRequests);
       } else {
         await cacheInitializerCommon;
       }
@@ -63,7 +64,7 @@ export function aCrawler() {
 
     if (isApiLimitReached()) {
       if (!cacheInitIsError) {
-        console.error("Could not proxy more request to API file/single  totalWordsLastDay+"+pendingParallelRequests+" >= API_DAILY_LIMIT :  "+(totalWordsLastDay+pendingParallelRequests)+" >= "+API_DAILY_LIMIT+"\n");
+        console.error(API, "Could not proxy more request to API file/single  totalWordsLastDay+"+pendingParallelRequests+" >= API_DAILY_LIMIT :  "+(totalWordsLastDay+pendingParallelRequests)+" >= "+API_DAILY_LIMIT+"\n");
       }
       cacheInitIsError = true;
       return false;
@@ -93,6 +94,7 @@ export function aCrawler() {
     _TRAVERSE_ALL
     ) {
 
+    API = _API;
     CACHE_DIR = "cache/"+_API;
     API_DAILY_LIMIT = _API_DAILY_LIMIT;
     MAX_WORDS = _MAX_WORDS;
@@ -133,7 +135,7 @@ export function aCrawler() {
       turntime = new Date(turntime);
     }
 
-    console.log("initCrawler  curtime:"+curtime.toUTCString()+"  turntime:"+turntime.toUTCString());
+    console.log(API, "initCrawler  curtime:"+curtime.toUTCString()+"  turntime:"+turntime.toUTCString());
   }
 
   function singleWordToDisplay(data) {
@@ -220,7 +222,7 @@ export function aCrawler() {
 
     if (fs.existsSync(wfpath)) {
     
-      //console.log("From cache file/single "+wfpath+"  asobject:"+asobject+"...\n");
+      //console.log(API, "From cache file/single "+wfpath+"  asobject:"+asobject+"...\n");
       let ijson = fs.readFileSync(wfpath).toString();
       try {
         data = JSON.parse(ijson);
@@ -258,7 +260,7 @@ export function aCrawler() {
         }
       }
     } catch (e) {
-      console.warn("Error (",word, ") ", e&&e.message?e.message:"?");
+      console.warn(API, "Error (",word, ") ", e&&e.message?e.message:"?");
       return null;
     }
 
@@ -273,11 +275,11 @@ export function aCrawler() {
         return null;
       }
 
-      console.error(`ENTER http download      ${word}   pending:${pendingParallelRequests} admitted:${admittedParallelRequests}`);
+      console.error(`ENTER http download      ${API} ${word}   pending:${pendingParallelRequests} admitted:${admittedParallelRequests}`);
 
       data = await download(word);
 
-      console.error(`DONE  http download      ${word}   pending:${pendingParallelRequests} admitted:${admittedParallelRequests}`);
+      console.error(`DONE  http download      ${API} ${word}   pending:${pendingParallelRequests} admitted:${admittedParallelRequests}`);
 
       var copy = Object.assign({}, data);
       copy.fromCache = false;
@@ -294,7 +296,7 @@ export function aCrawler() {
         return ojson;
       }
     } catch (e) {
-      console.warn("API error (",word, ") ", e&&e.message?e.message:"?");
+      console.warn("API error (",API,word, ") ", e&&e.message?e.message:"?");
       djson = JSON.stringify({error:e.message});
       return null;
     } finally {
@@ -311,7 +313,7 @@ export function aCrawler() {
       pendingParallelRequests--;
       admittedParallelRequests--;
       if (pendingParallelRequests && !(pendingParallelRequests%1000)) {
-        console.log("--pendingParallelRequests:"+pendingParallelRequests+" admittedParallelRequests:"+admittedParallelRequests);
+        console.log(API,"--pendingParallelRequests:"+pendingParallelRequests+" admittedParallelRequests:"+admittedParallelRequests);
       }
 
     }
@@ -511,25 +513,25 @@ export function aCrawler() {
             tresult.by_w[w] = 1;
             loadChildren = tresult.noWords < MAX_WORDS;
 
-            if (!(tresult.noWords%1000)) console.log(tresult.noWords + "/" + MAX_WORDS);
+            if (!(tresult.noWords%1000)) console.log(API, tresult.noWords + "/" + MAX_WORDS);
           }
 
           let nodepromise = loadDictionaryAndChildren(tresult, w, traversion, pair.parent, loadChildren);
           promises.push(nodepromise);
 
           if (stopwhenallloaded && !await checkAPIlimitAndFinish(promises)) {
-            console.log(word+" Level "+traversion.level+" finished. Stop searching. API Limit reached.");
+            console.log(API, word+" Level "+traversion.level+" finished. Stop searching. API Limit reached.");
             return false;
           }
           if (tresult.noWords >= MAX_WORDS) {
             await Promise.all(promises);
-            if (themainabstraction) console.log(word+" Level "+traversion.level+" finished. Search limit reached.");
+            if (themainabstraction) console.log(API,word+" Level "+traversion.level+" finished. Search limit reached.");
             return true;
           }
         }
       } catch (e) {
         if (e === API_LIMIT_EXCEPTION) {
-          console.log(word+" Level "+traversion.level+" finished. API Limit reached (by exception).");
+          console.log(API,word+" Level "+traversion.level+" finished. API Limit reached (by exception).");
           return false;
         } else {
           throw e;
@@ -537,13 +539,13 @@ export function aCrawler() {
       }
 
       await Promise.all(promises);
-      if (themainabstraction) console.log(word+" Level "+traversion.level+" finished.");
+      if (themainabstraction) console.log(API,word+" Level "+traversion.level+" finished.");
 
       traversion.level++;
     } while (traversion.wordsbreadthfirst.length);
 
     if (themainabstraction) {
-      console.log(word+" Completed  Travesred:"+tresult.noWords+" written:"+tresult.newWords);
+      console.log(API,word+" Completed  Travesred:"+tresult.noWords+" written:"+tresult.newWords);
     }
     return true;
   }
@@ -596,7 +598,7 @@ export function aCrawler() {
       }
       
       result.noWords++;
-      if (!(result.noWords%1000)) console.log(result.noWords + "/" + noWords);
+      if (!(result.noWords%1000)) console.log(API,result.noWords + "/" + noWords);
 
       for (let key in entry.results) {
         const val = entry.results[key]; 
@@ -612,7 +614,7 @@ export function aCrawler() {
           await Promise.all(promises);
         } catch (e) {
           if (e === API_LIMIT_EXCEPTION) {
-            console.log(word+" Level "+traversion.level+" finished. API Limit reached (by exception).");
+            console.log(API,word+" Level "+traversion.level+" finished. API Limit reached (by exception).");
             return false;
           } else {
             throw e;
@@ -661,7 +663,7 @@ export function aCrawler() {
     result.results = filtered;
     result.noDefinitions = filtered.length;
 
-    console.log("Common words query processed  Travesred:"+result.noWords+" written:"+result.newWords);
+    console.log(API," Common words query processed  Travesred:"+result.noWords+" written:"+result.newWords);
 
     let cjson;
     if (asobject) {
@@ -836,7 +838,7 @@ export function aCrawler() {
       }
     }
 
-    console.log("Items fit:"+fit+" nonfit:"+notf+" tot:"+(fit+notf));
+    console.log(API, "Items fit:"+fit+" nonfit:"+notf+" tot:"+(fit+notf));
 
     return loadWordsOnly(words0, word0, asobject);
   }
@@ -884,7 +886,7 @@ export function aCrawler() {
       es.sort();
     }
 
-    console.log("Frequency indexes:"+cntf+"  of no.words:"+nowords);
+    console.log(API, "Frequency indexes:"+cntf+"  of no.words:"+nowords);
     function quantilize(size) {
       let lst = 0;
       let buckets = [0];
@@ -896,14 +898,14 @@ export function aCrawler() {
           if (lst >= size) {
             let fpl = f+0.005;
             let ff = fpl.toFixed(3);
-            console.log("Frequency:.."+f+" "+ff+"  cnt:"+lst);
+            console.log(API, "Frequency:.."+f+" "+ff+"  cnt:"+lst);
             lst = 0;
             buckets.push(ff);
           }
         }
       }
-      console.log("Frequency:..  cnt:"+lst);
-      console.log("\nvar frqntls"+size+"=["+buckets.join(", ")+",100];");
+      console.log(API, "Frequency:..  cnt:"+lst);
+      console.log(API, "var frqntls"+size+"=["+buckets.join(", ")+",100];\n");
     }
     quantilize(800);
     quantilize(3000);
@@ -912,7 +914,7 @@ export function aCrawler() {
     const indpath = `cache/index/frequency`;
     const djson = JSON.stringify(byfs);
 
-    console.log("Saving cache file/index "+indpath);
+    console.log(API, "Saving cache file/index "+indpath);
     fs.writeFileSync(indpath, djson);
 
   }

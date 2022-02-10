@@ -1,5 +1,5 @@
 
-const crawler = require('./include/crawler');
+const crawler = require('./include/crawler').aCrawler();
 
 const API_DAILY_LIMIT = 20000;
 const MAX_WORDS = 10000000;
