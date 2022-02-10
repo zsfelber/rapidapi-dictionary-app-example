@@ -6,17 +6,14 @@ const API_LIMIT_EXCEPTION = {
   apiLimitException:1
 };
 
-const download = require('./googletransapi/google_dict').googleDictionary;
-//const download = require('./wordsapi/wordapi_dict').wordsApiDictionary;
-
 const TURNING_TIME_GMT = [20,55];
 const MAX_PARALLEL = 20;
-let CACHE_DIR = "cache/google";
+let CACHE_DIR;
 let API_DAILY_LIMIT;
 let MAX_WORDS;
 let MAX_NODE_FREQUENCY;
 let TRAVERSE_ALL;
-let curtime, turntime;
+let download, curtime, turntime;
 
 let cacheInitializerCommon;
 let cacheIsInitialized = false;
@@ -86,20 +83,31 @@ export function isApiLimitReached(pendingBeforeRequest=0) {
 }
 
 export async function initCrawler(
-  _CACHE_DIR,
+  _API,
   _API_DAILY_LIMIT,
   _MAX_WORDS,
   _MAX_NODE_FREQUENCY,
   _TRAVERSE_ALL
   ) {
 
-  CACHE_DIR = _CACHE_DIR;
+  CACHE_DIR = "cache/"+_API;
   API_DAILY_LIMIT = _API_DAILY_LIMIT;
   MAX_WORDS = _MAX_WORDS;
   MAX_NODE_FREQUENCY = _MAX_NODE_FREQUENCY;
   TRAVERSE_ALL = _TRAVERSE_ALL;
 
-
+  switch (_API) {
+    case "google":
+      download = require('./googletransapi/google_dict').googleDictionary;
+      break;
+    case "wordsapi":
+      download = require('./wordsapi/wordapi_dict').wordsApiDictionary;
+      break;
+    default:
+      throw "API is not supported : "+_API;
+  }
+  
+  
   if (!fs.existsSync(`${CACHE_DIR}/words`)){
     fs.mkdirSync(`${CACHE_DIR}/words`, { recursive: true });
   }
