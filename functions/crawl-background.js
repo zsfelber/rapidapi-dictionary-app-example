@@ -9,6 +9,7 @@ const TRAVERSE_ALL = true;
 
 export async function handler(event, context) {
   crawler.initCrawler(
+    "wordsapi",
     API_DAILY_LIMIT,
     MAX_WORDS,
     MAX_NODE_FREQUENCY,

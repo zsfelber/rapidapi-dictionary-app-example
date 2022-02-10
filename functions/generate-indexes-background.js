@@ -1,6 +1,7 @@
 
 const crawler = require('./include/crawler');
 
+const API_DAILY_LIMIT = 20000;
 const MAX_WORDS = 10000000;
 const MAX_NODE_FREQUENCY = 1000;
 const TRAVERSE_ALL = true;
@@ -9,6 +10,7 @@ const TRAVERSE_ALL = true;
 export async function handler(event, context) {
   crawler.initCrawler(
     "wordsapi",
+    API_DAILY_LIMIT,
     MAX_WORDS,
     MAX_NODE_FREQUENCY,
     TRAVERSE_ALL
