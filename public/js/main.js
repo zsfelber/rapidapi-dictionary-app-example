@@ -258,7 +258,9 @@ function selectElementContents(el) {
 
 function createa(word0, masterword, extraarg="") {
     const a = document.createElement('a');
+    const tmp = $("<div>"+word0+"</div>")[0];
     a.onmouseover = selectElementContents.bind(a, a);
+    word0 = tmp.innerText;
     const word = word0.replace(/[^a-zA-Z0-9\- ]/g, "");
     a.href = "?word="+word+extraarg+"&"+checkps();
     if (masterword==word) {
@@ -266,7 +268,7 @@ function createa(word0, masterword, extraarg="") {
     } else {
         a.classList.add('none');
     }
-    a.innerText = word0;
+    a.innerHTML = tmp.innerHTML;
     return a;
 }
 function createi(word) {
