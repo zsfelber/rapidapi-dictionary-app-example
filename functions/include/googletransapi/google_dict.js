@@ -7,6 +7,7 @@ const V1 = 'v1';
 const V2 = 'v2';
 
 function transformToWordsApiLike(data) {
+
     if (Array.isArray(data)) {
         if (data.length>1) {
             console.log("google: dropped multiple results starting from : "+data[1].word+"..");
@@ -17,24 +18,24 @@ function transformToWordsApiLike(data) {
         word:data.word,
         results:[]
     };
-    let i = 0;
+
     for (let meaning of data.meanings) {
-        let meaningdef = meaning.definitions[0];
-        if (meaning.definitions.length>1) {
-            console.log("google: dropped multiple meaning["+i+"].definitions starting from : "+meaning.definitions[1].definition+"..");
+        for (let meaningdef of meaning.definitions) {
+            let item = {
+                partOfSpeech : meaning.partOfSpeech,
+                definition:  meaningdef.definition,
+                examples: meaningdef.examples?meaningdef.examples:
+                        (meaningdef.example?[meaningdef.example]:[]),
+                synonyms: meaningdef.synonyms,
+                antonyms: meaningdef.antonyms
+            };
+            result.results.push(item);
         }
-        let item = {
-            definition:  meaningdef.definition,
-            examples: meaningdef.examples?meaningdef.examples:
-                    (meaningdef.example?[meaningdef.example]:[]),
-            synonyms: meaningdef.synonyms
-        };
-        result.results.push(item);
-        i++;
     }
+
+ 
     return result;
 }
-
 
 export async function googleDictionary(word, language="en", version="v2", include="") {
 
