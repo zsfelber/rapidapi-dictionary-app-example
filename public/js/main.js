@@ -400,11 +400,29 @@ function printLabel(data) {
 
 }
 
-async function showPopup(word) {
+let modalMode = "examples";
+async function showPopup(word,mm) {
+    if (mm!==undefined) modalMode=mm;
+
     const mode = "minimal_cluster";
     const data = await fetchWord(word, mode);
 
-    appendPopupCluster(data, $("#modal-word-info")[0]);
+    $("#modal-word-info").html("");
+    let def = $("#modal-word-info")[0];
+
+    appendPopupCluster(data, def, modalMode);
+
+
+    let a = document.createElement("a");
+    if (modalMode === "examples") {
+        a.href = "javascript:showPopup('"+word+"', '')";
+        a.innerText = "--More--";
+    } else {
+        a.href = "javascript:showPopup('"+word+"', 'examples')";
+        a.innerText = "--Less--";
+    }
+    def.appendChild(a);
+
 
     $('#myModal').modal('show');
 
@@ -488,7 +506,7 @@ function updateSingleWord() {
     finishbox();
 }
 
-function clusterBody(data, wordInfoTbl, withmainword) {
+function clusterBody(data, wordInfoTbl, withmainword, modalMode) {
 
     let itms=99;
     page=1;
@@ -501,24 +519,34 @@ function clusterBody(data, wordInfoTbl, withmainword) {
             newrow(wordInfoTbl);
             newbox("list-item-lg");
         }
-        const prearray = val.level||val.partOfSpeech?["("+(val.level?val.level+" ":"")+val.partOfSpeech+")"]:[];
-        const property = {
-            label:prearray.concat(val.synonyms), 
-            value:val.similar.concat([val.definition])
-        };
+        if (modalMode === "examples") {
 
-        const def = proplabel(property, withmainword?data.word:val.word, true, prearray.length, val.similar.length);
-        if (def) {
-            def.classList.add('definition');
-            wordInfoBox.appendChild(def);
-        }
+            if (val.examples && val.examples.length) {
+                createaas(wordInfoBox, val.examples, ", ");
+            }
 
-        if (val.examples && val.examples.length) {
+        } else {
+            const prearray = val.level||val.partOfSpeech?["("+(val.level?val.level+" ":"")+val.partOfSpeech+")"]:[];
+            const property = {
+                label:prearray.concat(val.synonyms), 
+                value:val.similar.concat([val.definition])
+            };
+    
+            const def = proplabel(property, withmainword?data.word:val.word, true, prearray.length, val.similar.length);
+            if (def) {
+                def.classList.add('definition');
+                wordInfoBox.appendChild(def);
+            }
+    
             let b = document.createElement("b");
             b.innerText = "x:";
             def.children[1].appendChild(b);
-            createaas(def.children[1], val.examples, ", ");
+
+            if (val.examples && val.examples.length) {
+                createaas(def.children[1], val.examples, ", ");
+            }
         }
+
 
     });
     finishbox();
@@ -626,7 +654,7 @@ function updateCluster() {
     clusterBody(lastresult, wordInfoTbl, true);
 }
 
-function appendPopupCluster(data, wordInfoTbl) {
+function appendPopupCluster(data, wordInfoTbl, modalMode) {
 
     let itms=99;
     page=1;
@@ -634,10 +662,8 @@ function appendPopupCluster(data, wordInfoTbl) {
     wordInfoBox=null;
     wordInfoRow=null;
 
-    const dlclust = labelled("word cluster entries", data.noClusterEntries);
-    info.appendChild(dlclust);
 
-    clusterBody(data, wordInfoTbl, true);
+    clusterBody(data, wordInfoTbl, true, modalMode);
 }
 
 function update(firsttime) {
