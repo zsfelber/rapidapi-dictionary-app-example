@@ -14,7 +14,11 @@ $("[data-toggle=popover]").popover({
         let id = $(this).attr("id");
         $(`[data-toggle=popover]:not(#${id})`).popover("hide");
 
-        if (this.loaded) {
+        if (this.loadedtmp) {
+            let x = this.loadedtmp.html();
+            this.loadedtmp = null;
+            return x;
+        } else         if (this.loaded) {
             let x = this.loaded.html();
             return x;
         } else {

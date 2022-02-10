@@ -287,20 +287,23 @@ function selectElementContents(el) {
 }
 
 let poidx=0;
-function createa(word0, masterword, extraarg="") {
+function createa(word0, masterword, extraarg="", origin) {
 
     const a = document.createElement('a');
     const tmp = $("<div>"+word0+"</div>")[0];
     a.onmouseover = selectElementContents.bind(a, a);
     word0 = tmp.innerText;
     const word = word0.replace(/[^a-zA-Z0-9\- ]/g, "");
-    a.id =     'popsiover'+poidx++;
+    a.id =     'popoveritm'+poidx++;
     a.modalMode = 'examples';
-    a.classList.add('popsiover');
+    a.classList.add('popoveritm');
     if (masterword==word) {
         a.classList.add('master');
     } else {
         a.classList.add('none');
+    }
+    if (origin) {
+        a.href = "javascript:replacePopup('"+word+extraarg+"','#"+origin+"','#"+a.id+"')"
     }
 
     // it does the trick
@@ -320,10 +323,10 @@ function createi(word) {
     i.innerText = word;
     return i;
 }
-function createas(cont, words, masterword, sep, linksIdxFrom=0, linksIdxTo=999999999) {
+function createas(cont, words, masterword, sep, linksIdxFrom=0, linksIdxTo=999999999, origin) {
     let index=0;
     if (words) words.forEach(word => {
-        const a = (linksIdxFrom<=index&&index<linksIdxTo) ? createa(word, masterword) : createi(word);
+        const a = (linksIdxFrom<=index&&index<linksIdxTo) ? createa(word, masterword, "", origin) : createi(word);
         const sp = document.createTextNode(sep);
 
         cont.appendChild(a);
@@ -331,10 +334,10 @@ function createas(cont, words, masterword, sep, linksIdxFrom=0, linksIdxTo=99999
         index++;
     });
 }
-function createaas(cont, sentences, sep) {
+function createaas(cont, sentences, sep, origin) {
     sentences.forEach(txt => {
         var words = txt.split(" ");
-        createas(cont, words, null, " ");
+        createas(cont, words, null, " ", 0, 10000, origin);
         const sp = document.createTextNode(sep);
         cont.appendChild(sp);
     });
@@ -354,7 +357,7 @@ function labelled(label, value) {
     return dl;
 }
 
-function proplabel(property, masterword, parselabel=false, linksIdxLabFrom=0, linksIdxValTo=9999999, prefix="",comma=", ") {
+function proplabel(property, masterword, parselabel=false, linksIdxLabFrom=0, linksIdxValTo=9999999, prefix="",comma=", ", origin) {
     if (!property.value || (Array.isArray(property.value)&&!property.value.length)) {
         return null;
     }
@@ -365,19 +368,19 @@ function proplabel(property, masterword, parselabel=false, linksIdxLabFrom=0, li
     const value = document.createElement('dd');
 
     if (parselabel) {
-        createas(label, property.label, masterword, comma, linksIdxLabFrom);
+        createas(label, property.label, masterword, comma, linksIdxLabFrom, 100000, origin);
     } else {
         label.innerText = prefix + property.label;
     }
 
     if (!parselabel && (property.label === 'examples'||property.kind === 'examples')) {
-        createaas(value, property.value, ", ");
+        createaas(value, property.value, ", ", origin);
     } else {
         let normal = property.value.slice(0, linksIdxValTo);
-        createas(value, normal, null, ", ");
+        createas(value, normal, null, ", ", 0, 100000, origin);
 
         let remainder = property.value.slice(linksIdxValTo, property.value.length);
-        createaas(value, remainder, ", ");
+        createaas(value, remainder, ", ", origin);
     }
 
     value.className = 'col-sm-9';
@@ -418,42 +421,64 @@ async function showPopup(id, x) {
     q[0].loaded=null;
     q.popover('show');
 }
+async function replacePopup(word, origin, id) {
+    let q=$(id);
+    let oq=$(origin);
 
-async function fetchPopup(a0) {
+    fetchPopup(q[0], false, oq[0].modalMode, origin).then((def)=>{
+        let elem = $(def);
+        oq[0].loadedtmp = elem;
+        console.log("navigated in:"+origin+" to:"+id);
+        //console.log(this.loaded.html());
+        oq.popover('show');
+    });
+
+}
+
+async function fetchPopup(a0, fully=1, modal, origin) {
     let id = $(a0).attr("id");
     let word = a0.word;
+    if (!modal) modal = a0.modalMode;
     const mode = "minimal_cluster";
     const data = await fetchWord(word, mode);
 
     let q=$('<div class="popover-body"></div>');
     let def = q[0];
 
-    appendPopupCluster(data, def, a0.modalMode);
+    appendPopupCluster(data, def, modal, id);
 
+    if (fully) {
 
-    let a = document.createElement("a");
-    if (a0.modalMode === "examples") {
-        a.href = `javascript:showPopup('#${id}','light')`;
-        a.innerText = "--More--";
+        let a = document.createElement("a");
+        if (modal === "examples") {
+            a.href = `javascript:showPopup('#${id}','light')`;
+            a.innerText = "--More--";
+        } else {
+            a.href = `javascript:showPopup('#${id}','examples')`;
+            a.innerText = "--Less--";
+        }
+        def.appendChild(a);
+
+        def.appendChild(document.createTextNode("\u00A0\u00A0\u00A0"));
+
+        let a2 = document.createElement("a");
+        a2.href = `javascript:go('#${id}')`;
+        a2.innerText = "--Nav--";
+        def.appendChild(a2);
+
+        def.appendChild(document.createTextNode("\u00A0\u00A0\u00A0"));
+
+        let a3 = document.createElement("a");
+        a3.href = `javascript:$('#${id}').popover('hide')`;
+        a3.innerText = "--Hide--";
+        def.appendChild(a3);
     } else {
-        a.href = `javascript:showPopup('#${id}','examples')`;
-        a.innerText = "--Less--";
+        let a4 = document.createElement("a");
+        a4.href = `javascript:showPopup('${origin}','${modal}')`;
+        a4.innerText = "--Back--";
+        def.appendChild(a4);
+
     }
-    def.appendChild(a);
-
-    def.appendChild(document.createTextNode("\u00A0\u00A0\u00A0"));
-
-    let a2 = document.createElement("a");
-    a2.href = `javascript:go('#${id}')`;
-    a2.innerText = "--Nav--";
-    def.appendChild(a2);
-
-    def.appendChild(document.createTextNode("\u00A0\u00A0\u00A0"));
-
-    let a3 = document.createElement("a");
-    a3.href = `javascript:$('#${id}').popover('hide')`;
-    a3.innerText = "--Hide--";
-    def.appendChild(a3);
 
     return def;
 
@@ -536,7 +561,7 @@ function updateSingleWord() {
     finishbox();
 }
 
-function clusterBody(data, wordInfoTbl, withmainword, modalMode) {
+function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
 
     let itms=99;
     page=1;
@@ -548,7 +573,7 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode) {
         if (modalMode === "examples") {
 
             if (val.examples && val.examples.length) {
-                createaas(wordInfoTbl, val.examples, ", ");
+                createaas(wordInfoTbl, val.examples, ", ", origin);
             }
         } else {
             let  cmp,comma;
@@ -556,7 +581,7 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode) {
 
                 cmp = $("<div class='smallf'></div>")[0];
                 wordInfoTbl.appendChild(cmp);
-                comma="";
+                comma=":";
             } else {
                 if (itms++%100==99) {
                     newrow(wordInfoTbl);
@@ -572,7 +597,7 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode) {
                 value:val.similar.concat([val.definition])
             };
     
-            const def = proplabel(property, withmainword?data.word:val.word, true, prearray.length, val.similar.length, "", comma);
+            const def = proplabel(property, withmainword?data.word:val.word, true, prearray.length, val.similar.length, "", comma, origin);
             if (def) {
                 def.classList.add('definition');
                 cmp.appendChild(def);
@@ -583,7 +608,7 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode) {
             def.children[1].appendChild(b);
 
             if (val.examples && val.examples.length) {
-                createaas(def.children[1], val.examples, ", ");
+                createaas(def.children[1], val.examples, ", ", origin);
             }
         }
 
@@ -694,7 +719,7 @@ function updateCluster() {
     clusterBody(lastresult, wordInfoTbl, true);
 }
 
-function appendPopupCluster(data, wordInfoTbl, modalMode) {
+function appendPopupCluster(data, wordInfoTbl, modalMode, origin) {
 
     let itms=99;
     page=1;
@@ -703,7 +728,7 @@ function appendPopupCluster(data, wordInfoTbl, modalMode) {
     wordInfoRow=null;
 
 
-    clusterBody(data, wordInfoTbl, true, modalMode);
+    clusterBody(data, wordInfoTbl, true, modalMode, origin);
 }
 
 function update(firsttime) {
@@ -752,7 +777,7 @@ function update(firsttime) {
     }
 
 /*
-    $(".popsiover").hover(function(){
+    $(".popoveritm").hover(function(){
         if (!this.popped) {
             this.popped=1;
             PopoverComponent.init({
