@@ -56,7 +56,7 @@ export function aCrawler() {
         cacheInitializerCommon = finder.findFiles(`${CACHE_DIR}/words`, turntime);
         totalWordsLastDay = await cacheInitializerCommon;
         cacheIsInitialized = true;
-        console.log(API, "remoteInitBottleneck  turntime:"+turntime.toUTCString()+"  totalWordsLastDay:"+totalWordsLastDay+" errors:"+finder.errors+" pendingParallelRequests:"+pendingParallelRequests+" admittedParallelRequests:"+admittedParallelRequests);
+        console.log(API, "remoteInitBottleneck  turntime:"+turntime.toUTCString()+"  totalWordsLastDay:"+totalWordsLastDay+ " of API limit " + API_DAILY_LIMIT+" errors:"+finder.errors+" pendingParallelRequests:"+pendingParallelRequests+" admittedParallelRequests:"+admittedParallelRequests);
       } else {
         await cacheInitializerCommon;
       }
