@@ -320,6 +320,9 @@ function labelled(label, value) {
 }
 
 function proplabel(property, masterword, parselabel=false, linksIdxLabFrom=0, linksIdxValTo=9999999, prefix="") {
+    if (!property.value || (Array.isArray(property.value)&&!property.value.length)) {
+        return null;
+    }
     const characteristic = document.createElement('dl');
     characteristic.className = 'row';
     const label = document.createElement('dt');
@@ -358,7 +361,10 @@ function printLabel(data) {
         // loops over the values for each definition
         var prons = [];
         for (pron in data.pronunciation) {
-            prons.push(pron+":"+data.pronunciation[pron]);
+            let p = data.pronunciation[pron];
+            if (p && p!=="undefined") {
+                prons.push(pron+":"+p);
+            }
         }
         const dlp1 = labelled("pronunciation ", prons.join(", "));
         info.appendChild(dlp1);
@@ -401,7 +407,7 @@ function updateSingleWord() {
 
                 if (property.kind === 'definition') {
                     const def = proplabel(property);
-                    wordInfoBox.appendChild(def);
+                    if (def) wordInfoBox.appendChild(def);
                 } else if (property.label === 'definition') {
                     // creates new heading-3 element
                     const def = document.createElement('div');
@@ -433,7 +439,7 @@ function updateSingleWord() {
                 } else if (property.value && isch(property.label)) {
                     const characteristic = proplabel(property);
 
-                    wordInfoBox.appendChild(characteristic);
+                    if (characteristic) wordInfoBox.appendChild(characteristic);
                 }
             });
 
@@ -466,8 +472,10 @@ function clusterBody(withmainword) {
         };
 
         const def = proplabel(property, withmainword?data.word:val.word, true, prearray.length, val.similar.length);
-        def.classList.add('definition');
-        wordInfoBox.appendChild(def);
+        if (def) {
+            def.classList.add('definition');
+            wordInfoBox.appendChild(def);
+        }
 
         if (val.examples && val.examples.length) {
             let b = document.createElement("b");

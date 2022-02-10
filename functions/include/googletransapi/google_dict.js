@@ -23,7 +23,7 @@ function transformToWordsApiLike(definitions) {
 
         for (let meaning of data.meanings) {
             for (let meaningdef of meaning.definitions) {
-                if (!antipron[data.phonetic]) {
+                if (data.phonetic && !antipron[data.phonetic]) {
                     antipron[data.phonetic] = [String.fromCharCode(pid++)];
                 }
                 antipron[data.phonetic].push(idx);

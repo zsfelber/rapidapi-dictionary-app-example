@@ -153,8 +153,32 @@ export function singleWordToDisplay(data) {
     };
 
     // creates array of keys in object
-    const keys = Object.keys(def);
-    keys.map(key => {
+    const skeys = [];
+    const therest = Object.assign({}, def);
+    function addif(skeys, key) {
+      if (def[key]) skeys.push(key);
+      delete therest[key];
+    }
+    addif(skeys, "word");
+    addif(skeys, "pronunciation");
+    addif(skeys, "partOfSpeech");
+    addif(skeys, "definition");
+    addif(skeys, "synonyms");
+    addif(skeys, "similarTo");
+    addif(skeys, "antonyms");
+
+    delete therest["examples"];
+
+    const more = Object.keys(therest);
+    more.sort();
+    skeys.push.apply(skeys, more);
+
+    const skeys2 = [];
+    addif(skeys2, "examples");
+    skeys.push.apply(skeys, skeys2);
+
+
+    skeys.map(key => {
 
       // builds regex that looks for capital letters
       // The response parameters are in camelCase, so we need to ID
