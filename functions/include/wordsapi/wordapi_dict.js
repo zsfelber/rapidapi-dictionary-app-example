@@ -17,7 +17,7 @@ exports.wordsApiDictionary = async function(word) {
         }
       });*/
 
-    let response = await fetch.fetchJson(url,
+    let body = await fetch.fetchTextFromHttpUrl(url,
       {
         "method":"GET",
         "content-type":"application/octet-stream",
@@ -26,6 +26,7 @@ exports.wordsApiDictionary = async function(word) {
       },
       {word}
     );
+    let data = JSON.parse(body);
     
-    return response;
+    return data;
 };

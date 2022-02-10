@@ -47,7 +47,7 @@ export async function handler(event, context) {
         if (stopiterateapis.stop) break;
       }
 
-      if (mode === "dictionary") data = crawler.singleWordToDisplay(data);
+      if (mode === "dictionary" && stopiterateapis.crawler) data = stopiterateapis.crawler.singleWordToDisplay(data);
 
       let json = JSON.stringify(data);
 
@@ -73,6 +73,7 @@ export async function handler(event, context) {
 export async function get(api, word, mode, letter, ffrom, fto, stopiterateapis) {
 
   const crawler = require('./include/crawler.js').aCrawler();
+  stopiterateapis.crawler = crawler;
 
   switch (mode) {
     case "dictionary":

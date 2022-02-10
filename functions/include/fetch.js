@@ -4,7 +4,7 @@ const httpsAgent = new https.Agent({ keepAlive: true });
 const errors = require('./errors.js');
 
 
-export async function fetchJson(url, headers, info) {
+export async function fetchTextFromHttpUrl(url, headers, info) {
 
     let f = await fetch;
     f = f.default;
@@ -19,10 +19,8 @@ export async function fetchJson(url, headers, info) {
 
     if (response.status !== 200) { throw new errors.NoDefinitionsFound({ info, reason: 'Threw non 200 status code.' }); }
 
-    let body = await response.text(),
-        data = JSON.parse(body);
-        //data = JSON.parse(body.substring(4));
+    let body = await response.text();
 
-    return data;
+    return body;
 
 }

@@ -142,7 +142,7 @@ async function queryInternet (word, language) {
 
 	let info = 		{ word, language };
 
-	let data = await fetch.fetchJson(url, 
+	let body = await fetch.fetchTextFromHttpUrl(url, 
 		{
 			"accept": "*/*",
 			"accept-encoding": "gzip, deflate, br",
@@ -151,6 +151,7 @@ async function queryInternet (word, language) {
 		},
 		info
 	);
+    let data = JSON.parse(body.substring(4));
 
 	let single_results = _.get(data, 'feature-callback.payload.single_results', []),
 			error = _.chain(single_results)
