@@ -53,15 +53,18 @@ var checkboxdata = {
         "adverb": { defchecked: true },
         "conjunction": { defchecked: true },
         "determiner": { defchecked: true },
-        "noun": { defchecked: true },
+        "exclamation": { defchecked: true },
     },
     "bucket55": {
         "has usages": { defchecked: false },
+        "noun": { defchecked: true },
         "participle": { defchecked: true },
         "prefix": { defchecked: true },
         "preposition": { defchecked: true },
         "pronoun": { defchecked: true },
         "suffix": { defchecked: true },
+    },
+    "bucket56": {
         "symbol": { defchecked: true },
         "verb": { defchecked: true },
     },
@@ -145,6 +148,7 @@ function chkdict() {
     $('.checkboxes4 input').prop("disabled", !chk);
     $('.checkboxes5 input').prop("disabled", !chk);
     $('.checkboxes55 input').prop("disabled", !chk);
+    $('.checkboxes56 input').prop("disabled", !chk);
 
     $('#_WORDSAPI').prop("disabled", false);
     $('#_GOOGLE').prop("disabled", false);
@@ -677,9 +681,10 @@ $(document).ready(function(){
     let chbs4 = document.querySelector('.checkboxes4');
     let chbs5 = document.querySelector('.checkboxes5');
     let chbs55 = document.querySelector('.checkboxes55');
+    let chbs56 = document.querySelector('.checkboxes56');
     let chbs6 = document.querySelector('.checkboxes6');
     let chbs7 = document.querySelector('.checkboxes7');
-    var chbuckets = {bucket1:chbs1,bucket2:chbs2,bucket3:chbs3,bucket4:chbs4,bucket5:chbs5,bucket55:chbs55};
+    var chbuckets = {bucket1:chbs1,bucket2:chbs2,bucket3:chbs3,bucket4:chbs4,bucket5:chbs5,bucket55:chbs55,bucket56:chbs56};
 
     for (bucketid in chbuckets) {
         var chbuck = chbuckets[bucketid];
