@@ -11,12 +11,14 @@ $("[data-toggle=popover]").popover({
     placement:'auto',
     template:`<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>`,
     content: function() {
+        let id = $(this).attr("id");
+        $(`[data-toggle=popover]:not(#${id})`).popover("hide");
+
         if (this.loaded) {
             let x = this.loaded.html();
             return x;
         } else {
             //var content = $(this).attr("data-popover-content");
-            let id = $(this).attr("id");
 
             console.log("show:"+id);
             fetchPopup(this).then((def)=>{
