@@ -1,9 +1,5 @@
 //const axios = require('axios');
 //const fs = require('fs');
-const fetch = require('node-fetch');
-const https = require('https');
-const httpsAgent = new https.Agent({ keepAlive: true });
-
 
 exports.wordsApiDictionary = async function(word) {
     let url = `https://wordsapiv1.p.rapidapi.com/words/${word}`;

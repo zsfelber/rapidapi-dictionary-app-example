@@ -1,10 +1,10 @@
 const fs = require('fs'),
 	_ = require('lodash'),
 	https = require('https'),
-	fetch = require('node-fetch'),
 
 	utils = require('./utils.js'),
-	errors = require('./errors.js'),
+	errors = require('../errors.js'),
+	fetch = require('../fetch.js'),
 
 	httpsAgent = new https.Agent({ keepAlive: true });
 
@@ -145,8 +145,8 @@ async function queryInternet (word, language) {
 
 	url = url.toString();
 
-	let f = await fetch;
-	f = f.default;
+	let response0 = await fetch.fetchJson(url, {
+
 	let response = await f(url, {
 		agent: httpsAgent,
 		headers: new fetch.Headers({

@@ -1,5 +1,5 @@
 const utils = require('./utils.js');
-const errors = require('./errors.js');
+const errors = require('../errors.js');
 const dictionary = require('./dictionary.js');
 
     // Versions
