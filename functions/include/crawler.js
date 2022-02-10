@@ -207,7 +207,7 @@ export async function loadSingleWord(word, asobject, cachedonly=false) {
 
   if (data) {
     if (data.error) {
-      console.warn("File is of an error entry : "+wfpath, " ", data.error);
+      console.warn("File is of an error entry : "+wfpath, " ", (data.error?data.error.message?data.error.message:data.error:"unknown error"));
       return null;
     }
     if (asobject) {
@@ -269,7 +269,7 @@ export async function loadSingleWord(word, asobject, cachedonly=false) {
     }
   } catch (e) {
     console.warn("API error (",word, ") ", e&&e.message?e.message:"?");
-    djson = JSON.stringify({error:e});
+    djson = JSON.stringify({error:e.message});
     return null;
   } finally {
 
