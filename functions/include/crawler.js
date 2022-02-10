@@ -70,6 +70,7 @@ export function aCrawler() {
       return false;
     } else {
       totalWordsLastDay++;
+      if (!(totalWordsLastDay%1000)) console.log(API, totalWordsLastDay + " of API limit " + API_DAILY_LIMIT);
       return true;
     }
   }
