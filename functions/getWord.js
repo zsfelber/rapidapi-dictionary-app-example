@@ -20,22 +20,35 @@ export async function handler(event, context) {
   if (apis) {
     try {
       apis = apis.split("-");
-      let data = {results:[], pronunciation:{}};
+      let data = { results: [], pronunciation: {} };
 
       for (let api of apis) {
-        let stopiterateapis={stop:0};
+        let stopiterateapis = { stop: 0 };
         let ad = await get(api, word, mode, letter, ffrom, fto, stopiterateapis);
 
-        if (!data.word) {
-          data.word = ad.word;
+        if (ad) {
+
+          if (!data.word) {
+            data.word = ad.word;
+          }
+          if (!data.noWords) {
+            data.noWords = ad.noWords;
+          }
+          if (!data.noDefinitions) {
+            data.noDefinitions = ad.noDefinitions;
+          }
+
+          if (!data.frequency) {
+            data.frequency = ad.frequency;
+          }
+          data.pronunciation = Object.assign(data.pronunciation, ad.pronunciation);
+          data.results.push.apply(data.results, ad.results);
         }
-        if (!data.frequency) {
-          data.frequency = ad.frequency;
-        }
-        data.pronunciation = Object.assign(data.pronunciation, ad.pronunciation);
-        data.results.push.apply(data.results, ad.results);
+
         if (stopiterateapis.stop) break;
       }
+
+      if (mode === "dictionary") data = crawler.singleWordToDisplay(data);
 
       let json = JSON.stringify(data);
 
