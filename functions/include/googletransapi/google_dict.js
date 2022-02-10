@@ -6,36 +6,56 @@ const dictionary = require('./dictionary.js');
 const V1 = 'v1';
 const V2 = 'v2';
 
-function transformToWordsApiLike(data) {
 
-    if (Array.isArray(data)) {
-        if (data.length>1) {
-            console.log("google: dropped multiple results starting from : "+data[1].word+"..");
-            data = data[0];
-        }
-    }
+function transformToWordsApiLike(definitions) {
+
     let result = {
-        word:data.word,
-        results:[]
+        word:"",
+        results:[],
+        pronanciation : {},
     };
+    let antipron = {};
+    let idx=1;
+    let pid = 'a'.charCodeAt(0);
+    for (let data of definitions) {
+        let word = data.word;
+        if (!result.word) result.word = word;
 
-    for (let meaning of data.meanings) {
-        for (let meaningdef of meaning.definitions) {
-            let item = {
-                partOfSpeech : meaning.partOfSpeech,
-                definition:  meaningdef.definition,
-                examples: meaningdef.examples?meaningdef.examples:
-                        (meaningdef.example?[meaningdef.example]:[]),
-                synonyms: meaningdef.synonyms,
-                antonyms: meaningdef.antonyms
-            };
-            result.results.push(item);
+        for (let meaning of data.meanings) {
+            for (let meaningdef of meaning.definitions) {
+                if (!antipron[data.phonetic]) {
+                    antipron[data.phonetic] = [String.fromCharCode(pid++)];
+                }
+                antipron[data.phonetic].push(idx);
+                let item = {
+                    partOfSpeech : meaning.partOfSpeech,
+                    pronanciation : {"":data.phonetic},
+                    definition:  meaningdef.definition,
+                    examples: meaningdef.examples?meaningdef.examples:
+                            (meaningdef.example?[meaningdef.example]:[]),
+                    synonyms: meaningdef.synonyms,
+                    antonyms: meaningdef.antonyms,
+                    word
+                };
+                result.results.push(item);
+                idx++;
+            }
         }
     }
+    let aps = [];
+    for (let a in antipron) {
+        let p = antipron[a];
+        aps.push({a,p});
+    }
 
- 
+    for (let pair of aps) {
+        result.pronanciation[pair.p.join(",")] = pair.a;
+    }
+
+
     return result;
 }
+
 
 export async function googleDictionary(word, language="en", version="v2", include="") {
 
