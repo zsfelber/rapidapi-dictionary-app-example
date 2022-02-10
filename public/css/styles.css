@@ -144,8 +144,11 @@ form {
     white-space: nowrap;
 }
 
-small.lead {
-    margin-right: 5px;
+.lead {
+    margin-right: 10px;
+}
+.lead.semismall {
+    font-size: 1rem;
 }
 .list-item, .list-item-lg {
     display: inline-block;

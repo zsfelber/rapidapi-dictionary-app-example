@@ -418,7 +418,12 @@ function updateSingleWord() {
                 } else if (property.isString || property.label === 'part of speech') {
                     const italicLabel = document.createElement('small');
                     italicLabel.innerText = property.value ? property.value : property.label+"?";
-                    italicLabel.classList.add('lead','font-italic');
+                    italicLabel.classList.add('lead');
+                    if (property.label === 'part of speech') {
+                        italicLabel.classList.add('font-italic');
+                    } else if (property.label === 'pronunciation') {
+                        italicLabel.classList.add('semismall');
+                    }
                     wordInfoBox.appendChild(italicLabel);
                 } else if (isch(property.label)) {
                     const characteristic = proplabel(property);
