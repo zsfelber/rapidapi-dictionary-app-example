@@ -21,8 +21,9 @@ export async function handler(event, context) {
       apis = apis.split("-");
       let data = { results: [], pronunciation: {} };
 
+      let stopiterateapis = { stop: 0 };
+
       for (let api of apis) {
-        let stopiterateapis = { stop: 0 };
         let ad = await get(api, word, mode, letter, ffrom, fto, stopiterateapis);
 
         if (ad) {
