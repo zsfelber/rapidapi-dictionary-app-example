@@ -7,6 +7,7 @@
 
     <!-- load our style sheet -->
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="popover/popover.css">
 
     <!-- load Bootstrap library into our HTML -->
     <!--link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"-->
@@ -151,13 +152,36 @@
             </div>
     
         </div>
+
+
+    <!-- button popover  -->
+    <div class="popover-block-container">
+    <a tabindex="0" type="button"  
+        data-popover-content="#unique-id" data-toggle="popover" 
+        data-placement="right">
+      kutya
+    </a>
+    <div id="unique-id" style="display:none;">
+      <div class="popover-body">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis libero ipsum, imperdiet
+      </div>
+    </div>
+    </div>
+    
     </div>
 
+
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+      
     <!-- import jquery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <!-- https://stackoverflow.com/questions/45650583/how-to-import-popper-js -->
+    
 
     <!-- import our javascript file -->
+    <script src="popover/popover.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

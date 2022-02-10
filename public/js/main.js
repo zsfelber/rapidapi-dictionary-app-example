@@ -286,6 +286,7 @@ function selectElementContents(el) {
     //el.focus();
 }
 
+let poidx=0;
 function createa(word0, masterword, extraarg="") {
     //https://getbootstrap.com/docs/5.1/components/modal/#live-demo
     //https://www.tutorialrepublic.com/codelab.php?topic=bootstrap&file=modal-with-remote-url
@@ -298,12 +299,23 @@ function createa(word0, masterword, extraarg="") {
     a.onmouseover = selectElementContents.bind(a, a);
     word0 = tmp.innerText;
     const word = word0.replace(/[^a-zA-Z0-9\- ]/g, "");
-    a.href = "javascript:showPopup('"+word+extraarg+"')";
+    //a.href = "javascript:showPopup('"+word+extraarg+"')";
+    a.id =     'popsiover'+poidx++;
+    a.classList.add('popsiover');
     if (masterword==word) {
         a.classList.add('master');
     } else {
         a.classList.add('none');
     }
+
+    // it does the trick
+    a.setAttribute("tabindex","0");
+    a.setAttribute("type","button");
+
+    a.setAttribute("data-toggle","popover");
+    a.setAttribute("data-placement","bottom");
+    a.setAttribute("data-popover-content",word+extraarg);
+
 
     a.innerHTML = tmp.innerHTML;
     return a;
@@ -710,6 +722,19 @@ function update(firsttime) {
         updateSingleWord();
         break;
     }
+
+/*
+    $(".popsiover").hover(function(){
+        if (!this.popped) {
+            this.popped=1;
+            PopoverComponent.init({
+                ele: "#"+$(this).attr("id"),
+                showOnHover: true
+              });
+        }
+    });
+*/
+    initpop();
 }
 
 let curword, collected = {};
@@ -821,7 +846,7 @@ $(document).ready(function(){
 
     chkdict();
 
-    //$('.form-check-input').change(function(){
+      //$('.form-check-input').change(function(){
     //    $(this).text() 
     //});
     
