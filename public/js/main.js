@@ -144,6 +144,9 @@ function chkdict() {
     $('.checkboxes5 input').prop("disabled", !chk);
     $('.checkboxes55 input').prop("disabled", !chk);
 
+    $('#_WORDSAPI').prop("disabled", false);
+    $('#_GOOGLE').prop("disabled", false);
+
     let wbf = $("#words_by_frequency").is(':checked');
     $('#ffrom').prop("disabled", !wbf);
     $('#fto').prop("disabled", !wbf);
