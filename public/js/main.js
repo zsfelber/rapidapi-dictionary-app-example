@@ -51,9 +51,11 @@ var checkboxdata = {
         "adjective": { defchecked: true },
         "adverb": { defchecked: true },
         "conjunction": { defchecked: true },
+        "determiner": { defchecked: true },
         "noun": { defchecked: true },
         "participle": { defchecked: true },
         "preposition": { defchecked: true },
+        "pronoun": { defchecked: true },
         "verb": { defchecked: true },
     },
     "bucket6": {

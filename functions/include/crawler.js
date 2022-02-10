@@ -232,7 +232,7 @@ export async function loadSingleWord(word, asobject, cachedonly=false) {
 
     console.error(`ENTER http download      ${word}   pending:${pendingParallelRequests} admitted:${admittedParallelRequests}`);
 
-    data = download(word);
+    data = await download(word);
 
     console.error(`DONE  http download      ${word}   pending:${pendingParallelRequests} admitted:${admittedParallelRequests}`);
 
