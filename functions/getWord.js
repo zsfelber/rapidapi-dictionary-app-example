@@ -1,4 +1,3 @@
-const crawler = require('./include/crawler.js');
 
 const API_DAILY_LIMIT = 23000;
 const MAX_WORDS = 50;
@@ -72,6 +71,8 @@ export async function handler(event, context) {
 }
 
 export async function get(api, word, mode, letter, ffrom, fto, stopiterateapis) {
+
+  const crawler = require('./include/crawler.js');
 
   switch (mode) {
     case "dictionary":
