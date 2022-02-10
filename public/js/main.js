@@ -88,6 +88,23 @@ var checkboxdata = {
     },
 };
 
+async function fetchWord(word, mode) {
+    var qs=[`word=${word}`];
+    let apis=[];
+    if (isch("WORDSAPI")) apis.push("wordsapi");
+    if (isch("GOOGLE")) apis.push("google");
+    qs.push(`mode=${mode}`);
+    qs.push(`ffrom=${urlffrom}`);
+    qs.push(`fto=${urlfto}`);
+    qs.push(`apis=${apis.join("-")}`);
+
+    const data0 = await fetch(`/.netlify/functions/getWord?${qs.join("&")}`, { mode: 'cors'});
+    // asynchronously calls our custome function
+    const data = await data0.json();
+
+}
+
+
 function numbers() {
     let a = '0'.charCodeAt(0);
     let z = '9'.charCodeAt(0);
@@ -211,7 +228,7 @@ function addRadio(cont, id, buckcheck, groupid, label, extraelements="") {
     cont.appendChild(panel[0]);
 }
 
-function newrow() {
+function newrow(wordInfoTbl) {
     if (col++%3==2) {
         wordInfoRow = document.createElement('div');
         wordInfoRow.classList.add(['list-row']);
@@ -283,15 +300,12 @@ function createa(word0, masterword, extraarg="") {
     a.onmouseover = selectElementContents.bind(a, a);
     word0 = tmp.innerText;
     const word = word0.replace(/[^a-zA-Z0-9\- ]/g, "");
-    a.href = "?word="+word+extraarg+"&mode=minimal_cluster&"+checkps();
+    a.href = ":showPopup('"+word+extraarg+"')";
     if (masterword==word) {
         a.classList.add('master');
     } else {
         a.classList.add('none');
     }
-    
-    a.attributes["data-toggle"]="modal";
-    a.attributes["data-target"]="#myModal";
 
     a.innerHTML = tmp.innerHTML;
     return a;
@@ -388,8 +402,15 @@ function printLabel(data) {
 
 }
 
-function showPopup() {
-    
+async function showPopup(word) {
+    const mode = "minimal_cluster";
+    const data = await fetchWord(word, mode);
+
+    appendPopupCluster(data, $(".modal-content")[0]);
+
+    $('#myModal').modal('show');
+
+
 }
 
 function updateSingleWord() {
@@ -419,7 +440,7 @@ function updateSingleWord() {
 
         if (!val.partOfSpeech || isch(val.partOfSpeech)) {
 
-            newrow();
+            newrow(wordInfoTbl);
             newbox();
 
             // loops over the values for each definition
@@ -469,10 +490,7 @@ function updateSingleWord() {
     finishbox();
 }
 
-function clusterBody(withmainword) {
-
-    const mode = lastmode;
-    const data = lastresult;
+function clusterBody(data, wordInfoTbl, withmainword) {
 
     let itms=99;
     page=1;
@@ -482,7 +500,7 @@ function clusterBody(withmainword) {
 
     data.results.map(val => {
         if (itms++%100==99) {
-            newrow();
+            newrow(wordInfoTbl);
             newbox("list-item-lg");
         }
         const prearray = val.level||val.partOfSpeech?["("+(val.level?val.level+" ":"")+val.partOfSpeech+")"]:[];
@@ -524,7 +542,7 @@ function updateMostCommon() {
     const dlclust2 = labelled("definitions", data.noDefinitions);
     info.appendChild(dlclust2);
 
-    clusterBody(false);
+    clusterBody(lastresult, wordInfoTbl, false);
 
 }
 
@@ -549,7 +567,7 @@ function updateWords() {
     wordInfoBox=null;
     wordInfoRow=null;
 
-    newrow();
+    newrow(wordInfoTbl);
     newbox("list-item-lg");
 
     wordInfoBox.classList.add('definition');
@@ -607,7 +625,21 @@ function updateCluster() {
     const dlclust = labelled("word cluster entries", data.noClusterEntries);
     info.appendChild(dlclust);
 
-    clusterBody(true);
+    clusterBody(lastresult, wordInfoTbl, true);
+}
+
+function appendPopupCluster(data, wordInfoTbl) {
+
+    let itms=99;
+    page=1;
+    col=2;
+    wordInfoBox=null;
+    wordInfoRow=null;
+
+    const dlclust = labelled("word cluster entries", data.noClusterEntries);
+    info.appendChild(dlclust);
+
+    clusterBody(data, wordInfoTbl, true);
 }
 
 function update(firsttime) {
@@ -778,8 +810,6 @@ $(document).ready(function(){
         $('#word-info').html('Loading...');
 
         try {
-
-            var qs=[`word=${word}`];
             var mode = $("input[type='radio'][name='mode']:checked").val();
             if (!mode) {
                 if (urltop) {
@@ -795,17 +825,8 @@ $(document).ready(function(){
                     }
                 }
             }
-            let apis=[];
-            if (isch("WORDSAPI")) apis.push("wordsapi");
-            if (isch("GOOGLE")) apis.push("google");
-            qs.push(`mode=${mode}`);
-            qs.push(`ffrom=${urlffrom}`);
-            qs.push(`fto=${urlfto}`);
-            qs.push(`apis=${apis.join("-")}`);
-
-            const data0 = await fetch(`/.netlify/functions/getWord?${qs.join("&")}`, { mode: 'cors'});
-            // asynchronously calls our custome function
-            const data = await data0.json();
+        
+            const data = await fetchWord(word, mode);
 
             lastmode = mode;
             lastresult = data;
