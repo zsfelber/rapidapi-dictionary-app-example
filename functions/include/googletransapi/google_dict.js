@@ -32,9 +32,9 @@ function transformToWordsApiLike(definitions) {
                     pronunciation : data.phonetic,
                     definition:  meaningdef.definition,
                     examples: meaningdef.examples?meaningdef.examples:
-                            (meaningdef.example?[meaningdef.example]:[]),
-                    synonyms: meaningdef.synonyms,
-                    antonyms: meaningdef.antonyms,
+                            (meaningdef.example?[meaningdef.example]:undefined),
+                    synonyms: meaningdef.synonyms&&meaningdef.synonyms.length?meaningdef.synonyms:undefined,
+                    antonyms: meaningdef.antonyms&&meaningdef.antonyms.length?meaningdef.antonyms:undefined,
                     word
                 };
                 result.results.push(item);

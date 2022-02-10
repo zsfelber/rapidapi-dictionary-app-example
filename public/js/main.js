@@ -427,7 +427,7 @@ function updateSingleWord() {
                         italicLabel.classList.add('semismall');
                     }
                     wordInfoBox.appendChild(italicLabel);
-                } else if (isch(property.label)) {
+                } else if (property.value && isch(property.label)) {
                     const characteristic = proplabel(property);
 
                     wordInfoBox.appendChild(characteristic);
