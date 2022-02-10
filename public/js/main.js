@@ -409,7 +409,7 @@ function printLabel(data) {
 
 async function go(id, x) {
     let q=$(id);
-    q[0].word
+    window.open("?word="+q[0].word, "_blank");
 }
 
 async function showPopup(id, x) {
