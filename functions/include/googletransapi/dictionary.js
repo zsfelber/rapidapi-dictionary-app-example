@@ -8,7 +8,9 @@ const fs = require('fs'),
 
 	httpsAgent = new https.Agent({ keepAlive: true });
 
-function transformV2toV1 (data) {
+//import fetch from 'node-fetch';
+
+export function transformV2toV1 (data) {
 	return data.map((entry) => {
     	let {
     		meanings,
@@ -143,7 +145,9 @@ async function queryInternet (word, language) {
 
 	url = url.toString();
 
-	let response = await fetch(url, {
+	let f = await fetch;
+	f = f.default;
+	let response = await f(url, {
 		agent: httpsAgent,
 		headers: new fetch.Headers({
 			"accept": "*/*",
@@ -182,7 +186,7 @@ async function fetchFromSource (word, language) {
 	return dictionaryData;
 }
 
-async function findDefinitions (word, language, { include }) {
+export async function findDefinitions (word, language, { include }) {
 	let dictionaryData = await fetchFromSource(word, language);
 
 	if (_.isEmpty(dictionaryData)) { throw new errors.UnexpectedError(); }
@@ -190,7 +194,7 @@ async function findDefinitions (word, language, { include }) {
 	return transform(word, language, dictionaryData, { include });
 }
 
-module.exports = {
-	findDefinitions,
-	transformV2toV1
-};
+//module.exports = {
+//	findDefinitions,
+//	transformV2toV1
+//};

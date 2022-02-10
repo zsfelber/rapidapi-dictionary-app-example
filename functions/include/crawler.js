@@ -187,8 +187,6 @@ export async function loadSingleWord(word, asobject, cachedonly=false) {
     try {
       data = JSON.parse(ijson);
 
-      return data;
-
   } catch (e) {
       console.warn("Delete invalid file : "+wfpath, e);
       fs.unlinkSync(wfpath);

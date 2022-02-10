@@ -36,7 +36,7 @@ function transformToWordsApiLike(data) {
 }
 
 
-exports.googleDictionary = async function(word, language="en", version="v2", include="") {
+export async function googleDictionary(word, language="en", version="v2", include="") {
 
     if (!word || !language || !version) {
         throw new errors.NoDefinitionsFound(); 
@@ -66,3 +66,8 @@ exports.googleDictionary = async function(word, language="en", version="v2", inc
 
     return definitions;
 };
+
+
+//module.exports = {
+//    googleDictionary
+//} ;

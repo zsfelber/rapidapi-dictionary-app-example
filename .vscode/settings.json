@@ -2,6 +2,6 @@
     "git.ignoreLimitWarning": true,
     "files.exclude": {
         "cache/words/**": true,
-        "cache/google/words/**": true,
+        //"cache/google/words/**": true,
     }
 }
