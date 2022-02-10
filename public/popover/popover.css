@@ -3,10 +3,10 @@ $dark3-color:     #989ca8;
 $dark2-color:     #5f6976;
 $secondary-color: #04a0b2;
 
-body {
+/*body {
   padding: 20px;
   text-align: center;
-}
+}*/
 
 .popover-block-container {
     .popover-icon {
@@ -33,10 +33,13 @@ body {
     box-shadow: 0 0 6px 1px #eee;
   }
   .popover-body {
+    word-wrap: break-word;
     border: none;
-    padding: 20px 49.4px 24px 24px;
+
+    /*padding: 20px 49.4px 24px 24px; */
+    padding: 5px 9.4px 5px 5px;
     color: $dark2-color;
-    font-size: 15px;
+    font-size: 1rem;
     font-style: italic;
     z-index: 2;
     line-height: 1.53;

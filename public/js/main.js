@@ -315,7 +315,7 @@ function createa(word0, masterword, extraarg="") {
     a.setAttribute("data-toggle","popover");
     a.setAttribute("data-placement","bottom");
     a.setAttribute("data-popover-content",word+extraarg);
-
+    a.word = word+extraarg;
 
     a.innerHTML = tmp.innerHTML;
     return a;
@@ -419,8 +419,10 @@ async function showPopup(word,mm) {
     const mode = "minimal_cluster";
     const data = await fetchWord(word, mode);
 
-    $("#modal-word-info").html("");
-    let def = $("#modal-word-info")[0];
+    let q=$('<div class="popover-body"></div>');
+    let def = q[0];
+    //$("#modal-word-info").html("");
+    //let def = $("#modal-word-info")[0];
 
     appendPopupCluster(data, def, modalMode);
 
@@ -436,8 +438,8 @@ async function showPopup(word,mm) {
     def.appendChild(a);
 
 
-    $('#myModal').modal('show');
-
+    //$('#myModal').modal('show');
+    return def;
 
 }
 
@@ -527,17 +529,18 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode) {
     wordInfoRow=null;
 
     data.results.map(val => {
-        if (itms++%100==99) {
-            newrow(wordInfoTbl);
-            newbox("list-item-lg");
-        }
         if (modalMode === "examples") {
 
             if (val.examples && val.examples.length) {
-                createaas(wordInfoBox, val.examples, ", ");
+                createaas(wordInfoTbl, val.examples, ", ");
             }
 
         } else {
+            if (itms++%100==99) {
+                newrow(wordInfoTbl);
+                newbox("list-item-lg");
+            }
+
             const prearray = val.level||val.partOfSpeech?["("+(val.level?val.level+" ":"")+val.partOfSpeech+")"]:[];
             const property = {
                 label:prearray.concat(val.synonyms), 
