@@ -194,6 +194,10 @@ export async function loadSingleWord(word, asobject, cachedonly=false) {
   }
 
   if (data) {
+    if (data.error) {
+      console.warn("File is of an error entry : "+wfpath, " ", data.error);
+      return null;
+    }
     if (asobject) {
       data.fromCache = true;
       return data;
@@ -224,6 +228,7 @@ export async function loadSingleWord(word, asobject, cachedonly=false) {
     return null;
   }
 
+  let djson;
   try {
     let success = await remoteInitBottleneck();
     if (!success) {
@@ -240,16 +245,7 @@ export async function loadSingleWord(word, asobject, cachedonly=false) {
     copy.fromCache = false;
     pendingObjects[word] = copy;
 
-    const djson = JSON.stringify(data);  // original
-
-    fs.writeFile(wfpath, djson, (err) => {
-      if (err) {
-        console.error("Cache file/single "+wfpath+"  asobject:"+asobject+" pendingParallelRequests:"+pendingParallelRequests+" admittedParallelRequests:"+admittedParallelRequests+" write failure : "+err+"\n");
-      } else {
-        console.log("Cache file/single "+wfpath+"  asobject:"+asobject+" pendingParallelRequests:"+pendingParallelRequests+" admittedParallelRequests:"+admittedParallelRequests+" written successfully\n");
-      }
-      delete pendingObjects[word];
-    });
+    djson = JSON.stringify(data);  // original
 
     if (asobject) {
       data.fromCache = false;
@@ -261,13 +257,25 @@ export async function loadSingleWord(word, asobject, cachedonly=false) {
     }
   } catch (e) {
     console.warn("API error (",word, ") ", e&&e.message?e.message:"?");
+    djson = JSON.stringify({error:e});
     return null;
   } finally {
+
+    fs.writeFile(wfpath, djson, (err) => {
+      if (err) {
+        console.error("Cache file/single "+wfpath+"  asobject:"+asobject+" pendingParallelRequests:"+pendingParallelRequests+" admittedParallelRequests:"+admittedParallelRequests+" write failure : "+err+"\n");
+      } else {
+        console.log("Cache file/single "+wfpath+"  asobject:"+asobject+" pendingParallelRequests:"+pendingParallelRequests+" admittedParallelRequests:"+admittedParallelRequests+" written successfully\n");
+      }
+      delete pendingObjects[word];
+    });
+
     pendingParallelRequests--;
     admittedParallelRequests--;
     if (pendingParallelRequests && !(pendingParallelRequests%1000)) {
       console.log("--pendingParallelRequests:"+pendingParallelRequests+" admittedParallelRequests:"+admittedParallelRequests);
     }
+
   }
 
 }
