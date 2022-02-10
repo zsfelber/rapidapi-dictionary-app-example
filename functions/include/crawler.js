@@ -14,6 +14,7 @@ let MAX_WORDS;
 let MAX_NODE_FREQUENCY;
 let TRAVERSE_ALL;
 let download, curtime, turntime;
+let TWELVE;
 
 let cacheInitializerCommon;
 let cacheIsInitialized = false;
@@ -95,6 +96,7 @@ export async function initCrawler(
   MAX_WORDS = _MAX_WORDS;
   MAX_NODE_FREQUENCY = _MAX_NODE_FREQUENCY;
   TRAVERSE_ALL = _TRAVERSE_ALL;
+  TWELVE = (CACHE_DIR+"/words/").length;
 
   switch (_API) {
     case "google":
@@ -775,7 +777,7 @@ export function loadCommon10000_words(word, asobject) {
 export async function loadAll_words(word0, asobject) {
   let allwords0 = [];
   function onFile(strPath, stat) {
-    let word = strPath.substring(12);
+    let word = strPath.substring(TWELVE);
     allwords0.push(word);
   }
   await finder.findFiles(`${CACHE_DIR}/words`, 0, onFile);
@@ -817,7 +819,7 @@ export async function wordsByFrequency(word0, ffrom, fto=1000000, asobject) {
 export async function generateIndexes() {
   let files = [];
   async function onFile(strPath, stat) {
-    let word = strPath.substring(12);
+    let word = strPath.substring(TWELVE);
     files.push(word);
   }
   let nowords = await finder.findFiles(`${CACHE_DIR}/words`, 0, onFile);
