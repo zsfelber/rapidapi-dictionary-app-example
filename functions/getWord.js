@@ -15,16 +15,16 @@ export async function handler(event, context) {
   const letter = event.queryStringParameters.letter || "";
   const ffrom = event.queryStringParameters.ffrom || 0;
   const fto = event.queryStringParameters.fto || 100;
-  const apis = event.queryStringParameters.apis || "";
+  let apis = event.queryStringParameters.apis || "";
 
   if (apis) {
     try {
       apis = apis.split("-");
-      let data = {results:[]};
+      let data = {results:[], pronunciation:{}};
 
       for (let api of apis) {
         let stopiterateapis={stop:0};
-        let ad = get(api, word, mode, letter, ffrom, fto, stopiterateapis);
+        let ad = await get(api, word, mode, letter, ffrom, fto, stopiterateapis);
 
         if (!data.word) {
           data.word = ad.word;
@@ -37,7 +37,7 @@ export async function handler(event, context) {
         if (stopiterateapis.stop) break;
       }
 
-      json = JSON.stringify(data);
+      let json = JSON.stringify(data);
 
       if (!json) {
         json = "{}";
@@ -173,4 +173,5 @@ export async function get(api, word, mode, letter, ffrom, fto, stopiterateapis) 
       data = await crawler.loadSingleWord(word, true);
       break;
   }
+  return data;
 }
