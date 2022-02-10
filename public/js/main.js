@@ -757,9 +757,13 @@ $(document).ready(function(){
                     mode = "dictionary";
                 }
             }
+            let apis=[];
+            if (isch("WORDSAPI")) apis.push("wordsapi");
+            if (isch("GOOGLE")) apis.push("google");
             qs.push(`mode=${mode}`);
             qs.push(`ffrom=${urlffrom}`);
             qs.push(`fto=${urlfto}`);
+            qs.push(`apis=${apis.join("-")}`);
 
             const data0 = await fetch(`/.netlify/functions/getWord?${qs.join("&")}`, { mode: 'cors'});
             // asynchronously calls our custome function

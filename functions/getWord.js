@@ -19,10 +19,12 @@ export async function handler(event, context) {
 
   if (apis) {
     try {
+      apis = apis.split("-");
       let data = {results:[]};
 
       for (let api of apis) {
-        let ad = get(api, word, mode, letter, ffrom, fto);
+        let stopiterateapis={stop:0};
+        let ad = get(api, word, mode, letter, ffrom, fto, stopiterateapis);
 
         if (!data.word) {
           data.word = ad.word;
@@ -32,6 +34,7 @@ export async function handler(event, context) {
         }
         data.pronunciation = Object.assign(data.pronunciation, ad.pronunciation);
         data.results.push.apply(data.results, ad.results);
+        if (stopiterateapis.stop) break;
       }
 
       json = JSON.stringify(data);
@@ -55,7 +58,7 @@ export async function handler(event, context) {
   }
 }
 
-export async function get(api, word, mode, letter, ffrom, fto) {
+export async function get(api, word, mode, letter, ffrom, fto, stopiterateapis) {
 
   switch (mode) {
     case "dictionary":
@@ -132,26 +135,31 @@ export async function get(api, word, mode, letter, ffrom, fto) {
       break;
     case "most_common_3000_words":
       console.log("most_common_3000_words");
+      stopiterateapis.stop = 1;
 
       data = await crawler.loadCommon3000_words(word, true);
       break;
     case "most_common_10000_words":
       console.log("most_common_10000_words");
+      stopiterateapis.stop = 1;
 
       data = await crawler.loadCommon10000_words(word, true);
       break;
     case "all_words":
       console.log("all_words");
+      stopiterateapis.stop = 1;
 
       data = await crawler.loadAll_words(word, true);
       break;
     case "my_words":
       console.log("my_words");
+      stopiterateapis.stop = 1;
 
       data = await crawler.loadMyWords(word, true);
       break;
     case "words_by_frequency":
       console.log("words_by_frequency:" + ffrom + ".." + fto);
+      stopiterateapis.stop = 1;
 
       data = await crawler.wordsByFrequency(word, Number(ffrom), Number(fto), true);
       break;
