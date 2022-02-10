@@ -49,18 +49,21 @@ var checkboxdata = {
     },
     "bucket5": {
         "usage of": { defchecked: false },
+        "abbreviation": { defchecked: true },
         "adjective": { defchecked: true },
         "adverb": { defchecked: true },
         "conjunction": { defchecked: true },
         "determiner": { defchecked: true },
         "noun": { defchecked: true },
-        "participle": { defchecked: true },
     },
     "bucket55": {
         "has usages": { defchecked: false },
+        "participle": { defchecked: true },
+        "prefix": { defchecked: true },
         "preposition": { defchecked: true },
         "pronoun": { defchecked: true },
         "suffix": { defchecked: true },
+        "symbol": { defchecked: true },
         "verb": { defchecked: true },
     },
     "bucket6": {

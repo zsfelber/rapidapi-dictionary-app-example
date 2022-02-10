@@ -1,19 +1,34 @@
-const axios = require('axios');
-const fs = require('fs');
+//const axios = require('axios');
+//const fs = require('fs');
+const fetch = require('node-fetch');
+const https = require('https');
+const httpsAgent = new https.Agent({ keepAlive: true });
 
 
 exports.wordsApiDictionary = async function(word) {
+    let url = `https://wordsapiv1.p.rapidapi.com/words/${word}`;
 
     // send request to the WordsAPI
-    const response = await axios({
+    /*const response = await axios({
         "method":"GET",
-        "url":`https://wordsapiv1.p.rapidapi.com/words/${word}`,
+        url,
         "headers":{
         "content-type":"application/octet-stream",
         "x-rapidapi-host":"wordsapiv1.p.rapidapi.com",
         "x-rapidapi-key":process.env.RAPIDAPI_KEY
         }
-      });
-  
+      });*/
+    let f = await fetch;
+    f = f.default;
+    let response = await f(url, {
+      agent: httpsAgent,
+      "method":"GET",
+      headers: new fetch.Headers({
+        "content-type":"application/octet-stream",
+        "x-rapidapi-host":"wordsapiv1.p.rapidapi.com",
+        "x-rapidapi-key":process.env.RAPIDAPI_KEY
+      })
+    });
+    
     return response.data;
 };
