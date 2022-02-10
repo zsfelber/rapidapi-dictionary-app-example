@@ -88,20 +88,18 @@ var checkboxdata = {
     },
 };
 
-async function fetchWord(word, mode) {
-    var qs=[`word=${word}`];
+async function fetchWord(word, mode, qs=[]) {
     let apis=[];
     if (isch("WORDSAPI")) apis.push("wordsapi");
     if (isch("GOOGLE")) apis.push("google");
+    qs.push(`word=${word}`);
     qs.push(`mode=${mode}`);
-    qs.push(`ffrom=${urlffrom}`);
-    qs.push(`fto=${urlfto}`);
     qs.push(`apis=${apis.join("-")}`);
 
     const data0 = await fetch(`/.netlify/functions/getWord?${qs.join("&")}`, { mode: 'cors'});
     // asynchronously calls our custome function
     const data = await data0.json();
-
+    return data;
 }
 
 
@@ -300,7 +298,7 @@ function createa(word0, masterword, extraarg="") {
     a.onmouseover = selectElementContents.bind(a, a);
     word0 = tmp.innerText;
     const word = word0.replace(/[^a-zA-Z0-9\- ]/g, "");
-    a.href = ":showPopup('"+word+extraarg+"')";
+    a.href = "javascript:showPopup('"+word+extraarg+"')";
     if (masterword==word) {
         a.classList.add('master');
     } else {
@@ -406,7 +404,7 @@ async function showPopup(word) {
     const mode = "minimal_cluster";
     const data = await fetchWord(word, mode);
 
-    appendPopupCluster(data, $(".modal-content")[0]);
+    appendPopupCluster(data, $("#modal-word-info")[0]);
 
     $('#myModal').modal('show');
 
@@ -826,7 +824,11 @@ $(document).ready(function(){
                 }
             }
         
-            const data = await fetchWord(word, mode);
+            const qs = [];
+            qs.push(`ffrom=${urlffrom}`);
+            qs.push(`fto=${urlfto}`);
+        
+            const data = await fetchWord(word, mode, qs);
 
             lastmode = mode;
             lastresult = data;
