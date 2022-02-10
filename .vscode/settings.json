@@ -1,7 +1,7 @@
 {
     "git.ignoreLimitWarning": true,
     "files.exclude": {
-        "cache/words/**": true,
+        "cache/wordsapi/words/**": true,
         "cache/google/words/**": true,
     }
 }
