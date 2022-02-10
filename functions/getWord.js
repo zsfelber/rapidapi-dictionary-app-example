@@ -72,7 +72,7 @@ export async function handler(event, context) {
 
 export async function get(api, word, mode, letter, ffrom, fto, stopiterateapis) {
 
-  const crawler = require('./include/crawler.js');
+  const crawler = require('./include/crawler.js').aCrawler();
 
   switch (mode) {
     case "dictionary":
