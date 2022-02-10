@@ -104,8 +104,8 @@ export async function initCrawler(
   if (!fs.existsSync(`${CACHE_DIR}/clusters`)){
     fs.mkdirSync(`${CACHE_DIR}/clusters`);
   }
-  if (!fs.existsSync(`${CACHE_DIR}/index`)){
-    fs.mkdirSync(`${CACHE_DIR}/index`);
+  if (!fs.existsSync(`cache/index`)){
+    fs.mkdirSync(`cache/index`);
   }
 
   curtime = new Date();
@@ -780,7 +780,7 @@ export function loadMyWords(word, asobject) {
 
 export async function wordsByFrequency(word0, ffrom, fto=1000000, asobject) {
   let files = [];
-  const indpath = `${CACHE_DIR}/index/frequency`;
+  const indpath = `cache/index/frequency`;
 
   let ijson = fs.readFileSync(indpath);
   let find = JSON.parse(ijson);
