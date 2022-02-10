@@ -288,19 +288,14 @@ function selectElementContents(el) {
 
 let poidx=0;
 function createa(word0, masterword, extraarg="") {
-    //https://getbootstrap.com/docs/5.1/components/modal/#live-demo
-    //https://www.tutorialrepublic.com/codelab.php?topic=bootstrap&file=modal-with-remote-url
-    //<!-- Button HTML (to Trigger Modal) -->
-    //<a href="/examples/bootstrap/remote.php" 
-    //    class="btn btn-lg btn-primary" data-toggle="modal" 
-    //    data-target="#myModal">Launch Demo Modal</a>
+
     const a = document.createElement('a');
     const tmp = $("<div>"+word0+"</div>")[0];
     a.onmouseover = selectElementContents.bind(a, a);
     word0 = tmp.innerText;
     const word = word0.replace(/[^a-zA-Z0-9\- ]/g, "");
-    //a.href = "javascript:showPopup('"+word+extraarg+"')";
     a.id =     'popsiover'+poidx++;
+    a.modalMode = 'examples';
     a.classList.add('popsiover');
     if (masterword==word) {
         a.classList.add('master');
@@ -359,7 +354,7 @@ function labelled(label, value) {
     return dl;
 }
 
-function proplabel(property, masterword, parselabel=false, linksIdxLabFrom=0, linksIdxValTo=9999999, prefix="") {
+function proplabel(property, masterword, parselabel=false, linksIdxLabFrom=0, linksIdxValTo=9999999, prefix="",comma=", ") {
     if (!property.value || (Array.isArray(property.value)&&!property.value.length)) {
         return null;
     }
@@ -370,7 +365,7 @@ function proplabel(property, masterword, parselabel=false, linksIdxLabFrom=0, li
     const value = document.createElement('dd');
 
     if (parselabel) {
-        createas(label, property.label, masterword, ", ", linksIdxLabFrom);
+        createas(label, property.label, masterword, comma, linksIdxLabFrom);
     } else {
         label.innerText = prefix + property.label;
     }
@@ -412,33 +407,54 @@ function printLabel(data) {
 
 }
 
-let modalMode = "examples";
-async function showPopup(word,mm) {
-    if (mm!==undefined) modalMode=mm;
+async function go(id, x) {
+    let q=$(id);
+    q[0].word
+}
 
+async function showPopup(id, x) {
+    let q=$(id);
+    q[0].modalMode=x;
+    q[0].loaded=null;
+    q.popover('show');
+}
+
+async function fetchPopup(a0) {
+    let id = $(a0).attr("id");
+    let word = a0.word;
     const mode = "minimal_cluster";
     const data = await fetchWord(word, mode);
 
     let q=$('<div class="popover-body"></div>');
     let def = q[0];
-    //$("#modal-word-info").html("");
-    //let def = $("#modal-word-info")[0];
 
-    appendPopupCluster(data, def, modalMode);
+    appendPopupCluster(data, def, a0.modalMode);
 
 
     let a = document.createElement("a");
-    if (modalMode === "examples") {
-        a.href = "javascript:showPopup('"+word+"', '')";
+    if (a0.modalMode === "examples") {
+        a.href = `javascript:showPopup('#${id}','light')`;
         a.innerText = "--More--";
     } else {
-        a.href = "javascript:showPopup('"+word+"', 'examples')";
+        a.href = `javascript:showPopup('#${id}','examples')`;
         a.innerText = "--Less--";
     }
     def.appendChild(a);
 
+    def.appendChild(document.createTextNode("\u00A0\u00A0\u00A0"));
 
-    //$('#myModal').modal('show');
+    let a2 = document.createElement("a");
+    a2.href = `javascript:go('#${id}')`;
+    a2.innerText = "--Nav--";
+    def.appendChild(a2);
+
+    def.appendChild(document.createTextNode("\u00A0\u00A0\u00A0"));
+
+    let a3 = document.createElement("a");
+    a3.href = `javascript:$('#${id}').popover('hide')`;
+    a3.innerText = "--Hide--";
+    def.appendChild(a3);
+
     return def;
 
 }
@@ -534,11 +550,20 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode) {
             if (val.examples && val.examples.length) {
                 createaas(wordInfoTbl, val.examples, ", ");
             }
-
         } else {
-            if (itms++%100==99) {
-                newrow(wordInfoTbl);
-                newbox("list-item-lg");
+            let  cmp,comma;
+            if (modalMode === "light") {
+
+                cmp = $("<div class='smallf'></div>")[0];
+                wordInfoTbl.appendChild(cmp);
+                comma="";
+            } else {
+                if (itms++%100==99) {
+                    newrow(wordInfoTbl);
+                    newbox("list-item-lg");
+                }
+                cmp = wordInfoBox;
+
             }
 
             const prearray = val.level||val.partOfSpeech?["("+(val.level?val.level+" ":"")+val.partOfSpeech+")"]:[];
@@ -547,10 +572,10 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode) {
                 value:val.similar.concat([val.definition])
             };
     
-            const def = proplabel(property, withmainword?data.word:val.word, true, prearray.length, val.similar.length);
+            const def = proplabel(property, withmainword?data.word:val.word, true, prearray.length, val.similar.length, "", comma);
             if (def) {
                 def.classList.add('definition');
-                wordInfoBox.appendChild(def);
+                cmp.appendChild(def);
             }
     
             let b = document.createElement("b");

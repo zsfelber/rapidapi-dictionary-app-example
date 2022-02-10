@@ -4,8 +4,11 @@ function initpop() {
 
 $("[data-toggle=popover]").popover({
     html : true,
+    // !
+    // https://stackoverflow.com/questions/20299246/bootstrap-popover-how-add-link-in-text-popover
+    sanitize: false,
     trigger: 'click',
-    placement:"bottom",
+    placement:'auto',
     template:`<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>`,
     content: function() {
         if (this.loaded) {
@@ -16,15 +19,12 @@ $("[data-toggle=popover]").popover({
             let id = $(this).attr("id");
 
             console.log("show:"+id);
-            showPopup(this.word).then((def)=>{
-                //let q = `<div class="popover-body">
-                //    content:${content} Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis libero ipsum, imperdiet
-                //</div>`;
+            fetchPopup(this).then((def)=>{
                 let elem = $(def);
                 this.loaded = elem;
                 console.log("loaded:"+id);
                 //console.log(this.loaded.html());
-                $('#'+id).popover('show');
+                $(this).popover('show');
             });
             return "<div>Loading...</div>";
         }

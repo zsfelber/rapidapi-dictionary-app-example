@@ -214,3 +214,15 @@ a:hover.none {
 .popsiover {
     
 }
+
+.smallf {
+    font-size: 1rem;
+}
+.smallf a {
+    font-size: 0.95rem;
+    display: inline;
+}
+
+.smallf dt i {
+    font-size: 0.95rem;
+}
