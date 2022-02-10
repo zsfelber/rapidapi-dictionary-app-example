@@ -6,12 +6,12 @@ const API_LIMIT_EXCEPTION = {
   apiLimitException:1
 };
 
-const CACHE_DIR = "cache/google";
 const download = require('./googletransapi/google_dict').googleDictionary;
 //const download = require('./wordsapi/wordapi_dict').wordsApiDictionary;
 
 const TURNING_TIME_GMT = [20,55];
 const MAX_PARALLEL = 20;
+let CACHE_DIR = "cache/google";
 let API_DAILY_LIMIT;
 let MAX_WORDS;
 let MAX_NODE_FREQUENCY;
@@ -86,12 +86,14 @@ export function isApiLimitReached(pendingBeforeRequest=0) {
 }
 
 export async function initCrawler(
+  _CACHE_DIR,
   _API_DAILY_LIMIT,
   _MAX_WORDS,
   _MAX_NODE_FREQUENCY,
   _TRAVERSE_ALL
   ) {
 
+  CACHE_DIR = _CACHE_DIR;
   API_DAILY_LIMIT = _API_DAILY_LIMIT;
   MAX_WORDS = _MAX_WORDS;
   MAX_NODE_FREQUENCY = _MAX_NODE_FREQUENCY;

@@ -26,6 +26,8 @@ var checkboxdata = {
         "similar to": { defchecked: true },
         "synonyms": { defchecked: true },
         "verb group": { defchecked: false },
+        "WORDSAPI": { defchecked: true },
+        "GOOGLE": { defchecked: true },
     },
     "bucket3": {
         "in category": { defchecked: false },
