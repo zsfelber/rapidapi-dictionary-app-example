@@ -1,3 +1,6 @@
+var currentpop;
+var currentpopword;
+
 function initpop() {
 
 // https://getbootstrap.com/docs/4.0/components/popovers/
@@ -12,7 +15,6 @@ $("[data-toggle=popover]").popover({
     template:`<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>`,
     content: function() {
         if (altdown) return null;
-        speak(this.word);
 
         let id = $(this).attr("id");
         $(`[data-toggle=popover]:not(#${id})`).popover("hide");
@@ -22,6 +24,12 @@ $("[data-toggle=popover]").popover({
             this.loadedtmp = null;
             return x;
         } else         if (this.loaded) {
+            currentpop = this;
+            currentpopword = this.word;
+            if (!this.which) this.which=1;
+            speak(this.word, this.which);
+            this.which = 3-this.which;
+
             let x = this.loaded.html();
             return x;
         } else {

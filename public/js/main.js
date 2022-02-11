@@ -455,6 +455,14 @@ async function showPopup(id, x) {
     q[0].loaded=null;
     q.popover('show');
 }
+function hidePopup(a) {
+    let q;
+    if (typeof a=="string") q=$(`#${a}`);
+    else q=$(a);
+    q.popover('hide');
+    speak(currentpopword, q[0].which);
+    currentpopword=null;
+}
 async function replacePopup(word, origin, id, modal) {
     let q=$(id);
     let oq=$(origin);
@@ -497,7 +505,7 @@ async function fetchPopup(a, in_orig=1, modal, origin) {
             aha(`showPopup('#${id}','examples')`,"--Less--");
         }
         aha(`go('#${id}')`,"--Nav--");
-        aha(`$('#${id}').popover('hide')`,"--Hide--");
+        aha(`hidePopup('${id}')`,"--Hide--");
     } else {
         aha(`showPopup('${origin}','${modal}')`,"--Back--");
         if (modal === "examples") {
@@ -506,7 +514,7 @@ async function fetchPopup(a, in_orig=1, modal, origin) {
             aha(`replacePopup('${word}','${origin}','${id}', 'examples')`,"--Less--");
         }
         aha(`go('#${id}')`,"--Nav--");
-        aha(`$('${origin}').popover('hide')`,"--Hide--");
+        aha(`hidePopup('${origin}')`,"--Hide--");
     }
 
 
@@ -834,6 +842,7 @@ $(document).keydown(function(evt) {
     }
     if (isEscape) {
         $("[data-toggle=popover]").popover("hide");
+        hidePopup(currentpop);
     }
 });
 $(document).keyup(function(evt) {
@@ -847,6 +856,12 @@ $(document).keypress(async function(e){
         let s = JSON.stringify(collected, null, 2)
         console.log(s);
         await navigator.clipboard.writeText(s);
+    }
+    if (e.code==='Space') {
+        if (currentpopword) {
+            speak(currentpopword, currentpop.which);
+            e.preventDefault();
+        }
     }
 });
 
