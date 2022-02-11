@@ -155,25 +155,24 @@
         </div>
 
 
-    <!-- button popover  -->
-    <div class="popover-block-container">
-    <a tabindex="0" type="button"  
-        data-popover-content="#unique-id" data-toggle="popover" 
-        data-placement="right">
-      kutya
-    </a>
-    <div id="unique-id" style="display:none;">
-      <div class="popover-body">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis libero ipsum, imperdiet
-      </div>
-    </div>
-    </div>
     
     </div>
 
-    <a href="chrome://extensions/" target="_blank">EXTs</a>
-    <a href="chrome://extensions/?id=aggiiclaiamajehmlfpkjmlbadmkledi/" target="_blank">EXT options</a>
-    
+    <form id="speech">
+        <div>
+          <label for="rate">Rate</label><input type="range" min="0.5" max="2" value="1" step="0.1" id="rate">
+          <div class="rate-value">1</div>
+          <div class="clearfix"></div>
+        </div>
+        <div>
+          <label for="pitch">Pitch</label><input type="range" min="0" max="2" value="1" step="0.1" id="pitch">
+          <div class="pitch-value">1</div>
+          <div class="clearfix"></div>
+        </div>
+        <select id="synthetizers">
+      
+        </select>
+    </form>
 
 
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
@@ -186,6 +185,7 @@
 
     <!-- import our javascript file -->
     <script src="popover/popover.js"></script>
+    <script src="speak/synth.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

@@ -11,6 +11,9 @@ $("[data-toggle=popover]").popover({
     placement:'auto',
     template:`<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>`,
     content: function() {
+        if (altdown) return null;
+        speak(this.word);
+
         let id = $(this).attr("id");
         $(`[data-toggle=popover]:not(#${id})`).popover("hide");
 

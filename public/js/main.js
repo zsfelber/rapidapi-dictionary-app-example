@@ -822,9 +822,11 @@ function update(firsttime) {
 }
 
 let curword, collected = {};
+var altdown;
 $(document).keydown(function(evt) {
     evt = evt || window.event;
     var isEscape = false;
+    altdown = !!evt.altKey;
     if ("key" in evt) {
         isEscape = (evt.key === "Escape" || evt.key === "Esc");
     } else {
@@ -833,6 +835,9 @@ $(document).keydown(function(evt) {
     if (isEscape) {
         $("[data-toggle=popover]").popover("hide");
     }
+});
+$(document).keyup(function(evt) {
+    altdown = 0;
 });
 $(document).keypress(async function(e){
     console.log(` code:${e.code} curword:${curword}`);
@@ -953,6 +958,8 @@ $(document).ready(function(){
       //$('.form-check-input').change(function(){
     //    $(this).text() 
     //});
+
+    initSpeak();
     
     async function dosubmit(word) {
 
