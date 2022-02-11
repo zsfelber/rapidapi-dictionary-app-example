@@ -27,7 +27,7 @@ $secondary-color: #04a0b2;
       display: none;
   }
   .popover {
-    max-width: 400px;
+    max-width: 500px;
     max-height: 500px;
     overflow-y: auto;
     overflow-x: hidden;

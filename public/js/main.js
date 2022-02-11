@@ -319,7 +319,7 @@ function selectElementContents(el) {
 }
 
 let poidx=0;
-function createa(word0, masterword, extraarg="", origin) {
+function createa(word0, masterword, extraarg="", apostr="", origin) {
 
     const a = document.createElement('a');
     const tmp = $("<div>"+word0+"</div>")[0];
@@ -349,7 +349,7 @@ function createa(word0, masterword, extraarg="", origin) {
         a.href = "javascript:replacePopup('"+a.word+"','#"+origin+"','#"+a.id+"')"
     }
 
-    a.innerHTML = tmp.innerHTML;
+    a.innerHTML = apostr+tmp.innerHTML+apostr;
     return a;
 }
 function createi(word) {
@@ -357,10 +357,10 @@ function createi(word) {
     i.innerText = word;
     return i;
 }
-function createas(cont, words, masterword, sep, linksIdxFrom=0, linksIdxTo=999999999, origin) {
+function createas(cont, words, masterword, sep, apostr="", linksIdxFrom=0, linksIdxTo=999999999, origin) {
     let index=0;
     if (words) words.forEach(word => {
-        const a = (linksIdxFrom<=index&&index<linksIdxTo) ? createa(word, masterword, "", origin) : createi(word);
+        const a = (linksIdxFrom<=index&&index<linksIdxTo) ? createa(word, masterword, "", apostr, origin) : createi(word);
         const sp = document.createTextNode(sep);
 
         cont.appendChild(a);
@@ -371,7 +371,7 @@ function createas(cont, words, masterword, sep, linksIdxFrom=0, linksIdxTo=99999
 function createaas(cont, sentences, sep, origin) {
     sentences.forEach(txt => {
         var words = txt.split(" ");
-        createas(cont, words, null, " ", 0, 10000, origin);
+        createas(cont, words, null, " ", "", 0, 10000, origin);
         const sp = document.createTextNode(sep);
         cont.appendChild(sp);
     });
@@ -391,7 +391,7 @@ function labelled(label, value) {
     return dl;
 }
 
-function proplabel(property, masterword, parselabel=false, linksIdxLabFrom=0, linksIdxValTo=9999999, prefix="",comma=", ", origin) {
+function proplabel(property, masterword, parselabel=false, linksIdxLabFrom=0, linksIdxValTo=9999999, prefix="",comma=", ",apostr="", origin) {
     if (!property.value || (Array.isArray(property.value)&&!property.value.length)) {
         return null;
     }
@@ -402,7 +402,7 @@ function proplabel(property, masterword, parselabel=false, linksIdxLabFrom=0, li
     const value = document.createElement('dd');
 
     if (parselabel) {
-        createas(label, property.label, masterword, comma, linksIdxLabFrom, 100000, origin);
+        createas(label, property.label, masterword, comma, apostr, linksIdxLabFrom, 100000, origin);
     } else {
         label.innerText = prefix + property.label;
     }
@@ -411,7 +411,7 @@ function proplabel(property, masterword, parselabel=false, linksIdxLabFrom=0, li
         createaas(value, property.value, ", ", origin);
     } else {
         let normal = property.value.slice(0, linksIdxValTo);
-        createas(value, normal, null, ", ", 0, 100000, origin);
+        createas(value, normal, null, ", ", "", 0, 100000, origin);
 
         let remainder = property.value.slice(linksIdxValTo, property.value.length);
         createaas(value, remainder, ", ", origin);
@@ -606,12 +606,13 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
                 createaas(wordInfoTbl, val.examples, ", ", origin);
             }
         } else {
-            let  cmp,comma;
+            let  cmp,comma,apostr;
             if (modalMode === "light") {
 
                 cmp = $("<div class='smallf'></div>")[0];
                 wordInfoTbl.appendChild(cmp);
-                comma=":";
+                comma="";
+                apostr="'";
             } else {
                 if (itms++%100==99) {
                     newrow(wordInfoTbl);
@@ -627,7 +628,7 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
                 value:val.similar.concat([val.definition])
             };
     
-            const def = proplabel(property, withmainword?data.word:val.word, true, prearray.length, val.similar.length, "", comma, origin);
+            const def = proplabel(property, withmainword?data.word:val.word, true, prearray.length, val.similar.length, "", comma, apostr, origin);
             if (def) {
                 def.classList.add('definition');
                 cmp.appendChild(def);
