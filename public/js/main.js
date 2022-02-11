@@ -863,13 +863,6 @@ $(document).ready(function(){
         return decodeURI(results[1]).replace(/\+/g," ") || nothing;
     }
 
-    let e = isElectron(),data;
-    console.log("isElectron:"+e);
-    if (e) {
-        let ext = window.api.loadExt({});
-        console.log("loadExt:", ext);
-    }
-
     // creates a variable that represents our
     // word info container
     wordInfoTbl = document.querySelector('#word-info');

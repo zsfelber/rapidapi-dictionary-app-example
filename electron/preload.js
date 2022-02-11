@@ -8,7 +8,6 @@ console.log("preload...");
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('api', {
-    service: data => ipcRenderer.invoke("service", data),
-    loadExt: data => ipcRenderer.invoke("loadExt", data)
+    service: data => ipcRenderer.invoke("service", data)
 });
 
