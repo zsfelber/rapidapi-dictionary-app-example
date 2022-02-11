@@ -1,5 +1,7 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
+
+const hub = require("../localserver/hub");
 
 const loadMainWindow = () => {
     const mainWindow = new BrowserWindow({
@@ -25,5 +27,10 @@ app.on("activate", () => {
     }
 });
 
+ipcMain.handle('service', (event, note) => {
+    console.log("electron.invoke ", note);
+    let promise = hub.invoke(node.id, node.qs);
+    return promise;
+});
 
 
