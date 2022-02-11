@@ -5,6 +5,13 @@ function initpop() {
 
 // https://getbootstrap.com/docs/4.0/components/popovers/
 
+$("[data-toggle=popover]").click(function(){
+        if (!this.which) this.which=1;
+        speak(this.word, this.which);
+        this.which = 3-this.which;
+    
+});
+
 $("[data-toggle=popover]").popover({
     html : true,
     // !
@@ -26,9 +33,6 @@ $("[data-toggle=popover]").popover({
         } else         if (this.loaded) {
             currentpop = this;
             currentpopword = this.word;
-            if (!this.which) this.which=1;
-            speak(this.word, this.which);
-            this.which = 3-this.which;
 
             let x = this.loaded.html();
             return x;

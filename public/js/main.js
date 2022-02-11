@@ -460,8 +460,19 @@ function hidePopup(a) {
     if (typeof a=="string") q=$(`#${a}`);
     else q=$(a);
     q.popover('hide');
-    speak(currentpopword, q[0].which);
     currentpopword=null;
+}
+function selectAll(a) {
+    let q=$(`#${a} .pg`);
+    let el = q[0];
+
+    var range = document.createRange();
+    range.selectNodeContents(el);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    curword = el.innerText;
+    $(el).trigger("mouseup");
 }
 async function replacePopup(word, origin, id, modal) {
     let q=$(id);
@@ -484,8 +495,10 @@ async function fetchPopup(a, in_orig=1, modal, origin) {
     const mode = "minimal_cluster";
     const data = await fetchWord(word, mode);
 
-    let q=$('<div class="popover-body"></div>');
-    let def = q[0];
+    let q=$(`<div id="p${id}" class="popover-body"></div>`);
+    let q1=$(`<p class="pg"></p>`);
+    let def = q1[0];
+    q[0].appendChild(def);
 
     appendPopupCluster(data, def, modal, id);
 
@@ -493,8 +506,8 @@ async function fetchPopup(a, in_orig=1, modal, origin) {
         let a2 = document.createElement("a");
         a2.href = `javascript:${fun}`;
         a2.innerText = label;
-        def.appendChild(a2);
-        def.appendChild(document.createTextNode("\u00A0\u00A0\u00A0"));
+        q[0].appendChild(a2);
+        q[0].appendChild(document.createTextNode("\u00A0\u00A0\u00A0"));
     }
 
     if (in_orig) {
@@ -506,6 +519,7 @@ async function fetchPopup(a, in_orig=1, modal, origin) {
         }
         aha(`go('#${id}')`,"--Nav--");
         aha(`hidePopup('${id}')`,"--Hide--");
+        aha(`selectAll('p${id}')`,"--select all--");
     } else {
         aha(`showPopup('${origin}','${modal}')`,"--Back--");
         if (modal === "examples") {
@@ -515,10 +529,11 @@ async function fetchPopup(a, in_orig=1, modal, origin) {
         }
         aha(`go('#${id}')`,"--Nav--");
         aha(`hidePopup('${origin}')`,"--Hide--");
+        aha(`selectAll('p${id}')`,"--select all--");
     }
 
 
-    return def;
+    return q[0];
 
 }
 

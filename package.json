@@ -23,7 +23,8 @@
     "lodash": "^4.17.20",
     "netlify-lambda": "^1.6.3",
     "node-fetch": "^2.6.0",
-    "node-find-files": "^1.0.0"
+    "node-find-files": "^1.0.0",
+    "simpletts": "^2.5.0"
   },
   "devDependencies": {
     "electron": "^17.0.0"
