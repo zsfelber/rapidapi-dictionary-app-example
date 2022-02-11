@@ -1,5 +1,6 @@
 
 const crawler = require('./include/crawler').aCrawler();
+const service = require("./include/service");
 
 const API_DAILY_LIMIT = 25000;
 const MAX_WORDS = 10000000;
@@ -16,7 +17,7 @@ export async function handler(event, context) {
     TRAVERSE_ALL
     );
 
-  try {
+  service.respond(async () => {
 
     console.log("crawling in the background starting from random words...");
 
@@ -67,17 +68,7 @@ export async function handler(event, context) {
 
 
     console.log("Completed  Travesred:"+tresult.noWords+" written:"+tresult.newWords);
+    return {result:true};
+  });
 
-    return {
-      statusCode: 200,
-      body: "{}",
-      headers: {
-        'Access-Control-Allow-Origin': '*'
-      }
-    }
-
-  } catch (err) {
-    console.log(err)
-    return { statusCode: 500, body: err.toString() }
-  }
 }

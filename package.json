@@ -2,24 +2,28 @@
   "name": "dictionary_app_remake",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "electron/start.js",
   "scripts": {
     "lambda-serve": "netlify-lambda serve functions",
     "lambda-build": "netlify-lambda build functions --config ./webpack.config.dev.js",
     "debug": "netlify dev",
     "test": "echo \"Error: no test specified\" && exit 1",
     "install-ncli": "npm install -g netlify-cli",
-    "install-pre": "npm install"
+    "install-pre": "npm install",
+    "estart" : "electron ."
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.19.2",
-    "netlify-lambda": "^1.6.3",
-    "node-find-files": "^1.0.0",
     "jsdom": "^15.2.1",
     "lodash": "^4.17.20",
-    "node-fetch": "^2.6.0"
+    "netlify-lambda": "^1.6.3",
+    "node-fetch": "^2.6.0",
+    "node-find-files": "^1.0.0"
+  },
+  "devDependencies": {
+    "electron": "^17.0.0"
   }
 }

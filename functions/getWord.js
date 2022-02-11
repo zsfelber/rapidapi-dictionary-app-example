@@ -1,10 +1,11 @@
 
-const API_DAILY_LIMIT = {wordsapi:25000, google:100000000};
+const API_DAILY_LIMIT = { wordsapi: 25000, google: 100000000 };
 const MAX_WORDS = 50;
 const MAX_NODE_FREQUENCY = 4;
 const TRAVERSE_ALL = false;
 const MAX_LEVEL_MINCL = 2;
 
+const service = require("./include/service");
 
 
 export async function handler(event, context) {
@@ -17,8 +18,9 @@ export async function handler(event, context) {
   const fto = event.queryStringParameters.fto || 100;
   let apis = event.queryStringParameters.apis || "";
 
-  if (apis) {
-    try {
+  service.respond(async () => {
+    if (apis) {
+
       apis = apis.split("-");
       let data = { results: [], pronunciation: {} };
 
@@ -51,25 +53,9 @@ export async function handler(event, context) {
 
       if (mode === "dictionary" && stopiterateapis.crawler) data = stopiterateapis.crawler.singleWordToDisplay(data);
 
-      let json = JSON.stringify(data);
-
-      if (!json) {
-        json = "{}";
-      }
-
-      return {
-        statusCode: 200,
-        body: json,
-        headers: {
-          'Access-Control-Allow-Origin': '*'
-        }
-      }
-
-    } catch (err) {
-      console.log(err)
-      return { statusCode: 500, body: err.toString() }
+      return data;
     }
-  }
+  });
 }
 
 export async function get(api, word, mode, letter, ffrom, fto, stopiterateapis) {
@@ -109,7 +95,7 @@ export async function get(api, word, mode, letter, ffrom, fto, stopiterateapis) 
   }
 
   let data;
-  console.log(mode+":" + word+":" + ffrom + ".." + fto);
+  console.log(mode + ":" + word + ":" + ffrom + ".." + fto);
 
   switch (mode) {
     case "most_common_3000_a-e":
