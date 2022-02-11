@@ -38,11 +38,11 @@ const { session } = require('electron')
 
 ipcMain.handle('loadExt', (event, note) => {
     console.log("electron.loadExt ", note);
-    let promise = session.defaultSession.loadExtension(path.join(__dirname,"TransOver")).then(({ id }) => {
+    /*let promise = session.defaultSession.loadExtension(path.join(__dirname,"TransOver")).then(({ id }) => {
         console.log("TransOver loaded:"+id);
       // ...
     });
-    return promise;
+    return promise;*/
 });
 
 

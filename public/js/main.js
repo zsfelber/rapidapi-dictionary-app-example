@@ -339,6 +339,7 @@ function createa(word0, masterword, extraarg="", origin) {
     }
 
     // it does the trick
+    a.setAttribute("id",a.id);
     a.setAttribute("tabindex","0");
     a.setAttribute("type","button");
 
@@ -453,11 +454,11 @@ async function showPopup(id, x) {
     q[0].loaded=null;
     q.popover('show');
 }
-async function replacePopup(word, origin, id) {
+async function replacePopup(word, origin, id, modal) {
     let q=$(id);
     let oq=$(origin);
 
-    fetchPopup(q[0], false, oq[0].modalMode, origin).then((def)=>{
+    fetchPopup(q[0], false, modal?modal:oq[0].modalMode, origin).then((def)=>{
         let elem = $(def);
         oq[0].loadedtmp = elem;
         console.log("navigated in:"+origin+" to:"+id);
@@ -467,10 +468,10 @@ async function replacePopup(word, origin, id) {
 
 }
 
-async function fetchPopup(a0, fully=1, modal, origin) {
-    let id = $(a0).attr("id");
-    let word = a0.word;
-    if (!modal) modal = a0.modalMode;
+async function fetchPopup(a, in_orig=1, modal, origin) {
+    let id = $(a).attr("id");
+    let word = a.word;
+    if (!modal) modal = a.modalMode;
     const mode = "minimal_cluster";
     const data = await fetchWord(word, mode);
 
@@ -479,38 +480,34 @@ async function fetchPopup(a0, fully=1, modal, origin) {
 
     appendPopupCluster(data, def, modal, id);
 
-    if (fully) {
-
-        let a = document.createElement("a");
-        if (modal === "examples") {
-            a.href = `javascript:showPopup('#${id}','light')`;
-            a.innerText = "--More--";
-        } else {
-            a.href = `javascript:showPopup('#${id}','examples')`;
-            a.innerText = "--Less--";
-        }
-        def.appendChild(a);
-
-        def.appendChild(document.createTextNode("\u00A0\u00A0\u00A0"));
-
+    function aha(fun,label) {
         let a2 = document.createElement("a");
-        a2.href = `javascript:go('#${id}')`;
-        a2.innerText = "--Nav--";
+        a2.href = `javascript:${fun}`;
+        a2.innerText = label;
         def.appendChild(a2);
-
         def.appendChild(document.createTextNode("\u00A0\u00A0\u00A0"));
-
-        let a3 = document.createElement("a");
-        a3.href = `javascript:$('#${id}').popover('hide')`;
-        a3.innerText = "--Hide--";
-        def.appendChild(a3);
-    } else {
-        let a4 = document.createElement("a");
-        a4.href = `javascript:showPopup('${origin}','${modal}')`;
-        a4.innerText = "--Back--";
-        def.appendChild(a4);
-
     }
+
+    if (in_orig) {
+
+        if (modal === "examples") {
+            aha(`showPopup('#${id}','light')`,"--More--");
+        } else {
+            aha(`showPopup('#${id}','examples')`,"--Less--");
+        }
+        aha(`go('#${id}')`,"--Nav--");
+        aha(`$('#${id}').popover('hide')`,"--Hide--");
+    } else {
+        aha(`showPopup('${origin}','${modal}')`,"--Back--");
+        if (modal === "examples") {
+            aha(`replacePopup('${word}','${origin}','${id}', 'light')`,"--More--");
+        } else {
+            aha(`replacePopup('${word}','${origin}','${id}', 'examples')`,"--Less--");
+        }
+        aha(`go('#${id}')`,"--Nav--");
+        aha(`$('${origin}').popover('hide')`,"--Hide--");
+    }
+
 
     return def;
 
@@ -823,6 +820,18 @@ function update(firsttime) {
 }
 
 let curword, collected = {};
+$(document).keydown(function(evt) {
+    evt = evt || window.event;
+    var isEscape = false;
+    if ("key" in evt) {
+        isEscape = (evt.key === "Escape" || evt.key === "Esc");
+    } else {
+        isEscape = (evt.keyCode === 27);
+    }
+    if (isEscape) {
+        $("[data-toggle=popover]").popover("hide");
+    }
+});
 $(document).keypress(async function(e){
     console.log(` code:${e.code} curword:${curword}`);
     if (e.code==='KeyA' && curword) {

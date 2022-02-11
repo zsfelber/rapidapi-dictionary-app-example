@@ -211,8 +211,10 @@ a:hover.none {
     text-decoration: none;
 }
 
-.popoveritm {
-    
+.popover-body a {
+    white-space: nowrap;
+    word-wrap: unset;
+    word-break: unset;
 }
 
 .smallf {
