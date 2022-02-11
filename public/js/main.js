@@ -120,11 +120,8 @@ async function fetchWord(word, mode, qs=[]) {
     let e = isElectron(),data;
     console.log("isElectron:"+e);
     if (e) {
-        // nodeIntegration: true
-        const { ipcRenderer } = window["require"]('electron');
-        //const { app, BrowserWindow, ipcMain, Notification } = window["require"]("electron");
 
-        data = await ipcRenderer.invoke('service', {id:"goWord", qs});
+        window.api.service({id:"getWord", qs});
 
     } else {
 

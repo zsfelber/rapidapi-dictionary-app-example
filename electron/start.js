@@ -8,7 +8,8 @@ const loadMainWindow = () => {
         width : 1200,
         height: 800,
         webPreferences: {
-            nodeIntegration: true
+            nodeIntegration: false, contextIsolation: true, enableRemoteModule: false,
+            preload: path.join(__dirname, 'preload.js')
         }
     });
     let index = path.join(__dirname, "..", "public", "index.html").normalize();
@@ -29,7 +30,7 @@ app.on("activate", () => {
 
 ipcMain.handle('service', (event, note) => {
     console.log("electron.invoke ", note);
-    let promise = hub.invoke(node.id, node.qs);
+    let promise = hub.invoke(note.id, note.qs);
     return promise;
 });
 

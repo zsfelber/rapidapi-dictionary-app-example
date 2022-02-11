@@ -1,11 +1,12 @@
 const methods = {
-    "crawl-background":require("../functions/crawl-background"),
-    "generate-indexes-background":require("../functions/generate-indexes-background"),
-    "getWord":require("../functions/getWord"),
+    "crawl-background":require("../lambda/crawl-background"),
+    "generate-indexes-background":require("../lambda/generate-indexes-background"),
+    "getWord":require("../lambda/getWord"),
 };
 
 
-export async function invoke(id, params) {
+module.exports = {
+invoke: async function(id, params) {
     const event = {
         queryStringParameters : params
     };
@@ -22,3 +23,4 @@ export async function invoke(id, params) {
     };
 }
 
+};
