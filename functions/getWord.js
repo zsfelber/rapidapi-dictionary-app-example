@@ -18,7 +18,7 @@ export async function handler(event, context) {
   const fto = event.queryStringParameters.fto || 100;
   let apis = event.queryStringParameters.apis || "";
 
-  service.respond(async () => {
+  return service.respond(async () => {
     if (apis) {
 
       apis = apis.split("-");

@@ -17,7 +17,7 @@ export async function handler(event, context) {
     TRAVERSE_ALL
     );
 
-  service.respond(async () => {
+  return service.respond(async () => {
 
     console.log("crawling in the background starting from random words...");
 
