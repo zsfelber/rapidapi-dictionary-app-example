@@ -34,7 +34,7 @@ $("[data-toggle=popover]").popover({
             currentpop = this;
             currentpopword = this.word;
 
-            let x = this.loaded.html();
+            let x = this.loaded[0].outerHTML;
             return x;
         } else {
             //var content = $(this).attr("data-popover-content");
