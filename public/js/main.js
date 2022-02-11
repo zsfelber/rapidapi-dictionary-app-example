@@ -121,7 +121,8 @@ async function fetchWord(word, mode, qs=[]) {
     console.log("isElectron:"+e);
     if (e) {
 
-        window.api.service({id:"getWord", qs});
+        data = window.api.service({id:"getWord", qs});
+        console.log("data:", data);
 
     } else {
 

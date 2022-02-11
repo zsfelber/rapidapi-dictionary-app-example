@@ -16,11 +16,7 @@ invoke: async function(id, params) {
     const method = methods[id];
     const data = await method.handler(event, context);
 
-    return {
-        json:function() {
-            return data
-        }
-    };
+    return data;
 }
 
 };

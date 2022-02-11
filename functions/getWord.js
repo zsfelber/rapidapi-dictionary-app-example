@@ -55,7 +55,7 @@ export async function handler(event, context) {
 
       return data;
     }
-  });
+  }, context);
 }
 
 export async function get(api, word, mode, letter, ffrom, fto, stopiterateapis) {

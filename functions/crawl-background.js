@@ -69,6 +69,6 @@ export async function handler(event, context) {
 
     console.log("Completed  Travesred:"+tresult.noWords+" written:"+tresult.newWords);
     return {result:true};
-  });
+  }, context);
 
 }
