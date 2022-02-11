@@ -334,9 +334,6 @@ function createa(word0, masterword, extraarg="", origin) {
     } else {
         a.classList.add('none');
     }
-    if (origin) {
-        a.href = "javascript:replacePopup('"+word+extraarg+"','#"+origin+"','#"+a.id+"')"
-    }
 
     // it does the trick
     a.setAttribute("id",a.id);
@@ -346,7 +343,11 @@ function createa(word0, masterword, extraarg="", origin) {
     a.setAttribute("data-toggle","popover");
     a.setAttribute("data-placement","bottom");
     a.setAttribute("data-popover-content",word+extraarg);
-    a.word = word+extraarg;
+    a.setAttribute("word",a.word = word+extraarg);
+
+    if (origin) {
+        a.href = "javascript:replacePopup('"+a.word+"','#"+origin+"','#"+a.id+"')"
+    }
 
     a.innerHTML = tmp.innerHTML;
     return a;
@@ -445,7 +446,7 @@ function printLabel(data) {
 
 async function go(id, x) {
     let q=$(id);
-    window.open("?word="+q[0].word, "_blank");
+    window.open("?word="+q.attr("word"), "_blank");
 }
 
 async function showPopup(id, x) {
@@ -470,7 +471,7 @@ async function replacePopup(word, origin, id, modal) {
 
 async function fetchPopup(a, in_orig=1, modal, origin) {
     let id = $(a).attr("id");
-    let word = a.word;
+    let word = $(a).attr("word");
     if (!modal) modal = a.modalMode;
     const mode = "minimal_cluster";
     const data = await fetchWord(word, mode);
