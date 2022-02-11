@@ -844,8 +844,17 @@ $(document).keypress(async function(e){
     }
 });
 
+    
+// wait on voices to be loaded before fetching list
+window.speechSynthesis.onvoiceschanged = function() {
+    console.log("speechSynthesis voices:", window.speechSynthesis.getVoices());
+};
+
 // Specifies a function to execute when the DOM is fully loaded.
 $(document).ready(function(){
+
+    console.log("speechSynthesis voices(document ready):", window.speechSynthesis.getVoices());
+
     $.urlParam = function(name, nothing=null){
         var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
         if (results==null) {
@@ -950,8 +959,6 @@ $(document).ready(function(){
       //$('.form-check-input').change(function(){
     //    $(this).text() 
     //});
-    
-
     
     async function dosubmit(word) {
 
