@@ -211,11 +211,11 @@ a:hover.none {
     text-decoration: none;
 }
 
-.popover-body a {
+.popover-body a:not(.none) {
     white-space: nowrap;
     word-wrap: unset;
     word-break: unset;
-}
+ }
 
 .smallf {
     font-size: 1rem;
