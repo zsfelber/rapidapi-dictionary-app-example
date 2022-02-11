@@ -279,11 +279,11 @@ export function aCrawler() {
         return null;
       }
 
-      console.error(`ENTER http download      ${API} ${word}   pending:${pendingParallelRequests} admitted:${admittedParallelRequests}`);
+      console.error(`ENTER http download      ${API} "${word}"   pending:${pendingParallelRequests} admitted:${admittedParallelRequests}`);
 
       data = await download(word);
 
-      console.error(`DONE  http download      ${API} ${word}   pending:${pendingParallelRequests} admitted:${admittedParallelRequests}`);
+      console.error(`DONE  http download      ${API} "${word}"   pending:${pendingParallelRequests} admitted:${admittedParallelRequests}`);
 
       var copy = Object.assign({}, data);
       copy.fromCache = false;
@@ -300,7 +300,7 @@ export function aCrawler() {
         return ojson;
       }
     } catch (e) {
-      console.warn("API error (",API,word, ") ", e&&e.message?e.message:"?");
+      console.warn("API error (",API,'"'+word+'"', ") ", e&&e.message?e.message:"?");
       djson = JSON.stringify({error:e.message});
       return null;
     } finally {
@@ -534,13 +534,13 @@ export function aCrawler() {
           }
           if (tresult.noWords >= MAX_WORDS) {
             await Promise.all(promises);
-            if (themainabstraction) console.log(API,word+" Level "+traversion.level+" finished. Search limit reached.");
+            if (themainabstraction) console.log(API,'"'+word+'"'+" Level "+traversion.level+" finished. Search limit reached.");
             return true;
           }
         }
       } catch (e) {
         if (e === API_LIMIT_EXCEPTION) {
-          console.log(API,word+" Level "+traversion.level+" finished. API Limit reached (by exception).");
+          console.log(API,'"'+word+'"'+" Level "+traversion.level+" finished. API Limit reached (by exception).");
           return false;
         } else {
           throw e;
@@ -548,13 +548,13 @@ export function aCrawler() {
       }
 
       await Promise.all(promises);
-      if (themainabstraction) console.log(API,word+" Level "+traversion.level+" finished.");
+      if (themainabstraction) console.log(API,'"'+word+'"'+" Level "+traversion.level+" finished.");
 
       traversion.level++;
     } while (traversion.wordsbreadthfirst.length);
 
     if (themainabstraction) {
-      console.log(API,word+" Completed  Travesred:"+tresult.noWords+" written:"+tresult.newWords);
+      console.log(API,'"'+word+'"'+" Completed  Travesred:"+tresult.noWords+" written:"+tresult.newWords);
     }
     return true;
   }
@@ -623,7 +623,7 @@ export function aCrawler() {
           await Promise.all(promises);
         } catch (e) {
           if (e === API_LIMIT_EXCEPTION) {
-            console.log(API,word+" Level "+traversion.level+" finished. API Limit reached (by exception).");
+            console.log(API,'"'+word+'"'+" Level "+traversion.level+" finished. API Limit reached (by exception).");
             return false;
           } else {
             throw e;
