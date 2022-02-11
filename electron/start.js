@@ -36,13 +36,21 @@ ipcMain.handle('service', (event, note) => {
 
 const { session } = require('electron')
 
-ipcMain.handle('loadExt', (event, note) => {
+ipcMain.handle('loadExt', async (event, note) => {
     console.log("electron.loadExt ", note);
     /*let promise = session.defaultSession.loadExtension(path.join(__dirname,"TransOver")).then(({ id }) => {
         console.log("TransOver loaded:"+id);
       // ...
     });
     return promise;*/
-});
+    const findChromeVersion = require("find-chrome-version");
+    const chromeVersion = await findChromeVersion();
 
+    console.log(`node version is ${process.version}`);
+
+    console.log(`chrome version is ${chromeVersion}`);
+
+    console.log(`other versions ${JSON.stringify(process.versions)}`);
+
+});
 
