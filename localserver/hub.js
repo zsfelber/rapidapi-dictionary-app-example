@@ -7,8 +7,13 @@ const methods = {
 
 module.exports = {
 invoke: async function(id, params) {
+    const queryStringParameters = {};
+    for (let p of params) {
+        let pair = p.split('=');
+        queryStringParameters[pair[0]] = pair[1];
+    }
     const event = {
-        queryStringParameters : params
+        queryStringParameters
     };
     const context = {
         electron: true
