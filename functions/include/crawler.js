@@ -900,7 +900,7 @@ export function aCrawler() {
     function quantilize(size) {
       let lst = 0;
       let buckets = [100];
-      let pf=100;
+      let pf=100.005;
       for (let f of fkeys) {
         f = Number(f);
 
@@ -908,12 +908,12 @@ export function aCrawler() {
         lst += es?es.length:0;
         if (lst >= size) {
           let ff = (pf-0.005).toFixed(3);
-          console.log(API, "Frequency:.."+f+" "+ff+"  cnt:"+lst);
+          console.log(API, "Frequency: "+f+".."+ff+"  cnt:"+lst);
           lst = 0;
           buckets.push(f);
-        }
 
-        pf = f;
+          pf = f;
+        }
       }
       buckets.push(0);
       console.log(API, "Frequency:..  cnt:"+lst);
