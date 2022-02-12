@@ -509,7 +509,16 @@ function speakIt(a, which) {
     let q;
     if (typeof a=="string") q=$(`#${a}`);
     else q=$(a);
-    speak(q[0].word, which);
+    var sel = window.getSelection();
+    let txt;
+    for (let i=0; i<sel.rangeCount; i++) {
+        let r = sel.getRangeAt(i);
+        txt = r.toString();
+        if (txt) break;
+        break;
+    }
+    if (!txt) txt = q[0].word;
+    speak(txt, which);
 }
 function selectAll(a) {
     let q=$(`#${a} .pg`);
@@ -523,7 +532,7 @@ function selectAll(a) {
     curword = el.innerText;
     $(el).trigger("mouseup");
 }
-async function replacePopup(word, origin, id, modal) {
+function replacePopup(word, origin, id, modal) {
     let q=$(id);
     let oq=$(origin);
 
@@ -544,10 +553,12 @@ async function fetchPopup(a, in_orig=1, modal, origin) {
     const mode = "minimal_cluster";
     const data = await fetchWord(word, mode);
 
-    let q=$(`<div id="p${id}" class="popover-body"></div>`);
-    let q1=$(`<p class="pg"></p>`);
-    let def = q1[0];
-    q[0].appendChild(def);
+    let div=document.createElement("div");
+    div.classList.add("popover-body");
+    div.id = "livepop";
+    let def=document.createElement("div");
+    def.classList.add("pg");
+    div.appendChild(def);
 
     appendPopupCluster(data, def, modal, id);
 
@@ -555,8 +566,8 @@ async function fetchPopup(a, in_orig=1, modal, origin) {
         let a2 = document.createElement("a");
         a2.href = `javascript:${fun}`;
         a2.innerText = label;
-        q[0].appendChild(a2);
-        q[0].appendChild(document.createTextNode("\u00A0\u00A0\u00A0"));
+        div.appendChild(a2);
+        div.appendChild(document.createTextNode("\u00A0\u00A0\u00A0"));
     }
 
     if (in_orig) {
@@ -567,10 +578,10 @@ async function fetchPopup(a, in_orig=1, modal, origin) {
             aha(`showPopup('#${id}','examples')`,"--Less--");
         }
         aha(`go('#${id}')`,"--Nav--");
-        aha(`hidePopup('${id}')`,"--Hide--");
         aha(`speakIt('${id}',1)`,"voice 1");
         aha(`speakIt('${id}',2)`,"voice 2");
-        aha(`selectAll('p${id}')`,"--select all--");
+        aha(`selectAll('livepop')`,"--select all--");
+        aha(`hidePopup('${id}')`,"--Hide--");
     } else {
         aha(`showPopup('${origin}','${modal}')`,"--Back--");
         if (modal === "examples") {
@@ -579,14 +590,14 @@ async function fetchPopup(a, in_orig=1, modal, origin) {
             aha(`replacePopup('${word}','${origin}','${id}', 'examples')`,"--Less--");
         }
         aha(`go('#${id}')`,"--Nav--");
-        aha(`hidePopup('${origin}')`,"--Hide--");
         aha(`speakIt('${id}',1)`,"voice 1");
         aha(`speakIt('${id}',2)`,"voice 2");
-        aha(`selectAll('p${id}')`,"--select all--");
+        aha(`selectAll('livepop')`,"--select all--");
+        aha(`hidePopup('${origin}')`,"--Hide--");
     }
 
 
-    return q[0];
+    return div;
 
 }
 
@@ -685,7 +696,8 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
             let  cmp,comma,apostr;
             if (modalMode === "light") {
 
-                cmp = $("<div class='smallf'></div>")[0];
+                cmp = document.createElement("div");
+                cmp.classList.add('smallf');
                 wordInfoTbl.appendChild(cmp);
                 comma="";
                 apostr="'";
