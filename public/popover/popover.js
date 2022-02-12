@@ -1,7 +1,7 @@
 var currentlink;
 var currentpopword;
 var currentmodal;
-var popupcache={};
+var popupcache;
 
 function initpop() {
 
@@ -36,9 +36,13 @@ function initpop() {
             if (!currentpopword) {
                 currentpopword = this.word;
             }
+            if (!popupcache) {
+                popupcache = {"examples":{}, "light":{}};
+            }
+            let pm = popupcache[currentmodal];
 
-            if (popupcache[currentmodal]) {
-                let x = popupcache[currentmodal][0].outerHTML;
+            if (pm[currentpopword]) {
+                let x = pm[currentpopword][0].outerHTML;
                 return x;
             } else {
                 //var content = $(this).attr("data-popover-content");
@@ -47,8 +51,8 @@ function initpop() {
 
                 console.log("initialize popup  link:" + id + " modal:" + currentmodal + " word:" + currentpopword);
 
-                fetchPopup(currentpopword, id).then((def) => {
-                    popupcache[currentmodal] = $(def);
+                fetchPopup().then((def) => {
+                    pm[currentpopword] = $(def);
                     console.log("loaded (first):" + id);
                     $(this).popover('show');
                 });

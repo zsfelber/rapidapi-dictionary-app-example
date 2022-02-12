@@ -72,6 +72,7 @@ var checkboxdata = {
     "bucket56": {
         "symbol": { defchecked: true },
         "verb": { defchecked: true },
+        "definite_article": { defchecked: true },
     },
     "bucket6": {
         "dictionary": { defchecked: true },
@@ -388,7 +389,7 @@ function createpopoverlink(word0, masterword, extraarg="", apostr="", origin) {
     a.setAttribute("word",a.word = word+extraarg);
 
     if (origin) {
-        a.href = "javascript:replacePopup('"+a.word+"', '"+origin+"')";
+        a.href = "javascript:showPopup('"+a.word+"')";
     }
 
     a.innerHTML = apostr+tmp.innerHTML+apostr;
@@ -487,22 +488,25 @@ function printLabel(data) {
 }
 
 async function gocur() {
-    window.open("?word="+currentword, "_blank");
+    window.open("?word="+currentpopword, "_blank");
 }
 
-
-async function showPopup(word, modal) {
-    if (word) currentword = word;
-    if (modal) currentmodal = modal;
-    q.popover('show');
-}
 
 function hidePopup() {
     currentlink=null;
     currentpopword=null;
     currentmodal=null;
-    popupcache={};
+    popupcache=null;
     $("[data-toggle=popover]").popover("hide");
+}
+
+function showPopup(word, modal) {
+
+    if (word) currentpopword = word;
+    if (modal) currentmodal = modal;
+
+    $(currentlink).popover('show');
+
 }
 
 function speakIt(which) {
@@ -518,10 +522,10 @@ function speakIt(which) {
             if (txt) break;
         }
     }
-    if (!txt) txt = currentword;
+    if (!txt) txt = currentpopword;
     speak(txt, which);
 }
-function selectAll() {
+function selectPopupAll() {
     let lpg=$(`#livepop .pg`);
 
     var range = document.createRange();
@@ -531,22 +535,11 @@ function selectAll() {
     sel.addRange(range);
     lpg.trigger("mouseup");
 }
-function replacePopup(word, origin) {
 
-    fetchPopup(word, origin).then((def)=>{
-        let elem = $(def);
-        oq[0].loadedtmp = elem;
-        console.log("navigated in popup to:"+word);
-        //console.log(this.loaded.html());
-        oq.popover('show');
-    });
+async function fetchPopup() {
 
-}
-
-async function fetchPopup(word, origin) {
-
-    currentpopword = word;
-
+    if (!currentlink) return;
+    const word = currentpopword;
     const mode = "minimal_cluster";
     const data = await fetchWord(word, mode);
 
@@ -557,7 +550,7 @@ async function fetchPopup(word, origin) {
     def.classList.add("pg");
     div.appendChild(def);
 
-    appendPopupCluster(data, def, origin);
+    appendPopupCluster(data, def);
 
     function aha(fun,label) {
         let a2 = document.createElement("a");
@@ -567,18 +560,18 @@ async function fetchPopup(word, origin) {
         div.appendChild(document.createTextNode("\u00A0\u00A0\u00A0"));
     }
 
-    if (origin) {
+    if (currentpopword!=currentlink.word) {
         aha(`showPopup(currentlink.word)`,"--Back--");
     }
-    if (modal === "examples") {
-        aha(`showPopup(currentword,'light')`,"--More--");
+    if (currentmodal === "examples") {
+        aha(`showPopup(null,'light')`,"--More--");
     } else {
-        aha(`showPopup(currentword,'examples')`,"--Less--");
+        aha(`showPopup(null,'examples')`,"--Less--");
     }
     aha(`gocur()`,"--Nav--");
     aha(`speakIt(1)`,"voice 1");
     aha(`speakIt(2)`,"voice 2");
-    aha(`selectAll('livepop')`,"--select all--");
+    aha(`selectPopupAll()`,"--select all--");
     aha(`hidePopup()`,"--Hide--");
 
 
@@ -859,7 +852,7 @@ function updateCluster() {
     clusterBody(lastresult, wordInfoTbl, true);
 }
 
-function appendPopupCluster(data, wordInfoTbl, origin) {
+function appendPopupCluster(data, wordInfoTbl) {
 
     let itms=99;
     page=1;
@@ -868,7 +861,7 @@ function appendPopupCluster(data, wordInfoTbl, origin) {
     wordInfoRow=null;
 
 
-    clusterBody(data, wordInfoTbl, true, currentmodal, origin);
+    clusterBody(data, wordInfoTbl, true, currentmodal, true);
 }
 
 function update(firsttime) {
