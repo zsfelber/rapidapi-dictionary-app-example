@@ -3,10 +3,9 @@
   publish = "public/"
 
 [functions]
-  included_files = ["functions/include/**"]
   node_bundler = "esbuild"
 
 [build.processing.js]
   bundle = false
-  minify = false
+  minify = false  
 

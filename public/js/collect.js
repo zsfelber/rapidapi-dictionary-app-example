@@ -19,7 +19,7 @@ $(document).ready(function(){
 
         try {
 
-            const data0 = await fetch(`/.netlify/functions/crawl-background`, { mode: 'cors'});
+            const data0 = await fetch(`/.netlify/functions/crawl-foreground`, { mode: 'cors'});
             // asynchronously calls our custome function
             const data = await data0.json();
 

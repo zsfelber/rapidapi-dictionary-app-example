@@ -1,6 +1,6 @@
 const methods = {
-    "crawl-background":require("../lambda/crawl-background"),
-    "generate-indexes-background":require("../lambda/generate-indexes-background"),
+    "crawl-foreground":require("../lambda/crawl-foreground"),
+    "generate-indexes-foreground":require("../lambda/generate-indexes-foreground"),
     "getWord":require("../lambda/getWord"),
 };
 
