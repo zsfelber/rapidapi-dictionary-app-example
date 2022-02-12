@@ -570,8 +570,8 @@ async function fetchPopup(a, in_orig=1, modal, origin) {
         }
         aha(`go('#${id}')`,"--Nav--");
         aha(`hidePopup('${id}')`,"--Hide--");
-        aha(`speakIt('${id}',1)`,"1");
-        aha(`speakIt('${id}',2)`,"2");
+        aha(`speakIt('${id}',1)`,"voice 1");
+        aha(`speakIt('${id}',2)`,"voice 2");
         aha(`selectAll('p${id}')`,"--select all--");
     } else {
         aha(`showPopup('${origin}','${modal}')`,"--Back--");
@@ -582,8 +582,8 @@ async function fetchPopup(a, in_orig=1, modal, origin) {
         }
         aha(`go('#${id}')`,"--Nav--");
         aha(`hidePopup('${origin}')`,"--Hide--");
-        aha(`speakIt('${id}',1)`,"1");
-        aha(`speakIt('${id}',2)`,"2");
+        aha(`speakIt('${id}',1)`,"voice 1");
+        aha(`speakIt('${id}',2)`,"voice 2");
         aha(`selectAll('p${id}')`,"--select all--");
     }
 
@@ -786,10 +786,10 @@ function updateWords() {
             }
             addnav(urli-1, "prev")
         }
-        if (urli<urllen-1) {
+        if (urli<urllen-2) {
             addnav(urli+1, "next")
-            if (urli != urllen-2) {
-                addnav(urllen-1, "last")
+            if (urli != urllen-3) {
+                addnav(urllen-2, "last")
             }
         }
         info.appendChild(dlpag);
