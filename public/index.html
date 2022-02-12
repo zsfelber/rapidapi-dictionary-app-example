@@ -136,59 +136,84 @@
         </div>
     </main>
 
-    <!-- Modal HTML -->
-    <div id="myModal" class="modal fade">
-        <div class="modal-dialog">
-            <main class="container-fluid">
-                <div class="row justify-content-center">
+    <main class="container-fluid">
+    <b>Instructions</b>
+    <div class="row">
+        <div class="col">
+        <p>It is suggested using google chrome. Please install these extensions for google chrome (following the link first):<br/>
+            <p>
+            <a target='_blank' href="https://chrome.google.com/webstore/detail/transover/aggiiclaiamajehmlfpkjmlbadmkledi?hl=en">TransOver</a><br/>
+            Then:
+            <ul>
+                <li><small>click Add to Chrome</small></li>
+                <li><small>Click puzzle-like icon on the top right of chrome</small></li>
+                <li><small>Locate  TransOver  on the drop list, click vertical '...', then Options</small></li>
+                <li><small>(Maybe) select 'Hungarian' 'when I pointed at word' then 'save' then 'more options'</small></li>
+                <li><small>then 'save' then 'more options'</small></li>
+                <li><small>(Maybe) select 'from English' then <b>check</b> and select 'Enable text to speech when I press ctrl'</small></li>
+                <li><small>then 'save' and abandon the options page (close tab)</small></li>
+            </ul>
+            </p>
+            <p>
+            <a target='_blank' href="https://chrome.google.com/webstore/detail/dictionarTransOvery-anywhere/hcepmnlphdfefjddkgkblcjkbpbpemac?hl=en">Dictionary Anywhere</a><br/>
+            Then:
+            <ul>
+                <li><small>click Add to Chrome</small></li>
+                <li><small>Click puzzle-like icon on the top right of chrome</small></li>
+                <li><small>Locate  Dictionary Anywhere  on the drop list, click vertical '...', then Options</small></li>
+                <li><small>'English' and trigger key:'Alt'</small></li>
+                <li><small>then 'save' and close it</small></li>
+            </ul>
+            </p>
+        </p>
+        </div><!--col-->
 
-                <div class="col-md-10">
-    
-                    <!-- empty list to place our word data -->
-                    <div id="modal-word-info" class="modal-content list-unstyled">
-            
-                    </div>
-                </div>
+        <div class="col">
+        <p class='b j'>
+        Speech synthetizers (English should be preselected in both). 
+        Dropdowns should be populated in an any installed uncorrupted up-to-date modern browser. 
+        Please select your favourite ones (2 different ones, for example a US-english and an UK-english). If lists are empty please fix your browser (preferable google chrome) installation or consult the software provider.
+        </p>
+        <div class="ib">
+            <form id="speech1">
+            <div>
+            <label for="rate">Rate</label><input type="range" min="0.5" max="2" value="1" step="0.1" class="rate">
+            <div class="rate-value">1</div>
+            <div class="clearfix"></div>
             </div>
+            <div>
+            <label for="pitch">Pitch</label><input type="range" min="0" max="2" value="1" step="0.1" class="pitch">
+            <div class="pitch-value">1</div>
+            <div class="clearfix"></div>
             </div>
-    
-        </div>
+            <select>
+        
+            </select>
+            </form>
+        </div><!--ib-->
 
+        <div class="ib">
+            <form id="speech2">
+            <div>
+            <label for="rate">Rate</label><input type="range" min="0.5" max="2" value="1" step="0.1" class="rate">
+            <div class="rate-value">1</div>
+            <div class="clearfix"></div>
+            </div>
+            <div>
+            <label for="pitch">Pitch</label><input type="range" min="0" max="2" value="1" step="0.1" class="pitch">
+            <div class="pitch-value">1</div>
+            <div class="clearfix"></div>
+            </div>
+            <select>
+        
+            </select>
+            </form>
+        </div><!--ib-->
 
-    
-    </div>
-
-    <form id="speech1">
-        <div>
-          <label for="rate">Rate</label><input type="range" min="0.5" max="2" value="1" step="0.1" class="rate">
-          <div class="rate-value">1</div>
-          <div class="clearfix"></div>
-        </div>
-        <div>
-          <label for="pitch">Pitch</label><input type="range" min="0" max="2" value="1" step="0.1" class="pitch">
-          <div class="pitch-value">1</div>
-          <div class="clearfix"></div>
-        </div>
-        <select>
-      
-        </select>
-    </form>
-
-    <form id="speech2">
-        <div>
-          <label for="rate">Rate</label><input type="range" min="0.5" max="2" value="1" step="0.1" class="rate">
-          <div class="rate-value">1</div>
-          <div class="clearfix"></div>
-        </div>
-        <div>
-          <label for="pitch">Pitch</label><input type="range" min="0" max="2" value="1" step="0.1" class="pitch">
-          <div class="pitch-value">1</div>
-          <div class="clearfix"></div>
-        </div>
-        <select>
-      
-        </select>
-    </form>
+        
+        </div><!--col-->
+    </div><!--row-->
+    </div><!--fluid-->
 
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
       

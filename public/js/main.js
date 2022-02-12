@@ -318,8 +318,28 @@ function selectElementContents(el) {
     //el.focus();
 }
 
+function createlink(word0, masterword, extraarg="", apostr="") {
+    const a = document.createElement('a');
+    const tmp = $("<div>"+word0+"</div>")[0];
+
+    word0 = tmp.innerText;
+    const word = word0.replace(/[^a-zA-Z0-9\- ]/g, "");
+
+    if (masterword==word) {
+        a.classList.add('master');
+    } else {
+        a.classList.add('none');
+    }
+
+    a.innerHTML = apostr+tmp.innerHTML+apostr;
+
+    a.href = "?" + checkps() + extraarg;
+
+    return a;
+}
+
 let poidx=0;
-function createa(word0, masterword, extraarg="", apostr="", origin) {
+function createpopoverlink(word0, masterword, extraarg="", apostr="", origin) {
 
     const a = document.createElement('a');
     const tmp = $("<div>"+word0+"</div>")[0];
@@ -360,7 +380,7 @@ function createi(word) {
 function createas(cont, words, masterword, sep, apostr="", linksIdxFrom=0, linksIdxTo=999999999, origin) {
     let index=0;
     if (words) words.forEach(word => {
-        const a = (linksIdxFrom<=index&&index<linksIdxTo) ? createa(word, masterword, "", apostr, origin) : createi(word);
+        const a = (linksIdxFrom<=index&&index<linksIdxTo) ? createpopoverlink(word, masterword, "", apostr, origin) : createi(word);
         const sp = document.createTextNode(sep);
 
         cont.appendChild(a);
@@ -950,7 +970,7 @@ $(document).ready(function(){
     let top3000 = document.querySelector(".top3000");
     for (let i = A; i<=Z; i++) {
         let letter = String.fromCharCode(i);
-        let a = createa(letter, null, "&top=3000&letter="+letter);
+        let a = createlink(letter, null, "&top=3000&letter="+letter);
         let spc = document.createTextNode("  ");
         top3000.appendChild(a);
         top3000.appendChild(spc);
@@ -958,7 +978,7 @@ $(document).ready(function(){
     let top10000 = document.querySelector(".top10000");
     for (let i = A; i<=Z; i++) {
         let letter = String.fromCharCode(i);
-        let a = createa(letter, null, "&top=10000&letter="+letter);
+        let a = createlink(letter, null, "&top=10000&letter="+letter);
         let spc = document.createTextNode("  ");
         top10000.appendChild(a);
         top10000.appendChild(spc);
@@ -966,7 +986,7 @@ $(document).ready(function(){
     function createfrlabs(frqntls, freqlabels) {
         for (let i=0, fr, pfr=0;  i<frqntls.length;  i++, pfr=fr+0.005) {
             fr = frqntls[i];
-            let a = createa(""+i, null, "&mode=words_by_frequency&ffrom="+pfr+"&fto="+fr);
+            let a = createlink(""+i, null, "&mode=words_by_frequency&ffrom="+pfr.toFixed(3)+"&fto="+fr.toFixed(3));
             let spc = document.createTextNode("  ");
             freqlabels.appendChild(a);
             freqlabels.appendChild(spc);
