@@ -501,6 +501,7 @@ function hidePopup() {
     currentlink=null;
     currentpopword=null;
     currentmodal=null;
+    popupcache={};
     $("[data-toggle=popover]").popover("hide");
 }
 
@@ -535,7 +536,7 @@ function replacePopup(word, origin) {
     fetchPopup(word, origin).then((def)=>{
         let elem = $(def);
         oq[0].loadedtmp = elem;
-        console.log("navigated in:"+origin+" to:"+id);
+        console.log("navigated in popup to:"+word);
         //console.log(this.loaded.html());
         oq.popover('show');
     });

@@ -1,61 +1,62 @@
 var currentlink;
 var currentpopword;
 var currentmodal;
+var popupcache={};
 
 function initpop() {
 
-// https://getbootstrap.com/docs/4.0/components/popovers/
+    // https://getbootstrap.com/docs/4.0/components/popovers/
 
-$("[data-toggle=popover]").click(function(){
-        if (!this.which) this.which=1;
+    $("[data-toggle=popover]").click(function () {
+        if (!this.which) this.which = 1;
         speak(this.word, this.which);
-        this.which = 3-this.which;
-    
-});
+        this.which = 3 - this.which;
 
-$("[data-toggle=popover]").popover({
-    html : true,
-    // !
-    // https://stackoverflow.com/questions/20299246/bootstrap-popover-how-add-link-in-text-popover
-    sanitize: false,
-    trigger: 'click',
-    placement:'auto',
-    template:`<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>`,
-    content: function() {
-        if (altdown) return null;
+    });
 
-        currentlink = this;
-
-        let id = $(this).attr("id");
-        $(`[data-toggle=popover]:not(#${id})`).popover("hide");
-
-        if (!currentmodal) {
-            currentmodal = "examples";
-        }
-        if (!this.loaded) {
-            this.loaded = {};
-            currentpopword = this.word;
-        }
-
-        if (this.loaded[currentmodal]) {
-            let x = this.loaded[currentmodal][0].outerHTML;
-            return x;
-        } else {
-            //var content = $(this).attr("data-popover-content");
+    $("[data-toggle=popover]").popover({
+        html: true,
+        // !
+        // https://stackoverflow.com/questions/20299246/bootstrap-popover-how-add-link-in-text-popover
+        sanitize: false,
+        trigger: 'click',
+        placement: 'auto',
+        template: `<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>`,
+        content: function () {
+            if (altdown) return null;
 
             currentlink = this;
 
-            console.log("show:"+id);
+            let id = $(this).attr("id");
+            $(`[data-toggle=popover]:not(#${id})`).popover("hide");
 
-            fetchPopup(currentpopword, id).then((def)=>{
-                this.loaded[currentmodal] = $(def);
-                console.log("loaded (first):"+id);
-                $(this).popover('show');
-            });
-            return "<div>Loading...</div>";
+            if (!currentmodal) {
+                currentmodal = "examples";
+            }
+            if (!currentpopword) {
+                currentpopword = this.word;
+            }
+
+            if (popupcache[currentmodal]) {
+                let x = popupcache[currentmodal][0].outerHTML;
+                return x;
+            } else {
+                //var content = $(this).attr("data-popover-content");
+
+                currentlink = this;
+
+                console.log("initialize popup  link:" + id + " modal:" + currentmodal + " word:" + currentpopword);
+
+                fetchPopup(currentpopword, id).then((def) => {
+                    popupcache[currentmodal] = $(def);
+                    console.log("loaded (first):" + id);
+                    $(this).popover('show');
+                });
+                return "<div>Loading...</div>";
+            }
         }
-    }});
-    
+    });
+
 
 }
 
@@ -83,13 +84,13 @@ function getSelectionBoundaryElement(isStart) {
                 range.setStart(sel.focusNode, sel.focusOffset);
                 range.setEnd(sel.anchorNode, sel.anchorOffset);
             }
-       }
+        }
 
         if (range) {
-           container = range[isStart ? "startContainer" : "endContainer"];
+            container = range[isStart ? "startContainer" : "endContainer"];
 
-           // Check if the container is a text node and return its parent if so
-           return container.nodeType === 3 ? container.parentNode : container;
-        }   
+            // Check if the container is a text node and return its parent if so
+            return container.nodeType === 3 ? container.parentNode : container;
+        }
     }
 }
