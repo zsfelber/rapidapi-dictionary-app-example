@@ -23,11 +23,11 @@ function install(which) {
             else if (aname == bname) return 0;
             else return +1;
         });
-        let selectedIndex = voiceSelect.selectedIndex < 0 ? 0 : voiceSelect.selectedIndex;
+
         voiceSelect.innerHTML = ``;
         for (i = 0; i < voices.length; i++) {
             let option = document.createElement(`option`);
-            option.textContent = voices[i].name + ` (` + voices[i].lang + `)`;
+            option.textContent = voices[i].name;
 
             if (voices[i].default) {
                 option.textContent += ` -- DEFAULT`;
@@ -37,7 +37,6 @@ function install(which) {
             option.setAttribute(`data-name`, voices[i].name);
             voiceSelect.appendChild(option);
         }
-        //voiceSelect.selectedIndex = selectedIndex;
 
 
     }
@@ -82,9 +81,6 @@ function install(which) {
     //}
     function init() {
         populateVoiceList();
-        if (speechSynthesis.onvoiceschanged !== undefined) {
-            speechSynthesis.onvoiceschanged = populateVoiceList;
-        }
 
         pitch.onchange = function () {
             pitchValue.textContent = pitch.value;
@@ -105,10 +101,13 @@ function install(which) {
 
 
 function initSpeak() {
+    if (speechSynthesis.onvoiceschanged !== undefined) {
+        speechSynthesis.onvoiceschanged = initSpeak;
+    }
     install(1);
     install(2);
-    $("#speech1 select").val("Google US English (en-US)");
-    $("#speech2 select").val("Google UK English Male (en-GB)");
+    $("#speech1 select").val("Google US English");
+    $("#speech2 select").val("Google UK English Male");
 }
 
 let doing=0;
