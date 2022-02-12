@@ -45,6 +45,8 @@ function install(which) {
             return;
         }
         if (text) {
+            let voice = $(voiceSelect).val();
+            console.log("speak "+voice+" : "+text);
             return new Promise((a,r)=>{
                 let utterThis = new SpeechSynthesisUtterance(text);
                 utterThis.onend = function (event) {
@@ -55,9 +57,9 @@ function install(which) {
                     console.error(`SpeechSynthesisUtterance.onerror`);
                     r();
                 }
-                let selectedOption = voiceSelect.selectedOptions[0].getAttribute(`data-name`);
                 for (i = 0; i < voices.length; i++) {
-                    if (voices[i].name === selectedOption) {
+                    if (voices[i].name === voice) {
+                        console.log(`Found voice ${voice} : `, voices[i]);
                         utterThis.voice = voices[i];
                         break;
                     }
@@ -132,6 +134,7 @@ let doing=0;
 async function speak(text, which) {
     if (doing) return;
     doing = 1;
+    console.log("speak "+which+" : "+text);
     await speakers[which].speak(text);
     doing = 0;
 }
