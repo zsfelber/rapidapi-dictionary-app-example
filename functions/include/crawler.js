@@ -9,7 +9,7 @@ const API_LIMIT_EXCEPTION = {
 export function aCrawler() {
 
   const TURNING_TIME_GMT = [20,55];
-  const MAX_PARALLEL = 20;
+  const MAX_PARALLEL = 5;
   let API;
   let CACHE_DIR;
   let API_DAILY_LIMIT;
