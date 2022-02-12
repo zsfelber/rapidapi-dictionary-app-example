@@ -1,5 +1,6 @@
 let synth = window.speechSynthesis;
 let speakers = {};
+let voices = [];
 
 // https://mdn.github.io/web-speech-api/speak-easy-synthesis/
 
@@ -14,24 +15,20 @@ function install(which) {
     let rate = document.querySelector(`${speech} .rate`);
     let rateValue = document.querySelector(`${speech} .rate-value`);
 
-    let voices = [];
-
     function populateVoiceList() {
-        voices = synth.getVoices().sort(function (a, b) {
-            const aname = a.name.toUpperCase(), bname = b.name.toUpperCase();
-            if (aname < bname) return -1;
-            else if (aname == bname) return 0;
-            else return +1;
-        });
+        if (!voices.length) {
+            voices = synth.getVoices().sort(function (a, b) {
+                const aname = a.name.toUpperCase(), bname = b.name.toUpperCase();
+                if (aname < bname) return -1;
+                else if (aname == bname) return 0;
+                else return +1;
+            });
+        }
 
         voiceSelect.innerHTML = ``;
         for (i = 0; i < voices.length; i++) {
             let option = document.createElement(`option`);
             option.textContent = voices[i].name;
-
-            if (voices[i].default) {
-                option.textContent += ` -- DEFAULT`;
-            }
 
             option.setAttribute(`data-lang`, voices[i].lang);
             option.setAttribute(`data-name`, voices[i].name);
@@ -99,6 +96,26 @@ function install(which) {
     init();
 }
 
+function selectAnyEnglish(combo, notthis, hint) {
+    for (i = 0; i < voices.length; i++) {
+        let name = voices[i].name;
+        if (name!=notthis && /english/i.test(name) && (!hint||hint.test(name))) {
+            combo.val(name);
+            return name;
+        }
+    }
+    return null;
+}
+function heurSelectEnglish(combo, notthis, hints) {
+    for (let hint of hints) {
+        let item = selectAnyEnglish(combo, notthis, hint);
+
+        if (item) {
+            return item;
+        }
+    }
+    return null;
+}
 
 function initSpeak() {
     if (speechSynthesis.onvoiceschanged !== undefined) {
@@ -106,8 +123,9 @@ function initSpeak() {
     }
     install(1);
     install(2);
-    $("#speech1 select").val("Google US English");
-    $("#speech2 select").val("Google UK English Male");
+
+    let first = heurSelectEnglish($("#speech1 select"), null, [/\bus\b/i,/\bunited states\b/i,/\bu\.s\b/i,/./]);
+    heurSelectEnglish($("#speech2 select"), first, [/\buk\b/i,/\bunited kingdom\b/i,/\bu\.k\b/i,/./]);
 }
 
 let doing=0;

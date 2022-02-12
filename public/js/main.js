@@ -482,6 +482,12 @@ function hidePopup(a) {
     q.popover('hide');
     currentpopword=null;
 }
+function speakIt(a, which) {
+    let q;
+    if (typeof a=="string") q=$(`#${a}`);
+    else q=$(a);
+    speak(q[0].word, which);
+}
 function selectAll(a) {
     let q=$(`#${a} .pg`);
     let el = q[0];
@@ -539,6 +545,8 @@ async function fetchPopup(a, in_orig=1, modal, origin) {
         }
         aha(`go('#${id}')`,"--Nav--");
         aha(`hidePopup('${id}')`,"--Hide--");
+        aha(`speakIt('${id}',1)`,"1");
+        aha(`speakIt('${id}',2)`,"2");
         aha(`selectAll('p${id}')`,"--select all--");
     } else {
         aha(`showPopup('${origin}','${modal}')`,"--Back--");
@@ -549,6 +557,8 @@ async function fetchPopup(a, in_orig=1, modal, origin) {
         }
         aha(`go('#${id}')`,"--Nav--");
         aha(`hidePopup('${origin}')`,"--Hide--");
+        aha(`speakIt('${id}',1)`,"1");
+        aha(`speakIt('${id}',2)`,"2");
         aha(`selectAll('p${id}')`,"--select all--");
     }
 

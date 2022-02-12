@@ -238,7 +238,11 @@ a:hover.none {
 .ib {
     display:inline-block;
     min-width: 49%;
+    margin-bottom: 30px;
 }
 .j {
     text-align: justify;
+}
+.sm {
+    font-size: 0.9rem;
 }
