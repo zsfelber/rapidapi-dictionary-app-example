@@ -887,7 +887,8 @@ export function aCrawler() {
     await Promise.all(promises);
 
     var fkeys = [].concat(Object.keys(byf));
-    fkeys.sort((a,b)=>Number(a)-Number(b));
+    // descending order !!
+    fkeys.sort((a,b)=>Number(b)-Number(a));
     var byfs = {};
     for (let f of fkeys) {
       let es = byf[f];
@@ -898,23 +899,25 @@ export function aCrawler() {
     console.log(API, "Frequency indexes:"+cntf+"  of no.words:"+nowords);
     function quantilize(size) {
       let lst = 0;
-      let buckets = [0];
+      let buckets = [100];
+      let pf=100;
       for (let f of fkeys) {
         f = Number(f);
-        if (f) {
-          let es = byfs[f];
-          lst += es?es.length:0;
-          if (lst >= size) {
-            let fpl = f+0.005;
-            let ff = fpl.toFixed(3);
-            console.log(API, "Frequency:.."+f+" "+ff+"  cnt:"+lst);
-            lst = 0;
-            buckets.push(ff);
-          }
+
+        let es = byfs[f];
+        lst += es?es.length:0;
+        if (lst >= size) {
+          let ff = (pf-0.005).toFixed(3);
+          console.log(API, "Frequency:.."+f+" "+ff+"  cnt:"+lst);
+          lst = 0;
+          buckets.push(f);
         }
+
+        pf = f;
       }
+      buckets.push(0);
       console.log(API, "Frequency:..  cnt:"+lst);
-      console.log(API, "var frqntls"+size+"=["+buckets.join(", ")+",100];\n");
+      console.log(API, "var frqntls"+size+"=["+buckets.join(", ")+"];\n");
     }
     quantilize(800);
     quantilize(3000);
