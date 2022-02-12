@@ -10,6 +10,10 @@ var frqntls800=[100, 5.08, 4.69, 4.45, 4.26, 4.1, 3.97, 3.86, 3.75, 3.65, 3.56, 
 var frqntls3000=[100, 4.31, 3.82, 3.47, 3.21, 2.99, 2.8, 2.62, 2.45, 2.3, 2.12, 1.97, 1.74, 1.6, 0];
 var frqntls10000=[100, 3.38, 2.68, 2.17, 1.73, 0.001, 0];
 
+var frqntlses = {
+    800:frqntls800, 3000:frqntls3000, 10000:frqntls10000
+};
+
 var checkboxdata = {
     "bucket1": {
         "also": { defchecked: true },
@@ -337,6 +341,26 @@ function createlink(word0, masterword, extraarg="", apostr="") {
     a.href = "?" + checkps() + "&word=" + word + extraarg;
 
     return a;
+}
+
+
+function createLetterLink(i, N) {
+    let frqntls = frqntlses[N];
+    let len = frqntls.length;
+    let result;
+    if (!i) {
+        result = {ffrom:frqntls[1], fto:100, lab:"1"};
+    } else if (i==len-1) {
+        result = {ffrom:0, fto:0, lab:"unknown"};
+    } else if (i==len-2) {
+        result = {ffrom:0.001, fto:frqntls[i]-0.005, lab:""+(i+1)};
+    } else {
+        result = {ffrom:frqntls[i+1], fto:frqntls[i]-0.005, lab:""+(i+1)};
+    }
+    let a = createlink((i+1),null,`&mode=words_by_frequency&N=${N}&i=${i}&len=${frqntls.length}&ffrom=${result.ffrom}&fto=${result.fto}`);
+    a.innerText = result.lab;
+    result.a = a;
+    return result;
 }
 
 let poidx=0;
@@ -737,6 +761,40 @@ function updateWords() {
     const dlclust = labelled("no. words", data.noWords);
     info.appendChild(dlclust);
 
+    let urllen = $.urlParam('len');
+    let urli = $.urlParam('i');
+    let urlN = $.urlParam('N');
+    if (urllen) {
+
+        const dlq0 = labelled("quantiles of", urlN);
+        info.appendChild(dlq0);
+
+        urllen = Number(urllen);
+        urli = Number(urli);
+        const dlpag = labelled("Page "+(urli+1)+" of "+urllen, "Go to ");
+
+        function addnav(i, lab0) {
+            let iv = createLetterLink(i, urlN);
+            iv.a.innerText = `${lab0}(${iv.lab})`;
+            dlpag.children[1].appendChild(iv.a);
+            let spc = document.createTextNode("  ");
+            dlpag.children[1].appendChild(spc);
+        }
+        if (urli>0) {
+            if (urli != 1) {
+                addnav(0, "first")
+            }
+            addnav(urli-1, "prev")
+        }
+        if (urli<urllen-1) {
+            addnav(urli+1, "next")
+            if (urli != urllen-2) {
+                addnav(urllen-1, "last")
+            }
+        }
+        info.appendChild(dlpag);
+    }
+
     let itms=999;
     page=1;
     col=2;
@@ -994,30 +1052,19 @@ $(document).ready(function(){
         top10000.appendChild(a);
         top10000.appendChild(spc);
     }
-    function createfrlabs(frqntls, freqlabels) {
-        let fr = frqntls[0], pfr = fr;
-        for (let i=1, ed=frqntls.length-2; i<ed; i++, pfr=fr-0.005) {
-            fr = frqntls[i];
-            let lab=""+i;
-            let a = createlink(lab, null, "&mode=words_by_frequency&ffrom="+fr.toFixed(3)+"&fto="+pfr.toFixed(3));
+    function createfrlabs(N) {
+        let freqlabels = document.querySelector(".freqlabels"+N);
+        let frqntls = frqntlses[N];
+        for (let i=0; i<frqntls.length; i++) {
+            let iv = createLetterLink(i, N);
+            freqlabels.appendChild(iv.a);
             let spc = document.createTextNode("  ");
-            freqlabels.appendChild(a);
             freqlabels.appendChild(spc);
         }
-        let lab=""+(frqntls.length-2);
-        let a = createlink(lab, null, "&mode=words_by_frequency&ffrom=0.001&fto="+pfr.toFixed(3));
-        let spc = document.createTextNode("  ");
-        freqlabels.appendChild(a);
-        freqlabels.appendChild(spc);
-        a = createlink("unknown", null, "&mode=words_by_frequency&ffrom=0&fto=0");
-        freqlabels.appendChild(a);
     }
-    let freqlabels800 = document.querySelector(".freqlabels800");
-    let freqlabels3000 = document.querySelector(".freqlabels3000");
-    let freqlabels10000 = document.querySelector(".freqlabels10000");
-    createfrlabs(frqntls800, freqlabels800);
-    createfrlabs(frqntls3000, freqlabels3000);
-    createfrlabs(frqntls10000, freqlabels10000);
+    createfrlabs(800);
+    createfrlabs(3000);
+    createfrlabs(10000);
     
     if (urltop) {
         $("input[type='radio'][name='mode']:checked").removeAttr('checked');
