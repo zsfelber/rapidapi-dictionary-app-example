@@ -497,17 +497,14 @@ async function showPopup(word, modal) {
     q.popover('show');
 }
 
-function hidePopup(a) {
-    let q;
-    if (typeof a=="string") q=$(`#${a}`);
-    else q=$(a);
-    q.popover('hide');
+function hidePopup() {
+    currentlink=null;
     currentpopword=null;
+    currentmodal=null;
+    $("[data-toggle=popover]").popover("hide");
 }
-function speakIt(a, which) {
-    let q;
-    if (typeof a=="string") q=$(`#${a}`);
-    else q=$(a);
+
+function speakIt(which) {
     var sel = window.getSelection();
     let txt;
     let lpg=$(`#livepop .pg`);
@@ -520,20 +517,18 @@ function speakIt(a, which) {
             if (txt) break;
         }
     }
-    if (!txt) txt = q[0].word;
+    if (!txt) txt = currentword;
     speak(txt, which);
 }
-function selectAll(a) {
-    let q=$(`#${a} .pg`);
-    let el = q[0];
+function selectAll() {
+    let lpg=$(`#livepop .pg`);
 
     var range = document.createRange();
-    range.selectNodeContents(el);
+    range.selectNodeContents(lpg[0]);
     var sel = window.getSelection();
     sel.removeAllRanges();
     sel.addRange(range);
-    curword = el.innerText;
-    $(el).trigger("mouseup");
+    lpg.trigger("mouseup");
 }
 function replacePopup(word, origin) {
 
@@ -580,10 +575,10 @@ async function fetchPopup(word, origin) {
         aha(`showPopup(currentword,'examples')`,"--Less--");
     }
     aha(`gocur()`,"--Nav--");
-    aha(`speakIt('${id}',1)`,"voice 1");
-    aha(`speakIt('${id}',2)`,"voice 2");
+    aha(`speakIt(1)`,"voice 1");
+    aha(`speakIt(2)`,"voice 2");
     aha(`selectAll('livepop')`,"--select all--");
-    aha(`hidePopup('${id}')`,"--Hide--");
+    aha(`hidePopup()`,"--Hide--");
 
 
     return div;
@@ -946,8 +941,7 @@ $(document).keydown(function(evt) {
         isEscape = (evt.keyCode === 27);
     }
     if (isEscape) {
-        $("[data-toggle=popover]").popover("hide");
-        hidePopup(currentlink);
+        hidePopup();
     }
 });
 $(document).keyup(function(evt) {
