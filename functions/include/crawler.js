@@ -273,6 +273,7 @@ export function aCrawler() {
 
     } catch (e) {
       console.warn("Error (",API,'"'+word+'"', ") ", e&&e.message?e.message:"?");
+      return null;
     }
 
     if (cachedonly) {
