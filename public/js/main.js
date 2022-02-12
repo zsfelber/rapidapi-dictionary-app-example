@@ -334,7 +334,7 @@ function createlink(word0, masterword, extraarg="", apostr="") {
 
     a.innerHTML = apostr+tmp.innerHTML+apostr;
 
-    a.href = "?" + checkps() + extraarg;
+    a.href = "?" + checkps() + "&word=" + word + extraarg;
 
     return a;
 }
@@ -995,17 +995,22 @@ $(document).ready(function(){
         top10000.appendChild(spc);
     }
     function createfrlabs(frqntls, freqlabels) {
-        for (let i=0, fr, pfr=0;  i<frqntls.length;  i++, pfr=fr-0.005) {
+        let fr = frqntls[0], pfr = fr;
+        for (let i=1, ed=frqntls.length-2; i<ed; i++, pfr=fr-0.005) {
             fr = frqntls[i];
-            let lab=""+(i+1);
-            if (i==frqntls.length-1) {
-                lab="unknown";
-            }
-            let a = createlink(""+i, null, "&mode=words_by_frequency&fto="+pfr.toFixed(3)+"&ffrom="+fr.toFixed(3));
+            let lab=""+i;
+            let a = createlink(lab, null, "&mode=words_by_frequency&ffrom="+fr.toFixed(3)+"&fto="+pfr.toFixed(3));
             let spc = document.createTextNode("  ");
             freqlabels.appendChild(a);
             freqlabels.appendChild(spc);
         }
+        let lab=""+(frqntls.length-2);
+        let a = createlink(lab, null, "&mode=words_by_frequency&ffrom=0.001&fto="+pfr.toFixed(3));
+        let spc = document.createTextNode("  ");
+        freqlabels.appendChild(a);
+        freqlabels.appendChild(spc);
+        a = createlink("unknown", null, "&mode=words_by_frequency&ffrom=0&fto=0");
+        freqlabels.appendChild(a);
     }
     let freqlabels800 = document.querySelector(".freqlabels800");
     let freqlabels3000 = document.querySelector(".freqlabels3000");
