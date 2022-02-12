@@ -6,9 +6,10 @@ var page,col=2,wordInfoTbl,wordInfoRow,wordInfoBox,info;
 
 var letters=[String.fromCharCode(1)].concat(numbers()).concat([":"]).concat(ucases()).concat(lcases());
 
-var frqntls800=[0, 1.605, 1.735, 1.745, 1.825, 1.905, 1.975, 2.025, 2.035, 2.085, 2.175, 2.205, 2.275, 2.335, 2.385, 2.435, 2.485, 2.525, 2.575, 2.635, 2.685, 2.745, 2.795, 2.845, 2.905, 2.965, 3.025, 3.085, 3.145, 3.205, 3.265, 3.335, 3.415, 3.495, 3.585, 3.675, 3.775, 3.885, 4.005, 4.135, 4.295, 4.495, 4.745, 5.235,100];
-var frqntls3000=[0, 1.735, 1.825, 2.025, 2.175, 2.335, 2.505, 2.685, 2.875, 3.085, 3.325, 3.625, 4.015, 4.685,100];
-var frqntls10000=[0, 1.975, 2.475, 3.085, 4.145,100];
+var frqntls800=[100, 5.08, 4.69, 4.45, 4.26, 4.1, 3.97, 3.86, 3.75, 3.65, 3.56, 3.47, 3.39, 3.32, 3.25, 3.18, 3.12, 3.05, 2.99, 2.93, 2.87, 2.81, 2.76, 2.7, 2.66, 2.6, 2.56, 2.5, 2.45, 2.4, 2.36, 2.3, 2.24, 2.19, 2.12, 2.08, 2.03, 2.02, 1.97, 1.9, 1.82, 1.74, 1.73, 1.6, 0];
+var frqntls3000=[100, 4.31, 3.82, 3.47, 3.21, 2.99, 2.8, 2.62, 2.45, 2.3, 2.12, 1.97, 1.74, 1.6, 0];
+var frqntls10000=[100, 3.38, 2.68, 2.17, 1.73, 0.001, 0];
+
 var checkboxdata = {
     "bucket1": {
         "also": { defchecked: true },
@@ -994,9 +995,13 @@ $(document).ready(function(){
         top10000.appendChild(spc);
     }
     function createfrlabs(frqntls, freqlabels) {
-        for (let i=0, fr, pfr=0;  i<frqntls.length;  i++, pfr=fr+0.005) {
+        for (let i=0, fr, pfr=0;  i<frqntls.length;  i++, pfr=fr-0.005) {
             fr = frqntls[i];
-            let a = createlink(""+i, null, "&mode=words_by_frequency&ffrom="+pfr.toFixed(3)+"&fto="+fr.toFixed(3));
+            let lab=""+(i+1);
+            if (i==frqntls.length-1) {
+                lab="unknown";
+            }
+            let a = createlink(""+i, null, "&mode=words_by_frequency&fto="+pfr.toFixed(3)+"&ffrom="+fr.toFixed(3));
             let spc = document.createTextNode("  ");
             freqlabels.appendChild(a);
             freqlabels.appendChild(spc);

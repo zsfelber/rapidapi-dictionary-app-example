@@ -898,25 +898,41 @@ export function aCrawler() {
 
     console.log(API, "Frequency indexes:"+cntf+"  of no.words:"+nowords);
     function quantilize(size) {
-      let lst = 0;
+      let wcnt = 0;
+      let fqcnt = 0;
       let buckets = [100];
       let pf=100.005;
+      function buck(f, end) {
+        console.log(API, "Frequency: "+f+".."+end.toFixed(3)+"  words:"+wcnt+"  freqs:"+fqcnt);
+        buckets.push(f);
+        fqcnt = 0;
+        wcnt = 0;
+        pf = f;
+      }
       for (let f of fkeys) {
         f = Number(f);
-
         let es = byfs[f];
-        lst += es?es.length:0;
-        if (lst >= size) {
-          let ff = (pf-0.005).toFixed(3);
-          console.log(API, "Frequency: "+f+".."+ff+"  cnt:"+lst);
-          lst = 0;
-          buckets.push(f);
+        if (f===0) {
+          if (wcnt) {
+            buck(0.001, pf-0.005);
+          }
 
-          pf = f;
+          fqcnt = 1;
+          pf = 0;
+          wcnt = es?es.length:0;
+          buck(0, 0);
+          break;
+        } else {
+          fqcnt ++;
+          wcnt += es?es.length:0;
+          if (wcnt >= size) {
+            buck(f, pf-0.005);
+          }  
         }
+
       }
-      buckets.push(0);
-      console.log(API, "Frequency:..  cnt:"+lst);
+
+      console.log(API, "Frequency:..  cnt:"+wcnt);
       console.log(API, "var frqntls"+size+"=["+buckets.join(", ")+"];\n");
     }
     quantilize(800);
