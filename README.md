@@ -1770,3 +1770,85 @@ http://localhost:8888/?word=8&mode=words_by_frequency&ffrom=3.12&fto=3.345&
 
 
 https://www.cssscript.com/popover-around-element/
+
+
+
+
+
+
+
+
+
+wordsapi Frequency indexes:446  of no.words:142752
+wordsapi Frequency: 5.08..100.000  words:802  freqs:166
+wordsapi Frequency: 4.69..5.075  words:810  freqs:39
+wordsapi Frequency: 4.45..4.685  words:818  freqs:24
+wordsapi Frequency: 4.26..4.445  words:809  freqs:19
+wordsapi Frequency: 4.1..4.255  words:853  freqs:16
+wordsapi Frequency: 3.97..4.095  words:866  freqs:13
+wordsapi Frequency: 3.86..3.965  words:808  freqs:11
+wordsapi Frequency: 3.75..3.855  words:848  freqs:11
+wordsapi Frequency: 3.65..3.745  words:872  freqs:10
+wordsapi Frequency: 3.56..3.645  words:815  freqs:9
+wordsapi Frequency: 3.47..3.555  words:830  freqs:9
+wordsapi Frequency: 3.39..3.465  words:868  freqs:8
+wordsapi Frequency: 3.32..3.385  words:843  freqs:7
+wordsapi Frequency: 3.25..3.315  words:886  freqs:7
+wordsapi Frequency: 3.18..3.245  words:873  freqs:7
+wordsapi Frequency: 3.12..3.175  words:829  freqs:6
+wordsapi Frequency: 3.05..3.115  words:946  freqs:7
+wordsapi Frequency: 2.99..3.045  words:876  freqs:6
+wordsapi Frequency: 2.93..2.985  words:902  freqs:6
+wordsapi Frequency: 2.87..2.925  words:1037  freqs:6
+wordsapi Frequency: 2.81..2.865  words:942  freqs:6
+wordsapi Frequency: 2.76..2.805  words:846  freqs:5
+wordsapi Frequency: 2.7..2.755  words:930  freqs:5
+wordsapi Frequency: 2.66..2.695  words:823  freqs:4
+wordsapi Frequency: 2.6..2.655  words:971  freqs:5
+wordsapi Frequency: 2.56..2.595  words:801  freqs:3
+wordsapi Frequency: 2.5..2.555  words:981  freqs:4
+wordsapi Frequency: 2.45..2.495  words:1130  freqs:4
+wordsapi Frequency: 2.4..2.445  words:911  freqs:2
+wordsapi Frequency: 2.36..2.395  words:884  freqs:2
+wordsapi Frequency: 2.3..2.355  words:1205  freqs:3
+wordsapi Frequency: 2.24..2.295  words:1119  freqs:2
+wordsapi Frequency: 2.19..2.235  words:1062  freqs:2
+wordsapi Frequency: 2.12..2.185  words:1414  freqs:2
+wordsapi Frequency: 2.08..2.115  words:822  freqs:1
+wordsapi Frequency: 2.03..2.075  words:940  freqs:1
+wordsapi Frequency: 2.02..2.025  words:977  freqs:1
+wordsapi Frequency: 1.97..2.015  words:1052  freqs:1
+wordsapi Frequency: 1.9..1.965  words:1244  freqs:1
+wordsapi Frequency: 1.82..1.895  words:1424  freqs:1
+wordsapi Frequency: 1.74..1.815  words:2395  freqs:1
+wordsapi Frequency: 1.73..1.735  words:1780  freqs:1
+wordsapi Frequency: 0.001..1.725  words:2242  freqs:1
+wordsapi Frequency: 0..0.000  words:98365  freqs:1
+wordsapi Frequency:..  cnt:0
+wordsapi var frqntls800=[100, 5.08, 4.69, 4.45, 4.26, 4.1, 3.97, 3.86, 3.75, 3.65, 3.56, 3.47, 3.39, 3.32, 3.25, 3.18, 3.12, 3.05, 2.99, 2.93, 2.87, 2.81, 2.76, 2.7, 2.66, 2.6, 2.56, 2.5, 2.45, 2.4, 2.36, 2.3, 2.24, 2.19, 2.12, 2.08, 2.03, 2.02, 1.97, 1.9, 1.82, 1.74, 1.73, 0.001, 0];
+
+wordsapi Frequency: 4.31..100.000  words:3020  freqs:243
+wordsapi Frequency: 3.82..4.305  words:3048  freqs:49
+wordsapi Frequency: 3.47..3.815  words:3063  freqs:35
+wordsapi Frequency: 3.21..3.465  words:3088  freqs:26
+wordsapi Frequency: 2.99..3.205  words:3033  freqs:22
+wordsapi Frequency: 2.8..2.985  words:3032  freqs:19
+wordsapi Frequency: 2.62..2.795  words:3162  freqs:17
+wordsapi Frequency: 2.45..2.615  words:3169  freqs:12
+wordsapi Frequency: 2.3..2.445  words:3000  freqs:7
+wordsapi Frequency: 2.12..2.295  words:3595  freqs:6
+wordsapi Frequency: 1.97..2.115  words:3791  freqs:4
+wordsapi Frequency: 1.74..1.965  words:5063  freqs:3
+wordsapi Frequency: 0.001..1.735  words:4022  freqs:2
+wordsapi Frequency: 0..0.000  words:98365  freqs:1
+wordsapi Frequency:..  cnt:0
+wordsapi var frqntls3000=[100, 4.31, 3.82, 3.47, 3.21, 2.99, 2.8, 2.62, 2.45, 2.3, 2.12, 1.97, 1.74, 0.001, 0];
+
+wordsapi Frequency: 3.38..100.000  words:10148  freqs:336
+wordsapi Frequency: 2.68..3.375  words:10186  freqs:69
+wordsapi Frequency: 2.17..2.675  words:10136  freqs:30
+wordsapi Frequency: 1.73..2.165  words:11374  freqs:9
+wordsapi Frequency: 0.001..1.725  words:2242  freqs:1
+wordsapi Frequency: 0..0.000  words:98365  freqs:1
+wordsapi Frequency:..  cnt:0
+wordsapi var frqntls10000=[100, 3.38, 2.68, 2.17, 1.73, 0.001, 0];

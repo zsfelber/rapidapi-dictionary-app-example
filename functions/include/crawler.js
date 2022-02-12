@@ -909,25 +909,23 @@ export function aCrawler() {
         wcnt = 0;
         pf = f;
       }
+      let len = fkeys.length;
+      let i = 0;
       for (let f of fkeys) {
+        ++i;
         f = Number(f);
         let es = byfs[f];
-        if (f===0) {
-          if (wcnt) {
-            buck(0.001, pf-0.005);
-          }
+        fqcnt++;
+        wcnt += es?es.length:0;
 
-          fqcnt = 1;
-          pf = 0;
-          wcnt = es?es.length:0;
+        if (i==len) {
           buck(0, 0);
-          break;
+        } else if (i==len-1) {
+          buck(0.001, pf-0.005);
         } else {
-          fqcnt ++;
-          wcnt += es?es.length:0;
           if (wcnt >= size) {
             buck(f, pf-0.005);
-          }  
+          }
         }
 
       }
