@@ -14,8 +14,6 @@ var frqntlses = {
     800:frqntls800, 3000:frqntls3000, 10000:frqntls10000
 };
 
-var currentlinkword;
-
 var checkboxdata = {
     "bucket1": {
         "also": { defchecked: true },
@@ -372,7 +370,6 @@ function createpopoverlink(word0, masterword, extraarg="", apostr="", origin) {
     word0 = tmp.innerText;
     const word = word0.replace(/[^a-zA-Z0-9\- ]/g, "");
     a.id =     'popoveritm'+poidx++;
-    a.modalMode = 'examples';
     a.classList.add('popoveritm');
     if (masterword==word) {
         a.classList.add('master');
@@ -391,7 +388,7 @@ function createpopoverlink(word0, masterword, extraarg="", apostr="", origin) {
     a.setAttribute("word",a.word = word+extraarg);
 
     if (origin) {
-        a.href = "javascript:replacePopup('"+a.word+"','#"+origin+"','#"+a.id+"')"
+        a.href = "javascript:replacePopup('"+a.word+"', '"+origin+"')";
     }
 
     a.innerHTML = apostr+tmp.innerHTML+apostr;
@@ -489,21 +486,17 @@ function printLabel(data) {
 
 }
 
-async function go(id, x) {
-    let q=$(id);
-    window.open("?word="+q.attr("word"), "_blank");
-}
 async function gocur() {
-    window.open("?word="+currentlinkword, "_blank");
+    window.open("?word="+currentword, "_blank");
 }
 
 
-async function showPopup(id, x) {
-    let q=$(id);
-    q[0].modalMode=x;
-    q[0].loaded=null;
+async function showPopup(word, modal) {
+    if (word) currentword = word;
+    if (modal) currentmodal = modal;
     q.popover('show');
 }
+
 function hidePopup(a) {
     let q;
     if (typeof a=="string") q=$(`#${a}`);
@@ -542,11 +535,9 @@ function selectAll(a) {
     curword = el.innerText;
     $(el).trigger("mouseup");
 }
-function replacePopup(word, origin, id, modal) {
-    let q=$(id);
-    let oq=$(origin);
+function replacePopup(word, origin) {
 
-    fetchPopup(q[0], false, modal?modal:oq[0].modalMode, origin).then((def)=>{
+    fetchPopup(word, origin).then((def)=>{
         let elem = $(def);
         oq[0].loadedtmp = elem;
         console.log("navigated in:"+origin+" to:"+id);
@@ -556,11 +547,10 @@ function replacePopup(word, origin, id, modal) {
 
 }
 
-async function fetchPopup(a, in_orig=1, modal, origin) {
-    let id = $(a).attr("id");
-    let word = $(a).attr("word");
-    currentlinkword = word;
-    if (!modal) modal = a.modalMode;
+async function fetchPopup(word, origin) {
+
+    currentpopword = word;
+
     const mode = "minimal_cluster";
     const data = await fetchWord(word, mode);
 
@@ -571,7 +561,7 @@ async function fetchPopup(a, in_orig=1, modal, origin) {
     def.classList.add("pg");
     div.appendChild(def);
 
-    appendPopupCluster(data, def, modal, id);
+    appendPopupCluster(data, def, origin);
 
     function aha(fun,label) {
         let a2 = document.createElement("a");
@@ -581,31 +571,19 @@ async function fetchPopup(a, in_orig=1, modal, origin) {
         div.appendChild(document.createTextNode("\u00A0\u00A0\u00A0"));
     }
 
-    if (in_orig) {
-
-        if (modal === "examples") {
-            aha(`showPopup('#${id}','light')`,"--More--");
-        } else {
-            aha(`showPopup('#${id}','examples')`,"--Less--");
-        }
-        aha(`gocur()`,"--Nav--");
-        aha(`speakIt('${id}',1)`,"voice 1");
-        aha(`speakIt('${id}',2)`,"voice 2");
-        aha(`selectAll('livepop')`,"--select all--");
-        aha(`hidePopup('${id}')`,"--Hide--");
-    } else {
-        aha(`showPopup('${origin}','${modal}')`,"--Back--");
-        if (modal === "examples") {
-            aha(`replacePopup('${word}','${origin}','${id}', 'light')`,"--More--");
-        } else {
-            aha(`replacePopup('${word}','${origin}','${id}', 'examples')`,"--Less--");
-        }
-        aha(`gocur()`,"--Nav--");
-        aha(`speakIt('${id}',1)`,"voice 1");
-        aha(`speakIt('${id}',2)`,"voice 2");
-        aha(`selectAll('livepop')`,"--select all--");
-        aha(`hidePopup('${origin}')`,"--Hide--");
+    if (origin) {
+        aha(`showPopup(currentlink.word)`,"--Back--");
     }
+    if (modal === "examples") {
+        aha(`showPopup(currentword,'light')`,"--More--");
+    } else {
+        aha(`showPopup(currentword,'examples')`,"--Less--");
+    }
+    aha(`gocur()`,"--Nav--");
+    aha(`speakIt('${id}',1)`,"voice 1");
+    aha(`speakIt('${id}',2)`,"voice 2");
+    aha(`selectAll('livepop')`,"--select all--");
+    aha(`hidePopup('${id}')`,"--Hide--");
 
 
     return div;
@@ -885,7 +863,7 @@ function updateCluster() {
     clusterBody(lastresult, wordInfoTbl, true);
 }
 
-function appendPopupCluster(data, wordInfoTbl, modalMode, origin) {
+function appendPopupCluster(data, wordInfoTbl, origin) {
 
     let itms=99;
     page=1;
@@ -894,7 +872,7 @@ function appendPopupCluster(data, wordInfoTbl, modalMode, origin) {
     wordInfoRow=null;
 
 
-    clusterBody(data, wordInfoTbl, true, modalMode, origin);
+    clusterBody(data, wordInfoTbl, true, currentmodal, origin);
 }
 
 function update(firsttime) {
@@ -969,7 +947,7 @@ $(document).keydown(function(evt) {
     }
     if (isEscape) {
         $("[data-toggle=popover]").popover("hide");
-        hidePopup(currentpop);
+        hidePopup(currentlink);
     }
 });
 $(document).keyup(function(evt) {
@@ -986,7 +964,7 @@ $(document).keypress(async function(e){
     }
     if (e.code==='Space') {
         if (currentpopword) {
-            speak(currentpopword, currentpop.which);
+            speak(currentpopword, currentlink.which);
             e.preventDefault();
         }
     }

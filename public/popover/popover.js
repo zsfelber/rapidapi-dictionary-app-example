@@ -1,5 +1,6 @@
-var currentpop;
+var currentlink;
 var currentpopword;
+var currentmodal;
 
 function initpop() {
 
@@ -23,28 +24,32 @@ $("[data-toggle=popover]").popover({
     content: function() {
         if (altdown) return null;
 
+        currentlink = this;
+
         let id = $(this).attr("id");
         $(`[data-toggle=popover]:not(#${id})`).popover("hide");
 
-        if (this.loadedtmp) {
-            let x = this.loadedtmp.html();
-            this.loadedtmp = null;
-            return x;
-        } else         if (this.loaded) {
-            currentpop = this;
+        if (!currentmodal) {
+            currentmodal = "examples";
+        }
+        if (!this.loaded) {
+            this.loaded = {};
             currentpopword = this.word;
+        }
 
-            let x = this.loaded[0].outerHTML;
+        if (this.loaded[currentmodal]) {
+            let x = this.loaded[currentmodal][0].outerHTML;
             return x;
         } else {
             //var content = $(this).attr("data-popover-content");
 
+            currentlink = this;
+
             console.log("show:"+id);
-            fetchPopup(this).then((def)=>{
-                let elem = $(def);
-                this.loaded = elem;
-                console.log("loaded:"+id);
-                //console.log(this.loaded.html());
+
+            fetchPopup(currentpopword, id).then((def)=>{
+                this.loaded[currentmodal] = $(def);
+                console.log("loaded (first):"+id);
                 $(this).popover('show');
             });
             return "<div>Loading...</div>";

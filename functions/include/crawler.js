@@ -349,7 +349,7 @@ export function aCrawler() {
     
       this.addExamples(this.val.examples);
 
-      this.key = this.word+":::::::"+this.synonyms.length+":::::::"+this.synonyms.join(", ")      this.defkey = this.synonyms.length+"::::::"+this.synonyms.join(", ")+"::::::"+this.definition;
+      this.key = this.word+":::::::"+this.synonyms.length+":::::::"+this.synonyms.join(", ")+"::::::"+this.definition;
     }
 
     addExamples(examples) {
