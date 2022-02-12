@@ -348,14 +348,14 @@ function createLetterLink(i, N) {
     let frqntls = frqntlses[N];
     let len = frqntls.length;
     let result;
-    if (!i) {
+    if (i==1) {
         result = {ffrom:frqntls[1], fto:100, lab:"1"};
     } else if (i==len-1) {
         result = {ffrom:0, fto:0, lab:"unknown"};
     } else {
-        result = {ffrom:frqntls[i+1], fto:frqntls[i]-0.005, lab:""+(i+1)};
+        result = {ffrom:frqntls[i], fto:frqntls[i-1]-0.005, lab:""+i};
     }
-    let a = createlink((i+1),null,`&mode=words_by_frequency&N=${N}&i=${i}&len=${frqntls.length}&ffrom=${result.ffrom}&fto=${result.fto}`);
+    let a = createlink(i,null,`&mode=words_by_frequency&N=${N}&i=${i}&len=${frqntls.length}&ffrom=${result.ffrom}&fto=${result.fto}`);
     a.innerText = result.lab;
     result.a = a;
     return result;
@@ -769,7 +769,7 @@ function updateWords() {
 
         urllen = Number(urllen);
         urli = Number(urli);
-        const dlpag = labelled("Page "+(urli+1)+" of "+urllen, "Go to ");
+        const dlpag = labelled("Page "+(urli)+" of "+(urllen-2), "Go to ");
 
         function addnav(i, lab0) {
             let iv = createLetterLink(i, urlN);
@@ -778,9 +778,9 @@ function updateWords() {
             let spc = document.createTextNode("  ");
             dlpag.children[1].appendChild(spc);
         }
-        if (urli>0) {
-            if (urli != 1) {
-                addnav(0, "first")
+        if (urli>1) {
+            if (urli != 2) {
+                addnav(1, "first")
             }
             addnav(urli-1, "prev")
         }
@@ -1053,7 +1053,7 @@ $(document).ready(function(){
     function createfrlabs(N) {
         let freqlabels = document.querySelector(".freqlabels"+N);
         let frqntls = frqntlses[N];
-        for (let i=0; i<frqntls.length; i++) {
+        for (let i=1; i<frqntls.length; i++) {
             let iv = createLetterLink(i, N);
             freqlabels.appendChild(iv.a);
             let spc = document.createTextNode("  ");
