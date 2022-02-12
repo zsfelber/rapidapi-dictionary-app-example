@@ -2,7 +2,7 @@
 const crawler = require('./include/crawler').aCrawler();
 const service = require("./include/service");
 
-const API_DAILY_LIMIT = 25000;
+const API_DAILY_LIMIT = 24500;
 const MAX_WORDS = 10000000;
 const MAX_NODE_FREQUENCY = 1000;
 const TRAVERSE_ALL = true;

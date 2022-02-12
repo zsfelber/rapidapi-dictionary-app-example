@@ -1,3 +1,4 @@
+import { findLastKey } from 'lodash';
 
 const fs = require('fs');
 const finder = require('./finder.js');
@@ -9,7 +10,7 @@ const API_LIMIT_EXCEPTION = {
 export function aCrawler() {
 
   const TURNING_TIME_GMT = [20,55];
-  const MAX_PARALLEL = 5;
+  const MAX_PARALLEL = 10;
   let API;
   let CACHE_DIR;
   let API_DAILY_LIMIT;
@@ -222,7 +223,21 @@ export function aCrawler() {
     let fileword = word.replace(/[.,/']/g, "$").toLowerCase();
     const wfpath = `${CACHE_DIR}/words/${fileword}`;
 
-    let data;
+    let data, djson;
+
+    function convertResult(fromCache, encode) {
+      if (encode) {
+        djson = JSON.stringify(data);  // original
+      }
+      if (asobject) {
+        data.fromCache = fromCache;
+        return data;
+      } else {
+        let result = singleWordToDisplay(data);
+        const ojson = JSON.stringify(result);         // modified
+        return ojson;
+      }
+    }
 
     if (fs.existsSync(wfpath)) {
     
@@ -231,7 +246,7 @@ export function aCrawler() {
       try {
         data = JSON.parse(ijson);
 
-    } catch (e) {
+      } catch (e) {
         console.warn("Delete invalid file : "+wfpath, e);
         fs.unlinkSync(wfpath);
       }
@@ -242,63 +257,42 @@ export function aCrawler() {
         console.warn("File is of an error entry : "+wfpath, " ", (data.error?data.error.message?data.error.message:data.error:"unknown error"));
         return null;
       }
-      if (asobject) {
-        data.fromCache = true;
-        return data;
-      } else {
-        let result = singleWordToDisplay(data);
-        const ojson = JSON.stringify(result);         // modified
-        return ojson;
-      }
+      return convertResult(true);
     }
 
-
-    try {
-      if (pendingObjects[word]) {
-        if (asobject) {
-          return pendingObjects[word];
-        } else {
-          let result = singleWordToDisplay(pendingObjects[word]);
-          const ojson = JSON.stringify(result);         // modified
-          return ojson;
-        }
-      }
-    } catch (e) {
-      console.warn(API, "Error (",word, ") ", e&&e.message?e.message:"?");
-      return null;
-    }
-
-    if (cachedonly) {
-      return null;
-    }
-
-    let djson;
     try {
       let success = await remoteInitBottleneck();
       if (!success) {
         return null;
       }
 
+      data = await pendingObjects[word];
+      if (data) {
+        return convertResult(true);
+      }
+
+    } catch (e) {
+      console.warn("Error (",API,'"'+word+'"', ") ", e&&e.message?e.message:"?");
+    }
+
+    if (cachedonly) {
+      return null;
+    }
+
+    try {  
       console.error(`ENTER http download      ${API} "${word}"   pending:${pendingParallelRequests} admitted:${admittedParallelRequests}`);
 
-      data = await download(word);
+      pendingObjects[word] = download(word);
+
+      data = await pendingObjects[word];
 
       console.error(`DONE  http download      ${API} "${word}"   pending:${pendingParallelRequests} admitted:${admittedParallelRequests}`);
 
-      var copy = Object.assign({}, data);
-      copy.fromCache = false;
-      pendingObjects[word] = copy;
+      // keep fromCache=false in this instance only
+      data = Object.assign({}, data);
 
-      djson = JSON.stringify(data);  // original
+      return convertResult(false, true);
 
-      if (asobject) {
-        data.fromCache = false;
-        return data;
-      } else {
-        let result = singleWordToDisplay(data);
-        const ojson = JSON.stringify(result);         // modified
-        return ojson;
-      }
     } catch (e) {
       console.warn("API error (",API,'"'+word+'"', ") ", e&&e.message?e.message:"?");
       djson = JSON.stringify({error:e.message});
