@@ -14,6 +14,8 @@ var frqntlses = {
     800:frqntls800, 3000:frqntls3000, 10000:frqntls10000
 };
 
+var currentlinkword;
+
 var checkboxdata = {
     "bucket1": {
         "also": { defchecked: true },
@@ -491,6 +493,10 @@ async function go(id, x) {
     let q=$(id);
     window.open("?word="+q.attr("word"), "_blank");
 }
+async function gocur() {
+    window.open("?word="+currentlinkword, "_blank");
+}
+
 
 async function showPopup(id, x) {
     let q=$(id);
@@ -511,11 +517,15 @@ function speakIt(a, which) {
     else q=$(a);
     var sel = window.getSelection();
     let txt;
-    for (let i=0; i<sel.rangeCount; i++) {
-        let r = sel.getRangeAt(i);
-        txt = r.toString();
-        if (txt) break;
-        break;
+    let lpg=$(`#livepop .pg`);
+    let e = getSelectionBoundaryElement(true);
+    if (lpg[0].contains(e)) {
+        console.log("contains");
+        for (let i=0; i<sel.rangeCount; i++) {
+            let r = sel.getRangeAt(i);
+            txt = r.toString();
+            if (txt) break;
+        }
     }
     if (!txt) txt = q[0].word;
     speak(txt, which);
@@ -549,6 +559,7 @@ function replacePopup(word, origin, id, modal) {
 async function fetchPopup(a, in_orig=1, modal, origin) {
     let id = $(a).attr("id");
     let word = $(a).attr("word");
+    currentlinkword = word;
     if (!modal) modal = a.modalMode;
     const mode = "minimal_cluster";
     const data = await fetchWord(word, mode);
@@ -577,7 +588,7 @@ async function fetchPopup(a, in_orig=1, modal, origin) {
         } else {
             aha(`showPopup('#${id}','examples')`,"--Less--");
         }
-        aha(`go('#${id}')`,"--Nav--");
+        aha(`gocur()`,"--Nav--");
         aha(`speakIt('${id}',1)`,"voice 1");
         aha(`speakIt('${id}',2)`,"voice 2");
         aha(`selectAll('livepop')`,"--select all--");
@@ -589,7 +600,7 @@ async function fetchPopup(a, in_orig=1, modal, origin) {
         } else {
             aha(`replacePopup('${word}','${origin}','${id}', 'examples')`,"--Less--");
         }
-        aha(`go('#${id}')`,"--Nav--");
+        aha(`gocur()`,"--Nav--");
         aha(`speakIt('${id}',1)`,"voice 1");
         aha(`speakIt('${id}',2)`,"voice 2");
         aha(`selectAll('livepop')`,"--select all--");
@@ -691,6 +702,8 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
 
             if (val.examples && val.examples.length) {
                 createaas(wordInfoTbl, val.examples, ", ", origin);
+            } else {
+                createaas(wordInfoTbl, ["("+val.definition+")"], ", ", origin);
             }
         } else {
             let  cmp,comma,apostr;
