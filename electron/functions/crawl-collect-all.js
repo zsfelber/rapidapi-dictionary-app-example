@@ -2,7 +2,6 @@
 const fs = require('fs');
 
 const path = require("path");
-const crawler = require('../../functions/include/crawler').aCrawler(path.join);
 const service = require("../../functions/include/service");
 const fastFindInFiles =  require('fast-find-in-files');
 
@@ -13,6 +12,8 @@ const TRAVERSE_ALL = true;
 
 
 exports.handler = async function(event, context) {
+
+  const crawler = require('../../functions/include/crawler').aCrawler(context.resolvePath);
 
   const API = "wordsapi";
   crawler.initCrawler(

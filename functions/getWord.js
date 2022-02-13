@@ -17,7 +17,7 @@ exports.handler = async function(event, context) {
   const ffrom = event.queryStringParameters.ffrom || 0;
   const fto = event.queryStringParameters.fto || 100;
   let apis = event.queryStringParameters.apis || "";
-  const resolvePath = event.resolvePath;
+  const resolvePath = context.resolvePath;
 
   return service.respond(async () => {
     if (apis) {

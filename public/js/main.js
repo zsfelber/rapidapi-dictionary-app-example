@@ -1038,7 +1038,7 @@ $(document).ready(function(){
         console.log("It is not electron, hiding restricted pages.");
     } else {
         console.log("It is electron, showing restricted pages.");
-        $(".restricted-electron").css('display', 'visible');
+        $(".restricted-electron").show();
     }
     
     async function dosubmit(word) {

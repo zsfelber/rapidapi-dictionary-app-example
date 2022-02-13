@@ -1,6 +1,5 @@
 
 const path = require("path");
-const crawler = require('../../functions/include/crawler').aCrawler(path.join);
 const service = require("../../functions/include/service");
 
 const API_DAILY_LIMIT = 25000;
@@ -10,6 +9,7 @@ const TRAVERSE_ALL = true;
 
 
 exports.handler = async function(event, context) {
+  const crawler = require('../../functions/include/crawler').aCrawler(context.resolvePath);
   crawler.initCrawler(
     "wordsapi",
     API_DAILY_LIMIT,

@@ -29,10 +29,10 @@ invoke: async function(id, params) {
         }
     };
     const event = {
-        queryStringParameters,
-        resolvePath
+        queryStringParameters
     };
     const context = {
+        resolvePath,
         electron: true
     };
     const method = methods[id];
