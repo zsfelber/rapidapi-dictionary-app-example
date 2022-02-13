@@ -918,7 +918,7 @@ exports.aCrawler = function (resolvePath = noResolvePath) {
         return [line];
       }
       const gglwords = csvParse.load(
-        resolvePath.rel(__dirname, "googletransapi/meta/wordList/english_.csv"),
+        resolvePath.abs("data/english_.csv"),
         { getColumns: split });
       for (let gglword of gglwords) {
         existingWords[gglword.word] = 1;
@@ -931,7 +931,7 @@ exports.aCrawler = function (resolvePath = noResolvePath) {
   function loadCaggleFrequencies() {
     if (!caggleFreqRecords) {
       caggleFreqRecords = csvParse.load(
-        resolvePath.rel(__dirname, "data/unigram_freq.csv"),
+        resolvePath.abs("data/unigram_freq.csv"),
         {
           convert: {
             count: parseInt
