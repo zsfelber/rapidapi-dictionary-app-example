@@ -37,10 +37,11 @@ export async function handler(event, context) {
 
     const CACHE_DIR = "cache/"+API;
 
+    // descending !!!
     cs0.sort((a,b)=>{
       let s1 = fs.statSync(`${CACHE_DIR}/words/${a}`);
       let s2 = fs.statSync(`${CACHE_DIR}/words/${b}`);
-      return s1.mtime-s2.mtime;
+      return s2.mtime-s1.mtime;
     });
     function inf(a) {
       let s1 = fs.statSync(`${CACHE_DIR}/words/${a}`);
