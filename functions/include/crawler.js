@@ -946,7 +946,7 @@ exports.aCrawler = function(resolvePath=noResolvePath) {
 
     //wordsapi works
     //let {byf, cntf, nowords} = await collectFileFrequencies();
-    let {byf, cntf, nowords} = getCaggleFrequencies();
+    let {byf, cntf, nowords} = await getCaggleFrequencies();
 
     var fkeys = [].concat(Object.keys(byf));
     // descending order !!
