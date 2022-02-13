@@ -38,20 +38,34 @@ export async function handler(event, context) {
     const CACHE_DIR = "cache/"+API;
 
     // descending !!!
-    cs0.sort((a,b)=>{
+    function cmp (a,b) {
       let s1 = fs.statSync(`${CACHE_DIR}/words/${a}`);
       let s2 = fs.statSync(`${CACHE_DIR}/words/${b}`);
       return s2.mtime-s1.mtime;
-    });
+    }
+
     function inf(a) {
       let s1 = fs.statSync(`${CACHE_DIR}/words/${a}`);
       return a+":"+s1.mtime.toUTCString();
     }
 
+    cs0.sort(cmp);
     // most recent 10000
     const cs = cs0.slice(0, 10000);
 
     console.log("now:"+cs.length+" oldest:"+inf(cs[cs.length-1])+" newest:"+inf(cs[0]));
+
+    const cs2=[];
+    const cs02 = crawler.loadCommon10000_words("", true);
+    for (let a of cs02.results) {
+      if (fs.existsSync(`${CACHE_DIR}/words/${a}`)) {
+        cs2.push(a);
+      }
+    }
+    cs.push.apply(cs, cs2);
+    cs.sort(cmp);
+
+    console.log("with most common 10000:"+cs.length+" oldest:"+inf(cs[cs.length-1])+" newest:"+inf(cs[0]));
 
     // sort randomly
     let rnd = new Date().getMilliseconds()+Math.random()*100;
