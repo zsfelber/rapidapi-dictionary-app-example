@@ -261,7 +261,7 @@ export function aCrawler() {
 
     if (data) {
       if (data.error) {
-        if (data.error.message && data.error.message=="Sorry pal, you were just rate limited by the upstream server.") {
+        if (data.error=="Sorry pal, you were just rate limited by the upstream server.") {
           console.warn("Delete rate limit error ...  retry ...  "+wfpath, e);
           fs.unlinkSync(wfpath);
           data = null;
