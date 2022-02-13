@@ -1,7 +1,10 @@
+import { exit } from 'process';
+
 const fs = require('fs');
 
 const crawler = require('./include/crawler').aCrawler();
 const service = require("./include/service");
+const fastFindInFiles =  require('fast-find-in-files');
 
 const API_DAILY_LIMIT = 24500;
 const MAX_WORDS = 10000000;
@@ -66,6 +69,17 @@ export async function handler(event, context) {
     cs.sort(cmp);
 
     console.log("with most common 10000:"+cs.length+" oldest:"+inf(cs[cs.length-1])+" newest:"+inf(cs[0]));
+
+    let sorries = await fastFindInFiles.fastFindInFiles(`${CACHE_DIR}/words`, "Sorry pal, you were just rate limited by the upstream server.");
+    console.log("sorry-pals:"+sorries.length);
+
+    const TWELVE = (CACHE_DIR+"/words/").length;
+    for (let strPath of sorries) {
+      let word = strPath.filePath.substring(TWELVE);
+      cs.unshift(word);
+      console.log(word);
+    }
+
 
     // sort randomly
     let rnd = new Date().getMilliseconds()+Math.random()*100;
