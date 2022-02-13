@@ -1,4 +1,3 @@
-import { findLastKey } from 'lodash';
 
 const fs = require('fs');
 const finder = require('./finder.js');
@@ -7,7 +6,7 @@ const API_LIMIT_EXCEPTION = {
   apiLimitException:1
 };
 
-export function aCrawler() {
+exports.aCrawler = async function() {
 
   const TURNING_TIME_GMT = [20,55];
   const MAX_PARALLEL = 100;
@@ -58,7 +57,7 @@ export function aCrawler() {
         cacheInitializerCommon = finder.findFiles(`${CACHE_DIR}/words`, turntime);
         totalWordsLastDay = await cacheInitializerCommon;
         cacheIsInitialized = true;
-        console.log(API, "remoteInitBottleneck  turntime:"+turntime.toUTCString()+"  totalWordsLastDay:"+totalWordsLastDay+ " of API limit " + API_DAILY_LIMIT+" errors:"+finder.errors+" pendingParallelRequests:"+pendingParallelRequests+" admittedParallelRequests:"+admittedParallelRequests);
+        console.log(API, "remoteInitBottleneck  turntime:"+turntime.toUTCString()+"  totalWordsLastDay:"+totalWordsLastDay+ " of API limit " + API_DAILY_LIMIT+" errors:"+finder.vars.errors+" pendingParallelRequests:"+pendingParallelRequests+" admittedParallelRequests:"+admittedParallelRequests);
       } else {
         await cacheInitializerCommon;
       }

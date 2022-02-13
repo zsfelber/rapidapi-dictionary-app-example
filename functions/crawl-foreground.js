@@ -1,4 +1,3 @@
-import { exit } from 'process';
 
 const fs = require('fs');
 
@@ -12,7 +11,7 @@ const MAX_NODE_FREQUENCY = 1000;
 const TRAVERSE_ALL = true;
 
 
-export async function handler(event, context) {
+exports.handler = async function(event, context) {
 
   const API = "wordsapi";
   crawler.initCrawler(

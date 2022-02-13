@@ -1,7 +1,7 @@
 const methods = {
-    "crawl-foreground":require("../lambda/crawl-foreground"),
-    "generate-indexes-foreground":require("../lambda/generate-indexes-foreground"),
-    "getWord":require("../lambda/getWord"),
+    "crawl-foreground":require("../functions/crawl-foreground"),
+    "generate-indexes-foreground":require("../functions/generate-indexes-foreground"),
+    "getWord":require("../functions/getWord"),
 };
 
 

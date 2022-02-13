@@ -8,7 +8,7 @@ const MAX_LEVEL_MINCL = 2;
 const service = require("./include/service");
 
 
-export async function handler(event, context) {
+exports.handler = async function(event, context) {
 
   //   extract the word query parameter from the HTTP request
   const word = event.queryStringParameters.word || "";
@@ -58,7 +58,7 @@ export async function handler(event, context) {
   }, context);
 }
 
-export async function get(api, word, mode, letter, ffrom, fto, stopiterateapis) {
+async function get(api, word, mode, letter, ffrom, fto, stopiterateapis) {
 
   const crawler = require('./include/crawler.js').aCrawler();
   stopiterateapis.crawler = crawler;

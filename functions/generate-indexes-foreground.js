@@ -8,7 +8,7 @@ const MAX_NODE_FREQUENCY = 1000;
 const TRAVERSE_ALL = true;
 
 
-export async function handler(event, context) {
+exports.handler = async function(event, context) {
   crawler.initCrawler(
     "wordsapi",
     API_DAILY_LIMIT,

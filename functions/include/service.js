@@ -1,6 +1,6 @@
 
 
-export async function respond(guts, context) {
+exports.respond = async function(guts, context) {
     try {
 
         const data = await guts();
