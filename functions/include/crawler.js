@@ -238,6 +238,13 @@ export function aCrawler() {
         return ojson;
       }
     }
+    function finish() {
+      pendingParallelRequests--;
+      admittedParallelRequests--;
+      if (pendingParallelRequests && !(pendingParallelRequests%1000)) {
+        console.log(API,"--pendingParallelRequests:"+pendingParallelRequests+" admittedParallelRequests:"+admittedParallelRequests);
+      }
+    }
 
     if (fs.existsSync(wfpath)) {
     
@@ -254,11 +261,21 @@ export function aCrawler() {
 
     if (data) {
       if (data.error) {
-        console.warn("File is of an error entry : "+wfpath, " ", (data.error?data.error.message?data.error.message:data.error:"unknown error"));
-        return null;
+        if (data.error.message && data.error.message=="Sorry pal, you were just rate limited by the upstream server.") {
+          console.warn("Delete rate limit error ...  retry ...  "+wfpath, e);
+          fs.unlinkSync(wfpath);
+          data = null;
+        } else {
+          console.warn("File is of an error entry : "+wfpath, " ", (data.error?data.error.message?data.error.message:data.error:"unknown error"));
+          return null;
+        }
       }
-      return convertResult(true);
+      if (data) {
+        return convertResult(true);
+      }
     }
+
+    let sliding = 0;
 
     try {
       let success = await remoteInitBottleneck();
@@ -271,13 +288,18 @@ export function aCrawler() {
         return convertResult(true);
       }
 
+      if (cachedonly) {
+        return null;
+      }
+
+      sliding = 1;
+  
     } catch (e) {
       console.warn("Error (",API,'"'+word+'"', ") ", e&&e.message?e.message:"?");
       return null;
-    }
+    } finally {
 
-    if (cachedonly) {
-      return null;
+      if (!sliding) finish();
     }
 
     try {  
@@ -309,11 +331,7 @@ export function aCrawler() {
         delete pendingObjects[word];
       });
 
-      pendingParallelRequests--;
-      admittedParallelRequests--;
-      if (pendingParallelRequests && !(pendingParallelRequests%1000)) {
-        console.log(API,"--pendingParallelRequests:"+pendingParallelRequests+" admittedParallelRequests:"+admittedParallelRequests);
-      }
+      finish();
 
     }
 
