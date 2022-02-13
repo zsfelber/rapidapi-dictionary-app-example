@@ -4,7 +4,7 @@ const service = require("../../functions/include/service");
 
 const API_DAILY_LIMIT = 25000;
 const MAX_WORDS = 10000000;
-const MAX_NODE_FREQUENCY = 1000;
+const MAX_NODE_FREQUENCY = Number.MAX_SAFE_INTEGER;
 const TRAVERSE_ALL = true;
 
 

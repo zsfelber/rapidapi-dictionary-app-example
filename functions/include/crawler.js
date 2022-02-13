@@ -910,10 +910,10 @@ exports.aCrawler = function (resolvePath = noResolvePath) {
     return { byf, cntf, nowords };
   }
 
-  let existingWords;
-  function doesGoogleWordExist(word) {
-    if (!existingWords) {
-      existingWords = {};
+  let existingGoogleWords;
+  function loadGoogleWords() {
+    if (!existingGoogleWords) {
+      existingGoogleWords = {};
       function split(line, lineNumber) {
         return [line];
       }
@@ -921,13 +921,19 @@ exports.aCrawler = function (resolvePath = noResolvePath) {
         resolvePath.abs("data/english_.csv"),
         { getColumns: split });
       for (let gglword of gglwords) {
-        existingWords[gglword.word] = 1;
+        existingGoogleWords[gglword.word] = 1;
       }
     }
-    return existingWords[word];
+    return existingGoogleWords;
+  }
+
+  function doesGoogleWordExist(word) {
+    loadGoogleWords();
+    return existingGoogleWords[word];
   }
 
   let caggleFreqRecords;
+  let caggleFrequencies;
   function loadCaggleFrequencies() {
     if (!caggleFreqRecords) {
       caggleFreqRecords = csvParse.load(
@@ -937,14 +943,6 @@ exports.aCrawler = function (resolvePath = noResolvePath) {
             count: parseInt
           }
         });
-    }
-    return caggleFreqRecords;
-  }
-
-  let caggleFrequencies;
-  function getWordCaggleFrequency(word) {
-    loadCaggleFrequencies();
-    if (!caggleFrequencies) {
 
       caggleFrequencies = {};
 
@@ -954,6 +952,11 @@ exports.aCrawler = function (resolvePath = noResolvePath) {
         }
       }
     }
+    return caggleFrequencies;
+  }
+
+  function getWordCaggleFrequency(word) {
+    loadCaggleFrequencies();
     return caggleFrequencies[word];
   }
 
@@ -1078,6 +1081,7 @@ exports.aCrawler = function (resolvePath = noResolvePath) {
     loadCommonWords3000_a_e, loadCommonWords3000_f_p, loadCommonWords3000_q_z, loadCommonWords10000_a_c,
     loadCommonWords10000_d_h, loadCommonWords10000_i_o, loadCommonWords10000_p_r,
     loadCommonWords10000_s_z, loadCommonWords3000, loadCommonWords10000, loadCommon3000_words,
-    loadCommon10000_words, loadAll_words, loadMyWords, wordsByFrequency, generateIndexes
+    loadCommon10000_words, loadAll_words, loadMyWords, wordsByFrequency, generateIndexes,
+    loadGoogleWords, loadCaggleFrequencies, doesGoogleWordExist, getWordCaggleFrequency
   };
 }
