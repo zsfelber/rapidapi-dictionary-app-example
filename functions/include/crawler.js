@@ -10,7 +10,7 @@ const API_LIMIT_EXCEPTION = {
 export function aCrawler() {
 
   const TURNING_TIME_GMT = [20,55];
-  const MAX_PARALLEL = 10;
+  const MAX_PARALLEL = 100;
   let API;
   let CACHE_DIR;
   let API_DAILY_LIMIT;
@@ -262,7 +262,7 @@ export function aCrawler() {
     if (data) {
       if (data.error) {
         if (data.error=="Sorry pal, you were just rate limited by the upstream server.") {
-          console.warn("Delete rate limit error ...  retry ...  "+wfpath, e);
+          console.warn("Delete rate limit error ...  retry ...  "+wfpath);
           fs.unlinkSync(wfpath);
           data = null;
         } else {
