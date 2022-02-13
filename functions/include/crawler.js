@@ -1,7 +1,8 @@
 
 const fs = require('fs');
 const finder = require('./finder.js');
-const csvParse = require('csv-parse');
+const csvParse = require('csv-load-sync');;
+const path = require("path");
 
 const API_LIMIT_EXCEPTION = {
   apiLimitException:1
@@ -119,14 +120,14 @@ exports.aCrawler = function() {
     }
     
     
-    if (!fs.existsSync(`${CACHE_DIR}/words`)){
-      fs.mkdirSync(`${CACHE_DIR}/words`, { recursive: true });
+    if (!fs.existsSync(path.resolve(__dirname, `${CACHE_DIR}/words`))){
+      fs.mkdirSync(path.resolve(__dirname, `${CACHE_DIR}/words`, { recursive: true }));
     }
-    if (!fs.existsSync(`${CACHE_DIR}/clusters`)){
-      fs.mkdirSync(`${CACHE_DIR}/clusters`);
+    if (!fs.existsSync(path.resolve(__dirname, `${CACHE_DIR}/clusters`))){
+      fs.mkdirSync(path.resolve(__dirname, `${CACHE_DIR}/clusters`));
     }
-    if (!fs.existsSync(`cache/index`)){
-      fs.mkdirSync(`cache/index`);
+    if (!fs.existsSync(path.resolve(__dirname, `cache/index`))){
+      fs.mkdirSync(path.resolve(__dirname, `cache/index`));
     }
 
     curtime = new Date();
@@ -246,16 +247,16 @@ exports.aCrawler = function() {
       }
     }
 
-    if (fs.existsSync(wfpath)) {
+    if (fs.existsSync(path.resolve(__dirname, wfpath))) {
     
       //console.log(API, "From cache file/single "+wfpath+"  asobject:"+asobject+"...\n");
-      let ijson = fs.readFileSync(wfpath).toString();
+      let ijson = fs.readFileSync(path.resolve(__dirname, wfpath)).toString();
       try {
         data = JSON.parse(ijson);
 
       } catch (e) {
         console.warn("Delete invalid file : "+wfpath, e);
-        fs.unlinkSync(wfpath);
+        fs.unlinkSync(path.resolve(__dirname, wfpath));
       }
     }
 
@@ -263,7 +264,7 @@ exports.aCrawler = function() {
       if (data.error) {
         if (data.error=="Sorry pal, you were just rate limited by the upstream server.") {
           console.warn("Delete rate limit error ...  retry ...  "+wfpath);
-          fs.unlinkSync(wfpath);
+          fs.unlinkSync(path.resolve(__dirname, wfpath));
           data = null;
         } else {
           console.warn("File is of an error entry : "+wfpath, " ", (data.error?data.error.message?data.error.message:data.error:"unknown error"));
@@ -322,7 +323,7 @@ exports.aCrawler = function() {
       return null;
     } finally {
 
-      fs.writeFile(wfpath, djson, (err) => {
+      fs.writeFile(path.resolve(__dirname, wfpath, djson), (err) => {
         if (err) {
           console.error("Cache file/single "+wfpath+"  asobject:"+asobject+" pendingParallelRequests:"+pendingParallelRequests+" admittedParallelRequests:"+admittedParallelRequests+" write failure : "+err+"\n");
         } else {
@@ -844,7 +845,7 @@ exports.aCrawler = function() {
     let files = [];
     const indpath = `cache/index/frequency`;
 
-    let ijson = fs.readFileSync(indpath);
+    let ijson = fs.readFileSync(path.resolve(__dirname, indpath));
     let find = JSON.parse(ijson);
 
     let words0 = [];
@@ -902,28 +903,33 @@ exports.aCrawler = function() {
   }
 
   async function getCaggleFrequencies() {
-    
-    const input = fs.readFileSync("./data/unigram_freq.csv");
-    const records = csvParse.sync(input);
+    try {
 
-    records.splice(0, 1);
-    let nowords = records.length;
+      const input = fs.readFileSync(path.resolve(__dirname, "./data/unigram_freq.csv"));
+      const records = csvParse.sync.parse(input);
 
-    let cntf = 0;
-    let byf = {};
-    function entry(f) {
-      let es = byf[f];
-      if (!es) {
-        byf[f] = es = [];
-        cntf++;
+      records.splice(0, 1);
+      let nowords = records.length;
+
+      let cntf = 0;
+      let byf = {};
+      function entry(f) {
+        let es = byf[f];
+        if (!es) {
+          byf[f] = es = [];
+          cntf++;
+        }
+        return es;
       }
-      return es;
-    }
-    for (let record of records) {
-      for (let word in record) {
-        let f = record[word];
-        entry(f).push(word);
+      for (let record of records) {
+        for (let word in record) {
+          let f = record[word];
+          entry(f).push(word);
+        }
       }
+    } catch (e) {
+      console.error("csv error", e);
+      process.exit(1);
     }
 
     return {byf, cntf, nowords};
@@ -991,7 +997,7 @@ exports.aCrawler = function() {
     const djson = JSON.stringify(byfs);
 
     console.log(API, "Saving cache file/index "+indpath);
-    fs.writeFileSync(indpath, djson);
+    fs.writeFileSync(path.resolve(__dirname, indpath), djson);
 
   }
 

@@ -1,7 +1,6 @@
 const { app, session, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 const { exit } = require("process");
-const findChromeVersion = require("find-chrome-version");
 
 const hub = require("./localserver/hub");
 
@@ -15,11 +14,8 @@ if (!app.requestSingleInstanceLock()) {
 
 async function printVersion() {
     //return promise;*/
-    const chromeVersion = await findChromeVersion();
 
     console.log(`node version is ${process.version}`);
-
-    console.log(`chrome version is ${chromeVersion}`);
 
     console.log(`other versions ${JSON.stringify(process.versions)}`);
 
@@ -30,7 +26,6 @@ function loadMainWindow() {
 
     printVersion();
 
-    // https://www.npmjs.com/package/electron-chrome-extensions
     const mainWindow = new BrowserWindow({
         width: 1200,
         height: 800,
