@@ -19,12 +19,12 @@ invoke: async function(id, params) {
     const resolvePath = {
         rel:function(dirname, rel) {
             const abs = path.join(dirname, rel);
-            console.log("e-resolvePath dirname:"+dirname+" rel:"+rel+ " -> "+abs);
+            //console.log("e-resolvePath dirname:"+dirname+" rel:"+rel+ " -> "+abs);
             return abs;
         },
         abs:function(rel) {
             const abs = path.join(appDir, rel);
-            console.log("e-resolvePath app:"+appDir+" rel:"+rel+ " -> "+abs);
+            //console.log("e-resolvePath app:"+appDir+" rel:"+rel+ " -> "+abs);
             return abs;
         }
     };

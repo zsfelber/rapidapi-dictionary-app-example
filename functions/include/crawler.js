@@ -908,21 +908,39 @@ exports.aCrawler = function(resolvePath=noResolvePath) {
     return {byf, cntf, nowords};
   }
 
+  let existingWords;
+  function doesGoogleWordExist(word) {
+    if (!existingWords) {
+      existingWords = {};
+      function split(line, lineNumber) {
+        return [line];
+      }
+      const gglwords = csvParse.load(
+        resolvePath.rel(__dirname, "googletransapi/meta/wordList/english_.csv"),
+        {getColumns: split});
+      for (let gglword of gglwords) {
+        existingWords[gglword.word] = 1;
+      }
+    }
+    return existingWords[word];
+  }
+
   async function getCaggleFrequencies() {
     try {
 
-      const records = csvParse.load(
+      const freqrecs = csvParse.load(
         resolvePath.rel(__dirname, "data/unigram_freq.csv"),
         {convert: {
           count: parseInt
         }});
 
       //records.splice(0, 1);
-      let nowords = records.length;
+      let nowords = 0;
 
       let cntf = 0;
       let byf = {};
       function entry(f) {
+        nowords++;
         let es = byf[f];
         if (!es) {
           byf[f] = es = [];
@@ -930,8 +948,10 @@ exports.aCrawler = function(resolvePath=noResolvePath) {
         }
         return es;
       }
-      for (let record of records) {
-        entry(record.count).push(record.word);
+      for (let frec of freqrecs) {
+        if (doesGoogleWordExist(frec.word)) {
+          entry(frec.count).push(frec.word);
+        }
       }
 
       return {byf, cntf, nowords};
@@ -963,14 +983,16 @@ exports.aCrawler = function(resolvePath=noResolvePath) {
     function quantilize(size) {
       let wcnt = 0;
       let fqcnt = 0;
-      let buckets = [100];
+      let buckets = ["Number.MAX_SAFE_INTEGER"];
       let pf=100.005;
-      function buck(f, end) {
-        console.log(API, "Frequency: "+f+".."+end.toFixed(3)+"  words:"+wcnt+"  freqs:"+fqcnt);
+      let pfstr="Number.MAX_SAFE_INTEGER";
+      function buck(f, endstr) {
+        console.log(API, "Frequency: "+f+".."+endstr+"  words:"+wcnt+"  freqs:"+fqcnt);
         buckets.push(f);
         fqcnt = 0;
         wcnt = 0;
         pf = f;
+        pfstr = (pf-0.005).toFixed(3);
       }
       let len = fkeys.length;
       let i = 0;
@@ -984,27 +1006,44 @@ exports.aCrawler = function(resolvePath=noResolvePath) {
         if (i==len) {
           buck(0, 0);
         } else if (i==len-1) {
-          buck(0.001, pf-0.005);
+          buck(0.001, pfstr);
         } else {
           if (wcnt >= size) {
-            buck(f, pf-0.005);
+            buck(f, pfstr);
           }
         }
 
       }
 
       console.log(API, "Frequency:..  cnt:"+wcnt);
-      console.log(API, "var frqntls"+size+"=["+buckets.join(", ")+"];\n");
+      let result = "var frqntls"+size+"=["+buckets.join(", ")+"];"
+      console.log(API, result+"\n");
+      return result;
     }
-    quantilize(800);
-    quantilize(3000);
-    quantilize(10000);
+    let q1 = quantilize(800);
+    let q2 = quantilize(3000);
+    let q3 = quantilize(10000);
 
     const indpath = `cache/index/frequency`;
+    const clindpath = `public/js/frequency.js`;
     const djson = JSON.stringify(byfs);
 
     console.log(API, "Saving cache file/index "+indpath);
     fs.writeFileSync(resolvePath.abs(indpath), djson);
+
+    console.log(API, "Saving client index "+clindpath);
+    let clfq = `
+
+    ${q1}
+    ${q2}
+    ${q3}
+
+    var frqntlses = {
+      800:frqntls800, 3000:frqntls3000, 10000:frqntls10000
+    };
+      `
+    fs.writeFileSync(resolvePath.abs(clindpath), clfq);
+
 
   }
 

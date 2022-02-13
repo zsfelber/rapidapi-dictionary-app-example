@@ -21,12 +21,13 @@ async function printVersion() {
 
 }
 
-function loadMainWindow() {
-    console.log("electron.loadMainWindow");
+function loadWindow(uri) {
 
-    printVersion();
+    let absfile = path.join(__dirname, "..", "public", uri).normalize();
 
-    const mainWindow = new BrowserWindow({
+    console.log("loadWindow " + absfile);
+
+    const win = new BrowserWindow({
         width: 1200,
         height: 800,
         webPreferences: {
@@ -37,12 +38,19 @@ function loadMainWindow() {
         }
     });
 
+    win.loadFile(absfile);
 
-    let index = path.join(__dirname, "..", "public", "index.html").normalize();
-    console.log("index:" + index);
-    mainWindow.loadFile(index);
+    win.setMenuBarVisibility(false);
 
-    mainWindow.setMenuBarVisibility(true);
+    return win;
+}
+
+function loadMainWindow() {
+    console.log("electron.loadMainWindow");
+
+    printVersion();
+
+    loadWindow("index.html");
 }
 
 app.on("ready", loadMainWindow);
@@ -58,8 +66,12 @@ app.on("activate", () => {
 });
 
 ipcMain.handle('service', (event, note) => {
-    console.log("electron.invoke ", note);
+    console.log("electron.invoke service ", note);
     let promise = hub.invoke(note.id, note.qs);
     return promise;
 });
 
+ipcMain.handle('loadWindow', (event, note) => {
+    console.log("electron.invoke loadWindow ", note);
+    loadWindow(note.uri);
+});

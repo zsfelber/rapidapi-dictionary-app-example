@@ -6,14 +6,6 @@ var page,col=2,wordInfoTbl,wordInfoRow,wordInfoBox,info;
 
 var letters=[String.fromCharCode(1)].concat(numbers()).concat([":"]).concat(ucases()).concat(lcases());
 
-var frqntls800=[100, 5.08, 4.69, 4.45, 4.26, 4.1, 3.97, 3.86, 3.75, 3.65, 3.56, 3.47, 3.39, 3.32, 3.25, 3.18, 3.12, 3.05, 2.99, 2.93, 2.87, 2.81, 2.76, 2.7, 2.66, 2.6, 2.56, 2.5, 2.45, 2.4, 2.36, 2.3, 2.24, 2.19, 2.12, 2.08, 2.03, 2.02, 1.97, 1.9, 1.82, 1.74, 1.73, 0.001, 0];
-var frqntls3000=[100, 4.31, 3.82, 3.47, 3.21, 2.99, 2.8, 2.62, 2.45, 2.3, 2.12, 1.97, 1.74, 0.001, 0];
-var frqntls10000=[100, 3.38, 2.68, 2.17, 1.73, 0.001, 0];
-
-var frqntlses = {
-    800:frqntls800, 3000:frqntls3000, 10000:frqntls10000
-};
-
 var checkboxdata = {
     "bucket1": {
         "also": { defchecked: true },
@@ -317,7 +309,7 @@ function createLetterLink(i, N) {
     let len = frqntls.length;
     let result;
     if (i==1) {
-        result = {ffrom:frqntls[1], fto:100, lab:"1"};
+        result = {ffrom:frqntls[1], fto:Number.MAX_SAFE_INTEGER, lab:"1"};
     } else if (i==len-1) {
         result = {ffrom:0, fto:0, lab:"unknown"};
     } else {
@@ -455,7 +447,13 @@ function printLabel(data) {
 }
 
 async function gocur() {
-    window.open("?word="+currentpopword, "_blank");
+    let e = isElectron();
+
+    if (e) {
+        window.api.loadWindow({uri:"index.html?word="+currentpopword});
+    } else {
+        window.open("?word="+currentpopword, "_blank");
+    }
 }
 
 
@@ -985,8 +983,8 @@ $(document).ready(function(){
     if (!urlffrom) urlffrom = 5;
     if (!urlfto) urlfto = 100;
     let ffromtoinputs=`
-    <input class='form-check-input input-sm' size=1 type='input' id='ffrom' name='ffrom' value='${urlffrom}' placeholder='0'/>..
-    <input class='form-check-input input-sm' size=1 type='input' id='fto' name='fto' value='${urlfto}' placeholder='100'/>`;
+    <input class='form-check-input input-sm' size=8 type='input' id='ffrom' name='ffrom' value='${urlffrom}' placeholder='0'/>..
+    <input class='form-check-input input-sm' size=8 type='input' id='fto' name='fto' value='${urlfto}' placeholder='100'/>`;
 
     addRadio(chbs7, "words by frequency", {defchecked:false}, "mode", null, ffromtoinputs);
 
@@ -1010,12 +1008,14 @@ $(document).ready(function(){
     }
     function createfrlabs(N) {
         let freqlabels = document.querySelector(".freqlabels"+N);
-        let frqntls = frqntlses[N];
-        for (let i=1; i<frqntls.length; i++) {
-            let iv = createLetterLink(i, N);
-            freqlabels.appendChild(iv.a);
-            let spc = document.createTextNode("  ");
-            freqlabels.appendChild(spc);
+        if (window["frqntlses"]) {
+            let frqntls = window["frqntlses"][N];
+            for (let i=1; i<frqntls.length; i++) {
+                let iv = createLetterLink(i, N);
+                freqlabels.appendChild(iv.a);
+                let spc = document.createTextNode("  ");
+                freqlabels.appendChild(spc);
+            }
         }
     }
     createfrlabs(800);
