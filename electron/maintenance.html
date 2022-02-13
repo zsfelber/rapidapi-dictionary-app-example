@@ -6,7 +6,7 @@
     <title>Dictionary App</title>
 
     <!-- load our style sheet -->
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="../public/css/styles.css">
 
     <!-- load Bootstrap library into our HTML -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -17,7 +17,7 @@
     <main class="container-fluid">
         <div class="row justify-content-center align-items-center">
             <div id="word-search" class="col-md-7">
-                <h2>Collecting new words...</h2>
+                <h2>Maintenance...</h2>
                 <p class="text-center">powered by <a href="https://www.wordsapi.com/#try">www.wordsapi.com</a></p>
             </div>
         </div>
@@ -31,9 +31,8 @@
                         <div class="boxcards">
 
                             <div class="boxcard">
-                            <label>Extend dictionary until API limit...</label>
+                            <label>Generate search indexes on server...</label>
                             <input type="hidden" name="started" value="true"/>
-                            <input id='word-input' type="text" class="form-control" name="word" placeholder=""/>
 
                             <br/>
                             <br/>
@@ -66,8 +65,8 @@
     <!-- import jquery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-    <script src="js/serve.js"></script>
+    <script src="../public/js/serve.js"></script>
     <!-- import our javascript file -->
-    <script src="js/collect.js"></script>
+    <script src="../public/js/maintenance.js"></script>
 </body>
 </html>

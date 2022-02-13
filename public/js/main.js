@@ -1036,7 +1036,7 @@ $(document).ready(function(){
 
     if (!isElectron()) {
         console.log("It is not electron, hiding restricted pages.");
-        $(".restricted-electron").hide();
+        $(".restricted-electron").css('display', 'none');
     }
     
     async function dosubmit(word) {
