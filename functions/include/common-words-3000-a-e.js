@@ -1,7 +1,7 @@
 
 // https://www.ef.com/wwen/english-resources/english-vocabulary/top-3000-words/
 
-export const TheMostCommon3000 = {
+exports.TheMostCommon3000 = {
     a : 1,
     abandon : 1,
     ability : 1,

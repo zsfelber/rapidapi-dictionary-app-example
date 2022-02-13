@@ -1,5 +1,5 @@
 // https://englishgrammarhere.com/vocabulary/10000-most-common-words-in-english-part-5/
-export const TheMostCommon10000 = {
+exports.TheMostCommon10000 = {
     i: 1,
     ia: 1,
     ian: 1,
