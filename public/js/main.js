@@ -310,8 +310,6 @@ function createLetterLink(i, N) {
     let result;
     if (i==1) {
         result = {ffrom:frqntls[1], fto:Number.MAX_SAFE_INTEGER, lab:"1"};
-    } else if (i==len-1) {
-        result = {ffrom:0, fto:0, lab:"unknown"};
     } else {
         result = {ffrom:frqntls[i], fto:frqntls[i-1]-0.005, lab:""+i};
     }
@@ -726,7 +724,7 @@ function updateWords() {
 
         urllen = Number(urllen);
         urli = Number(urli);
-        const dlpag = labelled("Page "+(urli)+" of "+(urllen-2), "Go to ");
+        const dlpag = labelled("Page "+(urli)+" of "+(urllen-1), "Go to ");
 
         function addnav(i, lab0) {
             let iv = createLetterLink(i, urlN);
@@ -741,10 +739,10 @@ function updateWords() {
             }
             addnav(urli-1, "prev")
         }
-        if (urli<urllen-2) {
+        if (urli<urllen-1) {
             addnav(urli+1, "next")
-            if (urli != urllen-3) {
-                addnav(urllen-2, "last")
+            if (urli != urllen-2) {
+                addnav(urllen-1, "last")
             }
         }
         info.appendChild(dlpag);

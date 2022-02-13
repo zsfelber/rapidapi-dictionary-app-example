@@ -1032,9 +1032,7 @@ exports.aCrawler = function (resolvePath = noResolvePath) {
         wcnt += es ? es.length : 0;
 
         if (i == len) {
-          buck(0, 0);
-        } else if (i == len - 1) {
-          buck(0.001, pfstr);
+          buck(0, pfstr);
         } else {
           if (wcnt >= size) {
             buck(f, pfstr);
