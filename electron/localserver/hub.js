@@ -1,3 +1,5 @@
+const path = require("path");
+
 const methods = {
     "crawl-collect.all":require("../functions/crawl-collect-all"),
     "crawl-generate-indexes":require("../functions/crawl-generate-indexes"),
@@ -14,7 +16,8 @@ invoke: async function(id, params) {
         queryStringParameters[pair[0]] = pair[1];
     }
     const event = {
-        queryStringParameters
+        queryStringParameters,
+        resolvePath:path.join
     };
     const context = {
         electron: true

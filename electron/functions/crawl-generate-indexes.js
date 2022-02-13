@@ -1,5 +1,6 @@
 
-const crawler = require('../../functions/include/crawler').aCrawler();
+const path = require("path");
+const crawler = require('../../functions/include/crawler').aCrawler(path.join);
 const service = require("../../functions/include/service");
 
 const API_DAILY_LIMIT = 25000;

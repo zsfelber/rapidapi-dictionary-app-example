@@ -17,6 +17,7 @@ exports.handler = async function(event, context) {
   const ffrom = event.queryStringParameters.ffrom || 0;
   const fto = event.queryStringParameters.fto || 100;
   let apis = event.queryStringParameters.apis || "";
+  const resolvePath = event.resolvePath;
 
   return service.respond(async () => {
     if (apis) {
@@ -27,7 +28,7 @@ exports.handler = async function(event, context) {
       let stopiterateapis = { stop: 0 };
 
       for (let api of apis) {
-        let ad = await get(api, word, mode, letter, ffrom, fto, stopiterateapis);
+        let ad = await get(api, word, mode, letter, ffrom, fto, resolvePath, stopiterateapis);
 
         if (ad) {
 
@@ -58,9 +59,9 @@ exports.handler = async function(event, context) {
   }, context);
 }
 
-async function get(api, word, mode, letter, ffrom, fto, stopiterateapis) {
+async function get(api, word, mode, letter, ffrom, fto, resolvePath, stopiterateapis) {
 
-  const crawler = require('./include/crawler.js').aCrawler();
+  const crawler = require('./include/crawler.js').aCrawler(resolvePath);
   stopiterateapis.crawler = crawler;
 
   switch (mode) {
