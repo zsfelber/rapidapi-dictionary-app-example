@@ -10,7 +10,14 @@ $(document).ready(function(){
         return decodeURI(results[1]).replace(/\+/g," ") || false;
     }
 
+    async function fetchCollect(word, qs=[]) {
+        qs.push(`word=${word}`);
     
+        let data = await serve("crawl-foreground", qs);
+    
+        return data;
+    }
+        
     async function dosubmit() {
 
         // adds the text 'Loading...' to our word 
@@ -19,9 +26,7 @@ $(document).ready(function(){
 
         try {
 
-            const data0 = await fetch(`/.netlify/functions/crawl-foreground?word=${$.urlParam('word')}`, { mode: 'cors'});
-            // asynchronously calls our custome function
-            const data = await data0.json();
+            const data = await fetchCollect($.urlParam('word'));
 
             console.log("response:", data);
             update(true);

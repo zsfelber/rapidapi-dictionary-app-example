@@ -123,19 +123,7 @@ async function fetchWord(word, mode, qs=[]) {
     qs.push(`mode=${mode}`);
     qs.push(`apis=${apis.join("-")}`);
 
-    let e = isElectron(),data;
-    console.log("isElectron:"+e);
-    if (e) {
-
-        data = window.api.service({id:"getWord", qs});
-        console.log("data:", data);
-
-    } else {
-
-        const data0 = await fetch(`/.netlify/functions/getWord?${qs.join("&")}`, { mode: 'cors'});
-        // asynchronously calls our custome function
-        data = await data0.json();
-    }
+    let data = await serve("getWord", qs);
 
     return data;
 }

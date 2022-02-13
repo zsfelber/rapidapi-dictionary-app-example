@@ -10,7 +10,13 @@ $(document).ready(function(){
         return decodeURI(results[1]).replace(/\+/g," ") || false;
     }
 
+    async function fetchMain(qs=[]) {
     
+        let data = await serve("generate-indexes-foreground", qs);
+    
+        return data;
+    }
+
     async function dosubmit() {
 
         // adds the text 'Loading...' to our word 
@@ -19,9 +25,7 @@ $(document).ready(function(){
 
         try {
 
-            const data0 = await fetch(`/.netlify/functions/generate-indexes-foreground`, { mode: 'cors'});
-            // asynchronously calls our custome function
-            const data = await data0.json();
+            const data = await fetchMain();
 
             console.log("response:", data);
             update(true);
