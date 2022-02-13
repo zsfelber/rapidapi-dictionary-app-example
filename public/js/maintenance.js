@@ -38,8 +38,7 @@ $(document).ready(function(){
             const data = await fetchMain();
 
             console.log("response:", data);
-            update(true);
-
+ 
         } catch (e) {
             // logs the error if one exists
             console.log(e);

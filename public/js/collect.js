@@ -39,7 +39,6 @@ $(document).ready(function(){
             const data = await fetchCollect($.urlParam('word'));
 
             console.log("response:", data);
-            update(true);
 
         } catch (e) {
             // logs the error if one exists
