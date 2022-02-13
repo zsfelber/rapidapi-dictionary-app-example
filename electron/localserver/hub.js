@@ -1,12 +1,13 @@
 const methods = {
-    "crawl-collect.all":require("../electron/functions/crawl-collect.all"),
-    "crawl-generate-indexes":require("../electron/functions/crawl-generate-indexes"),
+    "crawl-collect.all":require("../functions/crawl-collect.all"),
+    "crawl-generate-indexes":require("../functions/crawl-generate-indexes"),
     "getWord":require("../../functions/getWord"),
 };
 
 
 module.exports = {
 invoke: async function(id, params) {
+    console.log("localserver invoke "+id, params);
     const queryStringParameters = {};
     for (let p of params) {
         let pair = p.split('=');
