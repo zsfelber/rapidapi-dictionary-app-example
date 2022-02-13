@@ -1,4 +1,4 @@
-export const MyWords = {
+exports.MyWords = {
     "crap": 1,
     "dear": 1,
     "dumb": 1,

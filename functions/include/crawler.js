@@ -6,7 +6,7 @@ const API_LIMIT_EXCEPTION = {
   apiLimitException:1
 };
 
-exports.aCrawler = async function() {
+exports.aCrawler = function() {
 
   const TURNING_TIME_GMT = [20,55];
   const MAX_PARALLEL = 100;

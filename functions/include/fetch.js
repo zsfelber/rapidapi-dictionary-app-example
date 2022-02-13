@@ -4,7 +4,7 @@ const httpsAgent = new https.Agent({ keepAlive: true });
 const errors = require('./errors.js');
 
 
-export async function fetchTextFromHttpUrl(url, headers, info) {
+exports.fetchTextFromHttpUrl = async function(url, headers, info) {
 
     let f = await fetch;
     f = f.default;
