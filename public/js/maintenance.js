@@ -5,16 +5,6 @@ var checkboxdata = {
     },
 };
 
-function isch(id) {
-    id = id.replace(/ /g, "_");
-    var chh = $("#"+id);
-    if (chh.length) {
-        return chh.val()=="true";
-    } else {
-        alert("unknown label : "+id);
-    }
-}
-
 // Specifies a function to execute when the DOM is fully loaded.
 $(document).ready(function(){
     $.urlParam = function(name){
