@@ -26,6 +26,17 @@ function ischeckedradio(groupid, rid, ischeckeddef) {
     return v;
 }
 
+function checha(id) {
+    var ch = $("#_"+id);
+    var chh = $("#"+id);
+    chh.val(ch.is(':checked'));
+
+    if (update_to) {
+        clearTimeout(update_to);
+    }
+    update_to = setTimeout(update, 1000, false);
+}
+
 function addCheckbox(cont, id, buckcheck, label) {
     const ischeckeddef = buckcheck.defchecked;
     if (!label) label = id;

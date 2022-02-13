@@ -131,17 +131,6 @@ function lcases() {
 }
 
 
-function checha(id) {
-    var ch = $("#_"+id);
-    var chh = $("#"+id);
-    chh.val(ch.is(':checked'));
-
-    if (update_to) {
-        clearTimeout(update_to);
-    }
-    update_to = setTimeout(update, 1000, false);
-}
-
 function chkdict() {
     let chk = $("#dictionary").is(':checked');
     console.log("dictionary is checked:"+chk);

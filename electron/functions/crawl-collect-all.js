@@ -28,7 +28,7 @@ exports.handler = async function(event, context) {
 
       apis = apis.split("-");
       for (let api of apis) {
-        await doItFor(api);
+        await doItFor(api, resolvePath);
       }
     }
     return {result:true};
@@ -36,9 +36,9 @@ exports.handler = async function(event, context) {
 
 }
 
-async function doItFor(api) {
+async function doItFor(api, resolvePath) {
 
-  const crawler = require('../../functions/include/crawler').aCrawler(context.resolvePath);
+  const crawler = require('../../functions/include/crawler').aCrawler();
 
   crawler.initCrawler(
     api,
