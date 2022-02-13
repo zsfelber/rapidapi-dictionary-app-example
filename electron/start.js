@@ -3,7 +3,7 @@ const path = require("path");
 const { exit } = require("process");
 const findChromeVersion = require("find-chrome-version");
 
-const hub = require("../localserver/hub");
+const hub = require("./localserver/hub");
 
 // Application already running, so we close now
 if (!app.requestSingleInstanceLock()) {

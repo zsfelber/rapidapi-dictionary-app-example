@@ -1,7 +1,7 @@
 const methods = {
-    "crawl-foreground":require("../functions/crawl-foreground"),
-    "generate-indexes-foreground":require("../functions/generate-indexes-foreground"),
-    "getWord":require("../functions/getWord"),
+    "crawl-collect.all":require("../electron/functions/crawl-collect.all"),
+    "crawl-generate-indexes":require("../electron/functions/crawl-generate-indexes"),
+    "getWord":require("../../functions/getWord"),
 };
 
 

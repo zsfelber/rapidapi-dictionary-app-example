@@ -17,6 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.19.2",
+    "csv-parse": "^5.0.4",
     "electron-chrome-extensions": "^3.9.0",
     "fast-find-in-files": "^0.1.1",
     "find-chrome-version": "^2.2.0",

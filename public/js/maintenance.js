@@ -12,7 +12,7 @@ $(document).ready(function(){
 
     async function fetchMain(qs=[]) {
     
-        let data = await serve("generate-indexes-foreground", qs);
+        let data = await serve("crawl-generate-indexes", qs);
     
         return data;
     }

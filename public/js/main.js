@@ -1033,6 +1033,11 @@ $(document).ready(function(){
     //});
 
     initSpeak();
+
+    if (!isElectron()) {
+        console.log("It is not electron, hiding restricted pages.");
+        $(".restricted-electron").hide();
+    }
     
     async function dosubmit(word) {
 

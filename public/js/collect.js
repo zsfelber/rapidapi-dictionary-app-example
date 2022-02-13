@@ -13,7 +13,7 @@ $(document).ready(function(){
     async function fetchCollect(word, qs=[]) {
         qs.push(`word=${word}`);
     
-        let data = await serve("crawl-foreground", qs);
+        let data = await serve("crawl-collect.all", qs);
     
         return data;
     }
