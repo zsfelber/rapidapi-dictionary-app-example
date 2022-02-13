@@ -121,7 +121,7 @@ exports.aCrawler = function() {
     
     
     if (!fs.existsSync(path.resolve(__dirname, `${CACHE_DIR}/words`))){
-      fs.mkdirSync(path.resolve(__dirname, `${CACHE_DIR}/words`, { recursive: true }));
+      fs.mkdirSync(path.resolve(__dirname, `${CACHE_DIR}/words`), { recursive: true });
     }
     if (!fs.existsSync(path.resolve(__dirname, `${CACHE_DIR}/clusters`))){
       fs.mkdirSync(path.resolve(__dirname, `${CACHE_DIR}/clusters`));
@@ -905,10 +905,13 @@ exports.aCrawler = function() {
   async function getCaggleFrequencies() {
     try {
 
-      const input = fs.readFileSync(path.resolve(__dirname, "./data/unigram_freq.csv"));
-      const records = csvParse.sync.parse(input);
+      const records = csvParse.load(
+        path.resolve(__dirname, "./data/unigram_freq.csv"),
+        {convert: {
+          count: parseInt
+        }});
 
-      records.splice(0, 1);
+      //records.splice(0, 1);
       let nowords = records.length;
 
       let cntf = 0;
@@ -922,17 +925,15 @@ exports.aCrawler = function() {
         return es;
       }
       for (let record of records) {
-        for (let word in record) {
-          let f = record[word];
-          entry(f).push(word);
-        }
+        entry(record.count).push(record.word);
       }
+
+      return {byf, cntf, nowords};
+
     } catch (e) {
       console.error("csv error", e);
       process.exit(1);
     }
-
-    return {byf, cntf, nowords};
   }
 
   async function generateIndexes() {
