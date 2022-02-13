@@ -3,7 +3,7 @@ const fs = require('fs');
 
 const path = require("path");
 const service = require("../../functions/include/service");
-const fastFindInFiles =  require('fast-find-in-files');
+//const fastFindInFiles =  require('fast-find-in-files');
 
 const API_DAILY_LIMIT = 24500;
 const MAX_WORDS = 10000000;
@@ -54,17 +54,17 @@ async function doItFor(api, resolvePath) {
   console.log(api, "word count:"+Object.keys(totwords).length);
   
   const CACHE_DIR = "cache/"+api;
-  let sorries = await fastFindInFiles.fastFindInFiles(`${CACHE_DIR}/words`, "Sorry pal, you were just rate limited by the upstream server.");
-  console.log(api, "sorry-pals:"+sorries.length);
+  //let sorries = await fastFindInFiles.fastFindInFiles(`${CACHE_DIR}/words`, "Sorry pal, you were just rate limited by the upstream server.");
+  //console.log(api, "sorry-pals:"+sorries.length);
 
   const TWELVE = (CACHE_DIR+"/words/").length;
   let cs=[];
-  for (let strPath of sorries) {
+  /*for (let strPath of sorries) {
     let word = strPath.filePath.substring(TWELVE);
     cs.push(word);
     console.log(word);
     delete totwords[word];
-  }
+  }*/
 
   cs.push.apply(cs, Object.keys(totwords));
 

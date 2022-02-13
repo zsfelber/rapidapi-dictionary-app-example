@@ -4,6 +4,8 @@ const { exit } = require("process");
 
 const hub = require("./localserver/hub");
 
+require('dotenv').config({ path: 'local/.env' })
+
 // Application already running, so we close now
 if (!app.requestSingleInstanceLock()) {
     console.log("app is already running. exit")
@@ -18,6 +20,8 @@ async function printVersion() {
     console.log(`node version is ${process.version}`);
 
     console.log(`other versions ${JSON.stringify(process.versions)}`);
+
+    console.log(`env ${JSON.stringify(process.env)}`);
 
 }
 
