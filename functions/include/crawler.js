@@ -1,7 +1,7 @@
 
 const fs = require('fs');
 const finder = require('./finder.js');
-const csvParse = require('csv-parse/sync');
+const csvParse = require('csv-parse');
 
 const API_LIMIT_EXCEPTION = {
   apiLimitException:1
@@ -904,7 +904,7 @@ exports.aCrawler = function() {
   async function getCaggleFrequencies() {
     
     const input = fs.readFileSync("./data/unigram_freq.csv");
-    const records = csvParse(input);
+    const records = csvParse.sync(input);
 
     records.splice(0, 1);
     let nowords = records.length;
@@ -933,6 +933,7 @@ exports.aCrawler = function() {
 
     //wordsapi works
     //let {byf, cntf, nowords} = await collectFileFrequencies();
+    let {byf, cntf, nowords} = getCaggleFrequencies();
 
     var fkeys = [].concat(Object.keys(byf));
     // descending order !!
