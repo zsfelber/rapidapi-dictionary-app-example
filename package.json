@@ -16,13 +16,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "csv-load-sync": "^2.3.1",
     "csv-parse": "^5.0.4",
     "fast-find-in-files": "^0.1.1",
-    "csv-load-sync": "^2.3.1",
     "jsdom": "^15.2.1",
     "lodash": "^4.17.20",
     "netlify-lambda": "^1.6.3",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.0",
+    "node-find-files": "^1.0.0"
   },
   "devDependencies": {
     "electron": "^17.0.0"
