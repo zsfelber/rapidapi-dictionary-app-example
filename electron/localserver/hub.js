@@ -1,5 +1,5 @@
 const path = require("path");
-const appDir = path.dirname(require.main.filename);
+const appDir = path.resolve(__dirname, "../..").normalize();
 
 const methods = {
     "crawl-collect.all":require("../functions/crawl-collect-all"),

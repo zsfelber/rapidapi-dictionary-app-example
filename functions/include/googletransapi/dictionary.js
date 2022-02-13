@@ -5,7 +5,7 @@ const fs = require('fs'),
 	errors = require('../errors.js'),
 	fetch = require('../fetch.js');
 
-export function transformV2toV1 (data) {
+exports.transformV2toV1 = function  (data) {
 	return data.map((entry) => {
     	let {
     		meanings,
@@ -174,7 +174,7 @@ async function fetchFromSource (word, language) {
 	return dictionaryData;
 }
 
-export async function findDefinitions (word, language, { include }) {
+exports.findDefinitions = async function  (word, language, { include }) {
 	let dictionaryData = await fetchFromSource(word, language);
 
 	if (_.isEmpty(dictionaryData)) { throw new errors.UnexpectedError(); }
