@@ -1,4 +1,5 @@
 const path = require("path");
+const appDir = path.dirname(require.main.filename);
 
 const methods = {
     "crawl-collect.all":require("../functions/crawl-collect-all"),
@@ -15,9 +16,21 @@ invoke: async function(id, params) {
         let pair = p.split('=');
         queryStringParameters[pair[0]] = pair[1];
     }
+    const resolvePath = {
+        rel:function(dirname, rel) {
+            const abs = path.join(dirname, rel);
+            console.log("e-resolvePath dirname:"+dirname+" rel:"+rel+ " -> "+abs);
+            return abs;
+        },
+        abs:function(rel) {
+            const abs = path.join(appDir, rel);
+            console.log("e-resolvePath app:"+appDir+" rel:"+rel+ " -> "+abs);
+            return abs;
+        }
+    };
     const event = {
         queryStringParameters,
-        resolvePath:path.join
+        resolvePath
     };
     const context = {
         electron: true

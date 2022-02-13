@@ -6,8 +6,15 @@ const csvParse = require('csv-load-sync');;
 const API_LIMIT_EXCEPTION = {
   apiLimitException:1
 };
-
-exports.aCrawler = function(resolvePath=(root,rel)=>`./${rel}`) {
+const noResolvePath = {
+  rel:function(dirname, rel) {
+      return "./"+rel;
+  },
+  abs:function(rel) {
+    return rel;
+  }
+};
+exports.aCrawler = function(resolvePath=noResolvePath) {
 
   const TURNING_TIME_GMT = [20,55];
   const MAX_PARALLEL = 1;
@@ -119,14 +126,14 @@ exports.aCrawler = function(resolvePath=(root,rel)=>`./${rel}`) {
     }
     
     
-    if (!fs.existsSync(resolvePath(__dirname, `${CACHE_DIR}/words`))){
-      fs.mkdirSync(resolvePath(__dirname, `${CACHE_DIR}/words`), { recursive: true });
+    if (!fs.existsSync(resolvePath.abs(`${CACHE_DIR}/words`))){
+      fs.mkdirSync(resolvePath.abs(`${CACHE_DIR}/words`), { recursive: true });
     }
-    if (!fs.existsSync(resolvePath(__dirname, `${CACHE_DIR}/clusters`))){
-      fs.mkdirSync(resolvePath(__dirname, `${CACHE_DIR}/clusters`));
+    if (!fs.existsSync(resolvePath.abs(`${CACHE_DIR}/clusters`))){
+      fs.mkdirSync(resolvePath.abs(`${CACHE_DIR}/clusters`));
     }
-    if (!fs.existsSync(resolvePath(__dirname, `cache/index`))){
-      fs.mkdirSync(resolvePath(__dirname, `cache/index`));
+    if (!fs.existsSync(resolvePath.abs(`cache/index`))){
+      fs.mkdirSync(resolvePath.abs(`cache/index`));
     }
 
     curtime = new Date();
@@ -246,16 +253,16 @@ exports.aCrawler = function(resolvePath=(root,rel)=>`./${rel}`) {
       }
     }
 
-    if (fs.existsSync(resolvePath(__dirname, wfpath))) {
+    if (fs.existsSync(resolvePath.abs(wfpath))) {
     
       //console.log(API, "From cache file/single "+wfpath+"  asobject:"+asobject+"...\n");
-      let ijson = fs.readFileSync(resolvePath(__dirname, wfpath)).toString();
+      let ijson = fs.readFileSync(resolvePath.abs(wfpath)).toString();
       try {
         data = JSON.parse(ijson);
 
       } catch (e) {
         console.warn("Delete invalid file : "+wfpath, e);
-        fs.unlinkSync(resolvePath(__dirname, wfpath));
+        fs.unlinkSync(resolvePath.abs(wfpath));
       }
     }
 
@@ -263,7 +270,7 @@ exports.aCrawler = function(resolvePath=(root,rel)=>`./${rel}`) {
       if (data.error) {
         if (data.error=="Sorry pal, you were just rate limited by the upstream server.") {
           console.warn("Delete rate limit error ...  retry ...  "+wfpath);
-          fs.unlinkSync(resolvePath(__dirname, wfpath));
+          fs.unlinkSync(resolvePath.abs(wfpath));
           data = null;
         } else {
           console.warn("File is of an error entry : "+wfpath, " ", (data.error?data.error.message?data.error.message:data.error:"unknown error"));
@@ -322,7 +329,7 @@ exports.aCrawler = function(resolvePath=(root,rel)=>`./${rel}`) {
       return null;
     } finally {
 
-      fs.writeFile(resolvePath(__dirname, wfpath, djson), (err) => {
+      fs.writeFile(resolvePath.abs(wfpath), djson, (err) => {
         if (err) {
           console.error("Cache file/single "+wfpath+"  asobject:"+asobject+" pendingParallelRequests:"+pendingParallelRequests+" admittedParallelRequests:"+admittedParallelRequests+" write failure : "+err+"\n");
         } else {
@@ -844,7 +851,7 @@ exports.aCrawler = function(resolvePath=(root,rel)=>`./${rel}`) {
     let files = [];
     const indpath = `cache/index/frequency`;
 
-    let ijson = fs.readFileSync(resolvePath(__dirname, indpath));
+    let ijson = fs.readFileSync(resolvePath.abs(indpath));
     let find = JSON.parse(ijson);
 
     let words0 = [];
@@ -905,7 +912,7 @@ exports.aCrawler = function(resolvePath=(root,rel)=>`./${rel}`) {
     try {
 
       const records = csvParse.load(
-        resolvePath(__dirname, "./data/unigram_freq.csv"),
+        resolvePath.rel(__dirname, "data/unigram_freq.csv"),
         {convert: {
           count: parseInt
         }});
@@ -997,7 +1004,7 @@ exports.aCrawler = function(resolvePath=(root,rel)=>`./${rel}`) {
     const djson = JSON.stringify(byfs);
 
     console.log(API, "Saving cache file/index "+indpath);
-    fs.writeFileSync(resolvePath(__dirname, indpath), djson);
+    fs.writeFileSync(resolvePath.abs(indpath), djson);
 
   }
 

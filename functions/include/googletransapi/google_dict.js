@@ -57,7 +57,7 @@ function transformToWordsApiLike(definitions) {
 }
 
 
-export async function googleDictionary(word, language="en", version="v2", include="") {
+exports.googleDictionary = async function (word, language="en", version="v2", include="") {
 
     if (!word || !language || !version) {
         throw new errors.NoDefinitionsFound(); 
