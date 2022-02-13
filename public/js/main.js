@@ -450,7 +450,7 @@ async function gocur() {
     let e = isElectron();
 
     if (e) {
-        window.api.loadWindow({uri:"index.html?word="+currentpopword});
+        window.api.loadWindow({uri:"index.html?word="+currentpopword,width:800,height:600});
     } else {
         window.open("?word="+currentpopword, "_blank");
     }

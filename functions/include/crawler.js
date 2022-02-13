@@ -156,7 +156,8 @@ exports.aCrawler = function(resolvePath=noResolvePath) {
     let results = [];
     let result = {
       word:data.word,
-      frequency:data.frequency,
+      frequency:getWordCaggleFrequency(data.word)||(data.frequency+"("+API+")"),
+      dataFrequency:data.frequency,
       pronunciation:data.pronunciation,
       results, etc:""
     };
@@ -925,14 +926,38 @@ exports.aCrawler = function(resolvePath=noResolvePath) {
     return existingWords[word];
   }
 
-  async function getCaggleFrequencies() {
-    try {
-
-      const freqrecs = csvParse.load(
+  let caggleFreqRecords;
+  function loadCaggleFrequencies() {
+    if (!caggleFreqRecords) {
+      caggleFreqRecords = csvParse.load(
         resolvePath.rel(__dirname, "data/unigram_freq.csv"),
         {convert: {
           count: parseInt
         }});
+    }
+    return caggleFreqRecords;
+  }
+
+  let caggleFrequencies;
+  function getWordCaggleFrequency(word) {
+    loadCaggleFrequencies();
+    if (!caggleFrequencies) {
+
+      caggleFrequencies = {};
+
+      for (let frec of caggleFreqRecords) {
+        if (doesGoogleWordExist(frec.word)) {
+          caggleFrequencies[frec.word] = frec.count;
+        }
+      }
+    }
+    return caggleFrequencies[word];
+  }
+
+  async function invertFrequencies() {
+    try {
+
+      loadCaggleFrequencies();
 
       //records.splice(0, 1);
       let nowords = 0;
@@ -948,7 +973,7 @@ exports.aCrawler = function(resolvePath=noResolvePath) {
         }
         return es;
       }
-      for (let frec of freqrecs) {
+      for (let frec of caggleFreqRecords) {
         if (doesGoogleWordExist(frec.word)) {
           entry(frec.count).push(frec.word);
         }
@@ -966,7 +991,7 @@ exports.aCrawler = function(resolvePath=noResolvePath) {
 
     //wordsapi works
     //let {byf, cntf, nowords} = await collectFileFrequencies();
-    let {byf, cntf, nowords} = await getCaggleFrequencies();
+    let {byf, cntf, nowords} = await invertFrequencies();
 
     var fkeys = [].concat(Object.keys(byf));
     // descending order !!

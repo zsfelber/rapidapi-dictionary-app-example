@@ -3,5 +3,7 @@
     "files.exclude": {
         "cache/wordsapi/words/**": true,
         "cache/google/words/**": true,
+        "node_modules/**": true,
+        "lambda/**": true,
     }
 }

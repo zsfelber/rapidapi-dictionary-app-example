@@ -21,15 +21,15 @@ async function printVersion() {
 
 }
 
-function loadWindow(uri) {
+function loadWindow(options) {
 
-    let absfile = path.join(__dirname, "..", "public", uri).normalize();
+    let absfile = path.join(__dirname, "..", "public", options.uri).normalize();
 
     console.log("loadWindow " + absfile);
 
     const win = new BrowserWindow({
-        width: 1200,
-        height: 800,
+        width: options.width||1200,
+        height: options.height||800,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             // Recommended options for loading remote content
@@ -38,7 +38,7 @@ function loadWindow(uri) {
         }
     });
 
-    win.loadFile(absfile);
+    win.loadURL('file://'+absfile);
 
     win.setMenuBarVisibility(false);
 
@@ -50,7 +50,7 @@ function loadMainWindow() {
 
     printVersion();
 
-    loadWindow("index.html");
+    loadWindow({uri:"index.html"});
 }
 
 app.on("ready", loadMainWindow);
@@ -73,5 +73,5 @@ ipcMain.handle('service', (event, note) => {
 
 ipcMain.handle('loadWindow', (event, note) => {
     console.log("electron.invoke loadWindow ", note);
-    loadWindow(note.uri);
+    loadWindow(note);
 });
