@@ -1,6 +1,7 @@
 
 const fs = require('fs');
 const finder = require('./finder.js');
+const csvParse = require('csv-parse/sync');
 
 const API_LIMIT_EXCEPTION = {
   apiLimitException:1
@@ -9,7 +10,7 @@ const API_LIMIT_EXCEPTION = {
 exports.aCrawler = function() {
 
   const TURNING_TIME_GMT = [20,55];
-  const MAX_PARALLEL = 2;
+  const MAX_PARALLEL = 1;
   let API;
   let CACHE_DIR;
   let API_DAILY_LIMIT;
@@ -43,7 +44,7 @@ exports.aCrawler = function() {
       console.log(API, "++pendingParallelRequests:"+pendingParallelRequests+" admittedParallelRequests:"+admittedParallelRequests);
     }
     while (admittedParallelRequests >= MAX_PARALLEL) {
-      await timeoutAsPromise(20);
+      await timeoutAsPromise(200);
     }
     admittedParallelRequests++;
   }
@@ -708,42 +709,42 @@ exports.aCrawler = function() {
   }
 
   function loadCommonWords3000_a_e(word, asobject) {
-    const cw = require('./common-words-3000-a-e.js');
+    const cw = require('./data/common-words-3000-a-e.js');
     return loadCommonWords(cw.TheMostCommon3000, word, asobject);
   }
 
   function loadCommonWords3000_f_p(word, asobject) {
-    const cw = require('./common-words-3000-f-p.js');
+    const cw = require('./data/common-words-3000-f-p.js');
     return loadCommonWords(cw.TheMostCommon3000, word, asobject);
   }
 
   function loadCommonWords3000_q_z(word, asobject) {
-    const cw = require('./common-words-3000-q-z.js');
+    const cw = require('./data/common-words-3000-q-z.js');
     return loadCommonWords(cw.TheMostCommon3000, word, asobject);
   }
 
   function loadCommonWords10000_a_c(word, asobject) {
-    const cw = require('./common-words-10000-a-c.js');
+    const cw = require('./data/common-words-10000-a-c.js');
     return loadCommonWords(cw.TheMostCommon10000, word, asobject);
   }
 
   function loadCommonWords10000_d_h(word, asobject) {
-    const cw = require('./common-words-10000-d-h.js');
+    const cw = require('./data/common-words-10000-d-h.js');
     return loadCommonWords(cw.TheMostCommon10000, word, asobject);
   }
 
   function loadCommonWords10000_i_o(word, asobject) {
-    const cw = require('./common-words-10000-i-o.js');
+    const cw = require('./data/common-words-10000-i-o.js');
     return loadCommonWords(cw.TheMostCommon10000, word, asobject);
   }
 
   function loadCommonWords10000_p_r(word, asobject) {
-    const cw = require('./common-words-10000-p-r.js');
+    const cw = require('./data/common-words-10000-p-r.js');
     return loadCommonWords(cw.TheMostCommon10000, word, asobject);
   }
 
   function loadCommonWords10000_s_z(word, asobject) {
-    const cw = require('./common-words-10000-s-z.js');
+    const cw = require('./data/common-words-10000-s-z.js');
     return loadCommonWords(cw.TheMostCommon10000, word, asobject);
   }
 
@@ -752,11 +753,11 @@ exports.aCrawler = function() {
   function loadCommonWords3000(word, letter, asobject) {
     let lc = letter.toLowerCase(),cw;
     if ('a'<=lc && lc<='e') {
-      cw = require('./common-words-3000-a-e.js');
+      cw = require('./data/common-words-3000-a-e.js');
     } else if ('f'<=lc && lc<='p') {
-      cw = require('./common-words-3000-f-p.js');
+      cw = require('./data/common-words-3000-f-p.js');
     } else if ('q'<=lc && lc<='z') {
-      cw = require('./common-words-3000-q-z.js');
+      cw = require('./data/common-words-3000-q-z.js');
     } else {
       cw = {TheMostCommon3000:{}};
     }
@@ -766,15 +767,15 @@ exports.aCrawler = function() {
   function loadCommonWords10000(word, letter, asobject) {
     let lc = letter.toLowerCase(),cw;
     if ('a'<=lc && lc<='c') {
-      cw = require('./common-words-10000-a-c.js');
+      cw = require('./data/common-words-10000-a-c.js');
     } else if ('d'<=lc && lc<='h') {
-      cw = require('./common-words-10000-d-h.js');
+      cw = require('./data/common-words-10000-d-h.js');
     } else if ('i'<=lc && lc<='o') {
-      cw = require('./common-words-10000-i-o.js');
+      cw = require('./data/common-words-10000-i-o.js');
     } else if ('p'<=lc && lc<='r') {
-      cw = require('./common-words-10000-p-r.js');
+      cw = require('./data/common-words-10000-p-r.js');
     } else if ('s'<=lc && lc<='z') {
-      cw = require('./common-words-10000-s-z.js');
+      cw = require('./data/common-words-10000-s-z.js');
     } else {
       cw = {TheMostCommon10000:{}};
     }
@@ -805,19 +806,19 @@ exports.aCrawler = function() {
   }
 
   function loadCommon3000_words(word, asobject) {
-    let cw1 = require('./common-words-3000-a-e.js');
-    let cw2 = require('./common-words-3000-f-p.js');
-    let cw3 = require('./common-words-3000-q-z.js');
+    let cw1 = require('./data/common-words-3000-a-e.js');
+    let cw2 = require('./data/common-words-3000-f-p.js');
+    let cw3 = require('./data/common-words-3000-q-z.js');
     let TheMostCommon3000 = Object.assign({}, cw1.TheMostCommon3000, cw2.TheMostCommon3000, cw3.TheMostCommon3000);
     return loadWordsOnly(TheMostCommon3000, word, asobject);
   }
 
   function loadCommon10000_words(word, asobject) {
-    let cw1 = require('./common-words-10000-a-c.js');
-    let cw2 = require('./common-words-10000-d-h.js');
-    let cw3 = require('./common-words-10000-i-o.js');
-    let cw4 = require('./common-words-10000-p-r.js');
-    let cw5 = require('./common-words-10000-s-z.js');
+    let cw1 = require('./data/common-words-10000-a-c.js');
+    let cw2 = require('./data/common-words-10000-d-h.js');
+    let cw3 = require('./data/common-words-10000-i-o.js');
+    let cw4 = require('./data/common-words-10000-p-r.js');
+    let cw5 = require('./data/common-words-10000-s-z.js');
     let TheMostCommon10000 = Object.assign({}, cw1.TheMostCommon10000, cw2.TheMostCommon10000, cw3.TheMostCommon10000, cw4.TheMostCommon10000, cw5.TheMostCommon10000);
     return loadWordsOnly(TheMostCommon10000, word, asobject);
   }
@@ -864,8 +865,7 @@ exports.aCrawler = function() {
     return loadWordsOnly(words0, word0, asobject);
   }
 
-
-  async function generateIndexes() {
+  async function collectFileFrequencies() {
     let files = [];
     async function onFile(strPath, stat) {
       let word = strPath.substring(TWELVE);
@@ -898,6 +898,42 @@ exports.aCrawler = function() {
     }
     await Promise.all(promises);
 
+    return {byf, cntf, nowords};
+  }
+
+  async function getCaggleFrequencies() {
+    
+    const input = fs.readFileSync("./data/unigram_freq.csv");
+    const records = csvParse(input);
+
+    records.splice(0, 1);
+    let nowords = records.length;
+
+    let cntf = 0;
+    let byf = {};
+    function entry(f) {
+      let es = byf[f];
+      if (!es) {
+        byf[f] = es = [];
+        cntf++;
+      }
+      return es;
+    }
+    for (let record of records) {
+      for (let word in record) {
+        let f = record[word];
+        entry(f).push(word);
+      }
+    }
+
+    return {byf, cntf, nowords};
+  }
+
+  async function generateIndexes() {
+
+    //wordsapi works
+    //let {byf, cntf, nowords} = await collectFileFrequencies();
+
     var fkeys = [].concat(Object.keys(byf));
     // descending order !!
     fkeys.sort((a,b)=>Number(b)-Number(a));
@@ -909,6 +945,7 @@ exports.aCrawler = function() {
     }
 
     console.log(API, "Frequency indexes:"+cntf+"  of no.words:"+nowords);
+
     function quantilize(size) {
       let wcnt = 0;
       let fqcnt = 0;
