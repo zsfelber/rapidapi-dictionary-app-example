@@ -96,7 +96,7 @@ async function get(api, word, mode, letter, ffrom, fto, resolvePath, stopiterate
   }
 
   let data;
-  console.log(api + " " +mode + ":" + word + ":" + ffrom + ".." + fto);
+  console.log(api + " " +mode + ":" + word + ":" + ffrom + ".." + fto+" letter:"+letter);
 
   switch (mode) {
     case "most_common_3000_a-e":

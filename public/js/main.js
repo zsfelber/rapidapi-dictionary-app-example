@@ -243,7 +243,7 @@ function createFreqLetterLink(i, N) {
 }
 
 
-function createMywLetterLink(i, letter) {
+function createMywLetterLink(letter) {
     let result;
     let a = createlink(letter,null,`&mode=my_words&letter=`+letter);
     a.innerText = letter;
@@ -627,6 +627,8 @@ function updateWords() {
 
     const dlclust = labelled("no. words", data.noWords);
     info.appendChild(dlclust);
+    const dllet = labelled("group id", urlletter);
+    info.appendChild(dllet);
 
     if (urllen) {
 
@@ -933,7 +935,8 @@ $(document).ready(function(){
     createfrlabs(800);
     createfrlabs(3000);
     createfrlabs(10000);
-    
+    createmyworss();
+
     if (urltop) {
         $("input[type='radio'][name='mode']:checked").removeAttr('checked');
     }
