@@ -862,7 +862,7 @@ exports.aCrawler = function (resolvePath = noResolvePath) {
   }
 
   function loadMyWords(word, asobject) {
-    let cw1 = require('./my-words.js');
+    let cw1 = require('./data/my-words.js');
     return loadWordsOnly(cw1.MyWords, word, asobject);
   }
 

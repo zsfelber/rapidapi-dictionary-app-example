@@ -1,4 +1,4 @@
-exports.MyWords = {
+{
     "crap": 1,
     "dear": 1,
     "dumb": 1,
@@ -1658,4 +1658,4 @@ exports.MyWords = {
     "zen": 1,
     "zipper": 1,
     "zoom": 1
-};
+}

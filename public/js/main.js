@@ -1,7 +1,6 @@
 
 var lastresult;
 var lastmode;
-var update_to;
 var page,col=2,wordInfoTbl,wordInfoRow,wordInfoBox,info;
 
 var letters=[String.fromCharCode(1)].concat(numbers()).concat([":"]).concat(ucases()).concat(lcases());
@@ -95,6 +94,14 @@ async function fetchWord(word, mode, qs=[]) {
     qs.push(`apis=${apis.join("-")}`);
 
     let data = await serve("getWord", qs);
+
+    return data;
+}
+
+function saveGroups(qs=[]) {
+    qs.push(`groups=${btoa(JSON.stringify(groups))}`);
+
+    let data = await serve("saveGroup", qs);
 
     return data;
 }
@@ -712,7 +719,7 @@ function appendPopupCluster(data, wordInfoTbl) {
 }
 
 function update(firsttime) {
-    update_to = undefined;
+    //update_to = undefined;
 
     const mode = lastmode;
     const data = lastresult;
@@ -770,8 +777,16 @@ function update(firsttime) {
     initpop();
 }
 
-let curword, collected = {};
+let curword, groups = {};
 var altdown;
+
+function addToGroup(group, word) {
+    if (!groups[group]) {
+        groups[group] = {};
+    }
+    groups[group][word] = 1;
+    doLater(saveGroups, 2000);
+}
 $(document).keydown(function(evt) {
     evt = evt || window.event;
     var isEscape = false;

@@ -42,10 +42,15 @@ function checha(id) {
     var chh = $("#"+id);
     chh.val(ch.is(':checked'));
 
-    if (update_to) {
-        clearTimeout(update_to);
+    doLater(update, 1000, false);
+}
+
+function doLater(func, millis=1000, ...args) {
+
+    if (func.update_to) {
+        clearTimeout(func.update_to);
     }
-    update_to = setTimeout(update, 1000, false);
+    func.update_to = setTimeout(func, millis, ...args);
 }
 
 function addCheckbox(cont, id, buckcheck, label) {

@@ -87,21 +87,21 @@ form {
     margin-right: 1px;
 }
 
-.ltrcard2 {
+.ltrcard, .ltrcard2, .ltrcard4 {
     vertical-align: top;
     display: inline-block;
     text-align: justify;
     margin-left: 10px;
     margin-right: 1px;
-    width: 10rem;
 }
 .ltrcard {
-    vertical-align: top;
-    display: inline-block;
-    text-align: justify;
-    margin-left: 10px;
-    margin-right: 1px;
     width: 7rem;
+}
+.ltrcard2 {
+    width: 10rem;
+}
+.ltrcard4 {
+    width: 23.3rem;
 }
 
 .boxwmargin {
