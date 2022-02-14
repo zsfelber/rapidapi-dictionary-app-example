@@ -156,11 +156,21 @@ exports.aCrawler = function (resolvePath = noResolvePath) {
     let results = [];
     let result = {
       word: data.word,
-      frequency: getWordCaggleFrequency(data.word) || (data.frequency + "(" + API + ")"),
-      dataFrequency: data.frequency,
-      pronunciation: data.pronunciation,
       results, etc: ""
     };
+    if (data.pronunciation && Object.keys(data.pronunciation).length) {
+      result.pronunciation = data.pronunciation;
+    }
+    let f1 = getWordCaggleFrequency(data.word);
+    if (f1) {
+      result.frequency = f1;
+      if (data.frequency) {
+        result.dataFrequency = data.frequency;
+      }
+    } else if (data.frequency) {
+      result.frequency = (data.frequency + "(" + API + ")");
+      result.dataFrequency = data.frequency;
+    }
 
     if (data.results) data.results.map(def => {
       let definitionArray = [];
@@ -271,6 +281,10 @@ exports.aCrawler = function (resolvePath = noResolvePath) {
       if (data.error) {
         if (data.error == "Sorry pal, you were just rate limited by the upstream server.") {
           console.warn("Delete rate limit error ...  retry ...  " + wfpath);
+          fs.unlinkSync(resolvePath.abs(wfpath));
+          data = null;
+        } else if (/^Cannot read properties/.test(data.error)) {
+          console.warn("Delete Cannot read properties error ...  retry ...  " + wfpath);
           fs.unlinkSync(resolvePath.abs(wfpath));
           data = null;
         } else {

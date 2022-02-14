@@ -15,6 +15,7 @@ exports.handler = async function(event, context) {
 
   let apis = event.queryStringParameters.apis || "";
   let deep = event.queryStringParameters.deep || "";
+  let fix = "true"===event.queryStringParameters.fix||true===event.queryStringParameters.fix;
   const resolvePath = context.resolvePath;
 
   const word = event.queryStringParameters.word || "";
@@ -29,7 +30,7 @@ exports.handler = async function(event, context) {
 
       apis = apis.split("-");
       for (let api of apis) {
-        await doItFor(api, deep, resolvePath);
+        await doItFor(api, deep, fix, resolvePath);
       }
     }
     return {result:true};
@@ -37,7 +38,7 @@ exports.handler = async function(event, context) {
 
 }
 
-async function doItFor(api, deep, resolvePath) {
+async function doItFor(api, deep, fix, resolvePath) {
 
   const crawler = require('../../functions/include/crawler').aCrawler();
 
@@ -53,21 +54,31 @@ async function doItFor(api, deep, resolvePath) {
 
   console.log(api, "crawling and filling word list...");
 
-  const totwords = crawler.loadCaggleFrequencies();
-  console.log(api, "word count:"+Object.keys(totwords).length);
-  
-  const CACHE_DIR = "cache/"+api;
-  //let sorries = await fastFindInFiles.fastFindInFiles(`${CACHE_DIR}/words`, "Sorry pal, you were just rate limited by the upstream server.");
-  //console.log(api, "sorry-pals:"+sorries.length);
-
-  const TWELVE = (CACHE_DIR+"/words/").length;
   let cs=[];
-  /*for (let strPath of sorries) {
-    let word = strPath.filePath.substring(TWELVE);
-    cs.push(word);
-    console.log(word);
-    delete totwords[word];
-  }*/
+
+  if (fix) {
+
+    const totwords = crawler.loadCaggleFrequencies();
+    console.log(api, "word count:"+Object.keys(totwords).length);
+    
+    const CACHE_DIR = "cache/"+api;
+    let sorries = await fastFindInFiles.fastFindInFiles(`${CACHE_DIR}/words`, "Sorry pal, you were just rate limited by the upstream server.");
+    console.log(api, "sorry-pals:"+sorries.length);
+
+    let cannotrs = await fastFindInFiles.fastFindInFiles(`${CACHE_DIR}/words`, `{"error":"Cannot read properties`);
+    console.log(api, "cannot-read-properties-es:"+cannotrs.length);
+    
+    let errorstofix = sorries.concat(cannotrs);
+
+    const TWELVE = (CACHE_DIR+"/words/").length;
+    for (let strPath of errorstofix) {
+      let word = strPath.filePath.substring(TWELVE);
+      cs.push(word);
+      console.log(word);
+      delete totwords[word];
+    }
+
+  }
 
   cs.push.apply(cs, Object.keys(totwords));
 

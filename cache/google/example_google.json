@@ -1,0 +1,141 @@
+{
+    "data": [
+        {
+            "entry": {
+                "corpus": {
+                    "language": "en",
+                    "name": "en"
+                },
+                "entry_seq_no": 6054200,
+                "headword": "old",
+                "locale": "en",
+                "phonetics": [
+                    {
+                        "tts_audio_enabled": true
+                    }
+                ],
+                "subentries": [
+                    {
+                        "alternate_idiom_indexing_keys": [
+                            "as of old",
+                            "noun of old",
+                            "off old",
+                            "something of old",
+                            "verb of old",
+                            "of the old",
+                            "old dic",
+                            "from old",
+                            "from of old",
+                            "old",
+                            "old knowledge"
+                        ],
+                        "lemma": "of old",
+                        "sense_family": {
+                            "senses": [
+                                {
+                                    "concise_definition": "in or belonging to past",
+                                    "definition": {
+                                        "fragments": [
+                                            {
+                                                "text": "in or belonging to the past."
+                                            }
+                                        ],
+                                        "text": "in or belonging to the past."
+                                    },
+                                    "example_groups": [
+                                        {
+                                            "examples": [
+                                                "he was more reticent than of old"
+                                            ]
+                                        }
+                                    ],
+                                    "source_id": "m_en_gbus0715680.044"
+                                },
+                                {
+                                    "concise_definition": "for long time",
+                                    "definition": {
+                                        "fragments": [
+                                            {
+                                                "text": "for a long time."
+                                            }
+                                        ],
+                                        "text": "for a long time."
+                                    },
+                                    "example_groups": [
+                                        {
+                                            "examples": [
+                                                "they knew him of old"
+                                            ]
+                                        }
+                                    ],
+                                    "source_id": "m_en_gbus0715680.046"
+                                }
+                            ]
+                        },
+                        "type": "phrase",
+                        "sense_families": [
+                            {
+                                "senses": [
+                                    {
+                                        "concise_definition": "in or belonging to past",
+                                        "definition": {
+                                            "fragments": [
+                                                {
+                                                    "text": "in or belonging to the past."
+                                                }
+                                            ],
+                                            "text": "in or belonging to the past."
+                                        },
+                                        "example_groups": [
+                                            {
+                                                "examples": [
+                                                    "he was more reticent than of old"
+                                                ]
+                                            }
+                                        ],
+                                        "source_id": "m_en_gbus0715680.044"
+                                    },
+                                    {
+                                        "concise_definition": "for long time",
+                                        "definition": {
+                                            "fragments": [
+                                                {
+                                                    "text": "for a long time."
+                                                }
+                                            ],
+                                            "text": "for a long time."
+                                        },
+                                        "example_groups": [
+                                            {
+                                                "examples": [
+                                                    "they knew him of old"
+                                                ]
+                                            }
+                                        ],
+                                        "source_id": "m_en_gbus0715680.046"
+                                    }
+                                ]
+                            }
+                        ],
+                        "phonetics": [
+                            {
+                                "tts_audio_enabled": true
+                            }
+                        ]
+                    }
+                ],
+                "user_intent": "DEFINE"
+            }
+        },
+        {
+            "translation": {
+                "language_code": "",
+                "possible_target_languages": [
+                    ""
+                ],
+                "source_language_code": "en",
+                "term": "of old"
+            }
+        }
+    ]
+}

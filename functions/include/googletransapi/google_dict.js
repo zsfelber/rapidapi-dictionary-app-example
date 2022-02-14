@@ -23,10 +23,12 @@ function transformToWordsApiLike(definitions) {
 
         for (let meaning of data.meanings) {
             for (let meaningdef of meaning.definitions) {
-                if (data.phonetic && !antipron[data.phonetic]) {
-                    antipron[data.phonetic] = [String.fromCharCode(pid++)];
+                if (data.phonetic) { 
+                    if (!antipron[data.phonetic]) {
+                        antipron[data.phonetic] = [String.fromCharCode(pid++)];
+                    }
+                    antipron[data.phonetic].push(idx);
                 }
-                antipron[data.phonetic].push(idx);
                 let item = {
                     partOfSpeech : meaning.partOfSpeech,
                     pronunciation : data.phonetic,

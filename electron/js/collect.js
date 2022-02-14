@@ -1,5 +1,6 @@
 var checkboxdata = {
     "bucket2": {
+        "fix errors": { defchecked: false },
         "WORDSAPI": { defchecked: true },
         "GOOGLE": { defchecked: true },
     },
@@ -17,6 +18,7 @@ $(document).ready(function(){
         qs.push(`apis=${apis.join("-")}`);
         qs.push(`word=${word}`);
         qs.push(`deep=${$.urlParam('how-deep')}`);
+        qs.push(`fix=${isch('fix errors')}`);
     
         let data = await serve("crawl-collect.all", qs);
     
