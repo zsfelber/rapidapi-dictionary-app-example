@@ -55,7 +55,7 @@ exports.aCrawler = function (resolvePath) {
     } else {
       data = {};
     }
-    return data;
+    return {f, json, data};
   }
   async function parallelBottleneck() {
     pendingParallelRequests++;
@@ -745,42 +745,42 @@ exports.aCrawler = function (resolvePath) {
 
   function loadCommonWords3000_a_e(word, asobject) {
     const cw = loadJson('data/common-words-3000-a-e.json');
-    return loadCommonWords(cw, word, asobject);
+    return loadCommonWords(cw.data, word, asobject);
   }
 
   function loadCommonWords3000_f_p(word, asobject) {
     const cw = loadJson('data/common-words-3000-f-p.json');
-    return loadCommonWords(cw, word, asobject);
+    return loadCommonWords(cw.data, word, asobject);
   }
 
   function loadCommonWords3000_q_z(word, asobject) {
     const cw = loadJson('data/common-words-3000-q-z.json');
-    return loadCommonWords(cw, word, asobject);
+    return loadCommonWords(cw.data, word, asobject);
   }
 
   function loadCommonWords10000_a_c(word, asobject) {
     const cw = loadJson('data/common-words-10000-a-c.json');
-    return loadCommonWords(cw, word, asobject);
+    return loadCommonWords(cw.data, word, asobject);
   }
 
   function loadCommonWords10000_d_h(word, asobject) {
     const cw = loadJson('data/common-words-10000-d-h.json');
-    return loadCommonWords(cw, word, asobject);
+    return loadCommonWords(cw.data, word, asobject);
   }
 
   function loadCommonWords10000_i_o(word, asobject) {
     const cw = loadJson('data/common-words-10000-i-o.json');
-    return loadCommonWords(cw, word, asobject);
+    return loadCommonWords(cw.data, word, asobject);
   }
 
   function loadCommonWords10000_p_r(word, asobject) {
     const cw = loadJson('data/common-words-10000-p-r.json');
-    return loadCommonWords(cw, word, asobject);
+    return loadCommonWords(cw.data, word, asobject);
   }
 
   function loadCommonWords10000_s_z(word, asobject) {
     const cw = loadJson('data/common-words-10000-s-z.json');
-    return loadCommonWords(cw, word, asobject);
+    return loadCommonWords(cw.data, word, asobject);
   }
 
 
@@ -796,7 +796,7 @@ exports.aCrawler = function (resolvePath) {
     } else {
       cw = { };
     }
-    return loadCommonWordsLetter(cw, word, letter, asobject);
+    return loadCommonWordsLetter(cw.data, word, letter, asobject);
   }
 
   function loadCommonWords10000(word, letter, asobject) {
@@ -814,7 +814,7 @@ exports.aCrawler = function (resolvePath) {
     } else {
       cw = { };
     }
-    return loadCommonWordsLetter(cw, word, letter, asobject);
+    return loadCommonWordsLetter(cw.data, word, letter, asobject);
   }
 
   function loadWordsOnly(words0, word, asobject) {
@@ -844,7 +844,7 @@ exports.aCrawler = function (resolvePath) {
     let cw1 = loadJson('data/common-words-3000-a-e.json');
     let cw2 = loadJson('data/common-words-3000-f-p.json');
     let cw3 = loadJson('data/common-words-3000-q-z.json');
-    let TheMostCommon3000 = Object.assign({}, cw1, cw2, cw3);
+    let TheMostCommon3000 = Object.assign({}, cw1.data, cw2.data, cw3.data);
     return loadWordsOnly(TheMostCommon3000, word, asobject);
   }
 
@@ -854,7 +854,7 @@ exports.aCrawler = function (resolvePath) {
     let cw3 = loadJson('data/common-words-10000-i-o.json');
     let cw4 = loadJson('data/common-words-10000-p-r.json');
     let cw5 = loadJson('data/common-words-10000-s-z.json');
-    let TheMostCommon10000 = Object.assign({}, cw1, cw2, cw3, cw4, cw5);
+    let TheMostCommon10000 = Object.assign({}, cw1.data, cw2.data, cw3.data, cw4.data, cw5.data);
     return loadWordsOnly(TheMostCommon10000, word, asobject);
   }
 
@@ -876,7 +876,7 @@ exports.aCrawler = function (resolvePath) {
 
   function loadMyWords(word, letter, asobject) {
     let cw1 = loadJson('data/my-words-'+letter.toLowerCase()+'.json');
-    return loadWordsOnly(cw1, word, asobject);
+    return loadWordsOnly(cw1.data, word, asobject);
   }
 
   async function wordsByFrequency(word0, ffrom, fto = 1000000, asobject) {

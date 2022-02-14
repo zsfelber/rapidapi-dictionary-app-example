@@ -7,6 +7,7 @@ const MAX_LEVEL_MINCL = 2;
 
 const fs = require("fs");
 const service = require("./include/service");
+const atob = require("atob");
 
 
 exports.handler = async function(event, context) {
@@ -23,10 +24,10 @@ exports.handler = async function(event, context) {
 
     return service.respond(async () => {
         for (letter in groupsdata) {
-          let data = crawler.loadJson("data/my-words-"+letter.toLowerCase()+".json");
+          let {f, data,json} = crawler.loadJson("data/my-words-"+letter.toLowerCase()+".json");
           data = Object.assign(data, groupsdata[letter]);
-          let ojson = JSON.stringify(data);
-          console.log("my-words-"+letter+" : "+ojson+"\n->\n"+json)
+          let ojson = JSON.stringify(data, null, 2);
+          console.log("my-words-"+letter+" : json saved.")
           fs.writeFileSync(f, ojson);
         }
         return {result:"success"};
