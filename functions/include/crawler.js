@@ -337,13 +337,13 @@ exports.aCrawler = function (resolvePath) {
     }
 
     try {
-      console.error(`ENTER http download      ${API} "${word}"   pending:${pendingParallelRequests} admitted:${admittedParallelRequests}`);
+      console.info(`ENTER http download      ${API} "${word}"   pending:${pendingParallelRequests} admitted:${admittedParallelRequests}`);
 
       pendingObjects[word] = download(word);
 
       data = await pendingObjects[word];
 
-      console.error(`DONE  http download      ${API} "${word}"   pending:${pendingParallelRequests} admitted:${admittedParallelRequests}`);
+      console.info(`DONE  http download      ${API} "${word}"   pending:${pendingParallelRequests} admitted:${admittedParallelRequests}`);
 
       // keep fromCache=false in this instance only
       data = Object.assign({}, data);

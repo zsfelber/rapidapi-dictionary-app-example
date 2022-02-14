@@ -759,6 +759,7 @@ function update(firsttime) {
     case "most_common_10000_s-z":
     case "top3000":
     case "top10000":
+    case "my_word_cls":
         if (firsttime) {
             updateMostCommon();
         }
