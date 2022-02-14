@@ -817,6 +817,11 @@ exports.aCrawler = function (resolvePath) {
     return loadCommonWordsLetter(cw.data, word, letter, asobject);
   }
 
+  function loadMyWordCls(word, letter, asobject) {
+    let cw = loadJson('data/my-words-'+letter.toLowerCase()+'.json');
+    return loadCommonWords(cw.data, word, asobject);
+  }
+
   function loadWordsOnly(words0, word, asobject) {
     let words;
     if (Array.isArray(words0)) {
@@ -1112,7 +1117,7 @@ exports.aCrawler = function (resolvePath) {
     loadCommonWords3000_a_e, loadCommonWords3000_f_p, loadCommonWords3000_q_z, loadCommonWords10000_a_c,
     loadCommonWords10000_d_h, loadCommonWords10000_i_o, loadCommonWords10000_p_r,
     loadCommonWords10000_s_z, loadCommonWords3000, loadCommonWords10000, loadCommon3000_words,
-    loadCommon10000_words, loadAll_words, loadMyWords, wordsByFrequency, generateIndexes,
+    loadCommon10000_words, loadAll_words, loadMyWords, loadMyWordCls, wordsByFrequency, generateIndexes,
     loadGoogleWords, loadCaggleFrequencies, doesGoogleWordExist, getWordCaggleFrequency
   };
 }

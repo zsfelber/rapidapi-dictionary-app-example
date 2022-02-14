@@ -243,9 +243,9 @@ function createFreqLetterLink(i, N) {
 }
 
 
-function createMywLetterLink(letter) {
+function createMywLetterLink(letter, mode="my_words") {
     let result;
-    let a = createlink(letter,null,`&mode=my_words&letter=`+letter);
+    let a = createlink(letter,null,`&mode=${mode}&letter=`+letter);
     a.innerText = letter;
     result = {letter,a};
     return result;
@@ -922,11 +922,11 @@ $(document).ready(function(){
             }
         }
     }
-    function createmyworss() {
+    function createmyworss(cl=".mywords", mode="my_words") {
         let letters=['A','B','C','D','E','F'];
-        let mywlabels = document.querySelector(".mywords");
+        let mywlabels = document.querySelector(cl);
         for (let letter of letters) {
-            let iv = createMywLetterLink(letter);
+            let iv = createMywLetterLink(letter, mode);
             mywlabels.appendChild(iv.a);
             let spc = document.createTextNode("  ");
             mywlabels.appendChild(spc);
@@ -936,6 +936,7 @@ $(document).ready(function(){
     createfrlabs(3000);
     createfrlabs(10000);
     createmyworss();
+    createmyworss(".mywordscl", "my_word_cls")
 
     if (urltop) {
         $("input[type='radio'][name='mode']:checked").removeAttr('checked');
