@@ -939,10 +939,8 @@ $(document).ready(function(){
 
     if (urltop) {
         $("input[type='radio'][name='mode']:checked").removeAttr('checked');
-    }
-
-    if (urlmode) {
-
+    } else if (!urlmode) {
+        $("#dictionary").attr('checked', 'checked');
     }
     chkdict();
 
@@ -967,11 +965,12 @@ $(document).ready(function(){
 
         try {
             var mode = $("input[type='radio'][name='mode']:checked").val();
+            const qs = [];
+            qs.push(`letter=${urlletter}`);
             if (!mode) {
                 if (urltop) {
                     mode = `top${urltop}`;
                     qs.push(`top=${urltop}`);
-                    qs.push(`letter=${urlletter}`);
                 } else {
                     if (urlmode) {
                         mode = urlmode;
@@ -981,7 +980,6 @@ $(document).ready(function(){
                 }
             }
         
-            const qs = [];
             qs.push(`ffrom=${urlffrom}`);
             qs.push(`fto=${urlfto}`);
         

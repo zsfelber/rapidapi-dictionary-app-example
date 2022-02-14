@@ -14,7 +14,8 @@ const noResolvePath = {
     return rel;
   }
 };
-exports.aCrawler = function (resolvePath = noResolvePath) {
+exports.aCrawler = function (resolvePath) {
+  if (!resolvePath) resolvePath = noResolvePath;
 
   const TURNING_TIME_GMT = [20, 55];
   const MAX_PARALLEL = 1;
@@ -49,7 +50,7 @@ exports.aCrawler = function (resolvePath = noResolvePath) {
     let f = resolvePath.abs(path);
     let json, data;
     if (fs.existsSync(f)) {
-      json = fs.readFileSync();
+      json = fs.readFileSync(f);
       data = JSON.parse(json);
     } else {
       data = {};
@@ -743,42 +744,42 @@ exports.aCrawler = function (resolvePath = noResolvePath) {
   }
 
   function loadCommonWords3000_a_e(word, asobject) {
-    const cw = loadJson('data/common-words-3000-a-e.js');
+    const cw = loadJson('data/common-words-3000-a-e.json');
     return loadCommonWords(cw, word, asobject);
   }
 
   function loadCommonWords3000_f_p(word, asobject) {
-    const cw = loadJson('data/common-words-3000-f-p.js');
+    const cw = loadJson('data/common-words-3000-f-p.json');
     return loadCommonWords(cw, word, asobject);
   }
 
   function loadCommonWords3000_q_z(word, asobject) {
-    const cw = loadJson('data/common-words-3000-q-z.js');
+    const cw = loadJson('data/common-words-3000-q-z.json');
     return loadCommonWords(cw, word, asobject);
   }
 
   function loadCommonWords10000_a_c(word, asobject) {
-    const cw = loadJson('data/common-words-10000-a-c.js');
+    const cw = loadJson('data/common-words-10000-a-c.json');
     return loadCommonWords(cw, word, asobject);
   }
 
   function loadCommonWords10000_d_h(word, asobject) {
-    const cw = loadJson('data/common-words-10000-d-h.js');
+    const cw = loadJson('data/common-words-10000-d-h.json');
     return loadCommonWords(cw, word, asobject);
   }
 
   function loadCommonWords10000_i_o(word, asobject) {
-    const cw = loadJson('data/common-words-10000-i-o.js');
+    const cw = loadJson('data/common-words-10000-i-o.json');
     return loadCommonWords(cw, word, asobject);
   }
 
   function loadCommonWords10000_p_r(word, asobject) {
-    const cw = loadJson('data/common-words-10000-p-r.js');
+    const cw = loadJson('data/common-words-10000-p-r.json');
     return loadCommonWords(cw, word, asobject);
   }
 
   function loadCommonWords10000_s_z(word, asobject) {
-    const cw = loadJson('data/common-words-10000-s-z.js');
+    const cw = loadJson('data/common-words-10000-s-z.json');
     return loadCommonWords(cw, word, asobject);
   }
 
@@ -787,11 +788,11 @@ exports.aCrawler = function (resolvePath = noResolvePath) {
   function loadCommonWords3000(word, letter, asobject) {
     let lc = letter.toLowerCase(), cw;
     if ('a' <= lc && lc <= 'e') {
-      cw = loadJson('data/common-words-3000-a-e.js');
+      cw = loadJson('data/common-words-3000-a-e.json');
     } else if ('f' <= lc && lc <= 'p') {
-      cw = loadJson('data/common-words-3000-f-p.js');
+      cw = loadJson('data/common-words-3000-f-p.json');
     } else if ('q' <= lc && lc <= 'z') {
-      cw = loadJson('data/common-words-3000-q-z.js');
+      cw = loadJson('data/common-words-3000-q-z.json');
     } else {
       cw = { };
     }
@@ -801,15 +802,15 @@ exports.aCrawler = function (resolvePath = noResolvePath) {
   function loadCommonWords10000(word, letter, asobject) {
     let lc = letter.toLowerCase(), cw;
     if ('a' <= lc && lc <= 'c') {
-      cw = loadJson('data/common-words-10000-a-c.js');
+      cw = loadJson('data/common-words-10000-a-c.json');
     } else if ('d' <= lc && lc <= 'h') {
-      cw = loadJson('data/common-words-10000-d-h.js');
+      cw = loadJson('data/common-words-10000-d-h.json');
     } else if ('i' <= lc && lc <= 'o') {
-      cw = loadJson('data/common-words-10000-i-o.js');
+      cw = loadJson('data/common-words-10000-i-o.json');
     } else if ('p' <= lc && lc <= 'r') {
-      cw = loadJson('data/common-words-10000-p-r.js');
+      cw = loadJson('data/common-words-10000-p-r.json');
     } else if ('s' <= lc && lc <= 'z') {
-      cw = loadJson('data/common-words-10000-s-z.js');
+      cw = loadJson('data/common-words-10000-s-z.json');
     } else {
       cw = { };
     }
@@ -840,19 +841,19 @@ exports.aCrawler = function (resolvePath = noResolvePath) {
   }
 
   function loadCommon3000_words(word, asobject) {
-    let cw1 = loadJson('data/common-words-3000-a-e.js');
-    let cw2 = loadJson('data/common-words-3000-f-p.js');
-    let cw3 = loadJson('data/common-words-3000-q-z.js');
+    let cw1 = loadJson('data/common-words-3000-a-e.json');
+    let cw2 = loadJson('data/common-words-3000-f-p.json');
+    let cw3 = loadJson('data/common-words-3000-q-z.json');
     let TheMostCommon3000 = Object.assign({}, cw1, cw2, cw3);
     return loadWordsOnly(TheMostCommon3000, word, asobject);
   }
 
   function loadCommon10000_words(word, asobject) {
-    let cw1 = loadJson('data/common-words-10000-a-c.js');
-    let cw2 = loadJson('data/common-words-10000-d-h.js');
-    let cw3 = loadJson('data/common-words-10000-i-o.js');
-    let cw4 = loadJson('data/common-words-10000-p-r.js');
-    let cw5 = loadJson('data/common-words-10000-s-z.js');
+    let cw1 = loadJson('data/common-words-10000-a-c.json');
+    let cw2 = loadJson('data/common-words-10000-d-h.json');
+    let cw3 = loadJson('data/common-words-10000-i-o.json');
+    let cw4 = loadJson('data/common-words-10000-p-r.json');
+    let cw5 = loadJson('data/common-words-10000-s-z.json');
     let TheMostCommon10000 = Object.assign({}, cw1, cw2, cw3, cw4, cw5);
     return loadWordsOnly(TheMostCommon10000, word, asobject);
   }

@@ -1852,3 +1852,8 @@ wordsapi Frequency: 0.001..1.725  words:2242  freqs:1
 wordsapi Frequency: 0..0.000  words:98365  freqs:1
 wordsapi Frequency:..  cnt:0
 wordsapi var frqntls10000=[100, 3.38, 2.68, 2.17, 1.73, 0.001, 0];
+
+
+// "https"://www.ef.com/wwen/english-resources/english-vocabulary/top-3000-words/
+
+// "https"://englishgrammarhere.com/vocabulary/10000-most-common-words-in-english-part-5/
