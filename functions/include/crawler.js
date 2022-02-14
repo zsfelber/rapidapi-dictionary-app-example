@@ -849,11 +849,14 @@ exports.aCrawler = function (resolvePath = noResolvePath) {
 
   async function loadAll_words(word0, asobject, fromtime = 0) {
     let allwords0 = [];
-    function onFile(strPath, stat) {
+    /*function onFile(strPath, stat) {
       let word = strPath.substring(TWELVE);
       allwords0.push(word);
     }
-    await finder.findFiles(`${CACHE_DIR}/words`, fromtime, onFile);
+    await finder.findFiles(`${CACHE_DIR}/words`, fromtime, onFile);*/
+    const totwords = loadCaggleFrequencies();
+
+    allwords0.push.apply(allwords0, Object.keys(totwords));
 
     return loadWordsOnly(allwords0, word0, asobject);
   }
