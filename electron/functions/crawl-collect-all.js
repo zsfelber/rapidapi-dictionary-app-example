@@ -56,10 +56,10 @@ async function doItFor(api, deep, fix, resolvePath) {
 
   let cs=[];
 
-  if (fix) {
+  const totwords = crawler.loadCaggleFrequencies();
+  console.log(api, "word count:"+Object.keys(totwords).length);
 
-    const totwords = crawler.loadCaggleFrequencies();
-    console.log(api, "word count:"+Object.keys(totwords).length);
+  if (fix) {
     
     const CACHE_DIR = "cache/"+api;
     let sorries = await fastFindInFiles.fastFindInFiles(`${CACHE_DIR}/words`, "Sorry pal, you were just rate limited by the upstream server.");
