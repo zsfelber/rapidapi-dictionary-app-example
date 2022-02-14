@@ -157,7 +157,7 @@ async function get(api, word, mode, letter, ffrom, fto, resolvePath, stopiterate
     case "my_words":
       stopiterateapis.stop = 1;
 
-      data = await crawler.loadMyWords(word, true);
+      data = await crawler.loadMyWords(word, letter, true);
       break;
     case "words_by_frequency":
       stopiterateapis.stop = 1;

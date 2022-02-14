@@ -101,7 +101,9 @@ async function fetchWord(word, mode, qs=[]) {
 function saveGroups(qs=[]) {
     qs.push(`groups=${btoa(JSON.stringify(groups))}`);
 
-    let data = await serve("saveGroup", qs);
+    let data = await serve("saveGroups", qs);
+
+    groups = {};
 
     return data;
 }
@@ -785,7 +787,7 @@ function addToGroup(group, word) {
         groups[group] = {};
     }
     groups[group][word] = 1;
-    doLater(saveGroups, 2000);
+    doLater(saveGroups, 2500);
 }
 $(document).keydown(function(evt) {
     evt = evt || window.event;
@@ -805,12 +807,10 @@ $(document).keyup(function(evt) {
 });
 $(document).keypress(async function(e){
     console.log(` code:${e.code} curword:${curword}`);
-    if (e.code==='KeyA' && curword) {
-        console.log(` curword:${curword} added`);
-        collected[curword] = 1;
-        let s = JSON.stringify(collected, null, 2)
-        console.log(s);
-        await navigator.clipboard.writeText(s);
+    if (/Key[A-F]/.test(e.code) && curword) {
+        console.log(` ${e.code}  curword:${curword} added`);
+        addToGroup(e.code[3].toLowerCase(), curword);
+        //await navigator.clipboard.writeText(s);
     }
     if (e.code==='Space') {
         if (currentpopword) {
