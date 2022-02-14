@@ -3,7 +3,7 @@ const fs = require('fs');
 
 const path = require("path");
 const service = require("../../functions/include/service");
-//const fastFindInFiles =  require('fast-find-in-files');
+const fastFindInFiles =  require('fast-find-in-files');
 
 const API_DAILY_LIMIT = 24500;
 const MAX_WORDS = 10000000;
