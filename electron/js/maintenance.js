@@ -7,13 +7,7 @@ var checkboxdata = {
 
 // Specifies a function to execute when the DOM is fully loaded.
 $(document).ready(function(){
-    $.urlParam = function(name){
-        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
-        if (results==null) {
-           return false;
-        }
-        return decodeURI(results[1]).replace(/\+/g," ") || false;
-    }
+    initready();
 
     async function fetchMain(qs=[]) {
     

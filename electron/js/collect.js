@@ -8,13 +8,7 @@ var checkboxdata = {
 
 // Specifies a function to execute when the DOM is fully loaded.
 $(document).ready(function(){
-    $.urlParam = function(name){
-        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
-        if (results==null) {
-           return false;
-        }
-        return decodeURI(results[1]).replace(/\+/g," ") || false;
-    }
+    initready();
 
     async function fetchCollect(word, qs=[]) {
         let apis=[];
@@ -22,6 +16,7 @@ $(document).ready(function(){
         if (isch("GOOGLE")) apis.push("google");
         qs.push(`apis=${apis.join("-")}`);
         qs.push(`word=${word}`);
+        qs.push(`deep=${$.urlParam('how-deep')}`);
     
         let data = await serve("crawl-collect.all", qs);
     

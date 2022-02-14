@@ -14,6 +14,7 @@ const TRAVERSE_ALL = true;
 exports.handler = async function(event, context) {
 
   let apis = event.queryStringParameters.apis || "";
+  let deep = event.queryStringParameters.deep || "";
   const resolvePath = context.resolvePath;
 
   const word = event.queryStringParameters.word || "";
@@ -28,7 +29,7 @@ exports.handler = async function(event, context) {
 
       apis = apis.split("-");
       for (let api of apis) {
-        await doItFor(api, resolvePath);
+        await doItFor(api, deep, resolvePath);
       }
     }
     return {result:true};
@@ -36,16 +37,18 @@ exports.handler = async function(event, context) {
 
 }
 
-async function doItFor(api, resolvePath) {
+async function doItFor(api, deep, resolvePath) {
 
   const crawler = require('../../functions/include/crawler').aCrawler();
 
+  if (deep) deep = Number(deep);
   crawler.initCrawler(
     api,
     api=="wordsapi"?API_DAILY_LIMIT:10000000,
     MAX_WORDS,
     MAX_NODE_FREQUENCY,
-    TRAVERSE_ALL
+    TRAVERSE_ALL,
+    deep
     );
 
   console.log(api, "crawling and filling word list...");
@@ -68,11 +71,22 @@ async function doItFor(api, resolvePath) {
 
   cs.push.apply(cs, Object.keys(totwords));
 
-
+  const by_def = {};
+  const by_w = {};
+  let tresult = {
+    by_def,
+    by_w    };
+  tresult.noWords = 0;
+  tresult.newWords = 0;
 
   let promises = [];
   for (let w of cs) {
-    let trpromise = crawler.loadSingleWord(w, true);
+    let trpromise;
+    if (deep)
+      trpromise = crawler.traverseCluster(tresult, w, false, true);
+    else
+      trpromise = crawler.loadSingleWord(w, true);
+
     promises.push(trpromise);
 
     if (promises.length >= 10) {
@@ -88,6 +102,9 @@ async function doItFor(api, resolvePath) {
   promises = [];
 
 
-  console.log(api, "Completed.");
+  if (deep)
+    console.log("Completed  Travesred:"+tresult.noWords+" written:"+tresult.newWords);
+  else
+    console.log(api, "Completed.");
 
 }

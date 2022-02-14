@@ -816,13 +816,7 @@ $(document).ready(function(){
 
     console.log("speechSynthesis voices(document ready):", window.speechSynthesis.getVoices());
 
-    $.urlParam = function(name, nothing=null){
-        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
-        if (results==null) {
-           return nothing;
-        }
-        return decodeURI(results[1]).replace(/\+/g," ") || nothing;
-    }
+    initready();
 
     // creates a variable that represents our
     // word info container

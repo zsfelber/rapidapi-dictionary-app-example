@@ -1,4 +1,15 @@
 
+function initready() {
+
+    $.urlParam = function(name, nothing=null){
+        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+        if (results==null) {
+           return nothing;
+        }
+        return decodeURI(results[1]).replace(/\+/g," ") || nothing;
+    }
+
+}
 
 function isch(id) {
     id = id.replace(/ /g, "_");
