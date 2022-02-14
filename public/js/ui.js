@@ -1,5 +1,5 @@
 
-function initready() {
+function init$() {
 
     $.urlParam = function(name, nothing=null){
         var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);

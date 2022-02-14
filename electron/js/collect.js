@@ -10,7 +10,7 @@ var checkboxdata = {
 
 // Specifies a function to execute when the DOM is fully loaded.
 $(document).ready(function(){
-    initready();
+    init$();
 
     async function fetchCollect(word, qs=[]) {
         let apis=[];

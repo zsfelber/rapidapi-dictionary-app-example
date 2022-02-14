@@ -5,6 +5,19 @@ var page,col=2,wordInfoTbl,wordInfoRow,wordInfoBox,info;
 
 var letters=[String.fromCharCode(1)].concat(numbers()).concat([":"]).concat(ucases()).concat(lcases());
 
+
+init$();
+
+var url_word = $.urlParam('word');
+var urlmode = $.urlParam('mode');
+var urltop = $.urlParam('top');
+var urlletter = $.urlParam('letter');
+var urlffrom = $.urlParam('ffrom');
+var urlfto = $.urlParam('fto');
+let urllen = $.urlParam('len');
+let urli = $.urlParam('i');
+let urlN = $.urlParam('N');
+
 var checkboxdata = {
     "bucket1": {
         "also": { defchecked: true },
@@ -97,7 +110,7 @@ async function fetchWord(word, mode, qs=[]) {
     return data;
 }
 
-function saveGroups(qs=[]) {
+async function saveGroups(qs=[]) {
     qs.push(`groups=${btoa(JSON.stringify(groups))}`);
 
     let data = await serve("saveGroups", qs);
@@ -615,9 +628,6 @@ function updateWords() {
     const dlclust = labelled("no. words", data.noWords);
     info.appendChild(dlclust);
 
-    let urllen = $.urlParam('len');
-    let urli = $.urlParam('i');
-    let urlN = $.urlParam('N');
     if (urllen) {
 
         const dlq0 = labelled("quantiles of", urlN);
@@ -839,17 +849,10 @@ $(document).ready(function(){
 
     console.log("speechSynthesis voices(document ready):", window.speechSynthesis.getVoices());
 
-    initready();
-
     // creates a variable that represents our
     // word info container
     wordInfoTbl = document.querySelector('#word-info');
     info = document.querySelector("#info");
-
-    var urltop = $.urlParam('top');
-    var urlletter = $.urlParam('letter');
-    var urlffrom = $.urlParam('ffrom');
-    var urlfto = $.urlParam('fto');
 
 
     let chbs1 = document.querySelector('.checkboxes1');
@@ -935,6 +938,9 @@ $(document).ready(function(){
         $("input[type='radio'][name='mode']:checked").removeAttr('checked');
     }
 
+    if (urlmode) {
+
+    }
     chkdict();
 
       //$('.form-check-input').change(function(){
@@ -964,7 +970,6 @@ $(document).ready(function(){
                     qs.push(`top=${urltop}`);
                     qs.push(`letter=${urlletter}`);
                 } else {
-                    var urlmode = $.urlParam('mode');
                     if (urlmode) {
                         mode = urlmode;
                     } else {
@@ -993,9 +998,6 @@ $(document).ready(function(){
         }
     }
 
-    var url_word = $.urlParam('word');
-    var urlmode = $.urlParam('mode');
-    var urltop = $.urlParam('top');
     // adds a submit listened to our <form> element
     if ((urlmode && urlmode!="dictionary") || urltop || url_word) {
         dosubmit(url_word);
