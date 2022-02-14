@@ -874,7 +874,7 @@ exports.aCrawler = function (resolvePath = noResolvePath) {
 
 
   function loadMyWords(word, letter, asobject) {
-    let cw1 = loadJson('data/my-words-'+letter+'.json');
+    let cw1 = loadJson('data/my-words-'+letter.toLowerCase()+'.json');
     return loadWordsOnly(cw1, word, asobject);
   }
 

@@ -23,7 +23,7 @@ exports.handler = async function(event, context) {
 
     return service.respond(async () => {
         for (letter in groupsdata) {
-          let data = crawler.loadJson("data/my-words-"+letter+".json");
+          let data = crawler.loadJson("data/my-words-"+letter.toLowerCase()+".json");
           data = Object.assign(data, groupsdata[letter]);
           let ojson = JSON.stringify(data);
           console.log("my-words-"+letter+" : "+ojson+"\n->\n"+json)

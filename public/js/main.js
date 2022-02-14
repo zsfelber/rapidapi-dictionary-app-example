@@ -81,7 +81,6 @@ var checkboxdata = {
         "most common 3000 words": { defchecked: false },
         "most common 10000 words": { defchecked: false },
         "all words": { defchecked: false, classes: "inblock" },
-        "my words": { defchecked: false, classes: "inblock" },
     },
 };
 
@@ -215,7 +214,7 @@ function checkps() {
 
 
 
-function createLetterLink(i, N) {
+function createFreqLetterLink(i, N) {
     let frqntls = frqntlses[N];
     let len = frqntls.length;
     let result;
@@ -227,6 +226,15 @@ function createLetterLink(i, N) {
     let a = createlink(i,null,`&mode=words_by_frequency&N=${N}&i=${i}&len=${frqntls.length}&ffrom=${result.ffrom}&fto=${result.fto}`);
     a.innerText = result.lab;
     result.a = a;
+    return result;
+}
+
+
+function createMywLetterLink(i, letter) {
+    let result;
+    let a = createlink(letter,null,`&mode=my_words&letter=`+letter);
+    a.innerText = letter;
+    result = {letter,a};
     return result;
 }
 
@@ -620,7 +628,7 @@ function updateWords() {
         const dlpag = labelled("Page "+(urli)+" of "+(urllen-1), "Go to ");
 
         function addnav(i, lab0) {
-            let iv = createLetterLink(i, urlN);
+            let iv = createFreqLetterLink(i, urlN);
             iv.a.innerText = `${lab0}(${iv.lab})`;
             dlpag.children[1].appendChild(iv.a);
             let spc = document.createTextNode("  ");
@@ -809,7 +817,7 @@ $(document).keypress(async function(e){
     console.log(` code:${e.code} curword:${curword}`);
     if (/Key[A-F]/.test(e.code) && curword) {
         console.log(` ${e.code}  curword:${curword} added`);
-        addToGroup(e.code[3].toLowerCase(), curword);
+        addToGroup(e.code[3], curword);
         //await navigator.clipboard.writeText(s);
     }
     if (e.code==='Space') {
@@ -902,11 +910,21 @@ $(document).ready(function(){
         if (window["frqntlses"]) {
             let frqntls = window["frqntlses"][N];
             for (let i=1; i<frqntls.length; i++) {
-                let iv = createLetterLink(i, N);
+                let iv = createFreqLetterLink(i, N);
                 freqlabels.appendChild(iv.a);
                 let spc = document.createTextNode("  ");
                 freqlabels.appendChild(spc);
             }
+        }
+    }
+    function createmyworss() {
+        let letters=['A','B','C','D','E','F'];
+        let mywlabels = document.querySelector(".mywords");
+        for (let letter of letters) {
+            let iv = createMywLetterLink(letter);
+            mywlabels.appendChild(iv.a);
+            let spc = document.createTextNode("  ");
+            mywlabels.appendChild(spc);
         }
     }
     createfrlabs(800);
