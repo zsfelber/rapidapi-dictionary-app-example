@@ -1,39 +1,39 @@
 node_modules
 # Local Netlify folder
 .netlify
-cache/words/c.o.d.
-cache/words/d.o.a.
-cache/words/o.k.
-cache/words/w.c.
-cache/words/a.d.
-cache/words/p.a.
-cache/words/i.e.
-cache/words/u.s.
-cache/words/u.s.a.
-cache/words/w.h.o.
-cache/words/con
-cache/words/robert floyd curl jr.
-cache/words/martin luther king jr.
-cache/words/edward douglas white jr.
-cache/words/clarence shepard day jr.
-cache/words/whitney moore young jr.
-cache/words/var.
-cache/words/mich.
-cache/words/lbf.
-cache/words/dr.
-cache/words/ut.
-cache/words/mo.
-cache/words/no.
-cache/words/pa.
-cache/words/anon.
-cache/words/haw.
-cache/words/ind.
-cache/words/me.
-cache/words/miss.
-cache/words/mr.
-cache/words/ms.
-cache/words/mrs.
-cache/words/okla.
-cache/words/ore.
-cache/words.rar
+cache/wordsapi/words/c.o.d.
+cache/wordsapi/words/d.o.a.
+cache/wordsapi/words/o.k.
+cache/wordsapi/words/w.c.
+cache/wordsapi/words/a.d.
+cache/wordsapi/words/p.a.
+cache/wordsapi/words/i.e.
+cache/wordsapi/words/u.s.
+cache/wordsapi/words/u.s.a.
+cache/wordsapi/words/w.h.o.
+cache/wordsapi/words/con
+cache/wordsapi/words/robert floyd curl jr.
+cache/wordsapi/words/martin luther king jr.
+cache/wordsapi/words/edward douglas white jr.
+cache/wordsapi/words/clarence shepard day jr.
+cache/wordsapi/words/whitney moore young jr.
+cache/wordsapi/words/var.
+cache/wordsapi/words/mich.
+cache/wordsapi/words/lbf.
+cache/wordsapi/words/dr.
+cache/wordsapi/words/ut.
+cache/wordsapi/words/mo.
+cache/wordsapi/words/no.
+cache/wordsapi/words/pa.
+cache/wordsapi/words/anon.
+cache/wordsapi/words/haw.
+cache/wordsapi/words/ind.
+cache/wordsapi/words/me.
+cache/wordsapi/words/miss.
+cache/wordsapi/words/mr.
+cache/wordsapi/words/ms.
+cache/wordsapi/words/mrs.
+cache/wordsapi/words/okla.
+cache/wordsapi/words/ore.
+cache/wordsapi/words.rar
 local
