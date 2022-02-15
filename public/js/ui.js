@@ -156,12 +156,12 @@ function createpopover(cmp, options) {
 
     let poptrigger;
     poptrigger = function() {
-        let pop = $(this).pop;
+        let pop = this.pop;
         if (pop) {
             pop.remove();
         }
-        $(this).pop = pop = $("<div class='abs'></div>");
-        $(this).poptrigger = poptrigger;
+        this.pop = pop = $("<div class='abs'></div>");
+        this.poptrigger = poptrigger;
 
         let pos = getPos(this);
         let ui = $(options.template);
@@ -183,7 +183,7 @@ function createpopover(cmp, options) {
 
 function hidepopover(cmp) {
     cmp.each(function() {
-        let pop = $(this).pop;
+        let pop = this.pop;
         if (pop) {
             pop.remove();
         }
@@ -192,9 +192,8 @@ function hidepopover(cmp) {
 
 function showpopover(cmp) {
     cmp.each(function() {
-        let pop = $(this).pop;
-        if (!pop) {
-            $(this).poptrigger.apply(this);
+        if (this.poptrigger) {
+            this.poptrigger.apply(this);
         }
     });
 }
