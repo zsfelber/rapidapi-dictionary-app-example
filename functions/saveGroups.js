@@ -18,13 +18,26 @@ exports.handler = async function(event, context) {
   const groups = groups64 ? atob(groups64) : "";
   const groupsdata = groups ? JSON.parse(groups) : null;
   const resolvePath = context.resolvePath;
+  const curmywordsltr = event.queryStringParameters.curmywordsltr || "";
   const crawler = require('./include/crawler.js').aCrawler(resolvePath);
 
   if (groupsdata) {
+    if (curmywordsltr) {
+      if (!groupsdata[curmywordsltr]) groupsdata[curmywordsltr] = {};
+    }
 
     return service.respond(async () => {
         for (letter in groupsdata) {
-          let {f, data,json} = crawler.loadJson("data/my-words-"+letter.toLowerCase()+".json");
+          let {f, data, json} = crawler.loadJson("data/my-words-"+letter.toLowerCase()+".json");
+          if (letter === curmywordsltr) {
+            for (let letter_other in groupsdata) {
+              if (letter_other !== curmywordsltr) {
+                for (let word in groupsdata[letter_other]) {
+                  delete data[word];
+                }
+              }
+            }
+          }
           data = Object.assign(data, groupsdata[letter]);
           let ojson = JSON.stringify(data, null, 2);
           console.log("my-words-"+letter+" : json saved.")

@@ -112,6 +112,7 @@ async function fetchWord(word, mode, qs=[]) {
 
 async function saveGroups(qs=[]) {
     qs.push(`groups=${btoa(JSON.stringify(groups))}`);
+    qs.push(`curmywordsltr=${urlletter}`);
 
     let data = await serve("saveGroups", qs);
 

@@ -5,7 +5,7 @@ const methods = {
     "crawl-collect.all":require("../functions/crawl-collect-all"),
     "crawl-generate-indexes":require("../functions/crawl-generate-indexes"),
     "getWord":require("../../functions/getWord"),
-    "saveGroup":require("../../functions/saveGroups"),
+    "saveGroups":require("../../functions/saveGroups"),
 };
 
 
