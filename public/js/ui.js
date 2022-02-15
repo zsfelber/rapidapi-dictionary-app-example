@@ -138,3 +138,63 @@ function labelled(label, value) {
     dl.appendChild(dd);
     return dl;
 }
+
+// https://stackoverflow.com/questions/37975457/how-to-get-absolute-coordinates-of-element-with-absolute-position-javascript-b/40814766
+function getPosr(el) {
+    var rect=el.getBoundingClientRect();
+    return {x:rect.left,y:rect.top};
+}
+function getPos(el) {
+    // yay readability
+    for (var lx=0, ly=0;
+         el != null;
+         lx += el.offsetLeft, ly += el.offsetTop, el = el.offsetParent);
+    return {x: lx,y: ly};
+}
+function createpopover(cmp, options) {
+    //cmp.popover(options);
+
+    let poptrigger;
+    poptrigger = function() {
+        let pop = $(this).pop;
+        if (pop) {
+            pop.remove();
+        }
+        $(this).pop = pop = $("<div class='abs'></div>");
+        $(this).poptrigger = poptrigger;
+
+        let pos = getPos(this);
+        let ui = $(options.template);
+
+        let title = ui.find(".popover-header");
+        let body = ui.find(".popover-body");
+
+        title[0].innerHTML = options.title.apply(this);
+        body[0].innerHTML = options.content.apply(this);
+        pop[0].innerHTML = ui[0].outerHTML;
+
+        pop.css("left", pos.x+"px");
+        pop.css("top", (15+pos.y)+"px");
+
+        document.body.appendChild(pop[0]);
+    };
+    cmp[options.trigger](poptrigger);
+}
+
+function hidepopover(cmp) {
+    cmp.each(function() {
+        let pop = $(this).pop;
+        if (pop) {
+            pop.remove();
+        }
+    });
+}
+
+function showpopover(cmp) {
+    cmp.each(function() {
+        let pop = $(this).pop;
+        if (!pop) {
+            $(this).poptrigger.apply(this);
+        }
+    });
+}

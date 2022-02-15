@@ -375,7 +375,8 @@ function hidePopup() {
     currentpopword=null;
     currentmodal=null;
     popupcache=null;
-    $("[data-toggle=popover]").popover("hide");
+    //$("[data-toggle=popover]").popover("hide");
+    hidepopover($("[data-toggle=popover]"));
 }
 
 function showPopup(word, modal) {
@@ -383,7 +384,8 @@ function showPopup(word, modal) {
     if (word) currentpopword = word;
     if (modal) currentmodal = modal;
 
-    $(currentlink).popover('show');
+    //$(currentlink).popover('show');
+    showpopover($(currentlink));
 
 }
 

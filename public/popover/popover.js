@@ -13,8 +13,25 @@ function initpop() {
         this.which = 3 - this.which;
 
     });
+    function apply() {
 
-    $("[data-toggle=popover]").popover({
+        currentlink = this;
+
+        if (!currentmodal) {
+            currentmodal = "examples";
+        }
+        if (!currentpopword) {
+            currentpopword = this.word;
+        }
+        if (!popupcache) {
+            popupcache = {"examples":{}, "light":{}};
+        }
+        let pm = popupcache[currentmodal];
+        return pm;
+    }
+
+    //$("[data-toggle=popover]").popover({
+    createpopover($("[data-toggle=popover]"), {
         html: true,
         // !
         // https://stackoverflow.com/questions/20299246/bootstrap-popover-how-add-link-in-text-popover
@@ -22,24 +39,18 @@ function initpop() {
         trigger: 'click',
         placement: 'auto',
         template: `<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>`,
+        title: function () {
+            apply.apply(this);
+            return currentpopword;
+        },
         content: function () {
             if (altdown) return null;
 
-            currentlink = this;
-
             let id = $(this).attr("id");
-            $(`[data-toggle=popover]:not(#${id})`).popover("hide");
+            // !!  $(`[data-toggle=popover]:not(#${id})`).popover("hide");
+            hidepopover($(`[data-toggle=popover]:not(#${id})`));
 
-            if (!currentmodal) {
-                currentmodal = "examples";
-            }
-            if (!currentpopword) {
-                currentpopword = this.word;
-            }
-            if (!popupcache) {
-                popupcache = {"examples":{}, "light":{}};
-            }
-            let pm = popupcache[currentmodal];
+            let pm = apply.apply(this);
 
             if (pm[currentpopword]) {
                 let x = pm[currentpopword][0].outerHTML;
@@ -54,7 +65,8 @@ function initpop() {
                 fetchPopup().then((def) => {
                     pm[currentpopword] = $(def);
                     console.log("loaded (first):" + id);
-                    $(this).popover('show');
+                    //$(this).popover('show');
+                    showpopover($(this));
                 });
                 return "<div>Loading...</div>";
             }
