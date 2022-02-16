@@ -296,6 +296,9 @@ exports.aCrawler = function (resolvePath) {
       data.results = [];
       for (let mean of data.meanings) {
         let def = stardict_defs[mean];
+        if (!def.synonyms && def.synonymSet) {
+          def.synonyms = [].concat(Object.keys(def.synonymSet));
+        }
         data.results.push(def);
       }
       return convertResult(true);
@@ -1272,9 +1275,13 @@ exports.aCrawler = function (resolvePath) {
           } else {
             // definition, synonyms, ...
             result.meaning[def.definition] = def;
-            def.synonymSet = Object.create(null);
-            def.synonymSet[word] = 1;
-            for (let s of def.synonyms) def.synonymSet[s] = 1;
+            if (!def.synonymSet) {
+              def.synonymSet = Object.create(null);
+              def.synonymSet[word] = 1;
+              if (def.synonyms) {
+                for (let s of def.synonyms) def.synonymSet[s] = 1;
+              }
+            }
           }
           worddata.meanings.push(def);
         }
