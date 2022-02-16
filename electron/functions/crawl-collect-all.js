@@ -83,7 +83,23 @@ async function doItFor(api, deep, fix, fill, resolvePath) {
   }
 
   if (fill) {
-    cs.push.apply(cs, Object.keys(totwords));
+    let cs0 = Object.keys(totwords); 
+    // sort randomly
+    let rnd = new Date().getMilliseconds()+Math.random()*100;
+    String.prototype.hashCode = function(){
+      var hash = 0;
+      for (var i = 0; i < this.length; i++) {
+          var character = (this.charCodeAt(i)+rnd)&0xff;
+          hash = ((hash<<5)-hash)+character;
+          hash = hash & hash; // Convert to 32bit integer
+      }
+      return hash;
+    }
+    cs0.sort((a,b)=>{
+      return a.hashCode()-b.hashCode();
+    });
+    
+    cs.push.apply(cs, cs0);
 
     const by_def = {};
     const by_w = {};
