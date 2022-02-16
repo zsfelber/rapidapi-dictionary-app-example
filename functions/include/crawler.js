@@ -207,6 +207,8 @@ exports.aCrawler = function (resolvePath) {
       addif(skeys, "antonyms");
 
       delete therest["examples"];
+      delete therest["synonymSet"];
+      delete therest["synind"];
 
       const more = Object.keys(therest);
       more.sort();
@@ -294,16 +296,19 @@ exports.aCrawler = function (resolvePath) {
     if (stardict_words.byword[word]) {
       data = Object.assign({}, stardict_words.byword[word]);
       if (data.errind) {
-        data.error = stardict_errors.values[data.errind];
+        data.error = stardict_errors.keys[data.errind];
         console.warn("StarDict data is of an error entry : " + word, " ", data.error);
         data = convertError();
         return data;
       } else {
         data.results = [];
         for (let meanind of data.syninds) {
-          let def = stardict_defs.values[meanind];
+          let def = Object.assign({}, stardict_defs.values[meanind]);
           if (!def.synonyms && def.synonymSet) {
             def.synonyms = [].concat(Object.keys(def.synonymSet));
+          }
+          if (!def.definition) {
+            def.definition = stardict_defs.keys[meanind];
           }
           data.results.push(def);
         }
@@ -313,6 +318,8 @@ exports.aCrawler = function (resolvePath) {
   
     if (fs.existsSync(resolvePath.abs(wfpath))) {
 
+      data = {word, results:[{definition:"ah snap!"}]};
+      /*
       //console.log(API, "From cache file/single "+wfpath+"  asobject:"+asobject+"...\n");
       let ijson = fs.readFileSync(resolvePath.abs(wfpath)).toString();
       try {
@@ -321,7 +328,7 @@ exports.aCrawler = function (resolvePath) {
       } catch (e) {
         console.warn("Delete invalid file : " + wfpath, e);
         fs.unlinkSync(resolvePath.abs(wfpath));
-      }
+      }*/
     }
 
     if (data) {
