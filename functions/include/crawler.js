@@ -276,6 +276,14 @@ exports.aCrawler = function (resolvePath) {
         console.log(API, "--pendingParallelRequests:" + pendingParallelRequests + " admittedParallelRequests:" + admittedParallelRequests);
       }
     }
+    function convertError() {
+      if (cachedonly===CACHE_RAW) {
+        data = {error:(data.error?data.error.message?data.error.message:data.error:"unknown error")};
+      } else {
+        data = null;
+      }
+      return data;
+    }
 
     loadStarDictAll();
 
@@ -289,8 +297,9 @@ exports.aCrawler = function (resolvePath) {
       return convertResult(true);
     }
     if (data = stardict_errors[word]) {
-      console.warn("StarDict is of an error entry : " + word, " ", data.error);
-      return null;
+      console.warn("StarDict data is of an error entry : " + word, " ", data.error);
+      data = convertError();
+      return data;
     }
   
     if (fs.existsSync(resolvePath.abs(wfpath))) {
@@ -318,11 +327,7 @@ exports.aCrawler = function (resolvePath) {
           data = null;
         } else {
           console.warn("File is of an error entry : " + wfpath, " ", (data.error ? data.error.message ? data.error.message : data.error : "unknown error"));
-          if (cachedonly===CACHE_RAW) {
-            data = {error:(data.error?data.error.message?data.error.message:data.error:"unknown error")};
-          } else {
-            data = null;
-          }
+          data = convertError();
           return data;
         }
       }
@@ -1222,11 +1227,13 @@ exports.aCrawler = function (resolvePath) {
 
   let stardict_words, stardict_defs, stardict_errors;
   function loadStarDictAll() {
-    console.time("loadStarDictAll");
-    if (!stardict_words) stardict_words = loadStarDict(`${CACHE_DIR}/${API}-english-words`);
-    if (!stardict_defs) stardict_defs = loadStarDict(`${CACHE_DIR}/${API}-english-definitions`);
-    if (!stardict_errors) stardict_errors = loadStarDict(`${CACHE_DIR}/${API}-english-errors`);
-    console.timeEnd("loadStarDictAll");
+    if (!stardict_words || !stardict_defs || !stardict_errors) {
+      console.time("load StarDict datafiles");
+      if (!stardict_words) stardict_words = loadStarDict(`${CACHE_DIR}/${API}-english-words`);
+      if (!stardict_defs) stardict_defs = loadStarDict(`${CACHE_DIR}/${API}-english-definitions`);
+      if (!stardict_errors) stardict_errors = loadStarDict(`${CACHE_DIR}/${API}-english-errors`);
+      console.timeEnd("load StarDict datafiles");
+    }
   }
 
   function convertFileCacheToIntermediate(byword) {
@@ -1273,14 +1280,16 @@ exports.aCrawler = function (resolvePath) {
   }
 
   function updateStarDict() {
+
+    loadStarDictAll();
+
     console.time('parse file cache');
     let { byf, byword, cntf, nowords } = loadAllFromFileCache();
     console.timeEnd('parse file cache');
 
     console.time('stage1');
-    loadStarDictAll();
     let stage1 = convertFileCacheToIntermediate(byword);
-    mergeIntermediate(stage1, stardict_words, stardict_defs, stardict_errors);
+    mergeIntermediate(stage1);
     console.timeEnd('stage1');
 
     console.time('stage2');
