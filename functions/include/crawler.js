@@ -279,6 +279,10 @@ exports.aCrawler = function (resolvePath) {
     function convertError() {
       if (cachedonly===CACHE_RAW) {
         data = {error:(data.error?data.error.message?data.error.message:data.error:"unknown error")};
+        if (/no definitions for \{"info":\{"word":"/.test(data.error)) {
+          data.error = "no definitions for word";
+          console.log("Convert error message : no definitions for word:"+word);
+        }
       } else {
         data = null;
       }
