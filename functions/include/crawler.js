@@ -1319,6 +1319,9 @@ exports.aCrawler = function (resolvePath) {
     stage2.sorteddefs.sort();
     stage2.sortederrors = [].concat(Object.keys(stage1.error));
     stage2.sortederrors.sort();
+    console.log("words:",stage2.sortedwords.length,
+        "defs:",stage2.sorteddefs.length,
+        "errors:",stage2.sortederrors.length);
     console.timeEnd('stage2');
 
     console.time('write stardict output');
