@@ -14,6 +14,11 @@ const noResolvePath = {
     return rel;
   }
 };
+
+let staticCache = {
+
+};
+
 exports.aCrawler = function (resolvePath) {
   if (!resolvePath) resolvePath = noResolvePath;
 
@@ -293,22 +298,22 @@ exports.aCrawler = function (resolvePath) {
 
     loadStarDictAll();
 
-    if (stardict_words.byword[word]) {
-      data = Object.assign({}, stardict_words.byword[word]);
+    if (staticCache.stardict_words.byword[word]) {
+      data = Object.assign({}, staticCache.stardict_words.byword[word]);
       if (data.errind) {
-        data.error = stardict_errors.keys[data.errind];
+        data.error = staticCache.stardict_errors.keys[data.errind];
         console.warn("StarDict data is of an error entry : " + word, " ", data.error);
         data = convertError();
         return data;
       } else {
         data.results = [];
         for (let meanind of data.syninds) {
-          let def = Object.assign({}, stardict_defs.values[meanind]);
+          let def = Object.assign({}, staticCache.stardict_defs.values[meanind]);
           if (!def.synonyms && def.synonymSet) {
             def.synonyms = [].concat(Object.keys(def.synonymSet));
           }
           if (!def.definition) {
-            def.definition = stardict_defs.keys[meanind];
+            def.definition = staticCache.stardict_defs.keys[meanind];
           }
           data.results.push(def);
         }
@@ -1260,14 +1265,13 @@ exports.aCrawler = function (resolvePath) {
     return {keys, values, byword};
   }
 
-  let stardict_words, stardict_defs, stardict_errors;
   function loadStarDictAll() {
-    if (!stardict_words || !stardict_defs || !stardict_errors) {
+    if (!staticCache.stardict_words || !staticCache.stardict_defs || !staticCache.stardict_errors) {
       console.time("load StarDict datafiles");
       const f0 = `${CACHE_DIR}/dict/${API}-english/${API}-english`;
-      if (!stardict_words) stardict_words = loadStarDict(`${f0}-words`);
-      if (!stardict_defs) stardict_defs = loadStarDict(`${f0}-definitions`);
-      if (!stardict_errors) stardict_errors = loadStarDict(`${f0}-errors`);
+      if (!staticCache.stardict_words) staticCache.stardict_words = loadStarDict(`${f0}-words`);
+      if (!staticCache.stardict_defs) staticCache.stardict_defs = loadStarDict(`${f0}-definitions`);
+      if (!staticCache.stardict_errors) staticCache.stardict_errors = loadStarDict(`${f0}-errors`);
       console.timeEnd("load StarDict datafiles");
     }
   }
@@ -1334,21 +1338,21 @@ exports.aCrawler = function (resolvePath) {
   }
 
   function mergeIntermediate(stage1) {
-    for (let s in stardict_defs.byword) stage1.meaning[s] = stardict_defs.byword[s];
-    for (let s in stardict_errors.byword) stage1.error[s] = stardict_errors.byword[s];
-    for (let s in stardict_words.byword) stage1.word[s] = stardict_words.byword[s];
+    for (let s in staticCache.stardict_defs.byword) stage1.meaning[s] = staticCache.stardict_defs.byword[s];
+    for (let s in staticCache.stardict_errors.byword) stage1.error[s] = staticCache.stardict_errors.byword[s];
+    for (let s in staticCache.stardict_words.byword) stage1.word[s] = staticCache.stardict_words.byword[s];
   }
 
   function decodeSdIndexes(stage1) {
     for (let s in stage1.word) {
       let worddata = stage1.word[s];
       if (worddata.errind) {
-        worddata.errortmp = stardict_errors.values[worddata.errind];
+        worddata.errortmp = staticCache.stardict_errors.values[worddata.errind];
         delete worddata.errind;
       } else if (worddata.syninds) {
         worddata.meaningstmp = [];
         for (let mid of worddata.syninds) {
-          worddata.meaningstmp.push(stardict_defs.values[mid]);
+          worddata.meaningstmp.push(staticCache.stardict_defs.values[mid]);
         }
         delete worddata.syninds;
       }
