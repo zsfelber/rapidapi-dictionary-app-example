@@ -1156,35 +1156,42 @@ exports.aCrawler = function (resolvePath) {
 
   }
 
+  function write(filename, buffers) {
+    var stream = fs.createWriteStream(filename, {flags:'w'});
+    for (let buf of buffers) {
+      stream.write(buf);
+    }
+    stream.end();
+  }
+
   function writeStarDictOutput(filename, keys, byword) {
-    let indexbuf = Buffer.alloc(0);
-    let dictbuf = Buffer.alloc(0);
+    let indexbuf = [];
+    let dictbuf = [];
     let dictoffset = 0;
     for (let word of keys) {
-        //let word = buf.toString('utf-8', beg, i)
+      //let word = buf.toString('utf-8', beg, i)
       //let offset = buf.readUInt32BE(i)
       //let size = buf.readUInt32BE(i)
       let worddata = byword[word];
 
       let json = JSON.stringify(worddata);
-      let size = dictbuf.write(json, 'utf-8');
 
-      let dictbuf1 = Buffer.alloc(size + 1);
-      dictbuf1.write(word, 'utf-8');
+      let dictbuf1 = Buffer.from(json, 'utf-8');
+      let size = dictbuf1.byteLength;
 
       let indexbuf1 = Buffer.alloc(8);
       indexbuf1.writeInt32BE(dictoffset);
       indexbuf1.writeInt32BE(size, 4);
 
-      dictoffset += size;
+      dictoffset+= size;
 
-      dictbuf = Buffer.concat([dictbuf, dictbuf1]);
-      indexbuf = Buffer.concat([indexbuf, indexbuf1]);
+      dictbuf.push(dictbuf1);
+      indexbuf.push(indexbuf1);
     }
 
     console.log("Write stardict "+filename);
-    fs.writeFileSync(filename+".dict", dictbuf);
-    fs.writeFileSync(filename+".idx", indexbuf);
+    write(filename+".dict", dictbuf);
+    write(filename+".idx", indexbuf);
   }
 
   function loadStarDict(filename) {
