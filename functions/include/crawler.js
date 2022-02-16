@@ -1179,14 +1179,16 @@ exports.aCrawler = function (resolvePath) {
       let json = JSON.stringify(worddata);
 
       let dictbuf1 = Buffer.from(json, 'utf-8');
-      let size = dictbuf1.byteLength;
+      let dictdatasize = dictbuf1.byteLength;
 
-      let indexbuf1 = Buffer.alloc(size + 9);
+      let wordbuf1 = Buffer.from(word, 'utf-8');
+
+      let indexbuf1 = Buffer.alloc(wordbuf1.byteLength + 9);
       indexbuf1.write(word, 'utf-8');
-      indexbuf1.writeInt32BE(dictoffset, size+1);
-      indexbuf1.writeInt32BE(size, size+5);
+      indexbuf1.writeInt32BE(dictoffset, wordbuf1.byteLength+1);
+      indexbuf1.writeInt32BE(dictdatasize, wordbuf1.byteLength+5);
 
-      dictoffset+= size;
+      dictoffset+= dictdatasize;
 
       dictbuf.push(dictbuf1);
       indexbuf.push(indexbuf1);
@@ -1251,7 +1253,7 @@ exports.aCrawler = function (resolvePath) {
     return {keys, values, byword};
   }
 
-  let stardict_words, stardict_defs, stardict_defs_by_ind, stardict_errors;
+  let stardict_words, stardict_defs, stardict_errors;
   function loadStarDictAll() {
     if (!stardict_words || !stardict_defs || !stardict_errors) {
       console.time("load StarDict datafiles");
