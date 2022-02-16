@@ -1,5 +1,7 @@
 var checkboxdata = {
     "bucket2": {
+        "generate indexes": { defchecked: false },
+        "update stardict": { defchecked: false },
         "WORDSAPI": { defchecked: true },
         "GOOGLE": { defchecked: true },
     },
@@ -15,6 +17,9 @@ $(document).ready(function(){
         if (isch("WORDSAPI")) apis.push("wordsapi");
         if (isch("GOOGLE")) apis.push("google");
         qs.push(`apis=${apis.join("-")}`);
+        qs.push(`word=${word}`);
+        qs.push(`indexes=${isch('generate indexes')}`);
+        qs.push(`stardict=${isch('update stardict')}`);
 
         let data = await serve("crawl-generate-indexes", qs);
     

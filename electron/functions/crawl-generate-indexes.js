@@ -9,22 +9,53 @@ const TRAVERSE_ALL = true;
 
 
 exports.handler = async function(event, context) {
+
+  let apis = event.queryStringParameters.apis || "";
+  let indexes = "true"===event.queryStringParameters.indexes||true===event.queryStringParameters.indexes;
+  let stardict = "true"===event.queryStringParameters.stardict||true===event.queryStringParameters.stardict;
+  const resolvePath = context.resolvePath;
+
+  let indexgenerated=0;
+
+  return service.respond(async () => {
+    if (apis) {
+
+      apis = apis.split("-");
+      for (let api of apis) {
+        indexgenerated = await doItFor(api, deep, fix, fill, resolvePath, indexgenerated);
+      }
+    }
+    console.log("Done.");
+    return {result:true};
+  }, context);
+
+}
+
+async function doItFor(api, indexes, stardict, resolvePath, indexgenerated) {
+
+
   const crawler = require('../../functions/include/crawler').aCrawler(context.resolvePath);
   crawler.initCrawler(
-    "wordsapi",
+    api,
     API_DAILY_LIMIT,
     MAX_WORDS,
     MAX_NODE_FREQUENCY,
     TRAVERSE_ALL
     );
 
-  return service.respond(async () => {
-
+  if (indexes && !indexgenerated) {
+    indexgenerated = 1;
     console.log("generate indices...");
 
     await crawler.generateIndexes();
 
-    return {result:true};
+  }
 
-  }, context);
+  if (stardict) {
+    console.log("update stardict...");
+
+    await crawler.updateStarDict();
+  }
+
+  return indexgenerated;
 }
