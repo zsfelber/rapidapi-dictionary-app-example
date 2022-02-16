@@ -1316,18 +1316,37 @@ exports.aCrawler = function (resolvePath) {
   function mergeIntermediate(stage1) {
     for (let s in stardict_defs.byword) stage1.meaning[s] = stardict_defs.byword[s];
     for (let s in stardict_errors.byword) stage1.error[s] = stardict_errors.byword[s];
-    for (let s in stardict_words.byword) {
-      let wd = stardict_words.byword[s];
-      stage1.word[s] = wd;
-      if (wd.errind) {
-        wd.errortmp = stardict_errors.values[wd.errind];
-        delete wd.errind;
-      } else {
-        wd.meaningstmp = [];
-        for (let mid of wd.syninds) {
-          wd.meaningstmp.push(stardict_defs.values[mid]);
+    for (let s in stardict_words.byword) stage1.word[s] = stardict_words.byword[s];
+  }
+
+  function decodeSdIndexes(stage1) {
+    for (let s in stage1.word) {
+      let worddata = stage1.word[s];
+      if (worddata.errind) {
+        worddata.errortmp = stardict_errors.values[worddata.errind];
+        delete worddata.errind;
+      } else if (worddata.syninds) {
+        worddata.meaningstmp = [];
+        for (let mid of worddata.syninds) {
+          worddata.meaningstmp.push(stardict_defs.values[mid]);
         }
-        delete wd.syninds;
+        delete worddata.syninds;
+      }
+    }
+  }
+
+  function encodeSdIndexes(stage1) {
+    for (let s in stage1.word) {
+      let worddata = stage1.word[s];
+      if (worddata.errortmp) {
+        worddata.errind = worddata.errortmp.errind;
+        delete worddata.errortmp;
+      } else if (worddata.meaningstmp) {
+        worddata.syninds = [];
+        for (let defdata of worddata.meaningstmp) {
+          worddata.syninds.push(defdata.synind);
+        }
+        delete worddata.meaningstmp;
       }
     }
   }
@@ -1340,13 +1359,18 @@ exports.aCrawler = function (resolvePath) {
 
     console.time('stage1');
     let stage1 = convertFileCacheToIntermediate(byword);
+
     mergeIntermediate(stage1);
+
     console.timeEnd('stage1');
 
     console.time('stage2');
     let stage2 = {
 
     };
+
+    decodeSdIndexes(stage1);
+
     stage2.sortedwords = [].concat(Object.keys(stage1.word));
     stage2.sortedwords.sort();
     stage2.sorteddefs = [].concat(Object.keys(stage1.meaning));
@@ -1361,19 +1385,9 @@ exports.aCrawler = function (resolvePath) {
     for (let err of stage2.sortederrors) {
       stage1.error[err].errind = i++;
     }
-    for (let word of stage2.sortedwords) {
-      let worddata = stage1.word[word];
-      if (worddata.errortmp) {
-        worddata.errind = worddata.errortmp.errind;
-        delete worddata.errortmp;
-      } else if (worddata.meaningstmp) {
-        worddata.syninds = [];
-        for (let defdata of worddata.meaningstmp) {
-          worddata.syninds.push(defdata.synind);
-        }
-        delete worddata.meaningstmp;
-      }
-    }
+
+    encodeSdIndexes(stage2);
+
     console.log("words:",stage2.sortedwords.length,
         "defs:",stage2.sorteddefs.length,
         "errors:",stage2.sortederrors.length);
