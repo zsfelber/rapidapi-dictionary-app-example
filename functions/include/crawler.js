@@ -1228,6 +1228,11 @@ exports.aCrawler = function (resolvePath) {
     return result;
   }
 
+  function mergeIntermediate(stage1, stardictwords, stardictdefs) {
+    for (let s of stardictwords) stage1.word[s] = stardictwords[s];
+    for (let s of stardictdefs) stage1.meaning[s] = stardictdefs[s];
+  }
+
   function updateStarDict() {
     console.time('parse file cache');
     let { byf, byword, cntf, nowords } = loadAllFromFileCache();
@@ -1235,6 +1240,9 @@ exports.aCrawler = function (resolvePath) {
 
     console.time('stage1');
     let stage1 = convertFileCacheToIntermediate(byword);
+    let stage1b_words = loadStarDict(`${CACHE_DIR}/${API}-english-words`);
+    let stage1b_defs = loadStarDict(`${CACHE_DIR}/${API}-english-definitions`);
+    mergeIntermediate(stage1, stage1b_words, stage1b_defs);
     console.timeEnd('stage1');
 
     console.time('stage2');
