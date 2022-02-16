@@ -22,7 +22,7 @@ exports.handler = async function(event, context) {
 
       apis = apis.split("-");
       for (let api of apis) {
-        indexgenerated = await doItFor(api, deep, fix, fill, resolvePath, indexgenerated);
+        indexgenerated = await doItFor(api, indexes, stardict, resolvePath, indexgenerated);
       }
     }
     console.log("Done.");
@@ -34,7 +34,7 @@ exports.handler = async function(event, context) {
 async function doItFor(api, indexes, stardict, resolvePath, indexgenerated) {
 
 
-  const crawler = require('../../functions/include/crawler').aCrawler(context.resolvePath);
+  const crawler = require('../../functions/include/crawler').aCrawler(resolvePath);
   crawler.initCrawler(
     api,
     API_DAILY_LIMIT,

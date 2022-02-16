@@ -1229,8 +1229,8 @@ exports.aCrawler = function (resolvePath) {
   }
 
   function mergeIntermediate(stage1, stardictwords, stardictdefs) {
-    for (let s of stardictwords) stage1.word[s] = stardictwords[s];
-    for (let s of stardictdefs) stage1.meaning[s] = stardictdefs[s];
+    for (let s in stardictwords) stage1.word[s] = stardictwords[s];
+    for (let s in stardictdefs) stage1.meaning[s] = stardictdefs[s];
   }
 
   function updateStarDict() {

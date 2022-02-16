@@ -11,7 +11,7 @@ var checkboxdata = {
 $(document).ready(function(){
     init$();
 
-    async function fetchMain(qs=[]) {
+    async function fetchMain(word, qs=[]) {
     
         let apis=[];
         if (isch("WORDSAPI")) apis.push("wordsapi");
@@ -34,7 +34,7 @@ $(document).ready(function(){
 
         try {
 
-            const data = await fetchMain();
+            const data = await fetchMain($.urlParam('word'));
 
             console.log("response:", data);
  
