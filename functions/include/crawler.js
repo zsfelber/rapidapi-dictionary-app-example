@@ -248,6 +248,7 @@ exports.aCrawler = function (resolvePath) {
     return result;
   }
 
+  const CACHE_RAW = new Object({cache:raw});
   async function loadSingleWord(word, asobject, cachedonly = false) {
 
     let fileword = word.replace(/[.,/']/g, "$").toLowerCase();
@@ -276,6 +277,22 @@ exports.aCrawler = function (resolvePath) {
       }
     }
 
+    loadStarDictAll();
+
+    if (stardict_words[word]) {
+      data = Object.assign({}, stardict_words[word]);
+      data.results = [];
+      for (let mean of data.meanings) {
+        let def = stardict_defs[mean];
+        data.results.push(def);
+      }
+      return convertResult(true);
+    }
+    if (data = stardict_errors[word]) {
+      console.warn("StarDict is of an error entry : " + word, " ", data.error);
+      return null;
+    }
+  
     if (fs.existsSync(resolvePath.abs(wfpath))) {
 
       //console.log(API, "From cache file/single "+wfpath+"  asobject:"+asobject+"...\n");
@@ -301,7 +318,12 @@ exports.aCrawler = function (resolvePath) {
           data = null;
         } else {
           console.warn("File is of an error entry : " + wfpath, " ", (data.error ? data.error.message ? data.error.message : data.error : "unknown error"));
-          return null;
+          if (cachedonly===CACHE_RAW) {
+            data = {error:(data.error?data.error.message?data.error.message:data.error:"unknown error")};
+          } else {
+            data = null;
+          }
+          return data;
         }
       }
       if (data) {
@@ -932,7 +954,7 @@ exports.aCrawler = function (resolvePath) {
       return es;
     }
     let chkFile = async function (word) {
-      let data = await loadSingleWord(word, true, true);
+      let data = await loadSingleWord(word, true, CACHE_RAW);
       if (data) {
         let df = data.frequency ? data.frequency : 0;
         byword[word] = data;
@@ -1198,29 +1220,45 @@ exports.aCrawler = function (resolvePath) {
     return {keys, byword};
   }
 
+  let stardict_words, stardict_defs, stardict_errors;
+  function loadStarDictAll() {
+    console.time("loadStarDictAll");
+    if (!stardict_words) stardict_words = loadStarDict(`${CACHE_DIR}/${API}-english-words`);
+    if (!stardict_defs) stardict_defs = loadStarDict(`${CACHE_DIR}/${API}-english-definitions`);
+    if (!stardict_errors) stardict_errors = loadStarDict(`${CACHE_DIR}/${API}-english-errors`);
+    console.timeEnd("loadStarDictAll");
+  }
+
   function convertFileCacheToIntermediate(byword) {
     let result = {
       word: {},
-      meaning: {}
+      meaning: {},
+      error: {}
     };
     for (let word in byword) {
       let worddata = byword[word];
-      result.word[word] = worddata;
-      worddata.meanings = [];
-      for (let defidx in worddata.results) {
-        let def = worddata.results[defidx];
-        let olddef = result.meaning[def.definition];
-        if (olddef) {
-          olddef.synonymSet[word] = 1;
-          def = olddef;
-        } else {
-          // definition, synonyms, ...
-          result.meaning[def.definition] = def;
-          def.synonymSet = {};
-          def.synonymSet[word] = 1;
-          for (let s of def.synonyms) def.synonymSet[s] = 1;
+
+      if (worddata.error) {
+        result.error[word] = worddata.error;
+      } else {
+        result.word[word] = worddata;
+
+        worddata.meanings = [];
+        for (let defidx in worddata.results) {
+          let def = worddata.results[defidx];
+          let olddef = result.meaning[def.definition];
+          if (olddef) {
+            olddef.synonymSet[word] = 1;
+            def = olddef;
+          } else {
+            // definition, synonyms, ...
+            result.meaning[def.definition] = def;
+            def.synonymSet = {};
+            def.synonymSet[word] = 1;
+            for (let s of def.synonyms) def.synonymSet[s] = 1;
+          }
+          worddata.meanings.push(def);
         }
-        worddata.meanings.push(def);
       }
       delete worddata.results;
     }
@@ -1228,9 +1266,10 @@ exports.aCrawler = function (resolvePath) {
     return result;
   }
 
-  function mergeIntermediate(stage1, stardictwords, stardictdefs) {
-    for (let s in stardictwords) stage1.word[s] = stardictwords[s];
-    for (let s in stardictdefs) stage1.meaning[s] = stardictdefs[s];
+  function mergeIntermediate(stage1) {
+    for (let s in stardict_words) stage1.word[s] = stardict_words[s];
+    for (let s in stardict_defs) stage1.meaning[s] = stardict_defs[s];
+    for (let s in stardict_errors) stage1.error[s] = stardict_errors[s];
   }
 
   function updateStarDict() {
@@ -1239,10 +1278,9 @@ exports.aCrawler = function (resolvePath) {
     console.timeEnd('parse file cache');
 
     console.time('stage1');
+    loadStarDictAll();
     let stage1 = convertFileCacheToIntermediate(byword);
-    let stage1b_words = loadStarDict(`${CACHE_DIR}/${API}-english-words`);
-    let stage1b_defs = loadStarDict(`${CACHE_DIR}/${API}-english-definitions`);
-    mergeIntermediate(stage1, stage1b_words, stage1b_defs);
+    mergeIntermediate(stage1, stardict_words, stardict_defs, stardict_errors);
     console.timeEnd('stage1');
 
     console.time('stage2');
