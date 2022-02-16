@@ -293,20 +293,22 @@ exports.aCrawler = function (resolvePath) {
 
     if (stardict_words.byword[word]) {
       data = Object.assign({}, stardict_words.byword[word]);
-      data.results = [];
-      for (let mean of data.meanings) {
-        let def = stardict_defs[mean];
-        if (!def.synonyms && def.synonymSet) {
-          def.synonyms = [].concat(Object.keys(def.synonymSet));
+      if (data.errind) {
+        data.error = stardict_errors.values[data.errind];
+        console.warn("StarDict data is of an error entry : " + word, " ", data.error);
+        data = convertError();
+        return data;
+      } else {
+        data.results = [];
+        for (let meanind of data.syninds) {
+          let def = stardict_defs.values[meanind];
+          if (!def.synonyms && def.synonymSet) {
+            def.synonyms = [].concat(Object.keys(def.synonymSet));
+          }
+          data.results.push(def);
         }
-        data.results.push(def);
+        return convertResult(true);
       }
-      return convertResult(true);
-    }
-    if (data = stardict_errors.byword[word]) {
-      console.warn("StarDict data is of an error entry : " + word, " ", data.error);
-      data = convertError();
-      return data;
     }
   
     if (fs.existsSync(resolvePath.abs(wfpath))) {
@@ -1206,7 +1208,7 @@ exports.aCrawler = function (resolvePath) {
       noinput=1;
     }
 
-    let keys=[], byword = Object.create(null);
+    let keys=[], values=[], byword = Object.create(null);
 
     if (!noinput) {
 
@@ -1239,15 +1241,16 @@ exports.aCrawler = function (resolvePath) {
         let json = dictbuf.toString("utf-8", offset, offset+size);
         let worddata = JSON.parse(json);
         byword[word] = worddata;
+        values.push(worddata);
 
         index++;
       }
     }
 
-    return {keys, byword};
+    return {keys, values, byword};
   }
 
-  let stardict_words, stardict_defs, stardict_errors;
+  let stardict_words, stardict_defs, stardict_defs_by_ind, stardict_errors;
   function loadStarDictAll() {
     if (!stardict_words || !stardict_defs || !stardict_errors) {
       console.time("load StarDict datafiles");
@@ -1264,15 +1267,22 @@ exports.aCrawler = function (resolvePath) {
       meaning: {},
       error: {}
     };
+
     for (let word in byword) {
       let worddata = byword[word];
 
       if (worddata.error) {
-        result.error[word] = worddata.error;
+        let worddata2 = Object.create(null);
+        result.word[word] = worddata2;
+        let e = result.error[worddata.error];
+        if (!e) {
+          result.error[worddata.error] = e = "";
+        }
+        worddata2.errortmp = e;
       } else {
         result.word[word] = worddata;
 
-        worddata.meanings = [];
+        worddata.meaningstmp = [];
         for (let defidx in worddata.results) {
           let def = worddata.results[defidx];
           let olddef = result.meaning[def.definition];
@@ -1280,6 +1290,7 @@ exports.aCrawler = function (resolvePath) {
             olddef.synonymSet[word] = 1;
             def = olddef;
           } else {
+
             // definition, synonyms, ...
             result.meaning[def.definition] = def;
             if (!def.synonymSet) {
@@ -1290,10 +1301,11 @@ exports.aCrawler = function (resolvePath) {
               }
             }
           }
-          worddata.meanings.push(def);
+          delete def.definition;
+          worddata.meaningstmp.push(def);
         }
+        delete worddata.results;
       }
-      delete worddata.results;
     }
 
     return result;
@@ -1326,6 +1338,26 @@ exports.aCrawler = function (resolvePath) {
     stage2.sorteddefs.sort();
     stage2.sortederrors = [].concat(Object.keys(stage1.error));
     stage2.sortederrors.sort();
+    let i = 0;
+    for (let def of sorteddefs) {
+      stage1.meaning[def].synind = i++;
+    }
+    i = 0;
+    for (let err of sortederrors) {
+      stage1.error[err].errind = i++;
+    }
+    for (let worddata of Object.values(stage1.word)) {
+      if (worddata.errortmp) {
+        worddata.errind = worddata.errortmp.errind;
+        delete worddata.errortmp;
+      } else {
+        worddata.syninds = [];
+        for (let defdata of worddata.meaningstmp) {
+          worddata.syninds.push(defdata.synind);
+        }
+        delete worddata.meaningstmp;
+      }
+    }
     console.log("words:",stage2.sortedwords.length,
         "defs:",stage2.sorteddefs.length,
         "errors:",stage2.sortederrors.length);
