@@ -909,7 +909,9 @@ exports.aCrawler = function (resolvePath) {
     return loadWordsOnly(words0, word0, asobject);
   }
 
-  async function collectFileFrequencies() {
+
+
+  async function loadAllFromFileCache() {
     let files = [];
     async function onFile(strPath, stat) {
       let word = strPath.substring(TWELVE);
@@ -920,6 +922,7 @@ exports.aCrawler = function (resolvePath) {
 
     let cntf = 0;
     let byf = {};
+    let byword = {};
     function entry(f) {
       let es = byf[f];
       if (!es) {
@@ -932,6 +935,7 @@ exports.aCrawler = function (resolvePath) {
       let data = await loadSingleWord(word, true, true);
       if (data) {
         let df = data.frequency ? data.frequency : 0;
+        byword[word] = data;
         entry(df).push(word);
       }
     };
@@ -942,7 +946,13 @@ exports.aCrawler = function (resolvePath) {
     }
     await Promise.all(promises);
 
-    return { byf, cntf, nowords };
+    return { byf, byword, cntf, nowords };
+  }
+
+  async function collectFileFrequencies() {
+    let result = loadAllFromFileCache();
+
+    return result;
   }
 
   let existingGoogleWords;
@@ -1108,6 +1118,80 @@ exports.aCrawler = function (resolvePath) {
       `
     fs.writeFileSync(resolvePath.abs(clindpath), clfq);
 
+  }
+
+  function writeStarDictOutput(filename, keys, byword) {
+    let indexbuf = Buffer.alloc();
+    let dictbuf = Buffer.alloc();
+    let offset = 0;
+    for (let word of keys) {
+      //let word = buf.toString('utf-8', beg, i)
+      //let offset = buf.readUInt32BE(i)
+      //let size = buf.readUInt32BE(i)
+      let worddata = byword[word];
+
+      let json = JSON.stringify(worddata);
+      let size = dictbuf.write(json, 'utf-8');
+
+      indexbuf.write(word, 'utf-8');
+      indexbuf.writeInt8(0);
+      indexbuf.writeInt32BE(offset);
+      indexbuf.writeInt32BE(size);
+
+      offset += size;
+    }
+    console.log("Write "+filename);
+    fs.writeFileSync(filename+".dict", dictbuf);
+    fs.writeFileSync(filename+".idx", indexbuf);
+  }
+
+  function updateStarDict() {
+    console.time('parse file cache');
+    let { byf, byword, cntf, nowords } = loadAllFromFileCache();
+    console.timeEnd('parse file cache');
+
+    console.time('stage1');
+    let stage1 = {
+      word: {},
+      meaning: {}
+    };
+    for (let word in byword) {
+      let worddata = byword[word];
+      stage1.word[word] = worddata;
+      worddata.meanings = [];
+      for (let defidx in worddata.results) {
+        let def = worddata.results[defidx];
+        let olddef = stage1.meaning[def.definition];
+        if (olddef) {
+          olddef.synonymSet[word] = 1;
+          def = olddef;
+        } else {
+          // definition, synonyms, ...
+          stage1.meaning[def.definition] = def;
+          def.synonymSet = {};
+          def.synonymSet[word] = 1;
+          for (let s of def.synonyms) def.synonymSet[s] = 1;
+        }
+        worddata.meanings.push(def);
+      }
+      delete worddata.results;
+    }
+    console.timeEnd('stage1');
+
+    console.time('stage2');
+    let stage2 = {
+
+    };
+    stage2.sorteddefs = [].concat(Object.keys(stage1.meaning));
+    stage2.sorteddefs.sort();
+    stage2.sortedwords = [].concat(Object.keys(stage1.word));
+    stage2.sortedwords.sort();
+    console.timeEnd('stage2');
+
+    console.time('write stardict output');
+    writeStarDictOutput(`${CACHE_DIR}/${API}-english-words`, stage2.sortedwords, stage1.word);
+    writeStarDictOutput(`${CACHE_DIR}/${API}-english-definitions`, stage2.sorteddefs, stage1.meaning);
+    console.timeEnd('write stardict output');
 
   }
 
@@ -1118,6 +1202,7 @@ exports.aCrawler = function (resolvePath) {
     loadCommonWords10000_d_h, loadCommonWords10000_i_o, loadCommonWords10000_p_r,
     loadCommonWords10000_s_z, loadCommonWords3000, loadCommonWords10000, loadCommon3000_words,
     loadCommon10000_words, loadAll_words, loadMyWords, loadMyWordCls, wordsByFrequency, generateIndexes,
-    loadGoogleWords, loadCaggleFrequencies, doesGoogleWordExist, getWordCaggleFrequency
+    loadGoogleWords, loadCaggleFrequencies, doesGoogleWordExist, getWordCaggleFrequency, 
+    loadAllFromFileCache, updateStarDict
   };
 }
