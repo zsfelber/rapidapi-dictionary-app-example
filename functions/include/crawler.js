@@ -53,7 +53,7 @@ exports.aCrawler = function (resolvePath) {
       json = fs.readFileSync(f);
       data = JSON.parse(json);
     } else {
-      data = {};
+      data = Object.create(null);
     }
     return {f, json, data};
   }
@@ -414,7 +414,7 @@ exports.aCrawler = function (resolvePath) {
       this.definition = val.definition;
       this.synonyms = [];
       this.similar = [];
-      this.examplesTmp = {};
+      this.examplesTmp = Object.create(null);
 
       this.word = this.entry.word;
       this.partOfSpeech = this.val.partOfSpeech;
@@ -639,8 +639,8 @@ exports.aCrawler = function (resolvePath) {
 
   async function loadCluster(word, asobject) {
 
-    const by_def = {};
-    const by_w = {};
+    const by_def = Object.create(null);
+    const by_w = Object.create(null);
     const by_key = [];
     let tresult = {
       by_def,
@@ -764,7 +764,7 @@ exports.aCrawler = function (resolvePath) {
   }
 
   function loadCommonWordsLetter(words, word, letter, asobject) {
-    let ofLetter = {};
+    let ofLetter = Object.create(null);
     let lc = letter.toLowerCase();
     for (let w of Object.keys(words)) {
       if (w[0].toLowerCase() == lc) {
@@ -953,8 +953,8 @@ exports.aCrawler = function (resolvePath) {
 
 
     let cntf = 0;
-    let byf = {};
-    let byword = {};
+    let byf = Object.create(null);
+    let byword = Object.create(null);
     function entry(f) {
       let es = byf[f];
       if (!es) {
@@ -991,7 +991,7 @@ exports.aCrawler = function (resolvePath) {
   let existingGoogleWords;
   function loadGoogleWords() {
     if (!existingGoogleWords) {
-      existingGoogleWords = {};
+      existingGoogleWords = Object.create(null);
       function split(line, lineNumber) {
         return [line];
       }
@@ -1022,7 +1022,7 @@ exports.aCrawler = function (resolvePath) {
           }
         });
 
-      caggleFrequencies = {};
+      caggleFrequencies = Object.create(null);
 
       for (let frec of caggleFreqRecords) {
         if (doesGoogleWordExist(frec.word)) {
@@ -1047,7 +1047,7 @@ exports.aCrawler = function (resolvePath) {
       let nowords = 0;
 
       let cntf = 0;
-      let byf = {};
+      let byf = Object.create(null);
       function entry(f) {
         nowords++;
         let es = byf[f];
@@ -1080,7 +1080,7 @@ exports.aCrawler = function (resolvePath) {
     var fkeys = [].concat(Object.keys(byf));
     // descending order !!
     fkeys.sort((a, b) => Number(b) - Number(a));
-    var byfs = {};
+    var byfs = Object.create(null);
     for (let f of fkeys) {
       let es = byf[f];
       byfs[f] = es;
@@ -1196,7 +1196,7 @@ exports.aCrawler = function (resolvePath) {
       noinput=1;
     }
 
-    let keys=[], byword={};
+    let keys=[], byword = Object.create(null);
 
     if (!noinput) {
 
@@ -1272,7 +1272,7 @@ exports.aCrawler = function (resolvePath) {
           } else {
             // definition, synonyms, ...
             result.meaning[def.definition] = def;
-            def.synonymSet = {};
+            def.synonymSet = Object.create(null);
             def.synonymSet[word] = 1;
             for (let s of def.synonyms) def.synonymSet[s] = 1;
           }
