@@ -1166,7 +1166,7 @@ exports.aCrawler = function (resolvePath) {
     stream.end();
   }
 
-  function writeStarDictOutput(filename, keys, byword) {
+  function saveStarDict(filename, keys, byword) {
     let indexbuf = [];
     let dictbuf = [];
     let dictoffset = 0;
@@ -1181,9 +1181,10 @@ exports.aCrawler = function (resolvePath) {
       let dictbuf1 = Buffer.from(json, 'utf-8');
       let size = dictbuf1.byteLength;
 
-      let indexbuf1 = Buffer.alloc(8);
-      indexbuf1.writeInt32BE(dictoffset);
-      indexbuf1.writeInt32BE(size, 4);
+      let indexbuf1 = Buffer.alloc(size + 9);
+      indexbuf1.write(word, 'utf-8');
+      indexbuf1.writeInt32BE(dictoffset, size+1);
+      indexbuf1.writeInt32BE(size, size+5);
 
       dictoffset+= size;
 
@@ -1259,6 +1260,14 @@ exports.aCrawler = function (resolvePath) {
       if (!stardict_errors) stardict_errors = loadStarDict(`${CACHE_DIR}/${API}-english-errors`);
       console.timeEnd("load StarDict datafiles");
     }
+  }
+
+  function saveStarDictAll() {
+    console.time('save StarDict datafiles');
+    saveStarDict(`${CACHE_DIR}/${API}-english-words`, stage2.sortedwords, stage1.word);
+    saveStarDict(`${CACHE_DIR}/${API}-english-definitions`, stage2.sorteddefs, stage1.meaning);
+    saveStarDict(`${CACHE_DIR}/${API}-english-errors`, stage2.sortederrors, stage1.error);
+    console.timeEnd('save StarDict datafiles');
   }
 
   function convertFileCacheToIntermediate(byword) {
@@ -1393,12 +1402,7 @@ exports.aCrawler = function (resolvePath) {
         "errors:",stage2.sortederrors.length);
     console.timeEnd('stage2');
 
-    console.time('write stardict output');
-    writeStarDictOutput(`${CACHE_DIR}/${API}-english-words`, stage2.sortedwords, stage1.word);
-    writeStarDictOutput(`${CACHE_DIR}/${API}-english-definitions`, stage2.sorteddefs, stage1.meaning);
-    writeStarDictOutput(`${CACHE_DIR}/${API}-english-errors`, stage2.sortederrors, stage1.error);
-    console.timeEnd('write stardict output');
-
+    saveStarDictAll();
   }
 
   return {
