@@ -248,7 +248,7 @@ exports.aCrawler = function (resolvePath) {
     return result;
   }
 
-  const CACHE_RAW = new Object({cache:raw});
+  const CACHE_RAW = new Object({cache:"raw"});
   async function loadSingleWord(word, asobject, cachedonly = false) {
 
     let fileword = word.replace(/[.,/']/g, "$").toLowerCase();
@@ -1150,11 +1150,11 @@ exports.aCrawler = function (resolvePath) {
   }
 
   function writeStarDictOutput(filename, keys, byword) {
-    let indexbuf = Buffer.alloc();
-    let dictbuf = Buffer.alloc();
-    let offset = 0;
+    let indexbuf = Buffer.alloc(0);
+    let dictbuf = Buffer.alloc(0);
+    let dictoffset = 0;
     for (let word of keys) {
-      //let word = buf.toString('utf-8', beg, i)
+        //let word = buf.toString('utf-8', beg, i)
       //let offset = buf.readUInt32BE(i)
       //let size = buf.readUInt32BE(i)
       let worddata = byword[word];
@@ -1162,13 +1162,19 @@ exports.aCrawler = function (resolvePath) {
       let json = JSON.stringify(worddata);
       let size = dictbuf.write(json, 'utf-8');
 
-      indexbuf.write(word, 'utf-8');
-      indexbuf.writeInt8(0);
-      indexbuf.writeInt32BE(offset);
-      indexbuf.writeInt32BE(size);
+      let dictbuf1 = Buffer.alloc(size + 1);
+      dictbuf1.write(word, 'utf-8');
 
-      offset += size;
+      let indexbuf1 = Buffer.alloc(8);
+      indexbuf1.writeInt32BE(dictoffset);
+      indexbuf1.writeInt32BE(size, 4);
+
+      dictoffset += size;
+
+      dictbuf = Buffer.concat([dictbuf, dictbuf1]);
+      indexbuf = Buffer.concat([indexbuf, indexbuf1]);
     }
+
     console.log("Write stardict "+filename);
     fs.writeFileSync(filename+".dict", dictbuf);
     fs.writeFileSync(filename+".idx", indexbuf);
