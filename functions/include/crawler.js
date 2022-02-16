@@ -1140,34 +1140,82 @@ exports.aCrawler = function (resolvePath) {
 
       offset += size;
     }
-    console.log("Write "+filename);
+    console.log("Write stardict "+filename);
     fs.writeFileSync(filename+".dict", dictbuf);
     fs.writeFileSync(filename+".idx", indexbuf);
   }
 
-  function updateStarDict() {
-    console.time('parse file cache');
-    let { byf, byword, cntf, nowords } = loadAllFromFileCache();
-    console.timeEnd('parse file cache');
+  function loadStarDict(filename) {
+    console.log("Read stardict "+filename);
+    let noinput=0;
+    if (!fs.existsSync(filename+".dict")) {
+      console.log(filename+".dict doesn't exist ");
+      noinput=1;
+    }
+    if (!fs.existsSync(filename+".idx")) {
+      console.log(filename + ".idx doesn't exist ");
+      noinput=1;
+    }
 
-    console.time('stage1');
-    let stage1 = {
+    let keys=[], byword={};
+
+    if (!noinput) {
+
+      let dictbuf = fs.readFileSync(filename+".dict");
+      let indexbuf = fs.readFileSync(filename+".idx");
+
+      let i = 0;
+      let index = 0;
+    
+      while (i < indexbuf.length) {
+    
+        let beg = i;
+        i = indexbuf.indexOf('\x00', beg);
+        if (i < 0) {
+          throw new Error('Index file is corrupted.');
+        }
+    
+        let word = indexbuf.toString('utf-8', beg, i);
+        keys.push(word);
+        i++;
+        if (i + 8 > indexbuf.length) {
+          throw new Error('Index file is corrupted.');
+        }
+    
+        let offset = indexbuf.readUInt32BE(i);
+        i += 4;
+        let size = indexbuf.readUInt32BE(i);
+        i += 4;
+
+        let json = dictbuf.toString("utf-8", offset, offset+size);
+        let worddata = JSON.parse(json);
+        byowrd[word] = worddata;
+
+        index++;
+      }
+    }
+
+    return {keys, byword};
+  }
+
+  function convertFileCacheToIntermediate(byword) {
+    let result = {
       word: {},
       meaning: {}
     };
     for (let word in byword) {
       let worddata = byword[word];
-      stage1.word[word] = worddata;
+      result.word[word] = worddata;
       worddata.meanings = [];
       for (let defidx in worddata.results) {
         let def = worddata.results[defidx];
-        let olddef = stage1.meaning[def.definition];
+        let olddef = result.meaning[def.definition];
         if (olddef) {
           olddef.synonymSet[word] = 1;
           def = olddef;
         } else {
           // definition, synonyms, ...
-          stage1.meaning[def.definition] = def;
+          result.meaning[def.definition] = def;
           def.synonymSet = {};
           def.synonymSet[word] = 1;
           for (let s of def.synonyms) def.synonymSet[s] = 1;
@@ -1176,6 +1224,17 @@ exports.aCrawler = function (resolvePath) {
       }
       delete worddata.results;
     }
+
+    return result;
+  }
+
+  function updateStarDict() {
+    console.time('parse file cache');
+    let { byf, byword, cntf, nowords } = loadAllFromFileCache();
+    console.timeEnd('parse file cache');
+
+    console.time('stage1');
+    let stage1 = convertFileCacheToIntermediate(byword);
     console.timeEnd('stage1');
 
     console.time('stage2');
