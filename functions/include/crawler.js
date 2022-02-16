@@ -1262,7 +1262,7 @@ exports.aCrawler = function (resolvePath) {
     }
   }
 
-  function saveStarDictAll() {
+  function saveStarDictAll(stage1, stage2) {
     console.time('save StarDict datafiles');
     saveStarDict(`${CACHE_DIR}/${API}-english-words`, stage2.sortedwords, stage1.word);
     saveStarDict(`${CACHE_DIR}/${API}-english-definitions`, stage2.sorteddefs, stage1.meaning);
@@ -1402,7 +1402,7 @@ exports.aCrawler = function (resolvePath) {
         "errors:",stage2.sortederrors.length);
     console.timeEnd('stage2');
 
-    saveStarDictAll();
+    saveStarDictAll(stage1, stage2);
   }
 
   return {
