@@ -1386,7 +1386,7 @@ exports.aCrawler = function (resolvePath) {
       stage1.error[err].errind = i++;
     }
 
-    encodeSdIndexes(stage2);
+    encodeSdIndexes(stage1);
 
     console.log("words:",stage2.sortedwords.length,
         "defs:",stage2.sorteddefs.length,
