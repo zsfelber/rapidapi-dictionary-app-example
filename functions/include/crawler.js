@@ -1276,7 +1276,7 @@ exports.aCrawler = function (resolvePath) {
         result.word[word] = worddata2;
         let e = result.error[worddata.error];
         if (!e) {
-          result.error[worddata.error] = e = "";
+          result.error[worddata.error] = e = Object.create(null);
         }
         worddata2.errortmp = e;
       } else {
@@ -1339,14 +1339,15 @@ exports.aCrawler = function (resolvePath) {
     stage2.sortederrors = [].concat(Object.keys(stage1.error));
     stage2.sortederrors.sort();
     let i = 0;
-    for (let def of sorteddefs) {
+    for (let def of stage2.sorteddefs) {
       stage1.meaning[def].synind = i++;
     }
     i = 0;
-    for (let err of sortederrors) {
+    for (let err of stage2.sortederrors) {
       stage1.error[err].errind = i++;
     }
-    for (let worddata of Object.values(stage1.word)) {
+    for (let word of stage2.sortedwords) {
+      let worddata = stage1.word[word];
       if (worddata.errortmp) {
         worddata.errind = worddata.errortmp.errind;
         delete worddata.errortmp;
