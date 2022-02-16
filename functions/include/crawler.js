@@ -939,6 +939,7 @@ exports.aCrawler = function (resolvePath) {
 
 
   async function loadAllFromFileCache() {
+    console.time('parse file cache');
     let files = [];
     async function onFile(strPath, stat) {
       let word = strPath.substring(TWELVE);
@@ -972,6 +973,7 @@ exports.aCrawler = function (resolvePath) {
       promises.push(chkFile(file));
     }
     await Promise.all(promises);
+    console.timeEnd('parse file cache');
 
     return { byf, byword, cntf, nowords };
   }
@@ -1283,9 +1285,7 @@ exports.aCrawler = function (resolvePath) {
 
     loadStarDictAll();
 
-    console.time('parse file cache');
     let { byf, byword, cntf, nowords } = loadAllFromFileCache();
-    console.timeEnd('parse file cache');
 
     console.time('stage1');
     let stage1 = convertFileCacheToIntermediate(byword);
