@@ -978,7 +978,7 @@ exports.aCrawler = function (resolvePath) {
     return { byf, byword, cntf, nowords };
   }
 
-  async function collectFileFrequencies() {
+  function collectFileFrequencies() {
     let result = loadAllFromFileCache();
 
     return result;
@@ -1287,11 +1287,11 @@ exports.aCrawler = function (resolvePath) {
     for (let s in stardict_errors) stage1.error[s] = stardict_errors[s];
   }
 
-  function updateStarDict() {
+  async function updateStarDict() {
 
     loadStarDictAll();
 
-    let { byf, byword, cntf, nowords } = loadAllFromFileCache();
+    let { byf, byword, cntf, nowords } = await loadAllFromFileCache();
 
     console.time('stage1');
     let stage1 = convertFileCacheToIntermediate(byword);
