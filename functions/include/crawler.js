@@ -1302,9 +1302,11 @@ exports.aCrawler = function (resolvePath) {
             }
           }
           delete def.definition;
+          delete def.synonyms;
           worddata.meaningstmp.push(def);
         }
         delete worddata.results;
+        delete worddata.word;
       }
     }
 
@@ -1312,9 +1314,22 @@ exports.aCrawler = function (resolvePath) {
   }
 
   function mergeIntermediate(stage1) {
-    for (let s in stardict_words.byword) stage1.word[s] = stardict_words.byword[s];
     for (let s in stardict_defs.byword) stage1.meaning[s] = stardict_defs.byword[s];
     for (let s in stardict_errors.byword) stage1.error[s] = stardict_errors.byword[s];
+    for (let s in stardict_words.byword) {
+      let wd = stardict_words.byword[s];
+      stage1.word[s] = wd;
+      if (wd.errind) {
+        wd.errortmp = stardict_errors.values[wd.errind];
+        delete wd.errind;
+      } else {
+        wd.meaningstmp = [];
+        for (let mid of wd.syninds) {
+          wd.meaningstmp.push(stardict_defs.values[mid]);
+        }
+        delete wd.syninds;
+      }
+    }
   }
 
   async function updateStarDict() {
@@ -1351,7 +1366,7 @@ exports.aCrawler = function (resolvePath) {
       if (worddata.errortmp) {
         worddata.errind = worddata.errortmp.errind;
         delete worddata.errortmp;
-      } else {
+      } else if (worddata.meaningstmp) {
         worddata.syninds = [];
         for (let defdata of worddata.meaningstmp) {
           worddata.syninds.push(defdata.synind);
