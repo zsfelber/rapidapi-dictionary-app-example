@@ -1257,18 +1257,20 @@ exports.aCrawler = function (resolvePath) {
   function loadStarDictAll() {
     if (!stardict_words || !stardict_defs || !stardict_errors) {
       console.time("load StarDict datafiles");
-      if (!stardict_words) stardict_words = loadStarDict(`${CACHE_DIR}/${API}-english-words`);
-      if (!stardict_defs) stardict_defs = loadStarDict(`${CACHE_DIR}/${API}-english-definitions`);
-      if (!stardict_errors) stardict_errors = loadStarDict(`${CACHE_DIR}/${API}-english-errors`);
+      const f0 = `${CACHE_DIR}/dict/${API}-english/${API}-english`;
+      if (!stardict_words) stardict_words = loadStarDict(`${f0}-words`);
+      if (!stardict_defs) stardict_defs = loadStarDict(`${f0}-definitions`);
+      if (!stardict_errors) stardict_errors = loadStarDict(`${f0}-errors`);
       console.timeEnd("load StarDict datafiles");
     }
   }
 
   function saveStarDictAll(stage1, stage2) {
     console.time('save StarDict datafiles');
-    saveStarDict(`${CACHE_DIR}/${API}-english-words`, stage2.sortedwords, stage1.word);
-    saveStarDict(`${CACHE_DIR}/${API}-english-definitions`, stage2.sorteddefs, stage1.meaning);
-    saveStarDict(`${CACHE_DIR}/${API}-english-errors`, stage2.sortederrors, stage1.error);
+    const f0 = `${CACHE_DIR}/dict/${API}-english/${API}-english`;
+    saveStarDict(`${f0}-words`, stage2.sortedwords, stage1.word);
+    saveStarDict(`${f0}-definitions`, stage2.sorteddefs, stage1.meaning);
+    saveStarDict(`${f0}-errors`, stage2.sortederrors, stage1.error);
     console.timeEnd('save StarDict datafiles');
   }
 
