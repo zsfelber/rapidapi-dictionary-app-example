@@ -1313,15 +1313,18 @@ exports.aCrawler = function (resolvePath) {
     let stage2 = {
 
     };
-    stage2.sorteddefs = [].concat(Object.keys(stage1.meaning));
-    stage2.sorteddefs.sort();
     stage2.sortedwords = [].concat(Object.keys(stage1.word));
     stage2.sortedwords.sort();
+    stage2.sorteddefs = [].concat(Object.keys(stage1.meaning));
+    stage2.sorteddefs.sort();
+    stage2.sortederrors = [].concat(Object.keys(stage1.error));
+    stage2.sortederrors.sort();
     console.timeEnd('stage2');
 
     console.time('write stardict output');
     writeStarDictOutput(`${CACHE_DIR}/${API}-english-words`, stage2.sortedwords, stage1.word);
     writeStarDictOutput(`${CACHE_DIR}/${API}-english-definitions`, stage2.sorteddefs, stage1.meaning);
+    writeStarDictOutput(`${CACHE_DIR}/${API}-english-errors`, stage2.sortederrors, stage1.error);
     console.timeEnd('write stardict output');
 
   }
