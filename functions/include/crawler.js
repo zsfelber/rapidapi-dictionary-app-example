@@ -291,8 +291,8 @@ exports.aCrawler = function (resolvePath) {
 
     loadStarDictAll();
 
-    if (stardict_words[word]) {
-      data = Object.assign({}, stardict_words[word]);
+    if (stardict_words.byword[word]) {
+      data = Object.assign({}, stardict_words.byword[word]);
       data.results = [];
       for (let mean of data.meanings) {
         let def = stardict_defs[mean];
@@ -300,7 +300,7 @@ exports.aCrawler = function (resolvePath) {
       }
       return convertResult(true);
     }
-    if (data = stardict_errors[word]) {
+    if (data = stardict_errors.byword[word]) {
       console.warn("StarDict data is of an error entry : " + word, " ", data.error);
       data = convertError();
       return data;
@@ -1228,7 +1228,7 @@ exports.aCrawler = function (resolvePath) {
 
         let json = dictbuf.toString("utf-8", offset, offset+size);
         let worddata = JSON.parse(json);
-        byowrd[word] = worddata;
+        byword[word] = worddata;
 
         index++;
       }
@@ -1286,9 +1286,9 @@ exports.aCrawler = function (resolvePath) {
   }
 
   function mergeIntermediate(stage1) {
-    for (let s in stardict_words) stage1.word[s] = stardict_words[s];
-    for (let s in stardict_defs) stage1.meaning[s] = stardict_defs[s];
-    for (let s in stardict_errors) stage1.error[s] = stardict_errors[s];
+    for (let s in stardict_words.byword) stage1.word[s] = stardict_words.byword[s];
+    for (let s in stardict_defs.byword) stage1.meaning[s] = stardict_defs.byword[s];
+    for (let s in stardict_errors.byword) stage1.error[s] = stardict_errors.byword[s];
   }
 
   async function updateStarDict() {
