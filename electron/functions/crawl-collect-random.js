@@ -3,7 +3,8 @@ const fs = require('fs');
 
 const path = require("path");
 const service = require("../../functions/include/service");
-const fastFindInFiles =  require('fast-find-in-files');
+//const findInFiles =  require('fast-find-in-files');
+const findInFiles =  require('./find-in-files');
 
 const API_DAILY_LIMIT = 24500;
 const MAX_WORDS = 10000000;
@@ -86,7 +87,7 @@ exports.handler = async function(event, context) {
       return a.hashCode()-b.hashCode();
     });
     
-    let sorries = await fastFindInFiles.fastFindInFiles(`${CACHE_DIR}/words`, "Sorry pal, you were just rate limited by the upstream server.");
+    let sorries = await findInFiles.findInFiles(`${CACHE_DIR}/words`, "Sorry pal, you were just rate limited by the upstream server.");
     console.log("sorry-pals:"+sorries.length);
 
     const TWELVE = (CACHE_DIR+"/words/").length;

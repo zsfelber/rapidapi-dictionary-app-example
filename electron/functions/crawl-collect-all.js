@@ -3,7 +3,8 @@ const fs = require('fs');
 
 const path = require("path");
 const service = require("../../functions/include/service");
-const fastFindInFiles =  require('fast-find-in-files');
+//const findInFiles =  require('fast-find-in-files');
+const findInFiles =  require('./find-in-files');
 
 const API_DAILY_LIMIT = { wordsapi: 24500, google: 100000000 };
 const MAX_WORDS = 10000000;
@@ -64,10 +65,10 @@ async function doItFor(api, deep, fix, fill, resolvePath) {
   if (fix) {
     
     const CACHE_DIR = "cache/"+api;
-    let sorries = await fastFindInFiles.fastFindInFiles(`${CACHE_DIR}/words`, "Sorry pal, you were just rate limited by the upstream server.");
+    let sorries = await findInFiles.findInFiles(`${CACHE_DIR}/words`, "Sorry pal, you were just rate limited by the upstream server.");
     console.log(api, "sorry-pals:"+sorries.length);
 
-    let cannotrs = await fastFindInFiles.fastFindInFiles(`${CACHE_DIR}/words`, `{"error":"Cannot read properties`);
+    let cannotrs = await findInFiles.findInFiles(`${CACHE_DIR}/words`, `{"error":"Cannot read properties`);
     console.log(api, "cannot-read-properties-es:"+cannotrs.length);
     
     let errorstofix = sorries.concat(cannotrs);
