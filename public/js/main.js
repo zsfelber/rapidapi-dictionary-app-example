@@ -434,6 +434,7 @@ async function fetchPopup() {
     const data = await fetchWord(word, mode);
 
     let div=document.createElement("div");
+    div.data = data;
     div.classList.add("popover-body");
     div.id = "livepop";
     let def=document.createElement("div");
@@ -816,11 +817,11 @@ function update(firsttime) {
 let curword, groups = {};
 var altdown;
 
-function addToGroup(group, word) {
+function addToGroup(group, word, caps) {
     if (!groups[group]) {
         groups[group] = {};
     }
-    groups[group][word] = 1;
+    groups[group][word] = caps ? 2 : 1;
     doLater(saveGroups, 2500);
 }
 $(document).keydown(function(evt) {
@@ -842,8 +843,9 @@ $(document).keyup(function(evt) {
 $(document).keypress(async function(e){
     console.log(` code:${e.code} curword:${curword}`);
     if (/Key[A-M]/.test(e.code) && curword) {
-        console.log(` ${e.code}  curword:${curword} added`);
-        addToGroup(e.code[3], curword);
+        var caps = e.getModifierState && e.getModifierState( 'CapsLock' );
+        console.log(` ${e.code}  curword:${curword}  caps:${caps}   added`);
+        addToGroup(e.code[3], curword, caps);
         //await navigator.clipboard.writeText(s);
     } else if ("Digit1"==(e.code) && curword) {
         speakIt(1);

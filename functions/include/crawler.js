@@ -371,6 +371,7 @@ exports.aCrawler = function (resolvePath) {
         return data;
       } else {
         data.results = [];
+        data.word = itm.word;
         if (data.syninds) for (let meanind of data.syninds) {
           let d0 = cache.stardict_defs.get(meanind);
           let def = Object.assign({}, d0.data);

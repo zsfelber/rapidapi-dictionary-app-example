@@ -62,8 +62,9 @@ function createpopover(cmp, options) {
             let title = ui.find(".popover-header");
             let body = ui.find(".popover-body");
     
-            title[0].innerHTML = options.title.apply(this);
+            this.titleelem = options.title.apply(this);
             this.contentelem = options.content.apply(this);
+            title[0].appendChild(this.titleelem);
             body.append(this.contentelem);
             pop.append(ui);
     
@@ -136,7 +137,11 @@ function initpop() {
         template: `<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>`,
         title: function () {
             apply.apply(this);
-            return currentpopword;
+            if (this.data) {
+                return this.title =  $(`<div><span>${this.data.word}</span>&nbsp;&nbsp;<i>${itmstxt(this.data.pronunciation)}</i></div>`)[0];
+            } else {
+                return this.title = document.createElement("div");
+            }
         },
         content: function () {
             if (altdown) return null;
@@ -154,9 +159,10 @@ function initpop() {
                 //var content = $(this).attr("data-popover-content");
 
                 console.log("initialize popup  link:" + id + " modal:" + currentmodal + " word:" + currentpopword);
-
+                let _ = this;
                 fetchPopup().then((def) => {
                     pm[currentpopword] = $(def);
+                    this.data = def.data;
                     console.log("loaded (first):" + id);
                     //$(this).popover('show');
                     showpopover($(this));
@@ -169,6 +175,11 @@ function initpop() {
     });
 
 
+    function itmstxt(obj) {
+        if (!obj) return "";
+        let arr = Object.values(obj);
+        return arr.join(", ");
+    }
 }
 
 

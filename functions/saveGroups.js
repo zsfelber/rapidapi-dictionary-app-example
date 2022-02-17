@@ -29,15 +29,20 @@ exports.handler = async function(event, context) {
     return service.respond(async () => {
         for (letter in groupsdata) {
           let {f, data, json} = crawler.loadJson("data/my-words-"+letter.toLowerCase()+".json");
-          if (letter === curmywordsltr) {
-            for (let letter_other in groupsdata) {
-              if (letter_other !== curmywordsltr) {
-                for (let word in groupsdata[letter_other]) {
-                  delete data[word];
+
+          for (let letter_other in groupsdata) {
+            if (letter !== letter_other) {
+              let lcur = letter === curmywordsltr;
+              let datas = groupsdata[letter_other];
+              for (let othword in datas) {
+                let value = 
+                if (lcur || ) {
+                  delete data[othword];
                 }
               }
             }
           }
+
           data = Object.assign(data, groupsdata[letter]);
           let ojson = JSON.stringify(data, null, 2);
           console.log("my-words-"+letter+" : json saved.")
