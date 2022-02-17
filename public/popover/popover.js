@@ -21,32 +21,35 @@ function createpopover(cmp, options) {
     //cmp.popover(options);
 
     let poptrigger;
-    poptrigger = function() {
-        this.hide = function() {
+    poptrigger = function(keep) {
+        if (!this.hide) this.hide = function() {
             if (this.pop) {
                 this.pop.remove();
                 delete this.pop;
             }
         };
-        if (options.hidePopup) {
-            this.hidePopup = options.hidePopup;
-        } else {
-            this.hidePopup = this.hide;
-        }
-        if (options.initPopup) {
-            this.initPopup = options.initPopup;
-        } else {
-            this.initPopup = ()=>{};
+        if (!this.hidePopup) {
+            if (options.hidePopup) {
+                this.hidePopup = options.hidePopup;
+            } else {
+                this.hidePopup = this.hide;
+            }
+            if (options.initPopup) {
+                this.initPopup = options.initPopup;
+            } else {
+                this.initPopup = ()=>{};
+            }
         }
         let isloading = this.contentelem && this.contentelem.pending;
         let pop = this.pop;
-        if (pop && !isloading) {
+        let reopen = isloading || keep===true;
+        if (pop && !reopen) {
             this.hidePopup();
         } else {
             if (pop) {
                 this.hide();
             }
-            if (!isloading) {
+            if (!reopen) {
                 this.initPopup();
             }
 
@@ -84,7 +87,7 @@ function hidepopover(cmp) {
 function showpopover(cmp) {
     cmp.each(function() {
         if (this.poptrigger) {
-            this.poptrigger.apply(this);
+            this.poptrigger.call(this, true);
         }
     });
 }
