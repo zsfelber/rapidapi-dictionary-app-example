@@ -403,7 +403,7 @@ function speakIt(which) {
     let txt;
     let lpg=$(`#livepop .pg`);
     let e = getSelectionBoundaryElement(true);
-    if (lpg[0].contains(e)) {
+    if (lpg.length && lpg[0].contains(e)) {
         console.log("contains");
         for (let i=0; i<sel.rangeCount; i++) {
             let r = sel.getRangeAt(i);
@@ -412,6 +412,7 @@ function speakIt(which) {
         }
     }
     if (!txt) txt = currentpopword;
+    if (!txt) txt = curword;
     speak(txt, which);
 }
 function selectPopupAll() {
@@ -844,8 +845,11 @@ $(document).keypress(async function(e){
         console.log(` ${e.code}  curword:${curword} added`);
         addToGroup(e.code[3], curword);
         //await navigator.clipboard.writeText(s);
-    }
-    if (e.code==='Space') {
+    } else if ("Digit1"==(e.code) && curword) {
+        speakIt(1);
+    } else if ("Digit2"==(e.code) && curword) {
+        speakIt(2);
+    } else if (e.code==='Space') {
         if (currentpopword) {
             speak(currentpopword, currentlink.which);
             e.preventDefault();
