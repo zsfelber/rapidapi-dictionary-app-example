@@ -371,7 +371,7 @@ exports.aCrawler = function (resolvePath) {
         return data;
       } else {
         data.results = [];
-        for (let meanind of data.syninds) {
+        if (data.syninds) for (let meanind of data.syninds) {
           let d0 = cache.stardict_defs.get(meanind);
           let def = Object.assign({}, d0.data);
           if (!def.synonyms && def.synonymSet) {
@@ -1504,8 +1504,8 @@ exports.aCrawler = function (resolvePath) {
           let def = worddata.results[defidx];
           let olddef = result.meaning[def.definition];
           if (olddef) {
-              // worddata.word !  to exclude  jumps, jumping, to jump etc
-              olddef.synonymSet[worddata.word] = 1;
+            // worddata.word !  to exclude  jumps, jumping, to jump etc
+            olddef.synonymSet[worddata.word] = 1;
             def = olddef;
           } else {
 
