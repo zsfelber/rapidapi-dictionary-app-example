@@ -3,6 +3,97 @@ var currentpopword;
 var currentmodal;
 var popupcache;
 
+
+
+// https://stackoverflow.com/questions/37975457/how-to-get-absolute-coordinates-of-element-with-absolute-position-javascript-b/40814766
+function getPosr(el) {
+    var rect=el.getBoundingClientRect();
+    return {x:rect.left,y:rect.top};
+}
+function getPos(el) {
+    // yay readability
+    for (var lx=0, ly=0;
+         el != null;
+         lx += el.offsetLeft, ly += el.offsetTop, el = el.offsetParent);
+    return {x: lx,y: ly};
+}
+function createpopover(cmp, options) {
+    //cmp.popover(options);
+
+    let poptrigger;
+    poptrigger = function() {
+        this.hide = function() {
+            if (this.pop) {
+                this.pop.remove();
+                delete this.pop;
+            }
+        };
+        if (options.hidePopup) {
+            this.hidePopup = options.hidePopup;
+        } else {
+            this.hidePopup = this.hide;
+        }
+        if (options.initPopup) {
+            this.initPopup = options.initPopup;
+        } else {
+            this.initPopup = ()=>{};
+        }
+        let isloading = this.contentelem && this.contentelem.pending;
+        let pop = this.pop;
+        if (pop && !isloading) {
+            this.hidePopup();
+        } else {
+            if (pop) {
+                this.hide();
+            }
+            if (!isloading) {
+                this.initPopup();
+            }
+
+            this.pop = pop = $("<div class='abs'></div>");
+            this.poptrigger = poptrigger;
+    
+            let pos = getPos(this);
+            let ui = $(options.template);
+    
+            let title = ui.find(".popover-header");
+            let body = ui.find(".popover-body");
+    
+            title[0].innerHTML = options.title.apply(this);
+            this.contentelem = options.content.apply(this);
+            body.append(this.contentelem);
+            pop.append(ui);
+    
+            pop.css("left", pos.x+"px");
+            pop.css("top", (15+pos.y)+"px");
+    
+            document.body.appendChild(pop[0]);
+        }
+    };
+    cmp[options.trigger](poptrigger);
+}
+
+function hidepopover(cmp) {
+    cmp.each(function() {
+        let pop = this.pop;
+        if (pop) {
+            pop.remove();
+            delete this.pop;
+        }
+    });
+}
+
+function showpopover(cmp) {
+    cmp.each(function() {
+        if (this.poptrigger) {
+            this.poptrigger.apply(this);
+        }
+    });
+}
+
+
+
+
 function initpop() {
 
     // https://getbootstrap.com/docs/4.0/components/popovers/
@@ -32,6 +123,8 @@ function initpop() {
 
     //$("[data-toggle=popover]").popover({
     createpopover($("[data-toggle=popover]"), {
+        initPopup,
+        hidePopup,
         html: true,
         // !
         // https://stackoverflow.com/questions/20299246/bootstrap-popover-how-add-link-in-text-popover
@@ -68,7 +161,9 @@ function initpop() {
                     //$(this).popover('show');
                     showpopover($(this));
                 });
-                return $("<div>Loading...</div>");
+                let result = $("<div>Loading...</div>");
+                result.pending = true;
+                return result;
             }
         }
     });

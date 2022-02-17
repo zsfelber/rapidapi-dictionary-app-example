@@ -374,12 +374,16 @@ async function gocur() {
     }
 }
 
-
-function hidePopup() {
+function initPopup() {
     currentlink=null;
     currentpopword=null;
     currentmodal=null;
     popupcache=null;
+}
+
+
+function hidePopup() {
+    initPopup();
     //$("[data-toggle=popover]").popover("hide");
     hidepopover($("[data-toggle=popover]"));
 }
