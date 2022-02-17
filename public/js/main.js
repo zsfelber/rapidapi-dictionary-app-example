@@ -843,7 +843,9 @@ $(document).keyup(function(evt) {
 $(document).keypress(async function(e){
     console.log(` code:${e.code} curword:${curword}`);
     if (/Key[A-M]/.test(e.code) && curword) {
-        var caps = e.getModifierState && e.getModifierState( 'CapsLock' );
+        const key = e.key;
+        const keyLower = key.toLowerCase();
+        let caps = key!==keyLower;
         console.log(` ${e.code}  curword:${curword}  caps:${caps}   added`);
         addToGroup(e.code[3], curword, caps);
         //await navigator.clipboard.writeText(s);
