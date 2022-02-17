@@ -138,9 +138,9 @@ function initpop() {
         title: function () {
             apply.apply(this);
             if (this.data) {
-                return this.title =  $(`<div><span>${this.data.word}</span>&nbsp;&nbsp;<i>${itmstxt(this.data.pronunciation)}</i></div>`)[0];
+                return $(`<div><span>${this.data.word}</span>&nbsp;&nbsp;<i>${itmstxt(this.data.pronunciation)}</i></div>`)[0];
             } else {
-                return this.title = document.createElement("div");
+                return document.createElement("div");
             }
         },
         content: function () {
