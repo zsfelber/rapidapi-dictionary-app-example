@@ -86,19 +86,6 @@ function addRadio(cont, id, buckcheck, groupid, label, extraelements="") {
 }
 
 
-function selectElementContents(el) {
-    if (!el) el = this;
-    var range = document.createRange();
-    range.selectNodeContents(el);
-    var sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(range);
-    curword = el.innerText;
-    $(el).trigger("mouseup");
-    //el.focus();
-}
-
-
 function createlink(word0, masterword, extraarg="", apostr="") {
     const a = document.createElement('a');
     const tmp = $("<div>"+word0+"</div>")[0];
@@ -199,4 +186,51 @@ function showpopover(cmp) {
             this.poptrigger.apply(this);
         }
     });
+}
+
+
+function selectElementContents(el) {
+    if (!el) el = this;
+    var range = document.createRange();
+    range.selectNodeContents(el);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    curword = el.innerText;
+    $(el).trigger("mouseup");
+    //el.focus();
+}
+
+function getSelectionBoundaryElement(isStart) {
+    var range, sel, container;
+    if (document.selection) {
+        range = document.selection.createRange();
+        range.collapse(isStart);
+        return range.parentElement();
+    } else {
+        sel = window.getSelection();
+        if (sel.getRangeAt) {
+            if (sel.rangeCount > 0) {
+                range = sel.getRangeAt(0);
+            }
+        } else {
+            // Old WebKit
+            range = document.createRange();
+            range.setStart(sel.anchorNode, sel.anchorOffset);
+            range.setEnd(sel.focusNode, sel.focusOffset);
+
+            // Handle the case when the selection was selected backwards (from the end to the start in the document)
+            if (range.collapsed !== sel.isCollapsed) {
+                range.setStart(sel.focusNode, sel.focusOffset);
+                range.setEnd(sel.anchorNode, sel.anchorOffset);
+            }
+        }
+
+        if (range) {
+            container = range[isStart ? "startContainer" : "endContainer"];
+
+            // Check if the container is a text node and return its parent if so
+            return container.nodeType === 3 ? container.parentNode : container;
+        }
+    }
 }
