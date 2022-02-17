@@ -31,12 +31,18 @@ function poorsolutioncallbackToPromise(therawfun, ...args0) {
 }
 
 // args: filename...
-function randomAccessFile(...args) {
-  let D = fs.openSync.apply(fs, args);
+function randomAccessFile(path, flags="r", mode=undefined) {
+  // better ::
+  //let result = fs.readFileSync(path);
+
+  ///*
+  // very slow somewhy ::
+  console.time("randomAccessFile "+path);
+  let D = fs.openSync(path, flags, mode);
   let result = {
     read: function (offset, len) {
       let b = Buffer.alloc(len);
-      fs.readSync(D, b, offset, len);
+      fs.readSync(D, b, 0, len, offset);
       return b;
     },
     readUInt32BE: function (offset) {
@@ -50,9 +56,10 @@ function randomAccessFile(...args) {
       return word;
     }
   };
-  let s = fs.statSync(args[0]);
+  let s = fs.statSync(path);
   result.length = s.size;
-
+  console.timeEnd("randomAccessFile "+path);
+  //*/
   return result;
 }
 
@@ -1281,6 +1288,7 @@ exports.aCrawler = function (resolvePath) {
       let dictbuf = randomAccessFile(filename + ".dict");
       let indexbuf;
 
+      console.time("processing primary index file "+filename + ".idx0");
       if (fs.existsSync(filename + ".idx0")) {
         let wordindexbuf = randomAccessFile(filename + ".idx0");
         indexbuf = randomAccessFile(filename + ".idx");
@@ -1317,6 +1325,7 @@ exports.aCrawler = function (resolvePath) {
         }
         writeBufferArray(filename + ".idx0", bs);
       }
+      console.timeEnd("processing primary index file "+filename + ".idx0");
 
 
       function get(index) {

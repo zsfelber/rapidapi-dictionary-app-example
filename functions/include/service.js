@@ -29,6 +29,8 @@ exports.respond = async function(guts, context) {
         } else {
             return { statusCode: 500, body: err.toString() };
         }
+    } finally {
+        console.log("Reponse sent.")
     }
 }
 

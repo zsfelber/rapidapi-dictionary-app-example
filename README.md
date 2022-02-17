@@ -1857,3 +1857,8 @@ wordsapi var frqntls10000=[100, 3.38, 2.68, 2.17, 1.73, 0.001, 0];
 // "https"://www.ef.com/wwen/english-resources/english-vocabulary/top-3000-words/
 
 // "https"://englishgrammarhere.com/vocabulary/10000-most-common-words-in-english-part-5/
+
+
+    /*"start": "netlify dev",
+    "debug": "netlify dev",*/
+    "start": "node express/start.js",
