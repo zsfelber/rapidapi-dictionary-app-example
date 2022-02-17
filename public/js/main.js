@@ -282,6 +282,11 @@ function createpopoverlink(word0, masterword, extraarg="", apostr="", origin) {
         a.href = "javascript:showPopup('"+a.word+"')";
     }
 
+    a.onfocus=()=>{
+        console.log("focus:"+word);
+        curword = word;
+    };
+
     a.innerHTML = apostr+tmp.innerHTML+apostr;
     return a;
 }
