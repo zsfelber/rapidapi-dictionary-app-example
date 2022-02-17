@@ -1067,10 +1067,9 @@ exports.aCrawler = function (resolvePath) {
     return result;
   }
 
-  let existingGoogleWords;
   function loadGoogleWords() {
-    if (!existingGoogleWords) {
-      existingGoogleWords = Object.create(null);
+    if (!cache.existingGoogleWords) {
+      cache.existingGoogleWords = Object.create(null);
       function split(line, lineNumber) {
         return [line];
       }
@@ -1078,22 +1077,20 @@ exports.aCrawler = function (resolvePath) {
         resolvePath.abs("data/english_.csv"),
         { getColumns: split });
       for (let gglword of gglwords) {
-        existingGoogleWords[gglword.word] = 1;
+        cache.existingGoogleWords[gglword.word] = 1;
       }
     }
-    return existingGoogleWords;
+    return cache.existingGoogleWords;
   }
 
   function doesGoogleWordExist(word) {
     loadGoogleWords();
-    return existingGoogleWords[word];
+    return cache.existingGoogleWords[word];
   }
 
-  let caggleFreqRecords;
-  let caggleFrequencies;
   function loadCaggleFrequencies() {
-    if (!caggleFreqRecords) {
-      caggleFreqRecords = csvParse.load(
+    if (!cache.caggleFreqRecords) {
+      cache.caggleFreqRecords = csvParse.load(
         resolvePath.abs("data/unigram_freq.csv"),
         {
           convert: {
@@ -1101,20 +1098,20 @@ exports.aCrawler = function (resolvePath) {
           }
         });
 
-      caggleFrequencies = Object.create(null);
+      cache.caggleFrequencies = Object.create(null);
 
-      for (let frec of caggleFreqRecords) {
+      for (let frec of cache.caggleFreqRecords) {
         if (doesGoogleWordExist(frec.word)) {
-          caggleFrequencies[frec.word] = frec.count;
+          cache.caggleFrequencies[frec.word] = frec.count;
         }
       }
     }
-    return caggleFrequencies;
+    return cache.caggleFrequencies;
   }
 
   function getWordCaggleFrequency(word) {
     loadCaggleFrequencies();
-    return caggleFrequencies[word];
+    return cache.caggleFrequencies[word];
   }
 
   async function invertFrequencies() {
@@ -1136,7 +1133,7 @@ exports.aCrawler = function (resolvePath) {
         }
         return es;
       }
-      for (let frec of caggleFreqRecords) {
+      for (let frec of cache.caggleFreqRecords) {
         if (doesGoogleWordExist(frec.word)) {
           entry(frec.count).push(frec.word);
         }
