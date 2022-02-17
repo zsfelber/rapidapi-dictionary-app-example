@@ -553,7 +553,7 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
         if (modalMode === "examples") {
 
             if (val.examples && val.examples.length) {
-                createaas(wordInfoTbl, val.examples, ", ", origin);
+                createaas(wordInfoTbl, ["("+val.definition+"):"].concat(val.examples), ", ", origin);
             } else {
                 createaas(wordInfoTbl, ["("+val.definition+")"], ", ", origin);
             }
