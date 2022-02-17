@@ -75,10 +75,8 @@ function createpopover(cmp, options) {
 
 function hidepopover(cmp) {
     cmp.each(function() {
-        let pop = this.pop;
-        if (pop) {
-            pop.remove();
-            delete this.pop;
+        if (this.hide) {
+            this.hide();
         }
     });
 }
@@ -114,6 +112,7 @@ function initpop() {
         if (!currentpopword) {
             currentpopword = this.word;
         }
+
         if (!popupcache) {
             popupcache = {"examples":{}, "light":{}};
         }
@@ -150,8 +149,6 @@ function initpop() {
                 return x;
             } else {
                 //var content = $(this).attr("data-popover-content");
-
-                currentlink = this;
 
                 console.log("initialize popup  link:" + id + " modal:" + currentmodal + " word:" + currentpopword);
 
