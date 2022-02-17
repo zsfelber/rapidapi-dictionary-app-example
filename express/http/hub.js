@@ -10,8 +10,11 @@ const methods = {
 
 
 module.exports = {
-forward: async function(url, queryStringParameters) {
-    console.log("http forward ", url, queryStringParameters);
+forward: async function(urlpath, queryStringParameters) {
+    let urlelems = urlpath.split("/");
+    let pathname = urlelems[urlelems.length-1];
+
+    console.log("http forward ", pathname, queryStringParameters);
  
     const resolvePath = {
         rel:function(dirname, rel) {
@@ -30,9 +33,9 @@ forward: async function(url, queryStringParameters) {
     };
     const context = {
         resolvePath,
-        electron: false
+        electron: true
     };
-    const method = methods[url.pathname];
+    const method = methods[pathname];
     if (method) {
         const json = await method.handler(event, context);
 

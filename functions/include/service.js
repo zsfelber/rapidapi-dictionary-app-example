@@ -2,6 +2,7 @@
 
 exports.respond = async function(guts, context) {
     try {
+        console.time("Response sent.");
 
         const data = await guts();
 
@@ -30,7 +31,7 @@ exports.respond = async function(guts, context) {
             return { statusCode: 500, body: err.toString() };
         }
     } finally {
-        console.log("Reponse sent.")
+        console.timeEnd("Response sent.");
     }
 }
 

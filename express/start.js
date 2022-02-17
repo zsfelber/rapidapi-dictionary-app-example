@@ -5,8 +5,8 @@ const port = process.port || 8888;
 
 app.use(express.static('public'));
 
-app.get('/*', (req, res, next) => {
-    let result = hub.forward(req.url, req.query);
+app.get('/*', async (req, res, next) => {
+    let result = await hub.forward(req.path, req.query);
     if (result) {
         res.send(result);
     } else {

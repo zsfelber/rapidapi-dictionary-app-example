@@ -33,9 +33,9 @@ function poorsolutioncallbackToPromise(therawfun, ...args0) {
 // args: filename...
 function randomAccessFile(path, flags="r", mode=undefined) {
   // better ::
-  //let result = fs.readFileSync(path);
+  let result = fs.readFileSync(path);
 
-  ///*
+  /*
   // very slow somewhy ::
   console.time("randomAccessFile "+path);
   let D = fs.openSync(path, flags, mode);
@@ -63,6 +63,13 @@ function randomAccessFile(path, flags="r", mode=undefined) {
   return result;
 }
 
+let apicache = {};
+function getCacheFor(api) {
+  let c = apicache[api];
+  if (!c) apicache[api] = c = {};
+  return c;
+}
+
 exports.aCrawler = function (resolvePath) {
   if (!resolvePath) resolvePath = noResolvePath;
 
@@ -85,7 +92,7 @@ exports.aCrawler = function (resolvePath) {
   let totalWordsLastDay = 0;
   let cacheInitIsError = false;
 
-  let cache = {};
+  let cache;
 
   let pendingObjects = {
 
@@ -176,6 +183,8 @@ exports.aCrawler = function (resolvePath) {
     TRAVERSE_ALL = _TRAVERSE_ALL;
     MAX_LEVEL = _MAX_LEVEL;
     TWELVE = (CACHE_DIR + "/words/").length;
+
+    cache = getCacheFor(API);
 
     switch (_API) {
       case "google":
@@ -1284,12 +1293,28 @@ exports.aCrawler = function (resolvePath) {
     if (!noinput) {
 
       let wordindex0 = [];
+      let wordindex_byword = {};
   
       let dictbuf = randomAccessFile(filename + ".dict");
       let indexbuf;
 
       console.time("processing primary index file "+filename + ".idx0");
       if (fs.existsSync(filename + ".idx0")) {
+        justprefillindices();
+        
+        // isn't worth it not really random access : slow
+        // so we read it all and cache it to static variable :
+        readall();
+
+      }   else {
+        console.log(filename + ".idx0 doesn't exist : creating !");
+        let bs=[];
+        prereadall(bs);
+        writeBufferArray(filename + ".idx0", bs);
+      }
+      console.timeEnd("processing primary index file "+filename + ".idx0");
+
+      function justprefillindices() {
         let wordindexbuf = randomAccessFile(filename + ".idx0");
         indexbuf = randomAccessFile(filename + ".idx");
 
@@ -1300,18 +1325,23 @@ exports.aCrawler = function (resolvePath) {
           let offset = wordindexbuf.readUInt32BE(i);
           prev.nextoffset = offset;
           wordindex0.push(prev = {offset});
-  
+
           i += 4;
         }
         prev.nextoffset = indexbuf.length;
+      }
 
-      }   else {
-        console.log(filename + ".idx0 doesn't exist : creating !");
+      function readall() {
+        for (let i = 0; i<wordindex0.length; i++) {
+          get(i);
+        }
+      }
+
+      function prereadall(bs=[]) {
         wordindex0.push({offset:0});
         indexbuf = fs.readFileSync(filename + ".idx");
 
         let last,i=0;
-        let bs = [];
         for (;;) {
           last = get(i++);
           let b = Buffer.alloc(4);
@@ -1323,10 +1353,7 @@ exports.aCrawler = function (resolvePath) {
             break;
           }
         }
-        writeBufferArray(filename + ".idx0", bs);
       }
-      console.timeEnd("processing primary index file "+filename + ".idx0");
-
 
       function get(index) {
 
@@ -1372,6 +1399,9 @@ exports.aCrawler = function (resolvePath) {
           } else {
             rec.nextoffset = i;
           }
+
+          wordindex_byword[word] = rec;
+
         }
         
         return rec;
@@ -1382,6 +1412,11 @@ exports.aCrawler = function (resolvePath) {
       }
 
       function find(word) {
+
+        let itm;
+        if (itm = wordindex_byword[word]) {
+          return itm;
+        }
 
         let cmpdat = {word};
 
