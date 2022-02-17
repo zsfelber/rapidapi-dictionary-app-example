@@ -43,20 +43,12 @@ function randomAccessFile(...args) {
       let b = this.read(offset, 4);
       return b.readUInt32BE();
     },
-    /*read0string: function (offset) {
-      let lc;
-      let b = Buffer.alloc(1);
-      do {
-        lc = fs.read
-      } while (lc);
-      let i = indexbuf.indexOf('\x00', beg);
-      if (i < 0) {
-        throw new Error('Index file is corrupted.');
-      }
+    toString: function (encoding, offset, end) {
+      let b = this.read(offset, end-offset);
 
-      let word = indexbuf.toString('utf-8', beg, i);
-
-    }*/
+      let word = b.toString(encoding);
+      return word;
+    }
   };
   let s = fs.statSync(args[0]);
   result.length = s.size;
@@ -199,6 +191,9 @@ exports.aCrawler = function (resolvePath) {
     if (!fs.existsSync(resolvePath.abs(`cache/index`))) {
       fs.mkdirSync(resolvePath.abs(`cache/index`));
     }
+    if (!fs.existsSync(resolvePath.abs(`${CACHE_DIR}/dict/${API}-english`))) {
+      fs.mkdirSync(resolvePath.abs(`${CACHE_DIR}/dict/${API}-english`));
+    }
 
     curtime = new Date();
     turntime = Date.UTC(curtime.getUTCFullYear(),
@@ -333,7 +328,7 @@ exports.aCrawler = function (resolvePath) {
     function convertError() {
       if (cachedonly === CACHE_RAW) {
         data = { error: (data.error ? data.error.message ? data.error.message : data.error : "unknown error") };
-        if (/no definitions for \{"info":\{"word":"/.test(data.error)) {
+        if (/no definitions for \{"/.test(data.error)) {
           data.error = "no definitions for word";
           console.log("Convert error message : no definitions for word:" + word);
         }
@@ -372,9 +367,11 @@ exports.aCrawler = function (resolvePath) {
 
     if (fs.existsSync(resolvePath.abs(wfpath))) {
 
-      data = { word, results: [{ definition: "ah snap!" }] };
-      /*
-      //console.log(API, "From cache file/single "+wfpath+"  asobject:"+asobject+"...\n");
+      // debug check
+      //data = { word, results: [{ definition: "ah snap!" }] };
+
+      if (cachedonly !== CACHE_RAW) console.log(API, "From cache file/single "+wfpath+"  asobject:"+asobject+"...\n");
+
       let ijson = fs.readFileSync(resolvePath.abs(wfpath)).toString();
       try {
         data = JSON.parse(ijson);
@@ -382,7 +379,7 @@ exports.aCrawler = function (resolvePath) {
       } catch (e) {
         console.warn("Delete invalid file : " + wfpath, e);
         fs.unlinkSync(resolvePath.abs(wfpath));
-      }*/
+      }
     }
 
     if (data) {
@@ -1219,7 +1216,7 @@ exports.aCrawler = function (resolvePath) {
 
   }
 
-  function write(filename, buffers) {
+  function writeBufferArray(filename, buffers) {
     var stream = fs.createWriteStream(filename, { flags: 'w' });
     for (let buf of buffers) {
       stream.write(buf);
@@ -1231,7 +1228,7 @@ exports.aCrawler = function (resolvePath) {
     let wordindexbuf = [];
     let indexbuf = [];
     let dictbuf = [];
-    let wordoffset = 0, dictoffset = 0;
+    let indexoffset = 0, dictoffset = 0;
     for (let word of keys) {
       //let word = buf.toString('utf-8', beg, i)
       //let offset = buf.readUInt32BE(i)
@@ -1241,19 +1238,18 @@ exports.aCrawler = function (resolvePath) {
       let json = JSON.stringify(worddata);
 
       let dictbuf1 = Buffer.from(json, 'utf-8');
-      let dictdatasize = dictbuf1.byteLength;
 
       let wordidxbuf1 = Buffer.alloc(4);
-      wordidxbuf1.writeInt32BE(wordidxbuf1);
+      wordidxbuf1.writeInt32BE(indexoffset);
 
       let wordbuf1 = Buffer.from(word, 'utf-8');
       let indexbuf1 = Buffer.alloc(wordbuf1.byteLength + 9);
       indexbuf1.write(word, 'utf-8');
       indexbuf1.writeInt32BE(dictoffset, wordbuf1.byteLength + 1);
-      indexbuf1.writeInt32BE(dictdatasize, wordbuf1.byteLength + 5);
+      indexbuf1.writeInt32BE(dictbuf1.byteLength, wordbuf1.byteLength + 5);
 
-      wordoffset += wordbuf1.byteLength;
-      dictoffset += dictdatasize;
+      indexoffset += indexbuf1.byteLength;
+      dictoffset += dictbuf1.byteLength;
 
       dictbuf.push(dictbuf1);
       indexbuf.push(indexbuf1);
@@ -1261,9 +1257,9 @@ exports.aCrawler = function (resolvePath) {
     }
 
     console.log("Write stardict " + filename);
-    write(filename + ".dict", dictbuf);
-    write(filename + ".idx", indexbuf);
-    write(filename + ".idx0", wordindexbuf);
+    writeBufferArray(filename + ".dict", dictbuf);
+    writeBufferArray(filename + ".idx", indexbuf);
+    writeBufferArray(filename + ".idx0", wordindexbuf);
   }
 
   function loadStarDict(filename) {
@@ -1277,32 +1273,34 @@ exports.aCrawler = function (resolvePath) {
       console.log(filename + ".idx doesn't exist ");
       noinput = 1;
     }
-    if (!fs.existsSync(filename + ".idx0")) {
-      console.log(filename + ".idx0 doesn't exist ");
-      noinput = 1;
-    }
 
     if (!noinput) {
 
       let wordindex0 = [];
   
       let dictbuf = randomAccessFile(filename + ".dict");
-      let indexbuf = randomAccessFile(filename + ".idx");
+      let indexbuf;
 
-      //if (fs.existsSync(filename + ".idx0")) {
+      if (fs.existsSync(filename + ".idx0")) {
         let wordindexbuf = randomAccessFile(filename + ".idx0");
+        indexbuf = randomAccessFile(filename + ".idx");
 
         let i = 0;
+        let prev={};
         while (i < wordindexbuf.length) {
   
           let offset = wordindexbuf.readUInt32BE(i);
-          wordindex0.push({offset});
+          prev.nextoffset = offset;
+          wordindex0.push(prev = {offset});
   
           i += 4;
         }
-      /*}   else {
+        prev.nextoffset = indexbuf.length;
+
+      }   else {
         console.log(filename + ".idx0 doesn't exist : creating !");
         wordindex0.push({offset:0});
+        indexbuf = fs.readFileSync(filename + ".idx");
 
         let last,i=0;
         let bs = [];
@@ -1317,8 +1315,8 @@ exports.aCrawler = function (resolvePath) {
             break;
           }
         }
-        write(filename + ".idx0", bs);
-      }*/
+        writeBufferArray(filename + ".idx0", bs);
+      }
 
 
       function get(index) {
@@ -1328,13 +1326,20 @@ exports.aCrawler = function (resolvePath) {
         if (!rec.data) {
 
           let beg = rec.offset;
+          let word;
 
-          let i = indexbuf.indexOf('\x00', beg);
-          if (i < 0) {
+          let i;
+          if (rec.nextoffset) {
+            i = rec.nextoffset-9;
+          } else {
+            i = indexbuf.indexOf('\x00', beg);
+          }
+
+          if (!i || i < 0) {
             throw new Error('Index file is corrupted.');
           }
 
-          let word = indexbuf.toString('utf-8', beg, i);
+          word = indexbuf.toString('utf-8', beg, i);
 
           i++;
           if (i + 8 > indexbuf.length) {
@@ -1351,7 +1356,13 @@ exports.aCrawler = function (resolvePath) {
 
           rec.word = word;
           rec.data = worddata;
-          rec.nextoffset = i;
+          if (rec.nextoffset) {
+            if (rec.nextoffset != i) {
+              throw new Error('Index file is corrupted.');
+            }
+          } else {
+            rec.nextoffset = i;
+          }
         }
         
         return rec;
@@ -1390,9 +1401,15 @@ exports.aCrawler = function (resolvePath) {
       function indexes() {
         return Object.keys(wordindex0);
       }
-      return { get, find, indexes };
+      return { ready:true, get, find, indexes };
     }
-
+    function returnnone() {
+      return null;
+    }
+    function returnemp() {
+      return [];
+    }
+    return { ready:false, find:returnnone, get:returnnone, indexes:returnemp };
   }
 
   function loadStarDictAll() {
@@ -1472,15 +1489,15 @@ exports.aCrawler = function (resolvePath) {
   function mergeIntermediate(stage1) {
     for (let i in cache.stardict_defs.indexes()) {
       let itm = cache.stardict_defs.get(i)
-      stage1.meaning[itm.word] = itm;
+      stage1.meaning[itm.word] = itm.data;
     }
     for (let i in cache.stardict_errors.indexes()) {
       let itm = cache.stardict_errors.get(i)
-      stage1.error[itm.word] = itm;
+      stage1.error[itm.word] = itm.data;
     }
     for (let i in cache.stardict_words.indexes()) {
       let itm = cache.stardict_words.get(i)
-      stage1.word[itm.word] = itm;
+      stage1.word[itm.word] = itm.data;
     }
   }
 
@@ -1488,12 +1505,12 @@ exports.aCrawler = function (resolvePath) {
     for (let s in stage1.word) {
       let worddata = stage1.word[s];
       if (worddata.errind) {
-        worddata.errortmp = cache.stardict_errors.values[worddata.errind];
+        worddata.errortmp = cache.stardict_errors.get(worddata.errind).data;
         delete worddata.errind;
       } else if (worddata.syninds) {
         worddata.meaningstmp = [];
-        for (let mid of worddata.syninds) {
-          worddata.meaningstmp.push(cache.stardict_defs.values[mid]);
+        for (let meanind of worddata.syninds) {
+          worddata.meaningstmp.push(cache.stardict_defs.get(meanind).data);
         }
         delete worddata.syninds;
       }
