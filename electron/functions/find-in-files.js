@@ -20,4 +20,5 @@ exports.findInFiles = function(dir, pattern) {
         //);
         result.push({filePath});
     }
+    return result;
 }
