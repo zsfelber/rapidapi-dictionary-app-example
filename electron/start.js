@@ -1,10 +1,12 @@
 const { app, session, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 const { exit } = require("process");
+const init = require('../functions/include/init');
 
 const hub = require("./localserver/hub");
 
 require('dotenv').config({ path: 'local/.env' })
+
 
 // Application already running, so we close now
 if (!app.requestSingleInstanceLock()) {
@@ -12,6 +14,8 @@ if (!app.requestSingleInstanceLock()) {
     app.quit();
     exit(0);
 }
+
+init.init();
 
 
 async function printVersion() {

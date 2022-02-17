@@ -63,10 +63,10 @@ function randomAccessFile(path, flags="r", mode=undefined) {
   return result;
 }
 
-let apicache = {};
+let staticCache = {apis:{}};
 function getCacheFor(api) {
-  let c = apicache[api];
-  if (!c) apicache[api] = c = {};
+  let c = staticCache.apis[api];
+  if (!c) staticCache.apis[api] = c = {};
   return c;
 }
 
@@ -223,6 +223,11 @@ exports.aCrawler = function (resolvePath) {
     }
 
     console.log(API, "initCrawler  curtime:" + curtime.toUTCString() + "  turntime:" + turntime.toUTCString());
+  }
+
+  function initializeCache() {
+    loadCaggleFrequencies();
+    loadStarDictAll();
   }
 
   function singleWordToDisplay(data) {
@@ -1068,8 +1073,8 @@ exports.aCrawler = function (resolvePath) {
   }
 
   function loadGoogleWords() {
-    if (!cache.existingGoogleWords) {
-      cache.existingGoogleWords = Object.create(null);
+    if (!staticCache.existingGoogleWords) {
+      staticCache.existingGoogleWords = Object.create(null);
       function split(line, lineNumber) {
         return [line];
       }
@@ -1077,20 +1082,20 @@ exports.aCrawler = function (resolvePath) {
         resolvePath.abs("data/english_.csv"),
         { getColumns: split });
       for (let gglword of gglwords) {
-        cache.existingGoogleWords[gglword.word] = 1;
+        staticCache.existingGoogleWords[gglword.word] = 1;
       }
     }
-    return cache.existingGoogleWords;
+    return staticCache.existingGoogleWords;
   }
 
   function doesGoogleWordExist(word) {
     loadGoogleWords();
-    return cache.existingGoogleWords[word];
+    return staticCache.existingGoogleWords[word];
   }
 
   function loadCaggleFrequencies() {
-    if (!cache.caggleFreqRecords) {
-      cache.caggleFreqRecords = csvParse.load(
+    if (!staticCache.caggleFreqRecords) {
+      staticCache.caggleFreqRecords = csvParse.load(
         resolvePath.abs("data/unigram_freq.csv"),
         {
           convert: {
@@ -1098,20 +1103,20 @@ exports.aCrawler = function (resolvePath) {
           }
         });
 
-      cache.caggleFrequencies = Object.create(null);
+      staticCache.caggleFrequencies = Object.create(null);
 
-      for (let frec of cache.caggleFreqRecords) {
+      for (let frec of staticCache.caggleFreqRecords) {
         if (doesGoogleWordExist(frec.word)) {
-          cache.caggleFrequencies[frec.word] = frec.count;
+          staticCache.caggleFrequencies[frec.word] = frec.count;
         }
       }
     }
-    return cache.caggleFrequencies;
+    return staticCache.caggleFrequencies;
   }
 
   function getWordCaggleFrequency(word) {
     loadCaggleFrequencies();
-    return cache.caggleFrequencies[word];
+    return staticCache.caggleFrequencies[word];
   }
 
   async function invertFrequencies() {
@@ -1133,7 +1138,7 @@ exports.aCrawler = function (resolvePath) {
         }
         return es;
       }
-      for (let frec of cache.caggleFreqRecords) {
+      for (let frec of staticCache.caggleFreqRecords) {
         if (doesGoogleWordExist(frec.word)) {
           entry(frec.count).push(frec.word);
         }
@@ -1627,6 +1632,6 @@ exports.aCrawler = function (resolvePath) {
     loadCommonWords10000_s_z, loadCommonWords3000, loadCommonWords10000, loadCommon3000_words,
     loadCommon10000_words, loadAll_words, loadMyWords, loadMyWordCls, wordsByFrequency, generateIndexes,
     loadGoogleWords, loadCaggleFrequencies, doesGoogleWordExist, getWordCaggleFrequency,
-    loadAllFromFileCache, updateStarDict
+    loadAllFromFileCache, updateStarDict, initializeCache
   };
 }

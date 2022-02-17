@@ -1,7 +1,10 @@
 const express = require('express');
+const init = require('../functions/include/init');
 const hub = require('./http/hub');
 const app = express();
 const port = process.port || 8888;
+
+init.init();
 
 app.use(express.static('public'));
 
