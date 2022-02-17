@@ -116,6 +116,8 @@ function createlink(word0, masterword, extraarg="", apostr="") {
 
     a.href = "?" + checkps() + "&word=" + word + extraarg;
 
+    a.onmouseover = selectElementContents.bind(a, a);
+
     return a;
 }
 
@@ -170,8 +172,9 @@ function createpopover(cmp, options) {
         let body = ui.find(".popover-body");
 
         title[0].innerHTML = options.title.apply(this);
-        body[0].innerHTML = options.content.apply(this);
-        pop[0].innerHTML = ui[0].outerHTML;
+        let contentelem = options.content.apply(this);
+        body.append(contentelem);
+        pop.append(ui);
 
         pop.css("left", pos.x+"px");
         pop.css("top", (15+pos.y)+"px");

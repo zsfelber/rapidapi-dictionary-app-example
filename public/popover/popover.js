@@ -53,7 +53,7 @@ function initpop() {
             let pm = apply.apply(this);
 
             if (pm[currentpopword]) {
-                let x = pm[currentpopword][0].outerHTML;
+                let x = pm[currentpopword];
                 return x;
             } else {
                 //var content = $(this).attr("data-popover-content");
@@ -68,7 +68,7 @@ function initpop() {
                     //$(this).popover('show');
                     showpopover($(this));
                 });
-                return "<div>Loading...</div>";
+                return $("<div>Loading...</div>");
             }
         }
     });

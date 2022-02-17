@@ -836,7 +836,7 @@ $(document).keyup(function(evt) {
 });
 $(document).keypress(async function(e){
     console.log(` code:${e.code} curword:${curword}`);
-    if (/Key[A-F]/.test(e.code) && curword) {
+    if (/Key[A-M]/.test(e.code) && curword) {
         console.log(` ${e.code}  curword:${curword} added`);
         addToGroup(e.code[3], curword);
         //await navigator.clipboard.writeText(s);
@@ -932,7 +932,7 @@ $(document).ready(function(){
         }
     }
     function createmyworss(cl=".mywords", mode="my_words") {
-        let letters=['A','B','C','D','E','F'];
+        let letters=['A','B','C','D','E','F', 'G', 'H', 'I', 'J', 'K', 'L', 'M'];
         let mywlabels = document.querySelector(cl);
         for (let letter of letters) {
             let iv = createMywLetterLink(letter, mode);
