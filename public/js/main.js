@@ -378,12 +378,12 @@ function initPopup() {
     currentlink=null;
     currentpopword=null;
     currentmodal=null;
-    popupcache=null;
 }
 
 
 function hidePopup() {
     initPopup();
+    popupcache=null;
     //$("[data-toggle=popover]").popover("hide");
     hidepopover($("[data-toggle=popover]"));
 }
