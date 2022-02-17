@@ -33,9 +33,13 @@ forward: async function(url, queryStringParameters) {
         electron: false
     };
     const method = methods[url.pathname];
-    const json = await method.handler(event, context);
+    if (method) {
+        const json = await method.handler(event, context);
 
-    return json;
+        return json;    
+    } else {
+        return null;
+    }
 }
 
 };

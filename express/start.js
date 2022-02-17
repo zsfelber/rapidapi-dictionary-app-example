@@ -5,11 +5,15 @@ const port = process.port || 8888;
 
 app.use(express.static('public'));
 
-app.get('/*', (req, res) => {
-  let result = hub.forward(req.url, req.query);
-  res.send(result);
+app.get('/*', (req, res, next) => {
+    let result = hub.forward(req.url, req.query);
+    if (result) {
+        res.send(result);
+    } else {
+        next();
+    }
 });
 
 app.listen(port, () => {
-  console.log(`Express app listening on port ${port}`)
+    console.log(`Express app listening on port ${port}`)
 })
