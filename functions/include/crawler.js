@@ -2,7 +2,6 @@
 const fs = require('fs');
 const finder = require('./finder.js');
 const csvParse = require('csv-load-sync');const { last } = require('lodash');
-;
 
 const API_LIMIT_EXCEPTION = {
   apiLimitException: 1
@@ -16,6 +15,54 @@ const noResolvePath = {
   }
 };
 
+function poorsolutioncallbackToPromise(therawfun, ...args0) {
+  return new Promise((a,r)=>{
+    let poorsolutioncallback = function(err, buffer) {
+      if (err) {
+        console.log(err);
+        r(err);
+      } else {
+        a(buffer);
+      }
+    };
+    let args = args0.concat([poorsolutioncallback]);
+    therawfun.apply(this, args);
+  });
+}
+
+// args: filename...
+function randomAccessFile(...args) {
+  let D = fs.openSync.apply(fs, args);
+  let result = {
+    read: function (offset, len) {
+      let b = Buffer.alloc(len);
+      fs.readSync(D, b, offset, len);
+      return b;
+    },
+    readUInt32BE: function (offset) {
+      let b = this.read(offset, 4);
+      return b.readUInt32BE();
+    },
+    /*read0string: function (offset) {
+      let lc;
+      let b = Buffer.alloc(1);
+      do {
+        lc = fs.read
+      } while (lc);
+      let i = indexbuf.indexOf('\x00', beg);
+      if (i < 0) {
+        throw new Error('Index file is corrupted.');
+      }
+
+      let word = indexbuf.toString('utf-8', beg, i);
+
+    }*/
+  };
+  let s = fs.statSync(args[0]);
+  result.length = s.size;
+
+  return result;
+}
 
 exports.aCrawler = function (resolvePath) {
   if (!resolvePath) resolvePath = noResolvePath;
@@ -1230,26 +1277,30 @@ exports.aCrawler = function (resolvePath) {
       console.log(filename + ".idx doesn't exist ");
       noinput = 1;
     }
+    if (!fs.existsSync(filename + ".idx0")) {
+      console.log(filename + ".idx0 doesn't exist ");
+      noinput = 1;
+    }
 
     if (!noinput) {
 
       let wordindex0 = [];
   
-      let dictbuf = fs.readFileSync(filename + ".dict");
-      let indexbuf = fs.readFileSync(filename + ".idx");
+      let dictbuf = randomAccessFile(filename + ".dict");
+      let indexbuf = randomAccessFile(filename + ".idx");
 
-      if (fs.existsSync(filename + ".idx0")) {
-        let wordindexbuf = fs.readFileSync(filename + ".idx0");
+      //if (fs.existsSync(filename + ".idx0")) {
+        let wordindexbuf = randomAccessFile(filename + ".idx0");
 
         let i = 0;
         while (i < wordindexbuf.length) {
   
-          let offset = indexbuf.readUInt32BE(i);
+          let offset = wordindexbuf.readUInt32BE(i);
           wordindex0.push({offset});
   
           i += 4;
         }
-      } else {
+      /*}   else {
         console.log(filename + ".idx0 doesn't exist : creating !");
         wordindex0.push({offset:0});
 
@@ -1267,7 +1318,7 @@ exports.aCrawler = function (resolvePath) {
           }
         }
         write(filename + ".idx0", bs);
-      }
+      }*/
 
 
       function get(index) {
@@ -1390,7 +1441,8 @@ exports.aCrawler = function (resolvePath) {
           let def = worddata.results[defidx];
           let olddef = result.meaning[def.definition];
           if (olddef) {
-            olddef.synonymSet[word] = 1;
+              // worddata.word !  to exclude  jumps, jumping, to jump etc
+              olddef.synonymSet[worddata.word] = 1;
             def = olddef;
           } else {
 
@@ -1398,7 +1450,8 @@ exports.aCrawler = function (resolvePath) {
             result.meaning[def.definition] = def;
             if (!def.synonymSet) {
               def.synonymSet = Object.create(null);
-              def.synonymSet[word] = 1;
+              // worddata.word !  to exclude  jumps, jumping, to jump etc
+              def.synonymSet[worddata.word] = 1;
               if (def.synonyms) {
                 for (let s of def.synonyms) def.synonymSet[s] = 1;
               }
