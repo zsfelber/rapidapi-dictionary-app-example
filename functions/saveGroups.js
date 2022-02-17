@@ -33,10 +33,10 @@ exports.handler = async function(event, context) {
           for (let letter_other in groupsdata) {
             if (letter !== letter_other) {
               let lcur = letter === curmywordsltr;
-              let datas = groupsdata[letter_other];
-              for (let othword in datas) {
-                let value = 
-                if (lcur || ) {
+              let othdatas = groupsdata[letter_other];
+              for (let othword in othdatas) {
+                let othvalue = othdatas[othword];
+                if (lcur || othvalue==2) {
                   delete data[othword];
                 }
               }
