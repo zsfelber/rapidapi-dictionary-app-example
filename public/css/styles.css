@@ -134,7 +134,7 @@ form {
 }
 .form-check.inblock {
     display: inline-block;
-} 
+}
 
 .checkboxes1,.checkboxes2,.checkboxes3,.checkboxes4,.checkboxes5,.checkboxes6,.checkboxes7,.top3000,.top10000 {
     display: inline-block;
@@ -245,4 +245,29 @@ a:hover.none {
 }
 .sm {
     font-size: 0.9rem;
+}
+
+.pop-i {
+    display: inline-block;
+    width: 100%;
+    text-align: left;
+    margin-left: 5px;
+}
+.pop-check {
+    display: inline-block;
+    text-align: left;
+    margin-left: 30px;
+    margin-right: 10px;
+}
+#popschf {
+    overflow: auto;
+    resize: vertical;
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    min-height: 2rem;
+    max-height: 5.25rem;
+    margin-left: 5px;
+    margin-right: auto;
+    text-align: left;
 }

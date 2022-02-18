@@ -134,11 +134,22 @@ function initpop() {
         sanitize: false,
         trigger: 'click',
         placement: 'auto',
-        template: `<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>`,
+        template: `<div class="popover" role="tooltip"><div class="arrow"></div><div class="popover-header"></div><div class="popover-body"></div></div>`,
         title: function () {
             apply.apply(this);
             if (this.data) {
-                return $(`<div><span>${this.data.word}</span>&nbsp;&nbsp;<i>${itmstxt(this.data.pronunciation)}</i></div>`)[0];
+                let poptit = $(`<div></div>`);
+                let dl = $(`<dl><dt></dt><dd></dd></dl>`);
+                let popsf = $(`<textarea rows=1 cols=8 class='input-sm' id='popschf' value='' placeholder='${this.data.word}'/>`);
+                let poppron = $(`<i class="pop-i">${itmstxt(this.data.pronunciation)}</i>`);
+                poptit.append(dl);
+                dl.children().eq(0).append(popsf);
+                dl.children().eq(1).append(poppron);
+                addCheckbox(dl.children().eq(1)[0], "popchwords", {defchecked:true,classes:"input-sm pop-check"}, "words", 0);
+                addCheckbox(dl.children().eq(1)[0], "popchdefs", {defchecked:false,classes:"input-sm pop-check"}, "definitions", 0);
+                addCheckbox(dl.children().eq(1)[0], "popchxs", {defchecked:false,classes:"input-sm pop-check"}, "examples", 0);
+
+                return poptit[0];
             } else {
                 return document.createElement("div");
             }

@@ -53,13 +53,13 @@ function doLater(func, millis=1000, ...args) {
     func.update_to = setTimeout(func, millis, ...args);
 }
 
-function addCheckbox(cont, id, buckcheck, label) {
+function addCheckbox(cont, id, buckcheck, label, inform=1) {
     const ischeckeddef = buckcheck.defchecked;
     if (!label) label = id;
     id = id.replace(/ /g, "_");
     var ischecked = ischeckedparam(id, ischeckeddef);
 
-    var panel = $(` <div class='${buckcheck.classes?buckcheck.classes:''} form-check form-check-1'>
+    var panel = $(` <div class='${buckcheck.classes?buckcheck.classes:''}${inform?" form-check form-check-1":""}'>
             <input type='hidden' id='${id}' name='${id}' value='${ischecked}'>
             <input class='form-check-input' type='checkbox' id='_${id}' ${ischecked ? "checked" : ""} onchange="checha('${id}')"/>
             <label class='form-check-label' for='_${id}'>
