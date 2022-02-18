@@ -1189,14 +1189,14 @@ exports.aCrawler = function (resolvePath) {
     loadNativeStarDictAll();
     let sd_defs_data = cache.stardict_defs.readall();
     let defs1 = sd_defs_data.map((value)=>{
-      return {synonymSet:value.data.synonymSet, definition:value.data.definition};
+      return {synonymSet:value.data.synonymSet, examples:value.data.examples, definition:value.data.definition};
     });
 
     let { byf, byword, cntf, nowords } = await loadAllFromFileCache();
     let stage1 = convertFileCacheToIntermediate(byword);
 
-    let defs2 = Object.values(stage1.meaning).map((value, definition)=>{
-      return {synonymSet:value.synonymSet, definition};
+    let defs2 = Object.values(stage1.meaning).map((data, definition)=>{
+      return {synonymSet:data.synonymSet, examples:data.examples, definition};
     });
 
     let alldefs0 = defs1.concat(defs2);
