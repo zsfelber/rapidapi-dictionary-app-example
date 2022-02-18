@@ -1497,7 +1497,7 @@ exports.aCrawler = function (resolvePath) {
       console.time("load 3rd party StarDict datafiles");
       const colf0 = `data/dict/stardict-OxfordCollocationsDictionary-2.4.2/OxfordCollocationsDictionary`;
       staticCache.collocationStardict = stardict.loadStarDict(`${colf0}`, false);
-      const eh0 = `data/dict/stardict-freedict-eng-hun-2.4.2/dictd_www.freedict.de_eng-hun`;
+      const eh0 = `data/dict/stardict-jdict-EngHun-2.4.2/jdict-EngHun`;
       staticCache.enghunStardict = stardict.loadStarDict(`${eh0}`, false);
       const he0 = `data/dict/stardict-hungarian-english-2.4.2/hungarian-english`;
       staticCache.hunengStardict = stardict.loadStarDict(`${he0}`, false);
