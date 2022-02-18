@@ -488,12 +488,25 @@ function selectPopupAll() {
     lpg.trigger("mouseup");
 }
 
-async function fetchPopup() {
+function fetchWordLookup() {
 
     if (!currentlink) return;
     const word = currentpopword;
     const mode = "minimal_cluster";
-    const data = await fetchWord(word, mode);
+    const datapromise = fetchWord(word, mode);
+    return datapromise;
+}
+
+function fetchPhrasesLookup() {
+
+    if (!currentlink) return;
+    const word = currentpopword;
+    const mode = "minimal_cluster";
+    const datapromise = fetchWord(word, mode);
+    return datapromise;
+}
+
+function createPopup(data) {
 
     let div=document.createElement("div");
     div.data = data;

@@ -52,6 +52,26 @@ function doLater(func, millis=1000, ...args) {
     }
     func.update_to = setTimeout(func, millis, ...args);
 }
+/*
+let to_ids={};
+function doLaterPromise(id, millis=1000, ...args) {
+    let rec = to_ids[id];
+    if (!rec) {
+        rec = {};
+        rec.promise = new Promise((a,r)=>{
+            if (rec.toid) {
+                clearTimeout(rec.toid);
+                rec.toid = 0;
+            }
+            let wrap = ()=>{
+                delete to_ids[id];
+                a(args);
+            };
+            rec.toid = setTimeout(wrap, millis, ...args);
+        });
+    }
+    return rec.promise;
+}*/
 
 function addCheckbox(cont, id, buckcheck, label, inform=1) {
     const ischeckeddef = buckcheck.defchecked;

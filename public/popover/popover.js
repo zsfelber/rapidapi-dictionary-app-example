@@ -178,7 +178,25 @@ function initpop() {
                         }
                     }
                 });
+                let _ = this;
+                let popschf = ch0.find("#popschf");
+                async function findPhrasesAgain() {
+                    let results = await findPhrases(word, popschf.val());
 
+                    let datapromise = fetchPhrasesLookup();
+                    datapromise.then((data) => {
+                        console.log("loaded (phrase search):" + id);
+                        def = createPopup(data);
+                        let popbod = _.contentelem.find(".popover-body");
+                        popbod.empty();
+                        popbod.append($(def));
+                    });
+                }
+                popschf.change(()=>{
+
+                    doLater(findPhrasesAgain, 2500);
+                });
+                
                 return poptit[0];
             } else {
                 return document.createElement("div");
@@ -201,7 +219,9 @@ function initpop() {
 
                 console.log("initialize popup  link:" + id + " modal:" + currentmodal + " word:" + currentpopword);
                 let _ = this;
-                fetchPopup().then((def) => {
+                let datapromise = fetchWordLookup();
+                datapromise.then((data) => {
+                    def = createPopup(data);
                     pm[currentpopword] = $(def);
                     this.data = def.data;
                     console.log("loaded (first):" + id);
