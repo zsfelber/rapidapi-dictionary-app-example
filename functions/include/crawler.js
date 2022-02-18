@@ -1175,7 +1175,7 @@ exports.aCrawler = function (resolvePath) {
   }
 
 
-  async function getAllWords() {
+  function getAllWords() {
     let allwords0 = [];
     const totwords = loadExistingWordsAndFreqs();
 
@@ -1210,7 +1210,7 @@ exports.aCrawler = function (resolvePath) {
     let matcher;
 
     function matchword(cycletext, matcherword) {
-      let i = cycletext.toLoweCase().indexOf(matcherword);
+      let i = cycletext.toLowerCase().indexOf(matcherword);
       return i !== -1;
     }
 
@@ -1297,8 +1297,8 @@ exports.aCrawler = function (resolvePath) {
     return result;
   }
 
-  async function loadAll_words(word0, asobject, fromtime = 0) {
-    let allwords0 = await getAllWords();
+  function loadAll_words(word0, asobject, fromtime = 0) {
+    let allwords0 = getAllWords();
 
     return loadWordsOnly(allwords0, word0, asobject);
   }
