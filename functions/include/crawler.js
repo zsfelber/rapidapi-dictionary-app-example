@@ -1205,7 +1205,7 @@ exports.aCrawler = function (resolvePath) {
     return alldefs0;
   }
 
-  async function find(word, in_words, in_meanings, in_examples, per_word_macthing, all_words) {
+  async function findPhrases(word, in_words, in_meanings, in_examples, per_word_matching, all_words) {
 
     let matcher;
 
@@ -1214,7 +1214,7 @@ exports.aCrawler = function (resolvePath) {
       return i !== -1;
     }
 
-    if (per_word_macthing) {
+    if (per_word_matching) {
       function findone(cycletext, expected) {
         let wordsofmatchsentence = word.split(/\s+/);
         for (let matcherword of wordsofmatchsentence) {
@@ -1794,6 +1794,6 @@ exports.aCrawler = function (resolvePath) {
     loadAllFromFileCache,
     updateStarDict,
     initializeCache,
-    findCollocation, getForLang, find
+    findCollocation, getForLang, findPhrases
   };
 };

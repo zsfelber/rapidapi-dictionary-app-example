@@ -134,8 +134,27 @@ async function saveGroups(qs=[]) {
 async function findCollocation(word, qs=[]) {
     qs.push(`word=${word}`);
 
-    let data = await serve("findCollocation", qs, false);
+    let data = await serve("findCollocation", qs);
 
+    return data;
+}
+
+async function findPhrases(word, qs=[]) {
+    qs.push(`word=${word}`);
+    qs.push(`in_words=${isch($("#popchwords"))}`);
+    qs.push(`in_meanings=${isch($("#popchdefs"))}`);
+    qs.push(`in_examples=${isch($("#popchxs"))}`);
+    qs.push(`per_word_matching=${isch($("#popchwms"))}`);
+    qs.push(`all_words=${isch($("#popchalws"))}`);
+
+    let data = await serve("findPhrases", qs);
+/*
+    "popchwords",  "in words"
+    "popchdefs", "in meanings"
+    "popchxs", "in examples"
+    "popchwms", "per word matching"
+    "popchalws", "all words" */
+    
     return data;
 }
 

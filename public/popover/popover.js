@@ -151,7 +151,7 @@ function initpop() {
                 addCheckbox(ch1[0], "popchwords", {defchecked:true,classes:"input-sm pop-check"}, "in words", 0);
                 addCheckbox(ch1[0], "popchdefs", {defchecked:false,classes:"input-sm pop-check"}, "in meanings", 0);
                 addCheckbox(ch1[0], "popchxs", {defchecked:false,classes:"input-sm pop-check"}, "in examples", 0);
-                addCheckbox(ch1[0], "popchwms", {defchecked:false,classes:"input-sm pop-check"}, "per word macthing", 0);
+                addCheckbox(ch1[0], "popchwms", {defchecked:false,classes:"input-sm pop-check"}, "per word matching", 0);
                 addCheckbox(ch1[0], "popchalws", {defchecked:false,classes:"input-sm pop-check"}, "all words", 0);
                 let expalls = addCheckbox(ch1[0], "popexpall", {defchecked:false,classes:"input-sm pop-check"}, "expand all", 0);
 
