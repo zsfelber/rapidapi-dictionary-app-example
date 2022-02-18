@@ -2,6 +2,7 @@ var currentlink;
 var currentpopword;
 var currentmodal;
 var popupcache;
+var currentchecks;
 
 
 
@@ -152,12 +153,30 @@ function initpop() {
                 addCheckbox(ch1[0], "popchxs", {defchecked:false,classes:"input-sm pop-check"}, "in examples", 0);
                 addCheckbox(ch1[0], "popchwms", {defchecked:false,classes:"input-sm pop-check"}, "per word macthing", 0);
                 addCheckbox(ch1[0], "popchalws", {defchecked:false,classes:"input-sm pop-check"}, "all words", 0);
+                let expalls = addCheckbox(ch1[0], "popexpall", {defchecked:false,classes:"input-sm pop-check"}, "expand all", 0);
 
                 let popchwms = ch1.find("#_popchwms");
                 let popchalws = ch1.find("#_popchalws");
+                let popexpall = ch1.find("#_popexpall");
                 popchalws.prop("disabled", true);
                 popchwms.change(function(){
                     popchalws.prop("disabled", !this.checked);
+                });
+                popexpall.change(function(){
+                    expalls.find("label").text(this.checked?"collapse all":"expand all");
+                    if (this.checked) {
+                        for (let check of currentchecks) {
+                            if (/\[\+\]$/.test($(check).text())) {
+                                $(check).click();
+                            }
+                        }
+                    } else {
+                        for (let check of currentchecks) {
+                            if (/\[-\]$/.test($(check).text())) {
+                                $(check).click();
+                            }
+                        }
+                    }
                 });
 
                 return poptit[0];

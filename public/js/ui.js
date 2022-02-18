@@ -67,6 +67,7 @@ function addCheckbox(cont, id, buckcheck, label, inform=1) {
             </label>
         </div>`);
     cont.appendChild(panel[0]);
+    return panel;
 }
 
 function addRadio(cont, id, buckcheck, groupid, label, extraelements="") {

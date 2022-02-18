@@ -598,30 +598,47 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
     wordInfoBox=null;
     wordInfoRow=null;
     const word = withmainword?data.word:val.word;
+    let sil,property;
     let expandcoll;
+    currentchecks=[];
 
     data.results.map(val => {
         let thissect;
         let  cmp,comma,apostr,labarr,labarr2,sarr;
-        let expandsynop, expandsyncl;
+        let expandsynop,expandsyncl;
+        let expandsimop,expandimcl;
 
-        function syns() {
-            if (thissect.sdef) {
-                expandsynop.innerText = "synonyms[+]";
-                $(thissect.sdef).remove();
-                delete thissect.sdef;
+        function syns(id, label, wordlist, expandsynop, expandsyncl) {
+            if (thissect[id]) {
+                expandsynop.innerText = label+"[+]";
+                $(thissect[id]).remove();
+                delete thissect[id];
             } else {
                 expandsynop.innerText = "";
                 const sproperty = {
                     label:[expandsyncl], 
-                    value:sarr
+                    value:wordlist
                 };
-                thissect.sdef = proplabel(sproperty, word, true, 1, val.synonyms.length, "", comma, apostr, origin);
-                if (thissect.sdef) {
-                    thissect.sdef.classList.add('definition-sm');
-                    thissect.appendChild(thissect.sdef);
+                thissect[id] = proplabel(sproperty, word, true, 1, val.synonyms.length, "", comma, apostr, origin);
+                if (thissect[id]) {
+                    thissect[id].classList.add('definition-sm');
+                    thissect.appendChild(thissect[id]);
                 }
             }
+        }
+        function checkpair(wordlist,id,label) {
+            let expandsynop, expandsyncl;
+            
+            expandsynop = createexpandlink(label+"[+]", "");
+            expandsyncl = createexpandlink(label+"[-]", "");
+
+            currentchecks.push(expandsyncl);
+            currentchecks.push(expandsynop);
+
+            expandsynop.onclick = syns.bind(expandsynop, id, label, wordlist, expandsynop, expandsyncl);
+            expandsyncl.onclick = syns.bind(expandsyncl, id, label, wordlist, expandsynop, expandsyncl);
+
+            return {expandsynop, expandsyncl};
         }
 
         if (modalMode === "light" || modalMode === "examples") {
@@ -644,13 +661,23 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
             removearritm(sarr, word);
 
             if (sarr.length) {
-                expandsynop = createexpandlink("synonyms[+]", "");
-                expandsynop.onclick = syns;
+                let syp = checkpair(sarr, "syndef", "synonyms");
+                expandsynop = syp.expandsynop;
+                expandsyncl = syp.expandsyncl;
                 labarr2.push(expandsynop);
-
-                expandsyncl = createexpandlink("synonyms[-]", "");
-                expandsyncl.onclick = syns;
             }
+            if (val.similar.length) {
+                let simp = checkpair(val.similar, "simdef", "similar");
+                expandsimop = simp.expandsynop;
+                expandsimcl = simp.expandsyncl;
+                labarr2.push(expandsimop);
+            }
+
+            property = {
+                label:labarr2, 
+                value:[val.definition]
+            };
+            sil = 0;
     
         } else {
             if (itms++%100==99) {
@@ -660,15 +687,16 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
             cmp = wordInfoBox;
             labarr = val.level||val.partOfSpeech?["("+(val.level?val.level+" ":"")+val.partOfSpeech+")"]:[];
             labarr2 = labarr.concat(val.synonyms);
+            property = {
+                label:labarr2, 
+                value:val.similar.concat([val.definition])
+            };
+            sil = val.similar.length;
         }
 
-        const property = {
-            label:labarr2, 
-            value:val.similar.concat([val.definition])
-        };
 
 
-        const def = proplabel(property, word, true, labarr.length, val.similar.length, "", comma, apostr, origin);
+        const def = proplabel(property, word, true, labarr.length, sil, "", comma, apostr, origin);
         if (def) {
             thissect = document.createElement("div");
             cmp.appendChild(thissect);
@@ -682,7 +710,7 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
             thissect.appendChild(def);
 
             if (modalMode === "light" && sarr.length) {
-                syns();
+                //syns("sdef", sarr, expandsynop, expandsyncl);
             }
         }
 
@@ -699,8 +727,8 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
     });
 
     if (modalMode === "light" || modalMode === "examples") {
-        let expandcoll;
         expandcoll = createexpandlink("collocations[+]", "");
+        currentchecks.push(expandcoll);
         expandcoll.onclick = colls;
         wordInfoTbl.appendChild(expandcoll);
 
