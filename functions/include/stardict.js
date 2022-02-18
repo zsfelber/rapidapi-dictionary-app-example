@@ -165,9 +165,12 @@ sametypesequence=h
     }
 
     function readall() {
+      let result = [];
       for (let i = 0; i < wordindex0.length; i++) {
-        get(i);
+        let itm = get(i);
+        result.push(itm);
       }
+      return result;
     }
 
     function prereadall(bs = []) {
@@ -272,7 +275,7 @@ sametypesequence=h
     function indexes() {
       return Object.keys(wordindex0);
     }
-    return { ready: true, get, find, indexes };
+    return { ready: true, get, find, indexes, readall };
   }
   function returnnone() {
     return null;
@@ -285,5 +288,6 @@ sametypesequence=h
     find: returnnone,
     get: returnnone,
     indexes: returnemp,
+    readall: returnemp
   };
 };

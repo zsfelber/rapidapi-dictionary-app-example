@@ -5,9 +5,11 @@ const methods = {
     "getWord":require("../../functions/getWord"),
     "saveGroups":require("../../functions/saveGroups"),
     "findCollocation":require("../../functions/findCollocation"),
+    "finder":require("../../functions/finder"),
     "/getWord":require("../../functions/getWord"),
     "/saveGroups":require("../../functions/saveGroups"),
     "/findCollocation":require("../../functions/findCollocation"),
+    "/finder":require("../../functions/finder"),
 };
 
 

@@ -12,6 +12,7 @@ exports.handler = async function(event, context) {
 
   //   extract the word query parameter from the HTTP request
   const word = event.queryStringParameters.word || "";
+  const lang = event.queryStringParameters.lang || "";
   const mode = event.queryStringParameters.mode || "";
   const letter = event.queryStringParameters.letter || "";
   const ffrom = event.queryStringParameters.ffrom || 0;
@@ -96,6 +97,7 @@ async function get(api, word, mode, letter, ffrom, fto, resolvePath, stopiterate
   }
 
   let data;
+  let forlang;
   console.log(api + " " +mode + ":" + word + ":" + ffrom + ".." + fto+" letter:"+letter);
 
   switch (mode) {
@@ -169,10 +171,16 @@ async function get(api, word, mode, letter, ffrom, fto, resolvePath, stopiterate
       data = await crawler.wordsByFrequency(word, Number(ffrom), Number(fto), true);
       break;
 
-    case "synonym_cluster":
     case "minimal_cluster":
+      forlang = crawler.getForLang(lang, word);
 
+    case "synonym_cluster":
+
+      // TODO : it depends on English ::
+      //if (!lang || lang == "en")
       data = await crawler.loadCluster(word, true);
+      data.lang = lang;
+      data.forlang = forlang;
       break;
     default:
       data = await crawler.loadSingleWord(word, true);

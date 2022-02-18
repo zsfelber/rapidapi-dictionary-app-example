@@ -149,7 +149,7 @@ function initpop() {
                 ch0.append(popsf);
                 ch1.append(poppron);
                 addCheckbox(ch1[0], "popchwords", {defchecked:true,classes:"input-sm pop-check"}, "in words", 0);
-                addCheckbox(ch1[0], "popchdefs", {defchecked:false,classes:"input-sm pop-check"}, "in definitions", 0);
+                addCheckbox(ch1[0], "popchdefs", {defchecked:false,classes:"input-sm pop-check"}, "in meanings", 0);
                 addCheckbox(ch1[0], "popchxs", {defchecked:false,classes:"input-sm pop-check"}, "in examples", 0);
                 addCheckbox(ch1[0], "popchwms", {defchecked:false,classes:"input-sm pop-check"}, "per word macthing", 0);
                 addCheckbox(ch1[0], "popchalws", {defchecked:false,classes:"input-sm pop-check"}, "all words", 0);

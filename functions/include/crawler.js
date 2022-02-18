@@ -237,9 +237,9 @@ exports.aCrawler = function (resolvePath) {
   }
 
   function initializeCache() {
-    loadCaggleFrequencies();
+    loadExistingWordsAndFreqs();
     loadNativeStarDictAll();
-    loadCollocationsStarDict();
+    load3rdPartyStarDicts();
   }
 
   function singleWordToDisplay(data) {
@@ -1174,16 +1174,39 @@ exports.aCrawler = function (resolvePath) {
     return loadWordsOnly(TheMostCommon10000, word, asobject);
   }
 
-  async function loadAll_words(word0, asobject, fromtime = 0) {
+
+  async function getAllWords() {
     let allwords0 = [];
-    /*function onFile(strPath, stat) {
-      let word = strPath.substring(TWELVE);
-      allwords0.push(word);
-    }
-    await finder.findFiles(`${CACHE_DIR}/words`, fromtime, onFile);*/
-    const totwords = loadCaggleFrequencies();
+    const totwords = loadExistingWordsAndFreqs();
 
     allwords0.push.apply(allwords0, Object.keys(totwords));
+    return allwords0;
+  }
+
+
+  async function getAllDefinitions() {
+    let alldefs0 = [];
+
+    loadNativeStarDictAll();
+    let sd_defs_data = cache.stardict_defs.readall();
+    let defs1 = sd_defs_data.map((value)=>{
+      return {synonymSet:value.data.synonymSet, definition:value.data.definition};
+    });
+
+    let { byf, byword, cntf, nowords } = await loadAllFromFileCache();
+    let stage1 = convertFileCacheToIntermediate(byword);
+
+    let sorteddefs = [].concat(Object.keys(stage1.meaning));
+    sorteddefs.sort();
+
+
+
+    alldefs0.push.apply(alldefs0, Object.keys(defs));
+    return alldefs0;
+  }
+
+  async function loadAll_words(word0, asobject, fromtime = 0) {
+    let allwords0 = await getAllWords();
 
     return loadWordsOnly(allwords0, word0, asobject);
   }
@@ -1288,7 +1311,7 @@ exports.aCrawler = function (resolvePath) {
     return staticCache.existingGoogleWords[word];
   }
 
-  function loadCaggleFrequencies() {
+  function loadExistingWordsAndFreqs() {
     if (!staticCache.caggleFreqRecords) {
       staticCache.caggleFreqRecords = csvParse.load(
         resolvePath.abs("data/unigram_freq.csv"),
@@ -1311,13 +1334,13 @@ exports.aCrawler = function (resolvePath) {
   }
 
   function getWordCaggleFrequency(word) {
-    loadCaggleFrequencies();
+    loadExistingWordsAndFreqs();
     return staticCache.caggleFrequencies[word];
   }
 
   async function invertFrequencies() {
     try {
-      loadCaggleFrequencies();
+      loadExistingWordsAndFreqs();
 
       //records.splice(0, 1);
       let nowords = 0;
@@ -1464,16 +1487,22 @@ exports.aCrawler = function (resolvePath) {
   }
 
 
-  function loadCollocationsStarDict() {
+  function load3rdPartyStarDicts() {
     if (
-      !staticCache.collocationStardict
+      !staticCache.collocationStardict ||
+      !staticCache.enghunStardict ||
+      !staticCache.hunengStardict
+      
     ) {
-      console.time("load collocations StarDict datafiles");
-      const f0 = `data/dict/stardict-OxfordCollocationsDictionary-2.4.2/OxfordCollocationsDictionary`;
+      console.time("load 3rd party StarDict datafiles");
+      const colf0 = `data/dict/stardict-OxfordCollocationsDictionary-2.4.2/OxfordCollocationsDictionary`;
+      staticCache.collocationStardict = stardict.loadStarDict(`${colf0}`, false);
+      const eh0 = `data/dict/stardict-freedict-eng-hun-2.4.2/dictd_www.freedict.de_eng-hun`;
+      staticCache.enghunStardict = stardict.loadStarDict(`${eh0}`, false);
+      const he0 = `data/dict/stardict-hungarian-english-2.4.2/hungarian-english`;
+      staticCache.hunengStardict = stardict.loadStarDict(`${he0}`, false);
 
-      staticCache.collocationStardict = stardict.loadStarDict(`${f0}`, false);
-
-      console.timeEnd("load collocations StarDict datafiles");
+      console.timeEnd("load 3rd party StarDict datafiles");
     }
   }
 
@@ -1630,6 +1659,28 @@ exports.aCrawler = function (resolvePath) {
     return itm ? itm.data : null;
   }
 
+  function getForLang(lang, word) {
+    let result={};
+    let langcache={};
+    result[lang] = langcache;
+    switch (lang) {
+      case "en":
+        langcache.enghun = staticCache.enghunStardict.find(word);
+        if (langcache.enghun) langcache.enghun = langcache.enghun.data;
+        break;
+      case "hu":
+        langcache.huneng = staticCache.hunengStardict.find(word);
+        if (langcache.huneng) langcache.huneng = langcache.huneng.data;
+        break;
+    }
+    return result;
+  }
+
+  async function find(word, in_words, in_meanings, in_examples) {
+
+
+  }
+
   return {
     isApiLimitReached,
     initCrawler,
@@ -1658,12 +1709,12 @@ exports.aCrawler = function (resolvePath) {
     wordsByFrequency,
     generateIndexes,
     loadGoogleWords,
-    loadCaggleFrequencies,
+    loadExistingWordsAndFreqs,
     doesGoogleWordExist,
     getWordCaggleFrequency,
     loadAllFromFileCache,
     updateStarDict,
     initializeCache,
-    findCollocation
+    findCollocation, getForLang, find
   };
 };

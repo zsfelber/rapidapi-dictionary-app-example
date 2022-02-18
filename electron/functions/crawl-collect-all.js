@@ -59,7 +59,7 @@ async function doItFor(api, deep, fix, fill, resolvePath) {
 
   let cs=[];
 
-  const totwords = crawler.loadCaggleFrequencies();
+  const totwords = crawler.loadExistingWordsAndFreqs();
   console.log(api, "word count:"+Object.keys(totwords).length);
 
   if (fix) {
