@@ -20,7 +20,7 @@ function isElectron() {
     return false;
 }
 
-async function serve(target, qs=[], isjson=true) {
+async function serve(target, qs=[]) {
 
     let e = isElectron(),data;
 
@@ -35,11 +35,7 @@ async function serve(target, qs=[], isjson=true) {
 
         const data0 = await fetch(`/.netlify/functions/${target}?${qs.join("&")}`, { mode: 'cors'});
 
-        if (isjson) {
-            data = await data0.json();
-        } else {
-            data = await data0.text();
-        }
+        data = await data0.json();
     }
 
     return data;

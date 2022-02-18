@@ -5,10 +5,8 @@ const MAX_NODE_FREQUENCY = 100000;
 const TRAVERSE_ALL = false;
 const MAX_LEVEL_MINCL = 2;
 
-const fs = require("fs");
 const service = require("./include/service");
 const atob = require("atob");
-const { Console } = require("console");
 
 
 exports.handler = async function (event, context) {
@@ -20,7 +18,15 @@ exports.handler = async function (event, context) {
   const crawler = require('./include/crawler.js').aCrawler(resolvePath);
 
   return service.respond(async () => {
-    let result = crawler.findCollocation(word);
+    let html = crawler.findCollocation(word);
+    let root = "../data/dict/stardict-OxfordCollocationsDictionary-2.4.2/";
+
+    let result = {
+      root, html
+    };
+    if (!html) {
+      result.error = "notfound";
+    }
     return result;
   }, context);
 

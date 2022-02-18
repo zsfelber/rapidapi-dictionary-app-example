@@ -715,14 +715,25 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
                 delete thissect.chtml;
             } else {
                 expandcoll.innerText = "collocations[-]";
-                if (!thissect.chtmltxt) thissect.chtmltxt = await findCollocation(word);
-                if ('{"error":"notfound"}'==thissect.chtmltxt) {
+                if (!thissect.data) thissect.data = await findCollocation(word);
+                if (!thissect.data || thissect.data.error) {
                     thissect.chtmltxt = "<b>No entry in collocations dictionary.</b>";
+                    thissect.chtml = $(thissect.chtmltxt);
+                } else {
+                    thissect.chtmltxt = thissect.data.html;
+                    let root = thissect.data.root+"res/";
+                    thissect.chtml = $(`<div>${thissect.chtmltxt}</div>`);
+                    let imgs = thissect.chtml.find("img");
+                    imgs.each(function(){
+                        let src0 = $(this).attr("src");
+                        src0 = src0.replace("\x1E", root);
+                        src0 = src0.replace("\x1F", "");
+                        $(this).attr("src", src0);
+                    });
                 }
 
-                thissect.chtml = $(thissect.chtmltxt);
                 $(thissect).append(thissect.chtml);
-        }
+            }
         }
 
     }
