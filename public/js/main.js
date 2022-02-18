@@ -131,10 +131,10 @@ async function saveGroups(qs=[]) {
     return data;
 }
 
-async function findCollocation(word) {
+async function findCollocation(word, qs=[]) {
     qs.push(`word=${word}`);
 
-    let data = await serve("findCollocation", qs);
+    let data = await serve("findCollocation", qs, false);
 
     return data;
 }
@@ -699,6 +699,10 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
     });
 
     if (modalMode === "light" || modalMode === "examples") {
+        let thissect = document.createElement("div");
+        thissect.classList.add('smallf');
+        wordInfoTbl.appendChild(thissect);
+
         let expandcoll;
         async function colls() {
             if (thissect.chtml) {
