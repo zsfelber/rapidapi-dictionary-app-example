@@ -47,9 +47,9 @@ exports.handler = async function (event, context) {
           let ad = await find(api);
 
           if (ad) {
-            data.words.push.apply(data.words, ad.words);
-            data.meanings.push.apply(data.meanings, ad.meanings);
-            data.examples.push.apply(data.examples, ad.examples);
+            result.words.push.apply(result.words, ad.words);
+            result.meanings.push.apply(result.meanings, ad.meanings);
+            result.examples.push.apply(result.examples, ad.examples);
           }
         }
         result.words.sort((a,b)=>{

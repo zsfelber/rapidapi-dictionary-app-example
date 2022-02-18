@@ -1188,16 +1188,20 @@ exports.aCrawler = function (resolvePath) {
 
     loadNativeStarDictAll();
     let sd_defs_data = cache.stardict_defs.readall();
-    let defs1 = sd_defs_data.map((value)=>{
-      return {synonymSet:value.data.synonymSet, examples:value.data.examples, definition:value.data.definition};
-    });
+
+    let defs1 = [];
+    for (let value of sd_defs_data) {
+      defs1.push({synonymSet:value.data.synonymSet, examples:value.data.examples, definition:value.data.definition});
+    }
 
     let { byf, byword, cntf, nowords } = await loadAllFromFileCache();
     let stage1 = convertFileCacheToIntermediate(byword);
 
-    let defs2 = Object.values(stage1.meaning).map((data, definition)=>{
-      return {synonymSet:data.synonymSet, examples:data.examples, definition};
-    });
+    let defs2 = [];
+    for (let definition in stage1.meaning) {
+      let data = stage1.meaning[definition];
+      defs2.push({synonymSet:data.synonymSet, examples:data.examples, definition});
+    }
 
     let alldefs0 = defs1.concat(defs2);
 
@@ -1210,6 +1214,10 @@ exports.aCrawler = function (resolvePath) {
     let matcher;
 
     function matchword(cycletext, matcherword) {
+      if (!cycletext) {
+        console.log("!cycletext");
+        return false;
+      }
       let i = cycletext.toLowerCase().indexOf(matcherword);
       return i !== -1;
     }
@@ -1245,7 +1253,7 @@ exports.aCrawler = function (resolvePath) {
 
     let allmeanings;
     if (in_meanings||in_examples) {
-      allmeanings = getAllDefinitions();
+      allmeanings = await getAllDefinitions();
     }
 
     let result = { words:[], meanings:[], examples:[] };

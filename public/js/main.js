@@ -692,7 +692,7 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
             labarr = val.partOfSpeech?[val.partOfSpeech]:[];
             labarr2 = labarr.concat([]);
 
-            if (val.synonyms) {
+            if (val.synonyms && val.synonyms.length) {
                 sarr = [].concat(val.synonyms);
                 removearritm(sarr, word);
                 if (sarr.length) {
@@ -703,7 +703,7 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
                 }
             }
 
-            if (val.similar.length) {
+            if (val.similar && val.similar.length) {
                 let simp = checkpair(val.similar, "simdef", "similar");
                 expandsimop = simp.expandsynop;
                 expandsimcl = simp.expandsyncl;
@@ -748,9 +748,9 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
             }
             thissect.appendChild(def);
 
-            if (modalMode === "light" && sarr.length) {
+            //if (modalMode === "light" && sarr && sarr.length) {
                 //syns("sdef", sarr, expandsynop, expandsyncl);
-            }
+            //}
         }
 
         if (val.examples && val.examples.length) {

@@ -185,17 +185,21 @@ function initpop() {
                     let phrase = popschf.val();
                     currentmodal = "light";
                     let datapromise = fetchPhrasesLookup(phrase);
-                    datapromise.then((data) => {
-                        console.log("loaded (phrase search):" + id);
-                        def = createPopup({word:"search_result", results:data});
-                        let popbod = _.contentelem.find(".popover-body");
-                        popbod.empty();
-                        popbod.append($(def));
+                    datapromise.then((result) => {
+                        console.log("loaded (phrase search):" + phrase);
+                        let data = {
+                            word:"search_result", 
+                            phrase,
+                            results: result.words.concat(result.meanings).concat(result.examples)
+                        };
+                        def = createPopup(data);
+
+                        _.contentelem.empty();
+                        _.contentelem.append($(def));
                     });
                 }
 
                 popschf.enterKey(function () {
-                    alert('Enter!');
                     findPhrasesAgain();
                 });
                 
