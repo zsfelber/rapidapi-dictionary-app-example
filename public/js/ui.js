@@ -9,6 +9,16 @@ function init$() {
         return decodeURI(results[1]).replace(/\+/g," ") || nothing;
     }
 
+    $.fn.enterKey = function (fnc) {
+        return this.each(function () {
+            $(this).keypress(function (ev) {
+                var keycode = (ev.keyCode ? ev.keyCode : ev.which);
+                if (keycode == '13') {
+                    fnc.call(this, ev);
+                }
+            })
+        })
+    }
 }
 
 function isch(id) {

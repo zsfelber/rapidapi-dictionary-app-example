@@ -182,18 +182,20 @@ function initpop() {
                 let popschf = ch0.find("#popschf");
                 async function findPhrasesAgain() {
                     let phrase = popschf.val();
+                    currentmodal = "light";
                     let datapromise = fetchPhrasesLookup(phrase);
                     datapromise.then((data) => {
                         console.log("loaded (phrase search):" + id);
-                        def = createPopup(data);
+                        def = createPopup({word:"search_result", results:data});
                         let popbod = _.contentelem.find(".popover-body");
                         popbod.empty();
                         popbod.append($(def));
                     });
                 }
-                popschf.change(()=>{
 
-                    doLater(findPhrasesAgain, 2500);
+                popschf.enterKey(function () {
+                    alert('Enter!');
+                    findPhrasesAgain();
                 });
                 
                 return poptit[0];

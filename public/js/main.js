@@ -687,15 +687,17 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
             labarr = val.partOfSpeech?[val.partOfSpeech]:[];
             labarr2 = labarr.concat([]);
 
-            sarr = [].concat(val.synonyms);
-            removearritm(sarr, word);
-
-            if (sarr.length) {
-                let syp = checkpair(sarr, "syndef", "synonyms");
-                expandsynop = syp.expandsynop;
-                expandsyncl = syp.expandsyncl;
-                labarr2.push(expandsynop);
+            if (val.synonyms) {
+                sarr = [].concat(val.synonyms);
+                removearritm(sarr, word);
+                if (sarr.length) {
+                    let syp = checkpair(sarr, "syndef", "synonyms");
+                    expandsynop = syp.expandsynop;
+                    expandsyncl = syp.expandsyncl;
+                    labarr2.push(expandsynop);
+                }
             }
+
             if (val.similar.length) {
                 let simp = checkpair(val.similar, "simdef", "similar");
                 expandsimop = simp.expandsynop;
@@ -705,7 +707,9 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
 
             property = {
                 label:labarr2, 
-                value:[val.definition]
+                value:[val.example ? val.example :
+                        (val.definition ? val.definition :
+                            (val.word ? val.word : ""))]
             };
             sil = 0;
     
@@ -756,7 +760,7 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
 
     });
 
-    if (modalMode === "light" || modalMode === "examples") {
+    if (modalMode === "examples") {
         expandcoll = createexpandlink("collocations[+]", "");
         currentchecks.push(expandcoll);
         expandcoll.onclick = colls;

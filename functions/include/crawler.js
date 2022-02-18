@@ -1265,7 +1265,10 @@ exports.aCrawler = function (resolvePath) {
       let result2 = [];
       for (let cyclemeaning of allmeanings) {
         if (matcher(cyclemeaning.definition)) {
-          result2.push(cyclemeaning);
+          result2.push({definition:cyclemeaning.definition,
+            synonyms:[].concat(Object.keys(cyclemeaning.synonymSet)),
+            similar:[].concat(cyclemeaning.similar),
+            examples:(cyclemeaning.examples&&cyclemeaning.examples.length?["..."]:[]) });
         }
       }
       result.meanings = result2;
@@ -1277,7 +1280,13 @@ exports.aCrawler = function (resolvePath) {
         if (cyclemeaning.examples) {
           for (let cycleexample of cyclemeaning.examples) {
             if (matcher(cycleexample)) {
-              result3.push({meaning:cyclemeaning, example:cycleexample});
+              result3.push(
+                {definition:cyclemeaning.definition,
+                  synonyms:[].concat(Object.keys(cyclemeaning.synonymSet)),
+                  similar:[].concat(cyclemeaning.similar),
+                  examples:[cycleexample],
+                  example:cycleexample
+                 });
             }
           }
         }
