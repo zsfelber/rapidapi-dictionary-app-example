@@ -38,7 +38,7 @@ async function serve(target, qs=[], isjson=true) {
         if (isjson) {
             data = await data0.json();
         } else {
-            data = await data0;
+            data = await data0.text();
         }
     }
 

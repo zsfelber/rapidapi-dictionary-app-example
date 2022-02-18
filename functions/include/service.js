@@ -8,6 +8,8 @@ exports.respond = async function(guts, context) {
 
         if (context.electron) {
             return data;
+        } else if (context.http) {
+            return data ? data : {error:"notfound"};
         } else {
             let json = JSON.stringify(data);
 

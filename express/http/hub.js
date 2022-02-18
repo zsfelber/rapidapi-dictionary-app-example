@@ -35,7 +35,7 @@ forward: async function(urlpath, queryStringParameters) {
     };
     const context = {
         resolvePath,
-        electron: true
+        http: true
     };
     const method = methods[pathname];
     if (method) {

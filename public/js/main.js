@@ -712,9 +712,15 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
             } else {
                 expandcoll.innerText = "collocations[-]";
                 if (!thissect.chtmltxt) thissect.chtmltxt = await findCollocation(word);
-                thissect.chtml = $(chtmltxt);
+                if ('{"error":"notfound"}'==thissect.chtmltxt) {
+                    thissect.chtml = "<b>No entry in collocations dictionary.</b>";
 
-                thissect.appendChild(thissect.chtml[0]);
+                    $(thissect).append(thissect.chtml);
+                } else {
+                    thissect.chtml = $(thissect.chtmltxt);
+
+                    $(thissect).append(thissect.chtml);
+                }
             }
         }
         expandcoll = createexpandlink("collocations[+]", "");
