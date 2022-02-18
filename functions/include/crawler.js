@@ -238,7 +238,8 @@ exports.aCrawler = function (resolvePath) {
 
   function initializeCache() {
     loadCaggleFrequencies();
-    loadStarDictAll();
+    loadNativeStarDictAll();
+    loadCollocationsStarDict();
   }
 
   function singleWordToDisplay(data) {
@@ -382,7 +383,7 @@ exports.aCrawler = function (resolvePath) {
       return data;
     }
 
-    loadStarDictAll();
+    loadNativeStarDictAll();
 
     let itm;
     if ((itm = cache.stardict_words.find(word))) {
@@ -1434,13 +1435,14 @@ exports.aCrawler = function (resolvePath) {
     fs.writeFileSync(resolvePath.abs(clindpath), clfq);
   }
 
-  function loadStarDictAll() {
+
+  function loadNativeStarDictAll() {
     if (
       !cache.stardict_words ||
       !cache.stardict_defs ||
       !cache.stardict_errors
     ) {
-      console.time("load StarDict datafiles");
+      console.time("load native StarDict datafiles");
       const f0 = `${CACHE_DIR}/dict/${API}-english/${API}-english`;
       if (!cache.stardict_words)
         cache.stardict_words = stardict.loadStarDict(`${f0}-words`);
@@ -1448,18 +1450,33 @@ exports.aCrawler = function (resolvePath) {
         cache.stardict_defs = stardict.loadStarDict(`${f0}-definitions`);
       if (!cache.stardict_errors)
         cache.stardict_errors = stardict.loadStarDict(`${f0}-errors`);
-      console.timeEnd("load StarDict datafiles");
+      console.timeEnd("load native StarDict datafiles");
     }
   }
 
-  function saveStarDictAll(stage1, stage2) {
-    console.time("save StarDict datafiles");
+  function saveNativeStarDictAll(stage1, stage2) {
+    console.time("save native StarDict datafiles");
     const f0 = `${CACHE_DIR}/dict/${API}-english/${API}-english`;
     stardict.saveStarDict(`${f0}-words`, stage2.sortedwords, stage1.word);
     stardict.saveStarDict(`${f0}-definitions`, stage2.sorteddefs, stage1.meaning);
     stardict.saveStarDict(`${f0}-errors`, stage2.sortederrors, stage1.error);
-    console.timeEnd("save StarDict datafiles");
+    console.timeEnd("save native StarDict datafiles");
   }
+
+
+  function loadCollocationsStarDict() {
+    if (
+      !staticCache.collocationStardict
+    ) {
+      console.time("load collocations StarDict datafiles");
+      const f0 = `data/dict/stardict-OxfordCollocationsDictionary-2.4.2/OxfordCollocationsDictionary`;
+
+      staticCache.collocationStardict = stardict.loadStarDict(`${f0}`, false);
+
+      console.timeEnd("load collocations StarDict datafiles");
+    }
+  }
+
 
   function convertFileCacheToIntermediate(byword) {
     let result = {
@@ -1562,7 +1579,7 @@ exports.aCrawler = function (resolvePath) {
   }
 
   async function updateStarDict() {
-    loadStarDictAll();
+    loadNativeStarDictAll();
 
     let { byf, byword, cntf, nowords } = await loadAllFromFileCache();
 
@@ -1605,7 +1622,7 @@ exports.aCrawler = function (resolvePath) {
     );
     console.timeEnd("stage2");
 
-    saveStarDictAll(stage1, stage2);
+    saveNativeStarDictAll(stage1, stage2);
   }
 
   return {

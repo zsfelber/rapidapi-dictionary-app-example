@@ -96,7 +96,7 @@ sametypesequence=h
   fs.writeFileSync(filename + ".ifo", ifo);
 };
 
-exports.loadStarDict = function (filename) {
+exports.loadStarDict = function (filename, isjson=true) {
   console.log("Read stardict " + filename);
   let noinput = 0;
   if (!fs.existsSync(filename + ".dict")) {
@@ -219,8 +219,8 @@ sametypesequence=h
         let size = indexbuf.readUInt32BE(i);
         i += 4;
 
-        let json = dictbuf.toString("utf-8", offset, offset + size);
-        let worddata = JSON.parse(json);
+        let text = dictbuf.toString("utf-8", offset, offset + size);
+        let worddata = isjson ? JSON.parse(text) : text;
 
         rec.word = word;
         rec.data = worddata;
