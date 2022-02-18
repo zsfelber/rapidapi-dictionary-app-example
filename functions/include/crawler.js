@@ -1248,7 +1248,7 @@ exports.aCrawler = function (resolvePath) {
       allmeanings = getAllDefinitions();
     }
 
-    let result = [];
+    let result = { words:[], meanings:[], examples:[] };
 
     if (in_words) {
       let result1 = [];
@@ -1258,10 +1258,7 @@ exports.aCrawler = function (resolvePath) {
           result1.push({word:cycleword});
         }
       }
-      result1.sort((a,b)=>{
-        return a.word.localeCompare(b.word);
-      });
-      result.push.apply(result, result1);
+      result.words = result1;
     }
 
     if (in_meanings) {
@@ -1271,10 +1268,7 @@ exports.aCrawler = function (resolvePath) {
           result2.push(cyclemeaning);
         }
       }
-      result2.sort((a,b)=>{
-        return a.definition.localeCompare(b.definition);
-      });
-      result.push.apply(result, result2);
+      result.meanings = result2;
     }
 
     if (in_examples) {
@@ -1288,10 +1282,7 @@ exports.aCrawler = function (resolvePath) {
           }
         }
       }
-      result3.sort((a,b)=>{
-        return a.example.localeCompare(b.example);
-      });
-      result.push.apply(result, result3);
+      result.examples = result3;
     }
 
     return result;

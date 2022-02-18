@@ -37,41 +37,32 @@ exports.handler = async function (event, context) {
   }    
   return service.respond(async () => {
 
+    let data = { words:[], meanings:[], examples:[] };
+
     if (apis) {
 
         apis = apis.split("-");
-        let data = { results: [], pronunciation: {} };
   
         for (let api of apis) {
           let ad = await find(api);
 
           if (ad) {
-
-            if (!data.word) {
-              data.word = ad.word;
-            }
-            if (!data.noWords) {
-              data.noWords = ad.noWords;
-            }
-            if (!data.noDefinitions) {
-              data.noDefinitions = ad.noDefinitions;
-            }
-  
-            if (!data.frequency) {
-              data.frequency = ad.frequency;
-            }
-            data.pronunciation = Object.assign(data.pronunciation, ad.pronunciation);
-            data.results.push.apply(data.results, ad.results);
+            data.words.push.apply(data.words, ad.words);
+            data.meanings.push.apply(data.meanings, ad.meanings);
+            data.examples.push.apply(data.examples, ad.examples);
           }
         }
+        result.words.sort((a,b)=>{
+            return a.word.localeCompare(b.word);
+        });
+        result.meanings.sort((a,b)=>{
+            return a.definition.localeCompare(b.definition);
+        });
+        result.examples.sort((a,b)=>{
+            return a.example.localeCompare(b.example);
+        });
     }
 
-    let result = {
-      root, html
-    };
-    if (!html) {
-      result.error = "notfound";
-    }
     return result;
   }, context);
 
