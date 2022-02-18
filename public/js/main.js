@@ -556,50 +556,61 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
     wordInfoRow=null;
 
     data.results.map(val => {
-        if (modalMode === "examples") {
 
+        let  cmp,comma,apostr,labarr,labarr2;
+        if (modalMode === "light" || modalMode === "examples") {
+
+            cmp = document.createElement("div");
+            cmp.classList.add('smallf');
+            wordInfoTbl.appendChild(cmp);
+            comma="";
+            apostr="'";
+            /*modalMode === "examples" was
             if (val.examples && val.examples.length) {
                 createaas(wordInfoTbl, ["("+val.definition+"):"].concat(val.examples), ", ", origin);
             } else {
                 createaas(wordInfoTbl, ["("+val.definition+")"], ", ", origin);
-            }
+            }*/
+            labarr2 = labarr = val.partOfSpeech?[val.partOfSpeech]:[];
         } else {
-            let  cmp,comma,apostr;
-            if (modalMode === "light") {
-
-                cmp = document.createElement("div");
-                cmp.classList.add('smallf');
-                wordInfoTbl.appendChild(cmp);
-                comma="";
-                apostr="'";
-            } else {
-                if (itms++%100==99) {
-                    newrow(wordInfoTbl);
-                    newbox("list-item-lg");
-                }
-                cmp = wordInfoBox;
-
+            if (itms++%100==99) {
+                newrow(wordInfoTbl);
+                newbox("list-item-lg");
             }
+            cmp = wordInfoBox;
+            labarr = val.level||val.partOfSpeech?["("+(val.level?val.level+" ":"")+val.partOfSpeech+")"]:[];
+            labarr2 = labarr.concat(val.synonyms);
+        }
 
-            const prearray = val.level||val.partOfSpeech?["("+(val.level?val.level+" ":"")+val.partOfSpeech+")"]:[];
-            const property = {
-                label:prearray.concat(val.synonyms), 
-                value:val.similar.concat([val.definition])
+        const property = {
+            label:labarr2, 
+            value:val.similar.concat([val.definition])
+        };
+        // .concat(val.synonyms)
+
+        const def = proplabel(property, withmainword?data.word:val.word, true, labarr.length, val.similar.length, "", comma, apostr, origin);
+        if (def) {
+            def.classList.add('definition');
+            cmp.appendChild(def);
+        }
+        if (modalMode === "light") {
+            const sproperty = {
+                label:["synonyms"], 
+                value:val.synonyms
             };
-    
-            const def = proplabel(property, withmainword?data.word:val.word, true, prearray.length, val.similar.length, "", comma, apostr, origin);
-            if (def) {
-                def.classList.add('definition');
-                cmp.appendChild(def);
+            const sdef = proplabel(sproperty, withmainword?data.word:val.word, true, 1, val.synonyms.length, "", comma, apostr, origin);
+            if (sdef) {
+                sdef.classList.add('definition');
+                cmp.appendChild(sdef);
             }
-    
-            let b = document.createElement("b");
-            b.innerText = "x:";
-            def.children[1].appendChild(b);
+        }
 
-            if (val.examples && val.examples.length) {
-                createaas(def.children[1], val.examples, ", ", origin);
-            }
+        let b = document.createElement("b");
+        b.innerText = "x:";
+        def.children[1].appendChild(b);
+
+        if (val.examples && val.examples.length) {
+            createaas(def.children[1], val.examples, ", ", origin);
         }
 
 
