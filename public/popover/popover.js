@@ -181,9 +181,8 @@ function initpop() {
                 let _ = this;
                 let popschf = ch0.find("#popschf");
                 async function findPhrasesAgain() {
-                    let results = await findPhrases(word, popschf.val());
-
-                    let datapromise = fetchPhrasesLookup();
+                    let phrase = popschf.val();
+                    let datapromise = fetchPhrasesLookup(phrase);
                     datapromise.then((data) => {
                         console.log("loaded (phrase search):" + id);
                         def = createPopup(data);

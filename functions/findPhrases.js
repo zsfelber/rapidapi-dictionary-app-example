@@ -13,7 +13,7 @@ exports.handler = async function (event, context) {
 
   //   extract the word query parameter from the HTTP request
   const resolvePath = context.resolvePath;
-  const word = event.queryStringParameters.word || "";
+  const phrase = event.queryStringParameters.phrase || "";
   const in_words = "true"===event.queryStringParameters.in_words||true===event.queryStringParameters.in_words;
   const in_meanings = "true"===event.queryStringParameters.in_meanings||true===event.queryStringParameters.in_meanings;
   const in_examples = "true"===event.queryStringParameters.in_examples||true===event.queryStringParameters.in_examples;
@@ -33,7 +33,7 @@ exports.handler = async function (event, context) {
         TRAVERSE_ALL
       );
 
-    return crawler.findPhrases(word, in_words, in_meanings, in_examples, per_word_matching, all_words);
+    return crawler.findPhrases(phrase, in_words, in_meanings, in_examples, per_word_matching, all_words);
   }    
   return service.respond(async () => {
 

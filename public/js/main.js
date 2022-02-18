@@ -139,8 +139,8 @@ async function findCollocation(word, qs=[]) {
     return data;
 }
 
-async function findPhrases(word, qs=[]) {
-    qs.push(`word=${word}`);
+async function findPhrases(phrase, qs=[]) {
+    qs.push(`phrase=${phrase}`);
     qs.push(`in_words=${isch($("#popchwords"))}`);
     qs.push(`in_meanings=${isch($("#popchdefs"))}`);
     qs.push(`in_examples=${isch($("#popchxs"))}`);
@@ -497,12 +497,10 @@ function fetchWordLookup() {
     return datapromise;
 }
 
-function fetchPhrasesLookup() {
+function fetchPhrasesLookup(phrase) {
 
     if (!currentlink) return;
-    const word = currentpopword;
-    const mode = "minimal_cluster";
-    const datapromise = fetchWord(word, mode);
+    const datapromise = findPhrases(phrase);
     return datapromise;
 }
 
