@@ -174,15 +174,26 @@ form {
     width: 800px;
 }
 
-.definition {
+.definition-sm, .definition {
     font-size: 1.2rem;
     font-weight: 300;
-    line-height: 1.4rem;
     text-align: justify;
     word-wrap: normal;
     word-break: normal;
 }
-
+.definition {
+    line-height: 1.4rem;
+}
+.definition-sm {
+    line-height: 1.2rem;
+    margin-bottom: 0px;
+}
+.definition-ts {
+    margin-bottom: 10px;
+}
+.definition-sm dd {
+    margin-bottom: 0px;
+}
 .definition dt {
     text-align: left;
 }

@@ -97,6 +97,16 @@ var checkboxdata = {
     },
 };
 
+function removearritm(arr, itm) {
+    for (let i=0; i<arr.length; ) {
+        if (arr[i]===itm) {
+            arr.splice(i, 1);
+        } else {
+            i++;
+        }
+    }
+}
+
 async function fetchWord(word, mode, qs=[]) {
     let apis=[];
     if (isch("WORDSAPI")) apis.push("wordsapi");
@@ -291,14 +301,16 @@ function createpopoverlink(word0, masterword, extraarg="", apostr="", origin) {
     return a;
 }
 
+let xidx=0;
 function createexpandlink(word0, func) {
 
     const a = document.createElement('a');
     const tmp = $("<div>"+word0+"</div>")[0];
     word0 = tmp.innerText;
-    const word = word0.replace(/[^a-zA-Z0-9\- ]/g, "");
-    a.id =     'expoveritm'+poidx++;
-    a.classList.add('popoveritm', 'none');
+    //const word = word0.replace(/[^a-zA-Z0-9\- ]/g, "");
+    a.id =     'expoveritm'+xidx++;
+    a.classList.add('popoveritm');
+    a.classList.add('none');
 
     // it does the trick
     a.setAttribute("id",a.id);
@@ -312,7 +324,12 @@ function createexpandlink(word0, func) {
 function createas(cont, words, masterword, sep, apostr="", linksIdxFrom=0, linksIdxTo=999999999, origin) {
     let index=0;
     if (words) words.forEach(word => {
-        const a = (linksIdxFrom<=index&&index<linksIdxTo) ? createpopoverlink(word, masterword, "", apostr, origin) : createi(word);
+        let a;
+        if (typeof word=="string") {
+            a = (linksIdxFrom<=index&&index<linksIdxTo) ? createpopoverlink(word, masterword, "", apostr, origin) : createi(word);
+        } else {
+            a = word;
+        }
         const sp = document.createTextNode(sep);
 
         cont.appendChild(a);
@@ -472,11 +489,11 @@ async function fetchPopup() {
     if (currentpopword!=currentlink.word) {
         aha(`showPopup(currentlink.word)`,"--Back--");
     }
-    if (currentmodal === "examples") {
+    /*if (currentmodal === "examples") {
         aha(`showPopup(null,'light')`,"--More--");
     } else {
         aha(`showPopup(null,'examples')`,"--Less--");
-    }
+    }*/
     aha(`gocur()`,"--Nav--");
     aha(`speakIt(1)`,"voice 1");
     aha(`speakIt(2)`,"voice 2");
@@ -574,14 +591,35 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
     wordInfoRow=null;
 
     data.results.map(val => {
+        let thissect;
+        let  cmp,comma,apostr,labarr,labarr2,sarr;
+        let expandsynop, expandsyncl;  
 
-        let  cmp,comma,apostr,labarr,labarr2;
+        function syns() {
+            if (thissect.sdef) {
+                expandsynop.innerText = "synonyms[+]";
+                $(thissect.sdef).remove();
+                delete thissect.sdef;
+            } else {
+                expandsynop.innerText = "";
+                const sproperty = {
+                    label:[expandsyncl], 
+                    value:sarr
+                };
+                thissect.sdef = proplabel(sproperty, withmainword?data.word:val.word, true, 1, val.synonyms.length, "", comma, apostr, origin);
+                if (thissect.sdef) {
+                    thissect.sdef.classList.add('definition-sm');
+                    thissect.appendChild(thissect.sdef);
+                }
+            }
+        }
+
         if (modalMode === "light" || modalMode === "examples") {
 
             cmp = document.createElement("div");
             cmp.classList.add('smallf');
             wordInfoTbl.appendChild(cmp);
-            comma="";
+            comma="  ";
             apostr="'";
             /*modalMode === "examples" was
             if (val.examples && val.examples.length) {
@@ -589,7 +627,21 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
             } else {
                 createaas(wordInfoTbl, ["("+val.definition+")"], ", ", origin);
             }*/
-            labarr2 = labarr = val.partOfSpeech?[val.partOfSpeech]:[];
+            labarr = val.partOfSpeech?[val.partOfSpeech]:[];
+            labarr2 = labarr.concat([]);
+
+            sarr = [].concat(val.synonyms);
+            removearritm(sarr, withmainword?data.word:val.word);
+
+            if (sarr.length) {
+                expandsynop = createexpandlink("synonyms[+]", "");
+                expandsynop.onclick = syns;
+                labarr2.push(expandsynop);
+
+                expandsyncl = createexpandlink("synonyms[-]", "");
+                expandsyncl.onclick = syns;
+            }
+    
         } else {
             if (itms++%100==99) {
                 newrow(wordInfoTbl);
@@ -604,49 +656,32 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
             label:labarr2, 
             value:val.similar.concat([val.definition])
         };
-        // .concat(val.synonyms)
-        function removearritm(arr,itm) {
-            for (let i=0; i<arr.length; ) {
-                if (arr[i]===itm) {
-                    arr.splice(i, 1);
-                } else {
-                    i++;
-                }
-            }
-        }
+
 
         const def = proplabel(property, withmainword?data.word:val.word, true, labarr.length, val.similar.length, "", comma, apostr, origin);
         if (def) {
-            def.classList.add('definition');
-            cmp.appendChild(def);
-        }
-        let sarr = [].concat(val.synonyms);
-        removearritm(sarr, withmainword?data.word:val.word);
-        function syns() {
-            const sproperty = {
-                label:["synonyms"], 
-                value:sarr
-            };
-            const sdef = proplabel(sproperty, withmainword?data.word:val.word, true, 1, val.synonyms.length, "", comma, apostr, origin);
-            if (sdef) {
-                sdef.classList.add('definition');
-                cmp.appendChild(sdef);
-            }
-        }
-        if (sarr.length) {
-            if (modalMode === "light") {
-                syns();
-            } else if (def) {
-                let a = createexpandlink("synonyms", "");
-                def.childNodes[0].appendChild(a);
-            }
-        }
+            thissect = document.createElement("div");
+            cmp.appendChild(thissect);
 
-        let b = document.createElement("b");
-        b.innerText = "x:";
-        def.children[1].appendChild(b);
+            if (modalMode === "light" || modalMode === "examples") {
+                thissect.classList.add('definition-ts');
+                def.classList.add('definition-sm');
+            } else {
+                def.classList.add('definition');
+            }
+            thissect.appendChild(def);
+
+            if (modalMode === "light" && sarr.length) {
+                syns();
+            }
+        }
 
         if (val.examples && val.examples.length) {
+
+            let b = document.createElement("b");
+            b.innerText = "x:";
+            def.children[1].appendChild(b);
+
             createaas(def.children[1], val.examples, ", ", origin);
         }
 
