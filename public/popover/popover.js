@@ -28,6 +28,7 @@ function createpopover(cmp, options) {
                 this.pop.remove();
                 delete this.pop;
             }
+            currentlink = null;
         };
         if (!this.hidePopup) {
             if (options.hidePopup) {

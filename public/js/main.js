@@ -140,12 +140,17 @@ async function findCollocation(word, qs=[]) {
 }
 
 async function findPhrases(phrase, qs=[]) {
+    let apis=[];
+    if (isch("WORDSAPI")) apis.push("wordsapi");
+    if (isch("GOOGLE")) apis.push("google");
+
     qs.push(`phrase=${phrase}`);
-    qs.push(`in_words=${isch($("#popchwords"))}`);
-    qs.push(`in_meanings=${isch($("#popchdefs"))}`);
-    qs.push(`in_examples=${isch($("#popchxs"))}`);
-    qs.push(`per_word_matching=${isch($("#popchwms"))}`);
-    qs.push(`all_words=${isch($("#popchalws"))}`);
+    qs.push(`in_words=${$("#popchwords").val()=="true"}`);
+    qs.push(`in_meanings=${$("#popchdefs").val()=="true"}`);
+    qs.push(`in_examples=${$("#popchxs").val()=="true"}`);
+    qs.push(`per_word_matching=${$("#popchwms").val()=="true"}`);
+    qs.push(`all_words=${$("#popchalws").val()=="true"}`);
+    qs.push(`apis=${apis.join("-")}`);
 
     let data = await serve("findPhrases", qs);
 /*
@@ -1036,6 +1041,8 @@ $(document).keyup(function(evt) {
     altdown = 0;
 });
 $(document).keypress(async function(e){
+    if (currentlink) return;
+
     console.log(` code:${e.code} curword:${curword}`);
     if (/Key[A-M]/.test(e.code) && curword) {
         const key = e.key;

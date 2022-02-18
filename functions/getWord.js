@@ -29,7 +29,7 @@ exports.handler = async function(event, context) {
       let stopiterateapis = { stop: 0 };
 
       for (let api of apis) {
-        let ad = await get(api, word, mode, letter, ffrom, fto, resolvePath, stopiterateapis);
+        let ad = await get(api, lang, word, mode, letter, ffrom, fto, resolvePath, stopiterateapis);
 
         if (ad) {
 
@@ -60,7 +60,7 @@ exports.handler = async function(event, context) {
   }, context);
 }
 
-async function get(api, word, mode, letter, ffrom, fto, resolvePath, stopiterateapis) {
+async function get(api, lang, word, mode, letter, ffrom, fto, resolvePath, stopiterateapis) {
 
   const crawler = require('./include/crawler.js').aCrawler(resolvePath);
   stopiterateapis.crawler = crawler;
