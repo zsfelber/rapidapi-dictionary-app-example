@@ -217,6 +217,12 @@ function initpop() {
                         setTimeout(updpop_per_word,0);
                     }
                 });
+                pop_search.keypress(function(event) {
+
+                    if (event.keyCode == 13) {
+                        event.preventDefault();
+                    }
+                });
                 
                 return poptit[0];
             } else {
