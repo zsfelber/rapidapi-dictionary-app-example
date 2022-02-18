@@ -715,8 +715,7 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
 
             property = {
                 label:labarr2, 
-                value:[val.example ? val.example :
-                        (val.definition ? val.definition :
+                value:[(val.definition ? val.definition :
                             (val.word ? val.word : ""))]
             };
             sil = 0;

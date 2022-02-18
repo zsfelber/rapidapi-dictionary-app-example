@@ -153,9 +153,9 @@ function initpop() {
                 addCheckbox(ch1[0], "pop_in_meanings", {defchecked:true,classes:"input-sm pop-check"}, "in meanings", 0);
                 addCheckbox(ch1[0], "pop_in_examples", {defchecked:true,classes:"input-sm pop-check"}, "in examples", 0);
                 addCheckbox(ch1[0], "pop_per_word", {defchecked:false,classes:"input-sm pop-check"}, "per word", 0);
-                addCheckbox(ch1[0], "pop_lstar", {defchecked:false,classes:"input-sm pop-check"}, "* left", 0);
+                addCheckbox(ch1[0], "pop_lstar", {defchecked:true,classes:"input-sm pop-check"}, "* left", 0);
                 addCheckbox(ch1[0], "pop_rstar", {defchecked:true,classes:"input-sm pop-check"}, "right *", 0);
-                addCheckbox(ch1[0], "pop_all_words", {defchecked:false,classes:"input-sm pop-check"}, "all words", 0);
+                addCheckbox(ch1[0], "pop_all_words", {defchecked:true,classes:"input-sm pop-check"}, "all words", 0);
                 let expalls = addCheckbox(ch1[0], "popexpall", {defchecked:false,classes:"input-sm pop-check"}, "expand all", 0);
 
                 let popexpall = ch1.find("#_popexpall");

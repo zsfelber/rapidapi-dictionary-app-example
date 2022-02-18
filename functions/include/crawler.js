@@ -1223,7 +1223,7 @@ exports.aCrawler = function (resolvePath) {
         console.log("!cycletext");
         return false;
       }
-      let i = cycletext.toLowerCase().indexOf(matcherword);
+      let i = cycletext.toLowerCase().indexOf(matcherword.toLowerCase());
       if (i!=0 && !lstar) return false;
       if (i!=(cycletext.length-matcherword.length) && !rstar) return false;
       return i !== -1;
