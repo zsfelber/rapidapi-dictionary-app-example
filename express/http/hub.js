@@ -4,8 +4,10 @@ const appDir = path.resolve(__dirname, "../..").normalize();
 const methods = {
     "getWord":require("../../functions/getWord"),
     "saveGroups":require("../../functions/saveGroups"),
+    "findCollocation":require("../../functions/findCollocation"),
     "/getWord":require("../../functions/getWord"),
     "/saveGroups":require("../../functions/saveGroups"),
+    "/findCollocation":require("../../functions/findCollocation"),
 };
 
 

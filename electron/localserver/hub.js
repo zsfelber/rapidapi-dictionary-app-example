@@ -6,6 +6,7 @@ const methods = {
     "crawl-generate-indexes":require("../functions/crawl-generate-indexes"),
     "getWord":require("../../functions/getWord"),
     "saveGroups":require("../../functions/saveGroups"),
+    "findCollocation":require("../../functions/findCollocation"),
 };
 
 

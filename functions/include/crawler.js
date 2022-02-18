@@ -1625,6 +1625,11 @@ exports.aCrawler = function (resolvePath) {
     saveNativeStarDictAll(stage1, stage2);
   }
 
+  function findCollocation(word) {
+    let itm = staticCache.collocationStardict.find(word);
+    return itm ? itm.data : null;
+  }
+
   return {
     isApiLimitReached,
     initCrawler,
@@ -1659,5 +1664,6 @@ exports.aCrawler = function (resolvePath) {
     loadAllFromFileCache,
     updateStarDict,
     initializeCache,
+    findCollocation
   };
 };

@@ -131,6 +131,14 @@ async function saveGroups(qs=[]) {
     return data;
 }
 
+async function findCollocation(word) {
+    qs.push(`word=${word}`);
+
+    let data = await serve("findCollocation", qs);
+
+    return data;
+}
+
 
 function numbers() {
     let a = '0'.charCodeAt(0);
@@ -589,11 +597,13 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
     col=2;
     wordInfoBox=null;
     wordInfoRow=null;
+    const word = withmainword?data.word:val.word;
+    let expandcoll;
 
     data.results.map(val => {
         let thissect;
         let  cmp,comma,apostr,labarr,labarr2,sarr;
-        let expandsynop, expandsyncl;  
+        let expandsynop, expandsyncl;
 
         function syns() {
             if (thissect.sdef) {
@@ -606,7 +616,7 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
                     label:[expandsyncl], 
                     value:sarr
                 };
-                thissect.sdef = proplabel(sproperty, withmainword?data.word:val.word, true, 1, val.synonyms.length, "", comma, apostr, origin);
+                thissect.sdef = proplabel(sproperty, word, true, 1, val.synonyms.length, "", comma, apostr, origin);
                 if (thissect.sdef) {
                     thissect.sdef.classList.add('definition-sm');
                     thissect.appendChild(thissect.sdef);
@@ -631,7 +641,7 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
             labarr2 = labarr.concat([]);
 
             sarr = [].concat(val.synonyms);
-            removearritm(sarr, withmainword?data.word:val.word);
+            removearritm(sarr, word);
 
             if (sarr.length) {
                 expandsynop = createexpandlink("synonyms[+]", "");
@@ -658,7 +668,7 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
         };
 
 
-        const def = proplabel(property, withmainword?data.word:val.word, true, labarr.length, val.similar.length, "", comma, apostr, origin);
+        const def = proplabel(property, word, true, labarr.length, val.similar.length, "", comma, apostr, origin);
         if (def) {
             thissect = document.createElement("div");
             cmp.appendChild(thissect);
@@ -687,6 +697,35 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
 
 
     });
+
+    if (modalMode === "light" || modalMode === "examples") {
+        let expandcoll;
+        async function colls() {
+            if (thissect.chtml) {
+                expandcoll.innerText = "collocations[+]";
+                thissect.chtml.remove();
+                delete thissect.chtml;
+            } else {
+                expandcoll.innerText = "collocations[-]";
+                if (!thissect.chtmltxt) thissect.chtmltxt = await findCollocation(word);
+                thissect.chtml = $(chtmltxt);
+
+                thissect.appendChild(thissect.chtml[0]);
+            }
+        }
+        expandcoll = createexpandlink("collocations[+]", "");
+        expandcoll.onclick = colls;
+
+        const cproperty = {
+            label:"", 
+            value:[expandcoll]
+        };
+        thissect.cdef = proplabel(cproperty, word, true, 1, 1, "");
+        if (thissect.cdef) {
+            thissect.cdef.classList.add('definition-sm');
+            thissect.appendChild(thissect.cdef);
+        }
+    }
     finishbox();
 }
 
