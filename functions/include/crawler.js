@@ -590,7 +590,9 @@ exports.aCrawler = function (resolvePath) {
       this.word = this.entry.word;
       this.partOfSpeech = this.val.partOfSpeech;
       this.synonyms.push.apply(this.synonyms, this.val.synonyms);
-      this.synonyms.push(this.word);
+      if (!this.val.synonymSet || !this.val.synonymSet[this.word]) {
+        this.synonyms.push(this.word);
+      }
       this.synonyms.sort();
 
       this.similar.push.apply(this.similar, this.val.similarTo);

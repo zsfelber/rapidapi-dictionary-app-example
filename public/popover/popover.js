@@ -59,7 +59,7 @@ function createpopover(cmp, options) {
             let pos = getPos(this);
             let ui = $(options.template);
     
-            let title = ui.find(".popover-header");
+            let title = ui.find(".popover-header-0");
             let body = ui.find(".popover-body");
     
             this.titleelem = options.title.apply(this);
@@ -134,7 +134,7 @@ function initpop() {
         sanitize: false,
         trigger: 'click',
         placement: 'auto',
-        template: `<div class="popover" role="tooltip"><div class="arrow"></div><div class="popover-header"></div><div class="popover-body"></div></div>`,
+        template: `<div class="popover" role="tooltip"><div class="arrow"></div><div class="popover-header-0"></div><div class="popover-body"></div></div>`,
         title: function () {
             apply.apply(this);
             if (this.data) {
@@ -145,9 +145,9 @@ function initpop() {
                 poptit.append(dl);
                 dl.children().eq(0).append(popsf);
                 dl.children().eq(1).append(poppron);
-                addCheckbox(dl.children().eq(1)[0], "popchwords", {defchecked:true,classes:"input-sm pop-check"}, "words", 0);
-                addCheckbox(dl.children().eq(1)[0], "popchdefs", {defchecked:false,classes:"input-sm pop-check"}, "definitions", 0);
-                addCheckbox(dl.children().eq(1)[0], "popchxs", {defchecked:false,classes:"input-sm pop-check"}, "examples", 0);
+                addCheckbox(dl.children().eq(1)[0], "popchwords", {defchecked:true,classes:"input-sm pop-check"}, "in words", 0);
+                addCheckbox(dl.children().eq(1)[0], "popchdefs", {defchecked:false,classes:"input-sm pop-check"}, "in definitions", 0);
+                addCheckbox(dl.children().eq(1)[0], "popchxs", {defchecked:false,classes:"input-sm pop-check"}, "in examples", 0);
 
                 return poptit[0];
             } else {

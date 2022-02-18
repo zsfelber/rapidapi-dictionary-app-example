@@ -29,9 +29,18 @@ $secondary-color: #04a0b2;
   position: absolute;
 }
 
-.popover-header {
+.popover-header-0 {
   /*display: none;*/
   color: #383E42;
+  margin: 0;
+  padding: 0;
+  padding-top: 0.25rem;
+  margin-bottom: 0;
+  font-size: 1rem;
+  background-color: #f7f7f7;
+  border-bottom: 1px solid #ebebeb;
+  border-top-left-radius: calc(0.3rem - 1px);
+  border-top-right-radius: calc(0.3rem - 1px);
 }
 
 .popover {
@@ -70,4 +79,30 @@ $secondary-color: #04a0b2;
     }
 
   }
+}
+
+
+.pop-i {
+  display: inline-block;
+  width: 100%;
+  text-align: left;
+  margin-left: 5px;
+  margin-bottom: 5px;
+}
+.pop-check {
+  display: inline-block;
+  text-align: left;
+  margin-left: 25px;
+}
+#popschf {
+  overflow: auto;
+  resize: vertical;
+  width: calc(100% - 0.75rem);
+  /*min-width: 100%;
+  max-width: 100%;*/
+  min-height: 2rem;
+  max-height: 5.25rem;
+  margin-left: 5px;
+  margin-right: auto;
+  text-align: left;
 }
