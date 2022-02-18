@@ -289,7 +289,7 @@ function createpopoverlink(word0, masterword, extraarg="", apostr="", origin) {
     // it does the trick
     a.setAttribute("id",a.id);
     a.setAttribute("tabindex","0");
-    //a.setAttribute("type","button");
+    a.setAttribute("type","button");
 
     a.setAttribute("data-toggle","popover");
     a.setAttribute("data-placement","bottom");
@@ -699,11 +699,15 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
     });
 
     if (modalMode === "light" || modalMode === "examples") {
+        let expandcoll;
+        expandcoll = createexpandlink("collocations[+]", "");
+        expandcoll.onclick = colls;
+        wordInfoTbl.appendChild(expandcoll);
+
         let thissect = document.createElement("div");
-        thissect.classList.add('smallf');
+        thissect.classList.add('colloc', 'evensmallerf');
         wordInfoTbl.appendChild(thissect);
 
-        let expandcoll;
         async function colls() {
             if (thissect.chtml) {
                 expandcoll.innerText = "collocations[+]";
@@ -713,28 +717,14 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
                 expandcoll.innerText = "collocations[-]";
                 if (!thissect.chtmltxt) thissect.chtmltxt = await findCollocation(word);
                 if ('{"error":"notfound"}'==thissect.chtmltxt) {
-                    thissect.chtml = "<b>No entry in collocations dictionary.</b>";
-
-                    $(thissect).append(thissect.chtml);
-                } else {
-                    thissect.chtml = $(thissect.chtmltxt);
-
-                    $(thissect).append(thissect.chtml);
+                    thissect.chtmltxt = "<b>No entry in collocations dictionary.</b>";
                 }
-            }
-        }
-        expandcoll = createexpandlink("collocations[+]", "");
-        expandcoll.onclick = colls;
 
-        const cproperty = {
-            label:"", 
-            value:[expandcoll]
-        };
-        thissect.cdef = proplabel(cproperty, word, true, 1, 1, "");
-        if (thissect.cdef) {
-            thissect.cdef.classList.add('definition-sm');
-            thissect.appendChild(thissect.cdef);
+                thissect.chtml = $(thissect.chtmltxt);
+                $(thissect).append(thissect.chtml);
         }
+        }
+
     }
     finishbox();
 }

@@ -228,15 +228,32 @@ a:hover.none {
     word-break: unset;
  }
 
+.colloc {
+    margin: 5px 5px 20px 5px;
+}
 .smallf {
     font-size: 1rem;
 }
+.evensmallerf {
+    font-size: 0.9rem;
+}
+
 .smallf a {
     font-size: 0.95rem;
     display: inline;
 }
-
 .smallf dt i {
+    font-size: 0.95rem;
+}
+
+.evensmallerf dt i {
+    font-size: 0.95rem;
+}
+.evensmallerf a {
+    font-size: 0.95rem;
+    display: inline;
+}
+.evensmallerf dt i {
     font-size: 0.95rem;
 }
 
