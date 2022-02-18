@@ -150,18 +150,24 @@ function initpop() {
                 ch0.append(popsf);
                 ch1.append(poppron);
                 addCheckbox(ch1[0], "popchwords", {defchecked:true,classes:"input-sm pop-check"}, "in words", 0);
-                addCheckbox(ch1[0], "popchdefs", {defchecked:false,classes:"input-sm pop-check"}, "in meanings", 0);
-                addCheckbox(ch1[0], "popchxs", {defchecked:false,classes:"input-sm pop-check"}, "in examples", 0);
+                addCheckbox(ch1[0], "popchdefs", {defchecked:true,classes:"input-sm pop-check"}, "in meanings", 0);
+                addCheckbox(ch1[0], "popchxs", {defchecked:true,classes:"input-sm pop-check"}, "in examples", 0);
                 addCheckbox(ch1[0], "popchwms", {defchecked:false,classes:"input-sm pop-check"}, "per word matching", 0);
                 addCheckbox(ch1[0], "popchalws", {defchecked:false,classes:"input-sm pop-check"}, "all words", 0);
                 let expalls = addCheckbox(ch1[0], "popexpall", {defchecked:false,classes:"input-sm pop-check"}, "expand all", 0);
 
+                let popschf = ch0.find("#popschf");
                 let popchwms = ch1.find("#_popchwms");
                 let popchalws = ch1.find("#_popchalws");
                 let popexpall = ch1.find("#_popexpall");
                 popchalws.prop("disabled", true);
+                function updpopchwms() {
+                    let phrase = popschf.val();
+                    let spc = phrase.indexOf(" ")!=-1;
+                    popchalws.prop("disabled", !spc || !popchwms[0].checked);
+                }
                 popchwms.change(function(){
-                    popchalws.prop("disabled", !this.checked);
+                    updpopchwms();
                 });
                 popexpall.change(function(){
                     expalls.find("label").text(this.checked?"collapse all":"expand all");
@@ -180,7 +186,6 @@ function initpop() {
                     }
                 });
                 let _ = this;
-                let popschf = ch0.find("#popschf");
                 async function findPhrasesAgain() {
                     let phrase = popschf.val();
                     currentmodal = "light";
@@ -199,8 +204,14 @@ function initpop() {
                     });
                 }
 
-                popschf.enterKey(function () {
-                    findPhrasesAgain();
+                popschf.keypress(function(event) {
+
+                    if (event.keyCode == 13) {
+                        event.preventDefault();
+                        findPhrasesAgain();
+                    } else {
+                        updpopchwms();
+                    }
                 });
                 
                 return poptit[0];

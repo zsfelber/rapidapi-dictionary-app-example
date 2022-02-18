@@ -1191,7 +1191,9 @@ exports.aCrawler = function (resolvePath) {
 
     let defs1 = [];
     for (let value of sd_defs_data) {
-      defs1.push({synonymSet:value.data.synonymSet, examples:value.data.examples, definition:value.data.definition});
+      if (value.data && value.word) {
+        defs1.push({synonymSet:value.data.synonymSet, similar:value.data.similar, examples:value.data.examples, definition:value.word});
+      }
     }
 
     let { byf, byword, cntf, nowords } = await loadAllFromFileCache();
@@ -1200,7 +1202,9 @@ exports.aCrawler = function (resolvePath) {
     let defs2 = [];
     for (let definition in stage1.meaning) {
       let data = stage1.meaning[definition];
-      defs2.push({synonymSet:data.synonymSet, examples:data.examples, definition});
+      if (definition && data) {
+        defs2.push({synonymSet:data.synonymSet, similar:data.similar, examples:data.examples, definition});
+      }
     }
 
     let alldefs0 = defs1.concat(defs2);
