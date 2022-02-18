@@ -1205,6 +1205,98 @@ exports.aCrawler = function (resolvePath) {
     return alldefs0;
   }
 
+  async function find(word, in_words, in_meanings, in_examples, per_word_macthing, all_words) {
+
+    let matcher;
+
+    function matchword(cycletext, matcherword) {
+      let i = cycletext.toLoweCase().indexOf(matcherword);
+      return i !== -1;
+    }
+
+    if (per_word_macthing) {
+      function findone(cycletext, expected) {
+        let wordsofmatchsentence = word.split(/\s+/);
+        for (let matcherword of wordsofmatchsentence) {
+          let a = matchword(cycletext, matcherword);
+          if (a == expected) {
+            return true;
+          }
+        }
+        return false;
+      };
+      if (all_words) {
+        matcher = function(cycletext) {
+          let findfalse = findone(cycletext, false);
+          return !findfalse;
+        };
+      } else {
+        matcher = function(cycletext) {
+          let findtrue = findone(cycletext, true);
+          return findtrue;
+        };
+      }
+
+    } else {
+      matcher = function(cycletext) {
+        return matchword(cycletext, word);
+      };
+    }
+
+    let allmeanings;
+    if (in_meanings||in_examples) {
+      allmeanings = getAllDefinitions();
+    }
+
+    let result = [];
+
+    if (in_words) {
+      let result1 = [];
+      let allwords = getAllWords();
+      for (let cycleword of allwords) {
+        if (matcher(cycleword)) {
+          result1.push({word:cycleword});
+        }
+      }
+      result1.sort((a,b)=>{
+        return a.word.localeCompare(b.word);
+      });
+      result.push.apply(result, result1);
+    }
+
+    if (in_meanings) {
+      let result2 = [];
+      for (let cyclemeaning of allmeanings) {
+        if (matcher(cyclemeaning.definition)) {
+          result2.push(cyclemeaning);
+        }
+      }
+      result2.sort((a,b)=>{
+        return a.definition.localeCompare(b.definition);
+      });
+      result.push.apply(result, result2);
+    }
+
+    if (in_examples) {
+      let result3 = [];
+      for (let cyclemeaning of allmeanings) {
+        if (cyclemeaning.examples) {
+          for (let cycleexample of cyclemeaning.examples) {
+            if (matcher(cycleexample)) {
+              result3.push({meaning:cyclemeaning, example:cycleexample});
+            }
+          }
+        }
+      }
+      result3.sort((a,b)=>{
+        return a.example.localeCompare(b.example);
+      });
+      result.push.apply(result, result3);
+    }
+
+    return result;
+  }
+
   async function loadAll_words(word0, asobject, fromtime = 0) {
     let allwords0 = await getAllWords();
 
@@ -1676,10 +1768,6 @@ exports.aCrawler = function (resolvePath) {
     return result;
   }
 
-  async function find(word, in_words, in_meanings, in_examples) {
-
-
-  }
 
   return {
     isApiLimitReached,
