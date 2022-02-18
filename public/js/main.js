@@ -145,16 +145,19 @@ async function findPhrases(phrase, qs=[]) {
     if (isch("GOOGLE")) apis.push("google");
 
     qs.push(`phrase=${phrase}`);
-    qs.push(`in_words=${$("#popchwords").val()=="true"}`);
-    qs.push(`in_meanings=${$("#popchdefs").val()=="true"}`);
-    qs.push(`in_examples=${$("#popchxs").val()=="true"}`);
-    qs.push(`per_word_matching=${$("#popchwms").val()=="true"}`);
-    qs.push(`all_words=${$("#popchalws").val()=="true"}`);
+    qs.push(`in_words=${$("#pop_in_words").val()=="true"}`);
+    qs.push(`in_meanings=${$("#pop_in_meanings").val()=="true"}`);
+    qs.push(`in_examples=${$("#pop_in_examples").val()=="true"}`);
+    qs.push(`per_word=${$("#pop_per_word").val()=="true"}`);
+    qs.push(`lstar=${$("#pop_lstar").val()=="true"}`);
+    qs.push(`rstar=${$("#pop_rstar").val()=="true"}`);
+    qs.push(`all_words=${$("#pop_all_words").val()=="true"}`);
+    
     qs.push(`apis=${apis.join("-")}`);
 
     let data = await serve("findPhrases", qs);
 /*
-    "popchwords",  "in words"
+    "pop_in_words",  "in words"
     "popchdefs", "in meanings"
     "popchxs", "in examples"
     "popchwms", "per word matching"

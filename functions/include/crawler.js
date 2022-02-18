@@ -1213,8 +1213,9 @@ exports.aCrawler = function (resolvePath) {
     return alldefs0;
   }
 
-  async function findPhrases(word, in_words, in_meanings, in_examples, per_word_matching, all_words) {
-
+  async function findPhrases(word, options) {
+    let {in_words, in_meanings, in_examples, 
+      per_word, lstar, rstar, all_words} = options;
     let matcher;
 
     function matchword(cycletext, matcherword) {
@@ -1223,10 +1224,12 @@ exports.aCrawler = function (resolvePath) {
         return false;
       }
       let i = cycletext.toLowerCase().indexOf(matcherword);
+      if (i!=0 && !lstar) return false;
+      if (i!=(cycletext.length-matcherword.length) && !rstar) return false;
       return i !== -1;
     }
 
-    if (per_word_matching) {
+    if (per_word) {
       function findone(cycletext, expected) {
         let wordsofmatchsentence = word.split(/\s+/);
         for (let matcherword of wordsofmatchsentence) {

@@ -142,32 +142,36 @@ function initpop() {
             if (this.data) {
                 let poptit = $(`<div></div>`);
                 let dl = $(`<dl><dt></dt><dd></dd></dl>`);
-                let popsf = $(`<textarea rows=1 cols=8 class='input-sm' id='popschf' value='' placeholder='${this.data.word}'/>`);
+                let popsf = $(`<textarea rows=1 cols=8 class='input-sm' id='pop_search' value='' placeholder='${this.data.word}'/>`);
                 let poppron = $(`<i class="pop-i">${itmstxt(this.data.pronunciation)}</i>`);
                 poptit.append(dl);
                 let ch0 = dl.children().eq(0);
                 let ch1 = dl.children().eq(1);
                 ch0.append(popsf);
                 ch1.append(poppron);
-                addCheckbox(ch1[0], "popchwords", {defchecked:true,classes:"input-sm pop-check"}, "in words", 0);
-                addCheckbox(ch1[0], "popchdefs", {defchecked:true,classes:"input-sm pop-check"}, "in meanings", 0);
-                addCheckbox(ch1[0], "popchxs", {defchecked:true,classes:"input-sm pop-check"}, "in examples", 0);
-                addCheckbox(ch1[0], "popchwms", {defchecked:false,classes:"input-sm pop-check"}, "per word matching", 0);
-                addCheckbox(ch1[0], "popchalws", {defchecked:false,classes:"input-sm pop-check"}, "all words", 0);
+                addCheckbox(ch1[0], "pop_in_words", {defchecked:true,classes:"input-sm pop-check"}, "in words", 0);
+                addCheckbox(ch1[0], "pop_in_meanings", {defchecked:true,classes:"input-sm pop-check"}, "in meanings", 0);
+                addCheckbox(ch1[0], "pop_in_examples", {defchecked:true,classes:"input-sm pop-check"}, "in examples", 0);
+                addCheckbox(ch1[0], "pop_per_word", {defchecked:false,classes:"input-sm pop-check"}, "per word", 0);
+                addCheckbox(ch1[0], "pop_lstar", {defchecked:false,classes:"input-sm pop-check"}, "* left", 0);
+                addCheckbox(ch1[0], "pop_rstar", {defchecked:true,classes:"input-sm pop-check"}, "right *", 0);
+                addCheckbox(ch1[0], "pop_all_words", {defchecked:false,classes:"input-sm pop-check"}, "all words", 0);
                 let expalls = addCheckbox(ch1[0], "popexpall", {defchecked:false,classes:"input-sm pop-check"}, "expand all", 0);
 
-                let popschf = ch0.find("#popschf");
-                let popchwms = ch1.find("#_popchwms");
-                let popchalws = ch1.find("#_popchalws");
                 let popexpall = ch1.find("#_popexpall");
-                popchalws.prop("disabled", true);
-                function updpopchwms() {
-                    let phrase = popschf.val();
+
+                let pop_search = ch0.find("#pop_search");
+                let pop_per_word = ch1.find("#_pop_per_word");
+                let pop_all_words = ch1.find("#_pop_all_words");
+                pop_all_words.prop("disabled", true);
+                function updpop_per_word() {
+                    let phrase = pop_search.val();
                     let spc = phrase.indexOf(" ")!=-1;
-                    popchalws.prop("disabled", !spc || !popchwms[0].checked);
+                    console.log(`"${phrase}"`);
+                    pop_all_words.prop("disabled", !spc || !pop_per_word[0].checked);
                 }
-                popchwms.change(function(){
-                    updpopchwms();
+                pop_per_word.change(function(){
+                    updpop_per_word();
                 });
                 popexpall.change(function(){
                     expalls.find("label").text(this.checked?"collapse all":"expand all");
@@ -187,7 +191,7 @@ function initpop() {
                 });
                 let _ = this;
                 async function findPhrasesAgain() {
-                    let phrase = popschf.val();
+                    let phrase = pop_search.val();
                     currentmodal = "light";
                     let datapromise = fetchPhrasesLookup(phrase);
                     datapromise.then((result) => {
@@ -204,13 +208,13 @@ function initpop() {
                     });
                 }
 
-                popschf.keypress(function(event) {
+                pop_search.keyup(function(event) {
 
                     if (event.keyCode == 13) {
                         event.preventDefault();
                         findPhrasesAgain();
                     } else {
-                        updpopchwms();
+                        setTimeout(updpop_per_word,0);
                     }
                 });
                 

@@ -17,7 +17,9 @@ exports.handler = async function (event, context) {
   const in_words = "true"===event.queryStringParameters.in_words||true===event.queryStringParameters.in_words;
   const in_meanings = "true"===event.queryStringParameters.in_meanings||true===event.queryStringParameters.in_meanings;
   const in_examples = "true"===event.queryStringParameters.in_examples||true===event.queryStringParameters.in_examples;
-  const per_word_matching = "true"===event.queryStringParameters.per_word_matching||true===event.queryStringParameters.per_word_matching;
+  const per_word = "true"===event.queryStringParameters.per_word||true===event.queryStringParameters.per_word;
+  const lstar = "true"===event.queryStringParameters.lstar||true===event.queryStringParameters.lstar;
+  const rstar = "true"===event.queryStringParameters.rstar||true===event.queryStringParameters.rstar;
   const all_words = "true"===event.queryStringParameters.all_words||true===event.queryStringParameters.all_words;
   const crawler = require('./include/crawler.js').aCrawler(resolvePath);
   let apis = event.queryStringParameters.apis || "";
@@ -33,8 +35,8 @@ exports.handler = async function (event, context) {
         TRAVERSE_ALL
       );
 
-    return crawler.findPhrases(phrase, in_words, in_meanings, in_examples, per_word_matching, all_words);
-  }    
+    return crawler.findPhrases(phrase, { in_words, in_meanings, in_examples, per_word, lstar, rstar, all_words });
+  }
   return service.respond(async () => {
 
     let result = { words:[], meanings:[], examples:[] };
