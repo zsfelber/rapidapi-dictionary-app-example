@@ -143,11 +143,22 @@ function initpop() {
                 let popsf = $(`<textarea rows=1 cols=8 class='input-sm' id='popschf' value='' placeholder='${this.data.word}'/>`);
                 let poppron = $(`<i class="pop-i">${itmstxt(this.data.pronunciation)}</i>`);
                 poptit.append(dl);
-                dl.children().eq(0).append(popsf);
-                dl.children().eq(1).append(poppron);
-                addCheckbox(dl.children().eq(1)[0], "popchwords", {defchecked:true,classes:"input-sm pop-check"}, "in words", 0);
-                addCheckbox(dl.children().eq(1)[0], "popchdefs", {defchecked:false,classes:"input-sm pop-check"}, "in definitions", 0);
-                addCheckbox(dl.children().eq(1)[0], "popchxs", {defchecked:false,classes:"input-sm pop-check"}, "in examples", 0);
+                let ch0 = dl.children().eq(0);
+                let ch1 = dl.children().eq(1);
+                ch0.append(popsf);
+                ch1.append(poppron);
+                addCheckbox(ch1[0], "popchwords", {defchecked:true,classes:"input-sm pop-check"}, "in words", 0);
+                addCheckbox(ch1[0], "popchdefs", {defchecked:false,classes:"input-sm pop-check"}, "in definitions", 0);
+                addCheckbox(ch1[0], "popchxs", {defchecked:false,classes:"input-sm pop-check"}, "in examples", 0);
+                addCheckbox(ch1[0], "popchwms", {defchecked:false,classes:"input-sm pop-check"}, "per word macthing", 0);
+                addCheckbox(ch1[0], "popchalws", {defchecked:false,classes:"input-sm pop-check"}, "all words", 0);
+
+                let popchwms = ch1.find("#_popchwms");
+                let popchalws = ch1.find("#_popchalws");
+                popchalws.prop("disabled", true);
+                popchwms.change(function(){
+                    popchalws.prop("disabled", !this.checked);
+                });
 
                 return poptit[0];
             } else {

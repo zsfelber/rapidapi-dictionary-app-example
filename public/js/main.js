@@ -271,7 +271,7 @@ function createpopoverlink(word0, masterword, extraarg="", apostr="", origin) {
     // it does the trick
     a.setAttribute("id",a.id);
     a.setAttribute("tabindex","0");
-    a.setAttribute("type","button");
+    //a.setAttribute("type","button");
 
     a.setAttribute("data-toggle","popover");
     a.setAttribute("data-placement","bottom");
@@ -288,6 +288,24 @@ function createpopoverlink(word0, masterword, extraarg="", apostr="", origin) {
     };
 
     a.innerHTML = apostr+tmp.innerHTML+apostr;
+    return a;
+}
+
+function createexpandlink(word0, func) {
+
+    const a = document.createElement('a');
+    const tmp = $("<div>"+word0+"</div>")[0];
+    word0 = tmp.innerText;
+    const word = word0.replace(/[^a-zA-Z0-9\- ]/g, "");
+    a.id =     'expoveritm'+poidx++;
+    a.classList.add('popoveritm', 'none');
+
+    // it does the trick
+    a.setAttribute("id",a.id);
+    a.setAttribute("tabindex","0");
+    a.href = "javascript:"+func;
+
+    a.innerHTML = tmp.innerHTML;
     return a;
 }
 
@@ -587,21 +605,40 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
             value:val.similar.concat([val.definition])
         };
         // .concat(val.synonyms)
+        function removearritm(arr,itm) {
+            for (let i=0; i<arr.length; ) {
+                if (arr[i]===itm) {
+                    arr.splice(i, 1);
+                } else {
+                    i++;
+                }
+            }
+        }
 
         const def = proplabel(property, withmainword?data.word:val.word, true, labarr.length, val.similar.length, "", comma, apostr, origin);
         if (def) {
             def.classList.add('definition');
             cmp.appendChild(def);
         }
-        if (modalMode === "light") {
+        let sarr = [].concat(val.synonyms);
+        removearritm(sarr, withmainword?data.word:val.word);
+        function syns() {
             const sproperty = {
                 label:["synonyms"], 
-                value:val.synonyms
+                value:sarr
             };
             const sdef = proplabel(sproperty, withmainword?data.word:val.word, true, 1, val.synonyms.length, "", comma, apostr, origin);
             if (sdef) {
                 sdef.classList.add('definition');
                 cmp.appendChild(sdef);
+            }
+        }
+        if (sarr.length) {
+            if (modalMode === "light") {
+                syns();
+            } else if (def) {
+                let a = createexpandlink("synonyms", "");
+                def.childNodes[0].appendChild(a);
             }
         }
 

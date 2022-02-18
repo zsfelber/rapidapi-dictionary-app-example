@@ -404,7 +404,9 @@ exports.aCrawler = function (resolvePath) {
             let d0 = cache.stardict_defs.get(meanind);
             let def = Object.assign({}, d0.data);
             if (!def.synonyms && def.synonymSet) {
+              delete def.synonymSet[itm.word];
               def.synonyms = [].concat(Object.keys(def.synonymSet));
+              def.synonyms.sort();
             }
             if (!def.definition) {
               def.definition = d0.word;
