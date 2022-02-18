@@ -1185,7 +1185,6 @@ exports.aCrawler = function (resolvePath) {
 
 
   async function getAllDefinitions() {
-    let alldefs0 = [];
 
     loadNativeStarDictAll();
     let sd_defs_data = cache.stardict_defs.readall();
@@ -1196,12 +1195,13 @@ exports.aCrawler = function (resolvePath) {
     let { byf, byword, cntf, nowords } = await loadAllFromFileCache();
     let stage1 = convertFileCacheToIntermediate(byword);
 
-    let sorteddefs = [].concat(Object.keys(stage1.meaning));
-    sorteddefs.sort();
+    let defs2 = Object.values(stage1.meaning).map((value, definition)=>{
+      return {synonymSet:value.synonymSet, definition};
+    });
+
+    let alldefs0 = defs1.concat(defs2);
 
 
-
-    alldefs0.push.apply(alldefs0, Object.keys(defs));
     return alldefs0;
   }
 
