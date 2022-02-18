@@ -184,5 +184,10 @@
   "curb": 1,
   "curfew": 1,
   "cutter": 1,
-  "hostile": 1
+  "hostile": 1,
+  "appealing": 1,
+  "appraisal": 1,
+  "apprentice": 1,
+  "appraise": 1,
+  "arbitrate": 1
 }

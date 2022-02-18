@@ -142,7 +142,7 @@ function initpop() {
             if (this.data) {
                 let poptit = $(`<div></div>`);
                 let dl = $(`<dl><dt></dt><dd></dd></dl>`);
-                let popsf = $(`<textarea rows=1 cols=8 class='input-sm' id='pop_search' value='' placeholder='${this.data.word}'/>`);
+                let popsf = $(`<textarea rows=1 cols=8 class='input-sm' id='pop_search' value='${this.data.word}' placeholder='${this.data.word}'>${this.data.word}</textarea>`);
                 let poppron = $(`<i class="pop-i">${itmstxt(this.data.pronunciation)}</i>`);
                 poptit.append(dl);
                 let ch0 = dl.children().eq(0);
