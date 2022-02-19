@@ -1223,9 +1223,37 @@ exports.aCrawler = function (resolvePath) {
         console.log("!cycletext");
         return false;
       }
-      let i = cycletext.toLowerCase().indexOf(matcherword.toLowerCase());
+      if (!matcherword) {
+        console.log("!matcherword");
+        return false;
+      }
+      cycletext = cycletext.toLowerCase();
+      matcherword = matcherword.toLowerCase();
+      let i = cycletext.indexOf(matcherword);
+      let rev = cycletext.length-matcherword.length;
+      if (i == -1 && !per_word) {
+        if (matcherword[0]==" ") {
+          let matcherword2 = matcherword.trimLeft();
+          i = cycletext.indexOf(matcherword2);
+          if (i == 0) return true;
+        }
+        if (matcherword[matcherword.length-1]==" ") {
+          let matcherword2 = matcherword.trimRight();
+          let rev2 = cycletext.length-matcherword2.length;
+          i = cycletext.indexOf(matcherword2);
+          if (i == rev2) return true;
+          if (i != -1) {
+            let nextchar = cycletext[i+matcherword2.length];
+            if (/[^a-zA-Z0-9]/.test(nextchar)) {
+              return true;
+            }
+          }
+        }
+      }
       if (i!=0 && !lstar) return false;
-      if (i!=(cycletext.length-matcherword.length) && !rstar) return false;
+      if (i!=rev && !rstar) return false;
+
+
       return i !== -1;
     }
 
@@ -1768,8 +1796,8 @@ exports.aCrawler = function (resolvePath) {
       src = itm.data;
 
       let root = "../data/dict/stardict-OxfordCollocationsDictionary-2.4.2/res/";
-      src = src.replace("\x1E", root);
-      src = src.replace("\x1F", "");  
+      src = src.replace(/\x1E/g, root);
+      src = src.replace(/\x1F/g, "");  
     }
 
     return src;
