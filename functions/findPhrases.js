@@ -64,10 +64,19 @@ exports.handler = async function (event, context) {
         result.examples.sort((a,b)=>{
             return a.example.localeCompare(b.example);
         });
-        if (result.words.length>500) result.words = result.words.slice(0, 500);
-        if (result.meanings.length>500) result.meanings = result.meanings.slice(0, 500);
-        if (result.examples.length>500) result.examples = result.examples.slice(0, 500);
-    }
+        if (result.words.length>500) {
+          console.log("words limit reached "+result.words.length+" -> stripped to 500");
+          result.words = result.words.slice(0, 500);
+        }
+        if (result.meanings.length>500) {
+          console.log("meanings limit reached "+result.meanings.length+" -> stripped to 500");
+          result.meanings = result.meanings.slice(0, 500);
+        }
+        if (result.examples.length>500) {
+          console.log("examples limit reached "+result.examples.length+" -> stripped to 500");
+          result.examples = result.examples.slice(0, 500);
+        }
+      }
 
     return result;
   }, context);

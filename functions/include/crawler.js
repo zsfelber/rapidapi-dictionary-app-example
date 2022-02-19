@@ -86,9 +86,9 @@ exports.aCrawler = function (resolvePath) {
       console.log(
         API,
         "++pendingParallelRequests:" +
-          pendingParallelRequests +
-          " admittedParallelRequests:" +
-          admittedParallelRequests
+        pendingParallelRequests +
+        " admittedParallelRequests:" +
+        admittedParallelRequests
       );
     }
     while (admittedParallelRequests >= MAX_PARALLEL) {
@@ -111,17 +111,17 @@ exports.aCrawler = function (resolvePath) {
         console.log(
           API,
           "remoteInitBottleneck  turntime:" +
-            turntime.toUTCString() +
-            "  totalWordsLastDay:" +
-            totalWordsLastDay +
-            " of API limit " +
-            API_DAILY_LIMIT +
-            " errors:" +
-            finder.vars.errors +
-            " pendingParallelRequests:" +
-            pendingParallelRequests +
-            " admittedParallelRequests:" +
-            admittedParallelRequests
+          turntime.toUTCString() +
+          "  totalWordsLastDay:" +
+          totalWordsLastDay +
+          " of API limit " +
+          API_DAILY_LIMIT +
+          " errors:" +
+          finder.vars.errors +
+          " pendingParallelRequests:" +
+          pendingParallelRequests +
+          " admittedParallelRequests:" +
+          admittedParallelRequests
         );
       } else {
         await cacheInitializerCommon;
@@ -133,12 +133,12 @@ exports.aCrawler = function (resolvePath) {
         console.error(
           API,
           "Could not proxy more request to API file/single  totalWordsLastDay+" +
-            pendingParallelRequests +
-            " >= API_DAILY_LIMIT :  " +
-            (totalWordsLastDay + pendingParallelRequests) +
-            " >= " +
-            API_DAILY_LIMIT +
-            "\n"
+          pendingParallelRequests +
+          " >= API_DAILY_LIMIT :  " +
+          (totalWordsLastDay + pendingParallelRequests) +
+          " >= " +
+          API_DAILY_LIMIT +
+          "\n"
         );
       }
       cacheInitIsError = true;
@@ -230,9 +230,9 @@ exports.aCrawler = function (resolvePath) {
     console.log(
       API,
       "initCrawler  curtime:" +
-        curtime.toUTCString() +
-        "  turntime:" +
-        turntime.toUTCString()
+      curtime.toUTCString() +
+      "  turntime:" +
+      turntime.toUTCString()
     );
   }
 
@@ -356,9 +356,9 @@ exports.aCrawler = function (resolvePath) {
         console.log(
           API,
           "--pendingParallelRequests:" +
-            pendingParallelRequests +
-            " admittedParallelRequests:" +
-            admittedParallelRequests
+          pendingParallelRequests +
+          " admittedParallelRequests:" +
+          admittedParallelRequests
         );
       }
     }
@@ -426,10 +426,10 @@ exports.aCrawler = function (resolvePath) {
         console.log(
           API,
           "From cache file/single " +
-            wfpath +
-            "  asobject:" +
-            asobject +
-            "...\n"
+          wfpath +
+          "  asobject:" +
+          asobject +
+          "...\n"
         );
 
       let ijson = fs.readFileSync(resolvePath.abs(wfpath)).toString();
@@ -538,28 +538,28 @@ exports.aCrawler = function (resolvePath) {
         if (err) {
           console.error(
             "Cache file/single " +
-              wfpath +
-              "  asobject:" +
-              asobject +
-              " pendingParallelRequests:" +
-              pendingParallelRequests +
-              " admittedParallelRequests:" +
-              admittedParallelRequests +
-              " write failure : " +
-              err +
-              "\n"
+            wfpath +
+            "  asobject:" +
+            asobject +
+            " pendingParallelRequests:" +
+            pendingParallelRequests +
+            " admittedParallelRequests:" +
+            admittedParallelRequests +
+            " write failure : " +
+            err +
+            "\n"
           );
         } else {
           console.log(
             "Cache file/single " +
-              wfpath +
-              "  asobject:" +
-              asobject +
-              " pendingParallelRequests:" +
-              pendingParallelRequests +
-              " admittedParallelRequests:" +
-              admittedParallelRequests +
-              " written successfully\n"
+            wfpath +
+            "  asobject:" +
+            asobject +
+            " pendingParallelRequests:" +
+            pendingParallelRequests +
+            " admittedParallelRequests:" +
+            admittedParallelRequests +
+            " written successfully\n"
           );
         }
         delete pendingObjects[word];
@@ -808,11 +808,11 @@ exports.aCrawler = function (resolvePath) {
             console.log(
               API,
               word +
-                " Level " +
-                traversion.level +
-                " >= " +
-                MAX_LEVEL +
-                ". Stop unfolding children."
+              " Level " +
+              traversion.level +
+              " >= " +
+              MAX_LEVEL +
+              ". Stop unfolding children."
             );
             loadChildren = false;
           }
@@ -830,9 +830,9 @@ exports.aCrawler = function (resolvePath) {
             console.log(
               API,
               word +
-                " Level " +
-                traversion.level +
-                " finished. Stop searching. API Limit reached."
+              " Level " +
+              traversion.level +
+              " finished. Stop searching. API Limit reached."
             );
             return false;
           }
@@ -842,11 +842,11 @@ exports.aCrawler = function (resolvePath) {
               console.log(
                 API,
                 '"' +
-                  word +
-                  '"' +
-                  " Level " +
-                  traversion.level +
-                  " finished. Search limit reached."
+                word +
+                '"' +
+                " Level " +
+                traversion.level +
+                " finished. Search limit reached."
               );
             return true;
           }
@@ -856,11 +856,11 @@ exports.aCrawler = function (resolvePath) {
           console.log(
             API,
             '"' +
-              word +
-              '"' +
-              " Level " +
-              traversion.level +
-              " finished. API Limit reached (by exception)."
+            word +
+            '"' +
+            " Level " +
+            traversion.level +
+            " finished. API Limit reached (by exception)."
           );
           return false;
         } else {
@@ -882,12 +882,12 @@ exports.aCrawler = function (resolvePath) {
       console.log(
         API,
         '"' +
-          word +
-          '"' +
-          " Completed  Travesred:" +
-          tresult.noWords +
-          " written:" +
-          tresult.newWords
+        word +
+        '"' +
+        " Completed  Travesred:" +
+        tresult.noWords +
+        " written:" +
+        tresult.newWords
       );
     }
     return true;
@@ -966,11 +966,11 @@ exports.aCrawler = function (resolvePath) {
             console.log(
               API,
               '"' +
-                word +
-                '"' +
-                " Level " +
-                traversion.level +
-                " finished. API Limit reached (by exception)."
+              word +
+              '"' +
+              " Level " +
+              traversion.level +
+              " finished. API Limit reached (by exception)."
             );
             return false;
           } else {
@@ -1022,9 +1022,9 @@ exports.aCrawler = function (resolvePath) {
     console.log(
       API,
       " Common words query processed  Travesred:" +
-        result.noWords +
-        " written:" +
-        result.newWords
+      result.noWords +
+      " written:" +
+      result.newWords
     );
 
     let cjson;
@@ -1192,7 +1192,7 @@ exports.aCrawler = function (resolvePath) {
     let defs1 = [];
     for (let value of sd_defs_data) {
       if (value.data && value.word) {
-        defs1.push({synonymSet:value.data.synonymSet, similar:value.data.similar, examples:value.data.examples, definition:value.word});
+        defs1.push({ synonymSet: value.data.synonymSet, similar: value.data.similar, examples: value.data.examples, definition: value.word });
       }
     }
 
@@ -1203,7 +1203,7 @@ exports.aCrawler = function (resolvePath) {
     for (let definition in stage1.meaning) {
       let data = stage1.meaning[definition];
       if (definition && data) {
-        defs2.push({synonymSet:data.synonymSet, similar:data.similar, examples:data.examples, definition});
+        defs2.push({ synonymSet: data.synonymSet, similar: data.similar, examples: data.examples, definition });
       }
     }
 
@@ -1214,8 +1214,8 @@ exports.aCrawler = function (resolvePath) {
   }
 
   async function findPhrases(word, options) {
-    let {in_words, in_meanings, in_examples, 
-      per_word, lstar, rstar, all_words} = options;
+    let { in_words, in_meanings, in_examples,
+      per_word, lstar, rstar, all_words } = options;
     let matcher;
 
     function matchword(cycletext, matcherword) {
@@ -1230,28 +1230,30 @@ exports.aCrawler = function (resolvePath) {
       cycletext = cycletext.toLowerCase();
       matcherword = matcherword.toLowerCase();
       let i = cycletext.indexOf(matcherword);
-      let rev = cycletext.length-matcherword.length;
       if (i == -1 && !per_word) {
-        if (matcherword[0]==" ") {
+        if (matcherword[0] == " ") {
           let matcherword2 = matcherword.trimLeft();
-          i = cycletext.indexOf(matcherword2);
-          if (i == 0) return true;
+          let i2 = cycletext.indexOf(matcherword2);
+          if (i2 == 0) {
+            return true;
+          }
         }
-        if (matcherword[matcherword.length-1]==" ") {
+        if (matcherword[matcherword.length - 1] == " ") {
           let matcherword2 = matcherword.trimRight();
-          let rev2 = cycletext.length-matcherword2.length;
-          i = cycletext.indexOf(matcherword2);
-          if (i == rev2) return true;
-          if (i != -1) {
-            let nextchar = cycletext[i+matcherword2.length];
+          let rev2 = cycletext.length - matcherword2.length;
+          let i2 = cycletext.indexOf(matcherword2);
+          if (i2 == rev2) return true;
+          if (i2 != -1) {
+            let nextchar = cycletext[i2 + matcherword2.length];
             if (/[^a-zA-Z0-9]/.test(nextchar)) {
               return true;
             }
           }
         }
       }
-      if (i!=0 && !lstar) return false;
-      if (i!=rev && !rstar) return false;
+      let rev = cycletext.length - matcherword.length;
+      if (i != 0 && !lstar) return false;
+      if (i != rev && !rstar) return false;
 
 
       return i !== -1;
@@ -1269,36 +1271,36 @@ exports.aCrawler = function (resolvePath) {
         return false;
       };
       if (all_words) {
-        matcher = function(cycletext) {
+        matcher = function (cycletext) {
           let findfalse = findone(cycletext, false);
           return !findfalse;
         };
       } else {
-        matcher = function(cycletext) {
+        matcher = function (cycletext) {
           let findtrue = findone(cycletext, true);
           return findtrue;
         };
       }
 
     } else {
-      matcher = function(cycletext) {
+      matcher = function (cycletext) {
         return matchword(cycletext, word);
       };
     }
 
     let allmeanings;
-    if (in_meanings||in_examples) {
+    if (in_meanings || in_examples) {
       allmeanings = await getAllDefinitions();
     }
 
-    let result = { words:{}, meanings:[], examples:[] };
+    let result = { words: {}, meanings: [], examples: [] };
 
     if (in_words) {
       let result1 = {};
       let allwords = getAllWords();
       for (let cycleword of allwords) {
         if (matcher(cycleword)) {
-          result1[cycleword] = {word:cycleword};
+          result1[cycleword] = { word: cycleword };
         }
       }
       result.words = result1;
@@ -1308,10 +1310,12 @@ exports.aCrawler = function (resolvePath) {
       let result2 = [];
       for (let cyclemeaning of allmeanings) {
         if (matcher(cyclemeaning.definition)) {
-          result2.push({definition:cyclemeaning.definition,
-            synonyms:[].concat(Object.keys(cyclemeaning.synonymSet)),
-            similar:[].concat(cyclemeaning.similar),
-            examples:(cyclemeaning.examples&&cyclemeaning.examples.length?["..."]:[]) });
+          result2.push({
+            definition: cyclemeaning.definition,
+            synonyms: [].concat(Object.keys(cyclemeaning.synonymSet)),
+            similar: [].concat(cyclemeaning.similar),
+            examples: (cyclemeaning.examples && cyclemeaning.examples.length ? ["..."] : [])
+          });
         }
       }
       result.meanings = result2;
@@ -1324,12 +1328,13 @@ exports.aCrawler = function (resolvePath) {
           for (let cycleexample of cyclemeaning.examples) {
             if (matcher(cycleexample)) {
               result3.push(
-                {definition:cyclemeaning.definition,
-                  synonyms:[].concat(Object.keys(cyclemeaning.synonymSet)),
-                  similar:[].concat(cyclemeaning.similar),
-                  examples:[cycleexample],
-                  example:cycleexample
-                 });
+                {
+                  definition: cyclemeaning.definition,
+                  synonyms: [].concat(Object.keys(cyclemeaning.synonymSet)),
+                  similar: [].concat(cyclemeaning.similar),
+                  examples: [cycleexample],
+                  example: cycleexample
+                });
             }
           }
         }
@@ -1531,13 +1536,13 @@ exports.aCrawler = function (resolvePath) {
         console.log(
           API,
           "Frequency: " +
-            f +
-            ".." +
-            endstr +
-            "  words:" +
-            wcnt +
-            "  freqs:" +
-            fqcnt
+          f +
+          ".." +
+          endstr +
+          "  words:" +
+          wcnt +
+          "  freqs:" +
+          fqcnt
         );
         buckets.push(f);
         fqcnt = 0;
@@ -1627,7 +1632,7 @@ exports.aCrawler = function (resolvePath) {
       !staticCache.collocationStardict ||
       !staticCache.enghunStardict ||
       !staticCache.hunengStardict
-      
+
     ) {
       console.time("load 3rd party StarDict datafiles");
       const colf0 = `data/dict/stardict-OxfordCollocationsDictionary-2.4.2/OxfordCollocationsDictionary`;
@@ -1797,15 +1802,15 @@ exports.aCrawler = function (resolvePath) {
 
       let root = "../data/dict/stardict-OxfordCollocationsDictionary-2.4.2/res/";
       src = src.replace(/\x1E/g, root);
-      src = src.replace(/\x1F/g, "");  
+      src = src.replace(/\x1F/g, "");
     }
 
     return src;
   }
 
   function getForLang(lang, word) {
-    let result={};
-    let langcache={};
+    let result = {};
+    let langcache = {};
     result[lang] = langcache;
     switch (lang) {
       case "en":
