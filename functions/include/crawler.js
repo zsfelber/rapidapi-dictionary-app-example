@@ -1256,7 +1256,11 @@ exports.aCrawler = function (resolvePath) {
       if (i != rev && !rstar) return false;
 
 
-      return i !== -1;
+      if (i == -1) {
+        return false;
+      } else {
+        return true;
+      }
     }
 
     if (per_word) {
