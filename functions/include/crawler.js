@@ -1202,7 +1202,7 @@ exports.aCrawler = function (resolvePath) {
     let defs1 = [];
     for (let value of sd_defs_data) {
       if (value.data && value.word) {
-        removearritm(value.data.similar, null);
+        //removearritm(value.data.similar, null);
         defs1.push({ synonymSet: value.data.synonymSet, similar: value.data.similar, examples: value.data.examples, definition: value.word });
       }
     }
@@ -1214,7 +1214,7 @@ exports.aCrawler = function (resolvePath) {
     for (let definition in stage2_1.meaning) {
       let data = stage2_1.meaning[definition];
       if (definition && data) {
-        removearritm(data.similar, null);
+        //removearritm(data.similar, null);
         defs2.push({ synonymSet: data.synonymSet, similar: data.similar, examples: data.examples, definition });
       }
     }
@@ -1329,7 +1329,7 @@ exports.aCrawler = function (resolvePath) {
           result2.push({
             definition: cyclemeaning.definition,
             synonyms: [].concat(Object.keys(cyclemeaning.synonymSet)),
-            similar: [].concat(cyclemeaning.similar),
+            similar: [].concat(cyclemeaning.similar?cyclemeaning.similar:[]),
             examples: (cyclemeaning.examples && cyclemeaning.examples.length ? ["..."] : [])
           });
         }
@@ -1347,7 +1347,7 @@ exports.aCrawler = function (resolvePath) {
                 {
                   definition: cyclemeaning.definition,
                   synonyms: [].concat(Object.keys(cyclemeaning.synonymSet)),
-                  similar: [].concat(cyclemeaning.similar),
+                  similar: [].concat(cyclemeaning.similar?cyclemeaning.similar:[]),
                   examples: [cycleexample],
                   example: cycleexample
                 });

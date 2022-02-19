@@ -330,6 +330,7 @@ function createpopoverlink(word0, masterword, extraarg="", apostr="", origin) {
     a.onfocus=()=>{
         console.log("focus:"+word);
         curword = word;
+        selectElementContents.apply(a, a);
     };
 
     a.innerHTML = apostr+tmp.innerHTML+apostr;
@@ -1047,26 +1048,27 @@ $(document).keyup(function(evt) {
 });
 $(document).keypress(async function(e){
 
-    console.log(` code:${e.code} curword:${curword}`);
-    if (!currentlink && /Key[A-M]/.test(e.code) && curword) {
-        const key = e.key;
-        const keyLower = key.toLowerCase();
-        let caps = key!==keyLower;
-        console.log(` ${e.code}  curword:${curword}  caps:${caps}   added`);
-        addToGroup(e.code[3], curword, caps);
-        //await navigator.clipboard.writeText(s);
-    } else if ("Digit1"==(e.code) && curword) {
-        speakIt(1);
-    } else if ("Digit2"==(e.code) && curword) {
-        speakIt(2);
-    } else if (e.code==='Space') {
-        if (curword) {
-            var focused = $(':focus');
-            if (!focused.hasClass("input-sm")) {
+    if (curword) {
+        var focused = $(':focus');
+        if (!focused.hasClass("input-sm")) {
+            console.log(` code:${e.code} curword:${curword}`);
+
+            if (/Key[A-M]/.test(e.code)) {
+                const key = e.key;
+                const keyLower = key.toLowerCase();
+                let caps = key!==keyLower;
+                console.log(` ${e.code}  curword:${curword}  caps:${caps}   added`);
+                addToGroup(e.code[3], curword, caps);
+                //await navigator.clipboard.writeText(s);
+            } else if ("Digit1"==(e.code)) {
+                speakIt(1);
+            } else if ("Digit2"==(e.code)) {
+                speakIt(2);
+            } else if (e.code==='Space') {
                 let wls = findwordlink(curword);
                 $(wls).click();
                 //showpopover(wls);
-    
+
                 e.preventDefault();
             }
         }
