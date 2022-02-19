@@ -81,14 +81,18 @@ $secondary-color: #04a0b2;
   }
 }
 
-
-.pop-i {
-  display: inline-block;
-  width: 100%;
-  text-align: left;
-  margin-left: 5px;
+p.pop {
   margin-bottom: 5px;
 }
+p.pop i {
+  text-align: left;
+  margin-left: 10px;
+}
+p.pop b {
+  text-align: left;
+  margin-left: 10px;
+}
+
 .pop-x {
   vertical-align: top;
 }

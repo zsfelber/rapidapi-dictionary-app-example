@@ -336,6 +336,13 @@ function createpopoverlink(word0, masterword, extraarg="", apostr="", origin) {
     return a;
 }
 
+function findwordlink(word) {
+    let sel = `a:contains('${word}')`;
+    let wls = $(sel);
+    wls = wls.first();
+    return wls;
+}
+
 let xidx=0;
 function createexpandlink(word0, func) {
 
@@ -1038,10 +1045,9 @@ $(document).keyup(function(evt) {
     altdown = 0;
 });
 $(document).keypress(async function(e){
-    if (currentlink) return;
 
     console.log(` code:${e.code} curword:${curword}`);
-    if (/Key[A-M]/.test(e.code) && curword) {
+    if (!currentlink && /Key[A-M]/.test(e.code) && curword) {
         const key = e.key;
         const keyLower = key.toLowerCase();
         let caps = key!==keyLower;
@@ -1053,8 +1059,12 @@ $(document).keypress(async function(e){
     } else if ("Digit2"==(e.code) && curword) {
         speakIt(2);
     } else if (e.code==='Space') {
-        if (currentpopword) {
-            speak(currentpopword, currentlink.which);
+        if (curword) {
+
+            let wls = findwordlink(curword);
+            $(wls).click();
+            //showpopover(wls);
+
             e.preventDefault();
         }
     }

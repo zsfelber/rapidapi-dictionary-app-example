@@ -1242,8 +1242,8 @@ exports.aCrawler = function (resolvePath) {
           let matcherword2 = matcherword.trimRight();
           let rev2 = cycletext.length - matcherword2.length;
           let i2 = cycletext.indexOf(matcherword2);
-          if (i2 == rev2) return true;
           if (i2 != -1) {
+            if (i2 == rev2) return true;
             let nextchar = cycletext[i2 + matcherword2.length];
             if (/[^a-zA-Z0-9]/.test(nextchar)) {
               return true;

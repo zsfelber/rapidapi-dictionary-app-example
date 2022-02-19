@@ -144,7 +144,7 @@ function initpop() {
                 let dl = $(`<dl><dt></dt><dd></dd></dl>`);
                 let popsf = $(`<textarea rows=1 cols=8 class='input-sm' id='pop_search' value='${this.data.word}' placeholder='${this.data.word}'>${this.data.word}</textarea>`);
                 let popx = $(`<a href="javascript:hidePopup()"><img class="pop-x" src="x.svg" width=24 height=24></img></a>`);
-                let poppron = $(`<i class="pop-i">${itmstxt(this.data.pronunciation)}</i>`);
+                let poppron = $(`<p class="pop"><b>${this.data.word}</b> <i>${itmstxt(this.data.pronunciation)}</i></p>`);
                 poptit.append(dl);
                 let ch0 = dl.children().eq(0);
                 let ch1 = dl.children().eq(1);
@@ -268,6 +268,8 @@ function initpop() {
     function itmstxt(obj) {
         if (!obj) return "";
         let arr = Object.values(obj);
+        removearritm(arr, undefined);
+        removearritm(arr, "undefined");
         return arr.join(", ");
     }
 }
