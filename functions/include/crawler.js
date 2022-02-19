@@ -30,6 +30,16 @@ function poorsolutioncallbackToPromise(therawfun, ...args0) {
   });
 }
 
+function removearritm(arr, itm) {
+  for (let i=0; i<arr.length; ) {
+      if (arr[i]===itm) {
+          arr.splice(i, 1);
+      } else {
+          i++;
+      }
+  }
+}
+
 let staticCache = { apis: {} };
 function getCacheFor(api) {
   let c = staticCache.apis[api];
@@ -1192,17 +1202,19 @@ exports.aCrawler = function (resolvePath) {
     let defs1 = [];
     for (let value of sd_defs_data) {
       if (value.data && value.word) {
+        removearritm(value.data.similar, null);
         defs1.push({ synonymSet: value.data.synonymSet, similar: value.data.similar, examples: value.data.examples, definition: value.word });
       }
     }
 
     let { byf, byword, cntf, nowords } = await loadAllFromFileCache();
-    let stage1 = convertFileCacheToIntermediate(byword);
+    let stage2_1 = convertFileCacheToIntermediate(byword);
 
     let defs2 = [];
-    for (let definition in stage1.meaning) {
-      let data = stage1.meaning[definition];
+    for (let definition in stage2_1.meaning) {
+      let data = stage2_1.meaning[definition];
       if (definition && data) {
+        removearritm(data.similar, null);
         defs2.push({ synonymSet: data.synonymSet, similar: data.similar, examples: data.examples, definition });
       }
     }

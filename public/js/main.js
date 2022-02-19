@@ -661,7 +661,7 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
 
         function syns(id, label, wordlist, expandsynop, expandsyncl) {
             if (thissect[id]) {
-                expandsynop.innerText = label+"[+]";
+                expandsynop.innerText = label+" [+]";
                 $(thissect[id]).remove();
                 delete thissect[id];
             } else {
@@ -680,8 +680,8 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
         function checkpair(wordlist,id,label) {
             let expandsynop, expandsyncl;
             
-            expandsynop = createexpandlink(label+"[+]", "");
-            expandsyncl = createexpandlink(label+"[-]", "");
+            expandsynop = createexpandlink(label+" [+]", "");
+            expandsyncl = createexpandlink(label+" [-]", "");
 
             currentchecks.push(expandsyncl);
             currentchecks.push(expandsynop);
@@ -720,6 +720,7 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
             }
 
             if (val.similar && val.similar.length) {
+                console.log("similar:",val.similar);
                 let simp = checkpair(val.similar, "simdef", "similar");
                 expandsimop = simp.expandsynop;
                 expandsimcl = simp.expandsyncl;
@@ -781,18 +782,18 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
     });
 
     if (modalMode === "examples") {
-        expandcoll = createexpandlink("collocations[+]", "");
+        expandcoll = createexpandlink("collocations [+]", "");
         currentchecks.push(expandcoll);
         expandcoll.onclick = colls;
         collsect.appendChild(expandcoll);
 
         async function colls() {
             if (collsect.chtml) {
-                expandcoll.innerText = "collocations[+]";
+                expandcoll.innerText = "collocations [+]";
                 collsect.chtml.remove();
                 delete collsect.chtml;
             } else {
-                expandcoll.innerText = "collocations[-]";
+                expandcoll.innerText = "collocations [-]";
                 if (!collsect.data) collsect.data = data.colloc;//await findCollocation(word);
                 if (!collsect.data || collsect.data.error) {
                     collsect.chtmltxt = "<br/><b>No entry in collocations dictionary.</b>";
@@ -1060,12 +1061,14 @@ $(document).keypress(async function(e){
         speakIt(2);
     } else if (e.code==='Space') {
         if (curword) {
-
-            let wls = findwordlink(curword);
-            $(wls).click();
-            //showpopover(wls);
-
-            e.preventDefault();
+            var focused = $(':focus');
+            if (!focused.hasClass("input-sm")) {
+                let wls = findwordlink(curword);
+                $(wls).click();
+                //showpopover(wls);
+    
+                e.preventDefault();
+            }
         }
     }
 });
