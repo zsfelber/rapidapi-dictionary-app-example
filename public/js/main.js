@@ -796,15 +796,17 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
             } else {
                 expandcoll.innerText = "collocations [-]";
                 if (!collsect.data) collsect.data = data.colloc;//await findCollocation(word);
-                if (!collsect.data || collsect.data.error) {
-                    collsect.chtmltxt = "<br/><b>No entry in collocations dictionary.</b>";
-                    collsect.chtml = $(collsect.chtmltxt);
-                } else {
+                
+                //collsect.chtmltxt = "<br/><b>No entry in collocations dictionary.</b>";
+                
+                if (collsect.data && !collsect.data.error) {
                     collsect.chtmltxt = collsect.data;
                     collsect.chtml = $(`<div>${collsect.chtmltxt}</div>`);
-                }
 
-                $(collsect).append(collsect.chtml);
+                    $(collsect).append(collsect.chtml);
+                } else {
+                    $(expandcoll).remove();
+                }
             }
         }
         colls();

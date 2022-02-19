@@ -131,10 +131,21 @@ function initSpeak() {
 }
 
 let doing=0;
+let curspeak;
 async function speak(text, which) {
-    if (doing) return;
-    doing = 1;
+    while (doing) {
+        if (curspeak == text+":"+which) {
+            return doing;
+        }
+        await doing;
+    }
+    doing = dospeak(text, which);
+    return doing;
+}
+async function dospeak(text, which) {
     console.log("speak "+which+" : "+text);
+    curspeak = text+":"+which;
     await speakers[which].speak(text);
+    curspeak = null;
     doing = 0;
 }
