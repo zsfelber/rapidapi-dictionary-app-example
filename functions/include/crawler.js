@@ -1263,14 +1263,14 @@ exports.aCrawler = function (resolvePath) {
       allmeanings = await getAllDefinitions();
     }
 
-    let result = { words:[], meanings:[], examples:[] };
+    let result = { words:{}, meanings:[], examples:[] };
 
     if (in_words) {
-      let result1 = [];
+      let result1 = {};
       let allwords = getAllWords();
       for (let cycleword of allwords) {
         if (matcher(cycleword)) {
-          result1.push({word:cycleword});
+          result1[cycleword] = {word:cycleword};
         }
       }
       result.words = result1;
@@ -1763,7 +1763,16 @@ exports.aCrawler = function (resolvePath) {
 
   function findCollocation(word) {
     let itm = staticCache.collocationStardict.find(word);
-    return itm ? itm.data : null;
+    let src;
+    if (itm) {
+      src = itm.data;
+
+      let root = "../data/dict/stardict-OxfordCollocationsDictionary-2.4.2/res/";
+      src = src.replace("\x1E", root);
+      src = src.replace("\x1F", "");  
+    }
+
+    return src;
   }
 
   function getForLang(lang, word) {

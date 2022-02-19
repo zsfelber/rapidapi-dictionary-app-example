@@ -36,6 +36,9 @@ exports.handler = async function(event, context) {
           if (!data.word) {
             data.word = ad.word;
           }
+          if (!data.colloc) {
+            data.colloc = ad.colloc;
+          }
           if (!data.noWords) {
             data.noWords = ad.noWords;
           }
@@ -97,7 +100,7 @@ async function get(api, lang, word, mode, letter, ffrom, fto, resolvePath, stopi
   }
 
   let data;
-  let forlang;
+  let forlang, colloc;
   console.log(api + " " +mode + ":" + word + ":" + ffrom + ".." + fto+" letter:"+letter);
 
   switch (mode) {
@@ -173,6 +176,7 @@ async function get(api, lang, word, mode, letter, ffrom, fto, resolvePath, stopi
 
     case "minimal_cluster":
       forlang = crawler.getForLang(lang, word);
+      colloc = crawler.findCollocation(word);
 
     case "synonym_cluster":
 
@@ -181,6 +185,7 @@ async function get(api, lang, word, mode, letter, ffrom, fto, resolvePath, stopi
       data = await crawler.loadCluster(word, true);
       data.lang = lang;
       data.forlang = forlang;
+      data.colloc = colloc;
       break;
     default:
       data = await crawler.loadSingleWord(word, true);

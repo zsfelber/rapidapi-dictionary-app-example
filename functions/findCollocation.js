@@ -18,8 +18,8 @@ exports.handler = async function (event, context) {
   const crawler = require('./include/crawler.js').aCrawler(resolvePath);
 
   return service.respond(async () => {
-    let html = crawler.findCollocation(word);
     let root = "../data/dict/stardict-OxfordCollocationsDictionary-2.4.2/";
+    let html = crawler.findCollocation(word);
 
     let result = {
       root, html

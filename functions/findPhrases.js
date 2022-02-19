@@ -39,7 +39,7 @@ exports.handler = async function (event, context) {
   }
   return service.respond(async () => {
 
-    let result = { words:[], meanings:[], examples:[] };
+    let result = { words:{}, meanings:[], examples:[] };
 
     if (apis) {
 
@@ -49,11 +49,12 @@ exports.handler = async function (event, context) {
           let ad = await find(api);
 
           if (ad) {
-            result.words.push.apply(result.words, ad.words);
+            result.words = Object.assign(result.words, ad.words);
             result.meanings.push.apply(result.meanings, ad.meanings);
             result.examples.push.apply(result.examples, ad.examples);
           }
         }
+        result.words = Object.values(result.words);
         result.words.sort((a,b)=>{
             return a.word.localeCompare(b.word);
         });

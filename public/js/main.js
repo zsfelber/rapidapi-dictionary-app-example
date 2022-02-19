@@ -639,6 +639,12 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
     let sil,property;
     let expandcoll;
     currentchecks=[];
+    let collsect;
+
+
+    collsect = document.createElement("div");
+    collsect.classList.add('colloc', 'evensmallerf');
+    wordInfoTbl.appendChild(collsect);
 
     data.results.map(val => {
         let thissect;
@@ -680,7 +686,7 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
         }
 
         if (modalMode === "light" || modalMode === "examples") {
-
+    
             cmp = document.createElement("div");
             cmp.classList.add('smallf');
             wordInfoTbl.appendChild(cmp);
@@ -771,39 +777,28 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
         expandcoll = createexpandlink("collocations[+]", "");
         currentchecks.push(expandcoll);
         expandcoll.onclick = colls;
-        wordInfoTbl.appendChild(expandcoll);
-
-        let thissect = document.createElement("div");
-        thissect.classList.add('colloc', 'evensmallerf');
-        wordInfoTbl.appendChild(thissect);
+        collsect.appendChild(expandcoll);
 
         async function colls() {
-            if (thissect.chtml) {
+            if (collsect.chtml) {
                 expandcoll.innerText = "collocations[+]";
-                thissect.chtml.remove();
-                delete thissect.chtml;
+                collsect.chtml.remove();
+                delete collsect.chtml;
             } else {
                 expandcoll.innerText = "collocations[-]";
-                if (!thissect.data) thissect.data = await findCollocation(word);
-                if (!thissect.data || thissect.data.error) {
-                    thissect.chtmltxt = "<b>No entry in collocations dictionary.</b>";
-                    thissect.chtml = $(thissect.chtmltxt);
+                if (!collsect.data) collsect.data = data.colloc;//await findCollocation(word);
+                if (!collsect.data || collsect.data.error) {
+                    collsect.chtmltxt = "<br/><b>No entry in collocations dictionary.</b>";
+                    collsect.chtml = $(collsect.chtmltxt);
                 } else {
-                    thissect.chtmltxt = thissect.data.html;
-                    let root = thissect.data.root+"res/";
-                    thissect.chtml = $(`<div>${thissect.chtmltxt}</div>`);
-                    let imgs = thissect.chtml.find("img");
-                    imgs.each(function(){
-                        let src0 = $(this).attr("src");
-                        src0 = src0.replace("\x1E", root);
-                        src0 = src0.replace("\x1F", "");
-                        $(this).attr("src", src0);
-                    });
+                    collsect.chtmltxt = collsect.data;
+                    collsect.chtml = $(`<div>${collsect.chtmltxt}</div>`);
                 }
 
-                $(thissect).append(thissect.chtml);
+                $(collsect).append(collsect.chtml);
             }
         }
+        colls();
 
     }
     finishbox();
