@@ -31,7 +31,7 @@ async function printVersion() {
 
 function loadWindow(options) {
 
-    let absfile = path.join(__dirname, "..", "public", options.uri).normalize();
+    let absfile = path.join(__dirname, options.uri).normalize();
 
     console.log("loadWindow " + absfile);
 
@@ -81,5 +81,5 @@ ipcMain.handle('service', (event, note) => {
 
 ipcMain.handle('loadWindow', (event, note) => {
     console.log("electron.invoke loadWindow ", note);
-    loadWindow(note);
+    loadWindow("../public/"+note);
 });
