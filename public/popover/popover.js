@@ -143,11 +143,13 @@ function initpop() {
                 let poptit = $(`<div></div>`);
                 let dl = $(`<dl><dt></dt><dd></dd></dl>`);
                 let popsf = $(`<textarea rows=1 cols=8 class='input-sm' id='pop_search' value='${this.data.word}' placeholder='${this.data.word}'>${this.data.word}</textarea>`);
+                let popx = $(`<a href="javascript:hidePopup()"><img class="pop-x" src="x.svg" width=24 height=24></img></a>`);
                 let poppron = $(`<i class="pop-i">${itmstxt(this.data.pronunciation)}</i>`);
                 poptit.append(dl);
                 let ch0 = dl.children().eq(0);
                 let ch1 = dl.children().eq(1);
                 ch0.append(popsf);
+                ch0.append(popx);
                 ch1.append(poppron);
                 addCheckbox(ch1[0], "pop_in_words", {defchecked:true,classes:"input-sm pop-check"}, "in words", 0);
                 addCheckbox(ch1[0], "pop_in_meanings", {defchecked:true,classes:"input-sm pop-check"}, "in meanings", 0);

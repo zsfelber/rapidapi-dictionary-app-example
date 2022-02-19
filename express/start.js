@@ -22,7 +22,7 @@ app.get('/*', async (req, res, next) => {
 
 app.get('/data/*', async (req, res, next) => {
     let result;
-    if (/\.(png|jpg|gif|html)$/.test(req.path)) {
+    if (/\.(png|jpg|gif|svg|html)$/.test(req.path)) {
 
         let abs = path.join(appDir, req.path);
 

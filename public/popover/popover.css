@@ -89,6 +89,10 @@ $secondary-color: #04a0b2;
   margin-left: 5px;
   margin-bottom: 5px;
 }
+.pop-x {
+  vertical-align: top;
+}
+
 .pop-check {
   display: inline-block;
   text-align: left;
@@ -104,9 +108,9 @@ $secondary-color: #04a0b2;
 #pop_search {
   overflow: auto;
   resize: vertical;
-  width: calc(100% - 0.75rem);
-  /*min-width: 100%;
-  max-width: 100%;*/
+  display: inline-block;
+/*  width: calc(100% - 0.75rem);*/
+  width: calc(100% - 30px);
   min-height: 2rem;
   max-height: 5.25rem;
   margin-left: 5px;
