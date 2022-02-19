@@ -1862,3 +1862,17 @@ wordsapi var frqntls10000=[100, 3.38, 2.68, 2.17, 1.73, 0.001, 0];
     /*"start": "netlify dev",
     "debug": "netlify dev",*/
     "start": "node express/start.js",
+
+
+
+https://www.electron.build/
+
+
+/*     "e-dir": "electron-builder --dir",
+    "e-pack": "electron-builder --prepackaged dist/linux-unpacked",
+    "e-dist": "electron-builder",
+ */
+
+https://www.christianengvall.se/electron-packager-tutorial/
+
+    "e-pack": "electron-packager ./ --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/icons/png/1024x1024.png --prune=true --out=release-builds"

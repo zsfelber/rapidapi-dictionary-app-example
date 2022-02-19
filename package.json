@@ -11,8 +11,19 @@
     "install-ncli": "npm install -g netlify-cli",
     "install-pre": "npm install",
     "e-start": "electron .",
-    "e-pack": "electron-builder --dir",
-    "e-dist": "electron-builder"
+    "e-pack": "electron-packager ./ --overwrite --asar=true --platform=linux --arch=x64 --prune=true --out=dist"
+  },
+  "build":{
+    "extraResources": [
+      {
+          "from": "data",
+          "to": "data"
+      },
+      {
+        "from": "cache",
+        "to": "cache"
+      }
+    ]
   },
   "keywords": [],
   "author": "",
