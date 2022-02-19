@@ -1,6 +1,7 @@
 node_modules
 # Local Netlify folder
 .netlify
+dist
 cache/wordsapi/words/c.o.d.
 cache/wordsapi/words/d.o.a.
 cache/wordsapi/words/o.k.

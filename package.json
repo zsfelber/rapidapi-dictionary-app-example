@@ -10,7 +10,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "install-ncli": "npm install -g netlify-cli",
     "install-pre": "npm install",
-    "estart": "electron ."
+    "e-start": "electron .",
+    "e-pack": "electron-builder --dir",
+    "e-dist": "electron-builder"
   },
   "keywords": [],
   "author": "",
@@ -30,6 +32,7 @@
     "node-find-files": "^1.0.0"
   },
   "devDependencies": {
+    "electron-builder": "^22.14.13",
     "electron": "^17.0.0"
   }
 }
