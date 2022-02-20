@@ -220,8 +220,8 @@ exports.aCrawler = function (
     if (!fs.existsSync(resolvePath.abs(`${CACHE_DIR}/index`))) {
       fs.mkdirSync(resolvePath.abs(`${CACHE_DIR}/index`));
     }
-    if (!fs.existsSync(resolvePath.abs(`${CACHE_DIR_API}/dict/${API}-english`))) {
-      fs.mkdirSync(resolvePath.abs(`${CACHE_DIR_API}/dict/${API}-english`));
+    if (!fs.existsSync(resolvePath.abs(`${CACHE_DIR_API}/dict/${API}-${langCache.NAME}`))) {
+      fs.mkdirSync(resolvePath.abs(`${CACHE_DIR_API}/dict/${API}-${langCache.NAME}`));
     }
 
     curtime = new Date();
@@ -1626,7 +1626,7 @@ exports.aCrawler = function (
       !apiCache.stardict_errors
     ) {
       console.time("load native StarDict datafiles");
-      const f0 = `${CACHE_DIR_API}/dict/${API}-english/${API}-english`;
+      const f0 = `${CACHE_DIR_API}/dict/${API}-${langCache.NAME}/${API}-${langCache.NAME}`;
       if (!apiCache.stardict_words)
         apiCache.stardict_words = stardict.loadStarDict(`${f0}-words`);
       if (!apiCache.stardict_defs)
@@ -1639,7 +1639,7 @@ exports.aCrawler = function (
 
   function saveNativeStarDictAll(stage1, stage2) {
     console.time("save native StarDict datafiles");
-    const f0 = `${CACHE_DIR_API}/dict/${API}-english/${API}-english`;
+    const f0 = `${CACHE_DIR_API}/dict/${API}-${langCache.NAME}/${API}-${langCache.NAME}`;
     stardict.saveStarDict(`${f0}-words`, stage2.sortedwords, stage1.word);
     stardict.saveStarDict(`${f0}-definitions`, stage2.sorteddefs, stage1.meaning);
     stardict.saveStarDict(`${f0}-errors`, stage2.sortederrors, stage1.error);
@@ -1657,6 +1657,7 @@ exports.aCrawler = function (
       console.time("load 3rd party StarDict datafiles");
       switch (LANG) {
         case "EN":{
+            langCache.NAME = "english";
             langCache.COLLOC = "stardict-OxfordCollocationsDictionary-2.4.2";
             langCache.COLLOC_DIR = `../${DATA_DIR}/dict/${langCache.COLLOC}/res/`;
 
@@ -1670,6 +1671,7 @@ exports.aCrawler = function (
           }
           break;
         case "DE":{
+            langCache.NAME = "german";
           }
           break;
       }
