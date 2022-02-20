@@ -1051,42 +1051,42 @@ exports.aCrawler = function (
   }
 
   function loadCommonWords3000_a_e(word, asobject) {
-    const cw = loadJson(DATA_DUR + "/common-words-3000-a-e.json");
+    const cw = loadJson(DATA_DIR + "/common-words-3000-a-e.json");
     return loadCommonWords(cw.data, word, asobject);
   }
 
   function loadCommonWords3000_f_p(word, asobject) {
-    const cw = loadJson(DATA_DUR + "/common-words-3000-f-p.json");
+    const cw = loadJson(DATA_DIR + "/common-words-3000-f-p.json");
     return loadCommonWords(cw.data, word, asobject);
   }
 
   function loadCommonWords3000_q_z(word, asobject) {
-    const cw = loadJson(DATA_DUR + "/common-words-3000-q-z.json");
+    const cw = loadJson(DATA_DIR + "/common-words-3000-q-z.json");
     return loadCommonWords(cw.data, word, asobject);
   }
 
   function loadCommonWords10000_a_c(word, asobject) {
-    const cw = loadJson(DATA_DUR + "/common-words-10000-a-c.json");
+    const cw = loadJson(DATA_DIR + "/common-words-10000-a-c.json");
     return loadCommonWords(cw.data, word, asobject);
   }
 
   function loadCommonWords10000_d_h(word, asobject) {
-    const cw = loadJson(DATA_DUR + "/common-words-10000-d-h.json");
+    const cw = loadJson(DATA_DIR + "/common-words-10000-d-h.json");
     return loadCommonWords(cw.data, word, asobject);
   }
 
   function loadCommonWords10000_i_o(word, asobject) {
-    const cw = loadJson(DATA_DUR + "/common-words-10000-i-o.json");
+    const cw = loadJson(DATA_DIR + "/common-words-10000-i-o.json");
     return loadCommonWords(cw.data, word, asobject);
   }
 
   function loadCommonWords10000_p_r(word, asobject) {
-    const cw = loadJson(DATA_DUR + "/common-words-10000-p-r.json");
+    const cw = loadJson(DATA_DIR + "/common-words-10000-p-r.json");
     return loadCommonWords(cw.data, word, asobject);
   }
 
   function loadCommonWords10000_s_z(word, asobject) {
-    const cw = loadJson(DATA_DUR + "/common-words-10000-s-z.json");
+    const cw = loadJson(DATA_DIR + "/common-words-10000-s-z.json");
     return loadCommonWords(cw.data, word, asobject);
   }
 
@@ -1094,11 +1094,11 @@ exports.aCrawler = function (
     let lc = letter.toLowerCase(),
       cw;
     if ("a" <= lc && lc <= "e") {
-      cw = loadJson(DATA_DUR + "/common-words-3000-a-e.json");
+      cw = loadJson(DATA_DIR + "/common-words-3000-a-e.json");
     } else if ("f" <= lc && lc <= "p") {
-      cw = loadJson(DATA_DUR + "/common-words-3000-f-p.json");
+      cw = loadJson(DATA_DIR + "/common-words-3000-f-p.json");
     } else if ("q" <= lc && lc <= "z") {
-      cw = loadJson(DATA_DUR + "/common-words-3000-q-z.json");
+      cw = loadJson(DATA_DIR + "/common-words-3000-q-z.json");
     } else {
       cw = {};
     }
@@ -1109,15 +1109,15 @@ exports.aCrawler = function (
     let lc = letter.toLowerCase(),
       cw;
     if ("a" <= lc && lc <= "c") {
-      cw = loadJson(DATA_DUR + "/common-words-10000-a-c.json");
+      cw = loadJson(DATA_DIR + "/common-words-10000-a-c.json");
     } else if ("d" <= lc && lc <= "h") {
-      cw = loadJson(DATA_DUR + "/common-words-10000-d-h.json");
+      cw = loadJson(DATA_DIR + "/common-words-10000-d-h.json");
     } else if ("i" <= lc && lc <= "o") {
-      cw = loadJson(DATA_DUR + "/common-words-10000-i-o.json");
+      cw = loadJson(DATA_DIR + "/common-words-10000-i-o.json");
     } else if ("p" <= lc && lc <= "r") {
-      cw = loadJson(DATA_DUR + "/common-words-10000-p-r.json");
+      cw = loadJson(DATA_DIR + "/common-words-10000-p-r.json");
     } else if ("s" <= lc && lc <= "z") {
-      cw = loadJson(DATA_DUR + "/common-words-10000-s-z.json");
+      cw = loadJson(DATA_DIR + "/common-words-10000-s-z.json");
     } else {
       cw = {};
     }
@@ -1125,7 +1125,7 @@ exports.aCrawler = function (
   }
 
   function loadMyWordCls(word, letter, asobject) {
-    let cw = loadJson(DATA_DUR + "/my-words-" + letter.toLowerCase() + ".json");
+    let cw = loadJson(DATA_DIR + "/my-words-" + letter.toLowerCase() + ".json");
     return loadCommonWords(cw.data, word, asobject);
   }
 
@@ -1153,19 +1153,19 @@ exports.aCrawler = function (
   }
 
   function loadCommon3000_words(word, asobject) {
-    let cw1 = loadJson(DATA_DUR + "/common-words-3000-a-e.json");
-    let cw2 = loadJson(DATA_DUR + "/common-words-3000-f-p.json");
-    let cw3 = loadJson(DATA_DUR + "/common-words-3000-q-z.json");
+    let cw1 = loadJson(DATA_DIR + "/common-words-3000-a-e.json");
+    let cw2 = loadJson(DATA_DIR + "/common-words-3000-f-p.json");
+    let cw3 = loadJson(DATA_DIR + "/common-words-3000-q-z.json");
     let TheMostCommon3000 = Object.assign({}, cw1.data, cw2.data, cw3.data);
     return loadWordsOnly(TheMostCommon3000, word, asobject);
   }
 
   function loadCommon10000_words(word, asobject) {
-    let cw1 = loadJson(DATA_DUR + "/common-words-10000-a-c.json");
-    let cw2 = loadJson(DATA_DUR + "/common-words-10000-d-h.json");
-    let cw3 = loadJson(DATA_DUR + "/common-words-10000-i-o.json");
-    let cw4 = loadJson(DATA_DUR + "/common-words-10000-p-r.json");
-    let cw5 = loadJson(DATA_DUR + "/common-words-10000-s-z.json");
+    let cw1 = loadJson(DATA_DIR + "/common-words-10000-a-c.json");
+    let cw2 = loadJson(DATA_DIR + "/common-words-10000-d-h.json");
+    let cw3 = loadJson(DATA_DIR + "/common-words-10000-i-o.json");
+    let cw4 = loadJson(DATA_DIR + "/common-words-10000-p-r.json");
+    let cw5 = loadJson(DATA_DIR + "/common-words-10000-s-z.json");
     let TheMostCommon10000 = Object.assign(
       {},
       cw1.data,
@@ -1361,7 +1361,7 @@ exports.aCrawler = function (
   }
 
   function loadMyWords(word, letter, asobject) {
-    let cw1 = loadJson(DATA_DUR + "/my-words-" + letter.toLowerCase() + ".json");
+    let cw1 = loadJson(DATA_DIR + "/my-words-" + letter.toLowerCase() + ".json");
     return loadWordsOnly(cw1.data, word, asobject);
   }
 
@@ -1445,7 +1445,7 @@ exports.aCrawler = function (
       function split(line, lineNumber) {
         return [line];
       }
-      const gglwords = csvParse.load(resolvePath.abs(DATA_DUR + "/english_.csv"), {
+      const gglwords = csvParse.load(resolvePath.abs(DATA_DIR + "/english_.csv"), {
         getColumns: split,
       });
       for (let gglword of gglwords) {
@@ -1463,7 +1463,7 @@ exports.aCrawler = function (
   function loadExistingWordsAndFreqs() {
     if (!staticCache.caggleFreqRecords) {
       staticCache.caggleFreqRecords = csvParse.load(
-        resolvePath.abs(DATA_DUR + "/unigram_freq.csv"),
+        resolvePath.abs(DATA_DIR + "/unigram_freq.csv"),
         {
           convert: {
             count: parseInt,
@@ -1644,11 +1644,11 @@ exports.aCrawler = function (
 
     ) {
       console.time("load 3rd party StarDict datafiles");
-      const colf0 = `${DATA_DUR}/dict/stardict-OxfordCollocationsDictionary-2.4.2/OxfordCollocationsDictionary`;
+      const colf0 = `${DATA_DIR}/dict/stardict-OxfordCollocationsDictionary-2.4.2/OxfordCollocationsDictionary`;
       staticCache.collocationStardict = stardict.loadStarDict(`${colf0}`, false);
-      const eh0 = `${DATA_DUR}/dict/stardict-jdict-EngHun-2.4.2/jdict-EngHun`;
+      const eh0 = `${DATA_DIR}/dict/stardict-jdict-EngHun-2.4.2/jdict-EngHun`;
       staticCache.enghunStardict = stardict.loadStarDict(`${eh0}`, false);
-      const he0 = `${DATA_DUR}/dict/stardict-hungarian-english-2.4.2/hungarian-english`;
+      const he0 = `${DATA_DIR}/dict/stardict-hungarian-english-2.4.2/hungarian-english`;
       staticCache.hunengStardict = stardict.loadStarDict(`${he0}`, false);
 
       console.timeEnd("load 3rd party StarDict datafiles");
@@ -1843,6 +1843,10 @@ exports.aCrawler = function (
     TRAVERSE_ALL,
     MAX_LEVEL,
     resolvePath,
+    DATA_DIR,
+    CACHE_DIR,
+    CACHE_DIR_API,
+    TWELVE,
     isApiLimitReached,
     initCrawler,
     loadJson,

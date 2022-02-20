@@ -35,7 +35,7 @@ exports.handler = async function(event, context) {
           TRAVERSE_ALL,
       resolvePath);
           for (letter of ['A','B','C','D','E','F','G','H','I','J','K','L','M']) {
-          let {f, data, json} = crawler.loadJson("data/my-words-"+letter.toLowerCase()+".json");
+          let {f, data, json} = crawler.loadJson(crawler.DATA_DIR+"/my-words-"+letter.toLowerCase()+".json");
 
           if (json) {
             let mod = 0;
