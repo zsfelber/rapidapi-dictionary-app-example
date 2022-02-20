@@ -1145,20 +1145,17 @@ exports.aCrawler = function (
 
   function loadCommon3000_words(word, asobject) {
     let cw1 = loadCommonWords(3000);
-    let TheMostCommon3000 = Object.assign({}, cw1.data);
-    return loadWordsOnly(TheMostCommon3000, word, asobject);
+    return loadWordsOnly(cw1, word, asobject);
   }
 
   function loadCommon5000_words(word, asobject) {
     let cw1 = loadCommonWords(5000);
-    let TheMostCommon5000 = Object.assign({}, cw1.data);
-    return loadWordsOnly(TheMostCommon5000, word, asobject);
+    return loadWordsOnly(cw1, word, asobject);
   }
 
   function loadCommon10000_words(word, asobject) {
     let cw1 = loadCommonWords(10000);
-    let TheMostCommon10000 = Object.assign({},cw1.data);
-    return loadWordsOnly(TheMostCommon10000, word, asobject);
+    return loadWordsOnly(cw1, word, asobject);
   }
 
 

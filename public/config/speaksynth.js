@@ -123,7 +123,7 @@ function installSpeak(which) {
         setCookie(`${speech}:rate`, $(rate).val());
     }
 
-    speakers[which] = { speak };
+    speakers[which] = { utter };
     init();
 }
 
