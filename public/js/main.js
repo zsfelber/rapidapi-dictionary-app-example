@@ -1186,7 +1186,9 @@ $(document).ready(function(){
     //    $(this).text() 
     //});
 
-    initSpeak();
+    let language1 = getLanguage(1);
+    //let language2 = getLanguage(2);
+    initSpeak(language1);
 
     if (!isElectron()) {
         console.log("It is not electron, hiding restricted pages.");

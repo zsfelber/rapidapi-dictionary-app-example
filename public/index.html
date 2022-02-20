@@ -202,7 +202,26 @@
         installation or consult the software provider.<br/>
         <b>NOTE!</b> It doesn't work well in Android, where the system's default synthetizer is the only one operational, regardless to website configuration.
         </p>
+
         <div class="ib">
+            <b>Learned language</b>
+            <form id="lang1">
+            <select>
+        
+            </select>
+            </form>
+        </div><!--ib-->
+<!--         <div class="ib">
+            <b>Your mother tongue</b>
+            <form id="lang2">
+            <select>
+        
+            </select>
+            </form>
+        </div>< !--ib-->
+ -->
+        <div class="ib">
+            <b>Learned language Voice 1</b>
             <form id="speech1">
             <div>
             <label for="rate">Rate</label><input type="range" min="0.5" max="2" value="1" step="0.1" class="rate">
@@ -221,6 +240,7 @@
         </div><!--ib-->
 
         <div class="ib">
+            <b>Learned language Voice 2</b>
             <form id="speech2">
             <div>
             <label for="rate">Rate</label><input type="range" min="0.5" max="2" value="1" step="0.1" class="rate">
@@ -270,7 +290,9 @@
 
     <!-- import our javascript file -->
     <script src="popover/popover.js"></script>
-    <script src="speak/synth.js"></script>
+    <script src="config/cookies.js"></script>
+    <script src="config/language.js"></script>
+    <script src="config/speaksynth.js"></script>
     <script src="js/serve.js"></script>
     <script src="js/frequency.js"></script>
     <script src="js/ui.js"></script>

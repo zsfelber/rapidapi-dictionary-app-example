@@ -4,7 +4,7 @@ let voices = [];
 
 // https://mdn.github.io/web-speech-api/speak-easy-synthesis/
 
-function install(which) {
+function installSpeak(which) {
     let speech = `#speech${which}`;
     let inputForm = document.querySelector(`${speech}`);
     //let inputTxt = document.querySelector(`.txt`);
@@ -98,19 +98,20 @@ function install(which) {
     init();
 }
 
-function selectAnyEnglish(combo, notthis, hint) {
+function selectAny(combo, lang, notthis, hint) {
+    let r = new RegExp(lang,"i");
     for (i = 0; i < voices.length; i++) {
         let name = voices[i].name;
-        if (name!=notthis && /english/i.test(name) && (!hint||hint.test(name))) {
+        if (name!=notthis && r.test(name) && (!hint||hint.test(name))) {
             combo.val(name);
             return name;
         }
     }
     return null;
 }
-function heurSelectEnglish(combo, notthis, hints) {
+function heurSelect(combo, lang, notthis, hints) {
     for (let hint of hints) {
-        let item = selectAnyEnglish(combo, notthis, hint);
+        let item = selectAny(combo, lang, notthis, hint);
 
         if (item) {
             return item;
@@ -119,15 +120,31 @@ function heurSelectEnglish(combo, notthis, hints) {
     return null;
 }
 
-function initSpeak() {
+function initSpeak(language) {
+    console.log("initSpeak", language);
     if (speechSynthesis.onvoiceschanged !== undefined) {
         speechSynthesis.onvoiceschanged = initSpeak;
     }
-    install(1);
-    install(2);
+    installSpeak(1);
+    installSpeak(2);
 
-    let first = heurSelectEnglish($("#speech1 select"), null, [/\bus\b/i,/\bunited states\b/i,/\bu\.s\b/i,/./]);
-    heurSelectEnglish($("#speech2 select"), first, [/\buk\b/i,/\bunited kingdom\b/i,/\bu\.k\b/i,/./]);
+    let first,second;
+    switch (language.language) {
+        case "EN":
+            first = heurSelect($("#speech1 select"), "english", null, [/\bus\b/i,/\bunited states\b/i,/\bu\.s\b/i,/./]);
+            second = heurSelect($("#speech2 select"), "english", first, [/\buk\b/i,/\bunited kingdom\b/i,/\bu\.k\b/i,/./]);
+            break;
+        case "DE":
+            first = heurSelect($("#speech1 select"), "german", null, [/\bde\b/i,/\bgermany\b/i,/\bdeutschland\b/i,/./]);
+            second = heurSelect($("#speech2 select"), "german", null, [/./]);
+            break;
+        default:
+            alert("No speech synthetizer for : "+language);
+            break;
+    }
+    if (first && !second) {
+        $("#speech2 select").val(first);
+    }
 }
 
 let doing=0;

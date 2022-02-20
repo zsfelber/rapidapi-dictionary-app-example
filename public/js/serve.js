@@ -23,8 +23,10 @@ function isElectron() {
 async function serve(target, qs=[]) {
 
     let e = isElectron(),data;
+    let language1 = getLanguage(1);
 
-    console.log("fetch "+fetch+" isElectron:"+e);
+    qs.push("language=" + language1.language);
+    console.log("fetch target:"+target+" isElectron:"+e, " qs:", qs);
 
     if (e) {
 
