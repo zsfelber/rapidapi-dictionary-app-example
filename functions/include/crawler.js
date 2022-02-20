@@ -74,8 +74,6 @@ exports.aCrawler = function (
   const langCache = getLangCache(LANG);
   const apiCache = getCacheFor(LANG, API);
 
-  const COLLOC_DIR = `../${DATA_DIR}/dict/${langCache.COLLOC}/res/`;
-
   const TWELVE = (CACHE_DIR_API + "/words/").length;
   if (!resolvePath) resolvePath = noResolvePath;
 
@@ -1659,10 +1657,11 @@ exports.aCrawler = function (
       console.time("load 3rd party StarDict datafiles");
       switch (LANG) {
         case "EN":{
-            const COLLOC = "stardict-OxfordCollocationsDictionary-2.4.2";
-            langCache.COLLOC = COLLOC;
+            langCache.COLLOC = "stardict-OxfordCollocationsDictionary-2.4.2";
+            langCache.COLLOC_DIR = `../${DATA_DIR}/dict/${langCache.COLLOC}/res/`;
+
             DATA_DIR + "/english_.csv"
-            const colf0 = `${DATA_DIR}/dict/stardict-OxfordCollocationsDictionary-2.4.2/OxfordCollocationsDictionary`;
+            const colf0 = `${DATA_DIR}/dict/${langCache.COLLOC}/OxfordCollocationsDictionary`;
             langCache.collocationStardict = stardict.loadStarDict(`${colf0}`, false);
             const eh0 = `${DATA_DIR}/dict/stardict-jdict-EngHun-2.4.2/jdict-EngHun`;
             langCache.enghunStardict = stardict.loadStarDict(`${eh0}`, false);
@@ -1833,7 +1832,7 @@ exports.aCrawler = function (
     if (itm) {
       src = itm.data;
 
-      let root = COLLOC_DIR;
+      let root = langCache.COLLOC_DIR;
       src = src.replace(/\x1E/g, root);
       src = src.replace(/\x1F/g, "");
     }
@@ -1871,8 +1870,7 @@ exports.aCrawler = function (
     DATA_DIR,
     CACHE_DIR,
     CACHE_DIR_API,
-    COLLOC,
-    COLLOC_DIR,
+    COLLOC_DIR:langCache.COLLOC_DIR,
     TWELVE,
     isApiLimitReached,
     loadJson,
