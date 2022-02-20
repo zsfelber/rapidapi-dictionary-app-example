@@ -45,7 +45,7 @@ let staticCache = { langs: {} };
 
 function getLangCache(lang) {
   let langCache = staticCache.langs[lang];
-  if (!langCache) staticCache.langs[lang] = langCache = {apis:{}};
+  if (!langCache) staticCache.langs[lang] = langCache = { apis: {} };
   return langCache;
 }
 
@@ -65,7 +65,7 @@ exports.aCrawler = function (
   TRAVERSE_ALL,
   MAX_LEVEL = 100,
   resolvePath
-  ) {
+) {
 
 
   const DATA_DIR = "data/" + LANG;
@@ -201,34 +201,34 @@ exports.aCrawler = function (
   function initCrawler() {
 
     switch (LANG) {
-      case "en":{
-          langCache.NAME = "english";
-          langCache.COLLOC = "stardict-OxfordCollocationsDictionary-2.4.2";
-          langCache.COLLOC_DIR = `../${DATA_DIR}/dict/${langCache.COLLOC}/res/`;
-          // caggle freq records
-          langCache.FREQ_CSV = `unigram_freq.csv`;
-          langCache.WORD_LIST = "english_.csv";
-          langCache.COMMON_WORDS_10000 = "common-words-10000.json";
-          langCache.COMMON_WORDS_5000 = "common-words-5000.txt";
+      case "en": {
+        langCache.NAME = "english";
+        langCache.COLLOC = "stardict-OxfordCollocationsDictionary-2.4.2";
+        langCache.COLLOC_DIR = `../${DATA_DIR}/dict/${langCache.COLLOC}/res/`;
+        // caggle freq records
+        langCache.FREQ_CSV = `unigram_freq.csv`;
+        langCache.WORD_LIST = "english_.csv";
+        langCache.COMMON_WORDS_10000 = "common-words-10000.json";
+        langCache.COMMON_WORDS_5000 = "common-words-5000.txt";
 
-        }
+      }
         break;
-      case "de":{
-          // https://en.wiktionary.org/wiki/Wiktionary:Frequency_lists#German
-          langCache.NAME = "german";
-          langCache.FREQ_LIST = `german_wordlist_300k_most_frequent_from_web.txt`;
-          langCache.WORD_LIST = `german_wordlist_300k_most_frequent_from_web.txt`;
-          langCache.COMMON_WORDS = "common-words-5000.txt";
-          
-        }
+      case "de": {
+        // https://en.wiktionary.org/wiki/Wiktionary:Frequency_lists#German
+        langCache.NAME = "german";
+        langCache.FREQ_LIST = `german_wordlist_300k_most_frequent_from_web.txt`;
+        langCache.WORD_LIST = `german_wordlist_300k_most_frequent_from_web.txt`;
+        langCache.COMMON_WORDS = "common-words-5000.txt";
+
+      }
         break;
     }
 
     switch (API) {
-      case "google":{
-        const googleDictionary = 
+      case "google": {
+        const googleDictionary =
           require("./googletransapi/google_dict").googleDictionary;
-        download = function(word) {
+        download = function (word) {
           return googleDictionary(word, LANG);
         }
       }
@@ -1429,7 +1429,7 @@ exports.aCrawler = function (
       if (langCache.existingRealWordsArray) {
         words = langCache.existingRealWordsArray;
       } else {
-        words = langCache.existingRealWordsArray = 
+        words = langCache.existingRealWordsArray =
           loadHeadless1ColCsv(resolvePath.abs(DATA_DIR + "/" + langCache.WORD_LIST));
       }
 
@@ -1448,7 +1448,7 @@ exports.aCrawler = function (
   function loadHeadless1ColCsv(fnm) {
     let result = [];
     let allFileContents = fs.readFileSync(fnm, 'utf-8');
-    allFileContents.split(/\r?\n/).forEach(line =>  {
+    allFileContents.split(/\r?\n/).forEach(line => {
       result.push(line);
     });
     return result;
@@ -1478,7 +1478,7 @@ exports.aCrawler = function (
         }
         let cnt = words.length;
         for (let word of words) {
-          langCache.frequencyRecords.push({word, count:cnt--});
+          langCache.frequencyRecords.push({ word, count: cnt-- });
         }
       }
 
@@ -1657,19 +1657,19 @@ exports.aCrawler = function (
     ) {
       console.time("load 3rd party StarDict datafiles");
       switch (LANG) {
-        case "en":{
+        case "en": {
 
-            const colf0 = `${DATA_DIR}/dict/${langCache.COLLOC}/OxfordCollocationsDictionary`;
-            langCache.collocationStardict = stardict.loadStarDict(`${colf0}`, false);
-            const eh0 = `${DATA_DIR}/dict/stardict-jdict-EngHun-2.4.2/jdict-EngHun`;
-            langCache.enghunStardict = stardict.loadStarDict(`${eh0}`, false);
-            const he0 = `${DATA_DIR}/dict/stardict-hungarian-english-2.4.2/hungarian-english`;
-            langCache.hunengStardict = stardict.loadStarDict(`${he0}`, false);
-          }
+          const colf0 = `${DATA_DIR}/dict/${langCache.COLLOC}/OxfordCollocationsDictionary`;
+          langCache.collocationStardict = stardict.loadStarDict(`${colf0}`, false);
+          const eh0 = `${DATA_DIR}/dict/stardict-jdict-EngHun-2.4.2/jdict-EngHun`;
+          langCache.enghunStardict = stardict.loadStarDict(`${eh0}`, false);
+          const he0 = `${DATA_DIR}/dict/stardict-hungarian-english-2.4.2/hungarian-english`;
+          langCache.hunengStardict = stardict.loadStarDict(`${he0}`, false);
+        }
           break;
-        case "de":{
-            
-          }
+        case "de": {
+
+        }
           break;
       }
 
@@ -1826,14 +1826,18 @@ exports.aCrawler = function (
   }
 
   function findCollocation(word) {
-    let itm = langCache.collocationStardict.find(word);
-    let src;
-    if (itm) {
-      src = itm.data;
+    let itm, src;
+    
+    if (langCache.collocationStardict) {
 
-      let root = langCache.COLLOC_DIR;
-      src = src.replace(/\x1E/g, root);
-      src = src.replace(/\x1F/g, "");
+      itm = langCache.collocationStardict.find(word);
+      if (itm) {
+        src = itm.data;
+
+        let root = langCache.COLLOC_DIR;
+        src = src.replace(/\x1E/g, root);
+        src = src.replace(/\x1F/g, "");
+      }
     }
 
     return src;
@@ -1869,7 +1873,7 @@ exports.aCrawler = function (
     DATA_DIR,
     CACHE_DIR,
     CACHE_DIR_API,
-    COLLOC_DIR:langCache.COLLOC_DIR,
+    COLLOC_DIR: langCache.COLLOC_DIR,
     TWELVE,
     isApiLimitReached,
     loadJson,

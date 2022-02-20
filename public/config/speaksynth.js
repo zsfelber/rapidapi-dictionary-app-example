@@ -130,7 +130,7 @@ function installSpeak(which) {
 function selectAny(combo, lang, notthis, hint) {
 
     let voices1 = voices_bylang[lang];
-    for (let voice of voices1) {
+    if (voices1) for (let voice of voices1) {
         let name = voice.name;
         if (name != notthis && (!hint || hint.test(name))) {
             combo.val(name);

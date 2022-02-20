@@ -4,7 +4,7 @@ var lastmode;
 var page,col=2,wordInfoTbl,wordInfoRow,wordInfoBox,info;
 
 var letters=[String.fromCharCode(1)].concat(numbers()).concat([":"]).concat(ucases()).concat(lcases());
-
+var checkboxdata;
 
 init$();
 
@@ -18,75 +18,6 @@ let urllen = $.urlParam('len');
 let urli = $.urlParam('i');
 let urlN = $.urlParam('N');
 
-var checkboxdata = {
-    "bucket1": {
-        "also": { defchecked: true },
-        "antonyms": { defchecked: true },
-        "attribute": { defchecked: false },
-        "cause": { defchecked: false },
-        "definition": { defchecked: true },
-        "derivation": { defchecked: false },
-        "entails": { defchecked: false },
-    },
-    "bucket2": {
-        "examples": { defchecked: true },
-        "pertains to": { defchecked: false },
-        "similar to": { defchecked: true },
-        "synonyms": { defchecked: true },
-        "verb group": { defchecked: false },
-    },
-    "bucket3": {
-        "in category": { defchecked: false },
-        "instance of": { defchecked: false },
-        "member of": { defchecked: false },
-        "part of": { defchecked: false },
-        "region of": { defchecked: false },
-        "substance of": { defchecked: false },
-        "type of": { defchecked: false },
-    },
-    "bucket4": {
-        "has categories": { defchecked: false },
-        "has instances": { defchecked: false },
-        "has members": { defchecked: false },
-        "has parts": { defchecked: false },
-        "in region": { defchecked: false },
-        "has substances": { defchecked: false },
-        "has types": { defchecked: false },
-    },
-    "bucket5": {
-        "usage of": { defchecked: false },
-        "abbreviation": { defchecked: true },
-        "adjective": { defchecked: true },
-        "adverb": { defchecked: true },
-        "conjunction": { defchecked: true },
-        "determiner": { defchecked: true },
-        "exclamation": { defchecked: true },
-    },
-    "bucket55": {
-        "has usages": { defchecked: false },
-        "noun": { defchecked: true },
-        "participle": { defchecked: true },
-        "prefix": { defchecked: true },
-        "preposition": { defchecked: true },
-        "pronoun": { defchecked: true },
-        "suffix": { defchecked: true },
-    },
-    "bucket56": {
-        "symbol": { defchecked: true },
-        "verb": { defchecked: true },
-        "definite_article": { defchecked: true },
-        "WORDSAPI": { defchecked: true },
-        "GOOGLE": { defchecked: true },
-    },
-    "bucket6": {
-        "dictionary": { defchecked: true },
-        "synonym cluster": { defchecked: false },
-        "most common 3000 words": { defchecked: false },
-        "most common 5000 words": { defchecked: false },
-        "most common 10000 words": { defchecked: false },
-        "all words": { defchecked: false, classes: "inblock" },
-    },
-};
 
 function removearritm(arr, itm) {
     for (let i=0; i<arr.length; ) {
@@ -1000,6 +931,87 @@ function update(firsttime) {
     initpop();
 }
 
+function initChecks() {
+
+    let chbs1 = document.querySelector('.checkboxes1');
+    let chbs2 = document.querySelector('.checkboxes2');
+    let chbs3 = document.querySelector('.checkboxes3');
+    let chbs4 = document.querySelector('.checkboxes4');
+    let chbs5 = document.querySelector('.checkboxes5');
+    let chbs55 = document.querySelector('.checkboxes55');
+    let chbs56 = document.querySelector('.checkboxes56');
+    let chbs6 = document.querySelector('.checkboxes6');
+    let chbs7 = document.querySelector('.checkboxes7');
+    var chbuckets = {bucket1:chbs1,bucket2:chbs2,bucket3:chbs3,bucket4:chbs4,bucket5:chbs5,bucket55:chbs55,bucket56:chbs56};
+
+    for (bucketid in chbuckets) {
+        var chbuck = chbuckets[bucketid];
+        $(chbuck).empty();
+        var bucket = checkboxdata[bucketid];
+        if (bucket) {
+            for (chid in bucket) {
+                addCheckbox(chbuck, chid, bucket[chid]);
+            }
+        }
+    }
+    var bucket6 = checkboxdata["bucket6"];
+    $(chbs6).empty();
+    for (rid in bucket6) {
+        addRadio(chbs6, rid, bucket6[rid], "mode");
+    }
+    var bucket7 = checkboxdata["bucket7"];
+    $(chbs7).empty();
+    for (rid in bucket7) {
+        addRadio(chbs7, rid, bucket7[rid], "mode");
+    }
+
+    if (!urlffrom) urlffrom = 5;
+    if (!urlfto) urlfto = 100;
+    let ffromtoinputs=`
+    <input class='form-check-input input-sm' size=8 type='input' id='ffrom' name='ffrom' value='${urlffrom}' placeholder='0'/>..
+    <input class='form-check-input input-sm' size=8 type='input' id='fto' name='fto' value='${urlfto}' placeholder='100'/>`;
+
+    addRadio(chbs6, "words by frequency", {defchecked:false}, "mode", null, ffromtoinputs);
+
+    let A = 'A'.charCodeAt(0);
+    let Z = 'Z'.charCodeAt(0);
+    function createfrlabs(N) {
+        let freqlabels = document.querySelector(".freqlabels"+N);
+        if (window["frqntlses"]) {
+            let frqntls = window["frqntlses"][N];
+            for (let i=1; i<frqntls.length; i++) {
+                let iv = createFreqLetterLink(i, N);
+                freqlabels.appendChild(iv.a);
+                let spc = document.createTextNode("  ");
+                freqlabels.appendChild(spc);
+            }
+        }
+    }
+    function createmyworss(cl=".mywords", mode="my_words") {
+        let letters=['A','B','C','D','E','F', 'G', 'H', 'I', 'J', 'K', 'L', 'M'];
+        let mywlabels = document.querySelector(cl);
+        for (let letter of letters) {
+            let iv = createMywLetterLink(letter, mode);
+            mywlabels.appendChild(iv.a);
+            let spc = document.createTextNode("  ");
+            mywlabels.appendChild(spc);
+        }
+    }
+    createfrlabs(800);
+    createfrlabs(3000);
+    createfrlabs(10000);
+    createmyworss();
+
+    if (urltop) {
+        $("input[type='radio'][name='mode']:checked").removeAttr('checked');
+    } else if (!urlmode) {
+        $("#dictionary").attr('checked', 'checked');
+    }
+
+    chkdict();
+
+}
+
 let curword, groups = {};
 var altdown;
 
@@ -1071,79 +1083,7 @@ $(document).ready(function(){
     wordInfoTbl = document.querySelector('#word-info');
     info = document.querySelector("#info");
 
-
-    let chbs1 = document.querySelector('.checkboxes1');
-    let chbs2 = document.querySelector('.checkboxes2');
-    let chbs3 = document.querySelector('.checkboxes3');
-    let chbs4 = document.querySelector('.checkboxes4');
-    let chbs5 = document.querySelector('.checkboxes5');
-    let chbs55 = document.querySelector('.checkboxes55');
-    let chbs56 = document.querySelector('.checkboxes56');
-    let chbs6 = document.querySelector('.checkboxes6');
-    let chbs7 = document.querySelector('.checkboxes7');
-    var chbuckets = {bucket1:chbs1,bucket2:chbs2,bucket3:chbs3,bucket4:chbs4,bucket5:chbs5,bucket55:chbs55,bucket56:chbs56};
-
-    for (bucketid in chbuckets) {
-        var chbuck = chbuckets[bucketid];
-        var bucket = checkboxdata[bucketid];
-        for (chid in bucket) {
-            addCheckbox(chbuck, chid, bucket[chid]);
-        }
-    }
-    var bucket6 = checkboxdata["bucket6"];
-    for (rid in bucket6) {
-        addRadio(chbs6, rid, bucket6[rid], "mode");
-    }
-    var bucket7 = checkboxdata["bucket7"];
-    for (rid in bucket7) {
-        addRadio(chbs7, rid, bucket7[rid], "mode");
-    }
-
-    if (!urlffrom) urlffrom = 5;
-    if (!urlfto) urlfto = 100;
-    let ffromtoinputs=`
-    <input class='form-check-input input-sm' size=8 type='input' id='ffrom' name='ffrom' value='${urlffrom}' placeholder='0'/>..
-    <input class='form-check-input input-sm' size=8 type='input' id='fto' name='fto' value='${urlfto}' placeholder='100'/>`;
-
-    addRadio(chbs6, "words by frequency", {defchecked:false}, "mode", null, ffromtoinputs);
-
-    let A = 'A'.charCodeAt(0);
-    let Z = 'Z'.charCodeAt(0);
-    function createfrlabs(N) {
-        let freqlabels = document.querySelector(".freqlabels"+N);
-        if (window["frqntlses"]) {
-            let frqntls = window["frqntlses"][N];
-            for (let i=1; i<frqntls.length; i++) {
-                let iv = createFreqLetterLink(i, N);
-                freqlabels.appendChild(iv.a);
-                let spc = document.createTextNode("  ");
-                freqlabels.appendChild(spc);
-            }
-        }
-    }
-    function createmyworss(cl=".mywords", mode="my_words") {
-        let letters=['A','B','C','D','E','F', 'G', 'H', 'I', 'J', 'K', 'L', 'M'];
-        let mywlabels = document.querySelector(cl);
-        for (let letter of letters) {
-            let iv = createMywLetterLink(letter, mode);
-            mywlabels.appendChild(iv.a);
-            let spc = document.createTextNode("  ");
-            mywlabels.appendChild(spc);
-        }
-    }
-    createfrlabs(800);
-    createfrlabs(3000);
-    createfrlabs(10000);
-    createmyworss();
-
-    if (urltop) {
-        $("input[type='radio'][name='mode']:checked").removeAttr('checked');
-    } else if (!urlmode) {
-        $("#dictionary").attr('checked', 'checked');
-    }
     initLang();
-    chkdict();
-
       //$('.form-check-input').change(function(){
     //    $(this).text() 
     //});
@@ -1151,6 +1091,7 @@ $(document).ready(function(){
     //let language1 = getLanguage(1);
     //let language2 = getLanguage(2);
     initSpeak();
+
 
     $(`#lang1 select`).change(()=>{
         chkdict();

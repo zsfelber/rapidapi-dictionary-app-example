@@ -440,6 +440,118 @@ var APIS = {
     "en": {"WORDSAPI":1, "GOOGLE":1},
     "de": {"WORDSAPI":1}
 }
+var lang_checks = {
+
+    en: {
+        "bucket1": {
+            "also": { defchecked: true },
+            "antonyms": { defchecked: true },
+            "attribute": { defchecked: false },
+            "cause": { defchecked: false },
+            "definition": { defchecked: true },
+            "derivation": { defchecked: false },
+            "entails": { defchecked: false },
+        },
+        "bucket2": {
+            "examples": { defchecked: true },
+            "pertains to": { defchecked: false },
+            "similar to": { defchecked: true },
+            "synonyms": { defchecked: true },
+            "verb group": { defchecked: false },
+        },
+        "bucket3": {
+            "in category": { defchecked: false },
+            "instance of": { defchecked: false },
+            "member of": { defchecked: false },
+            "part of": { defchecked: false },
+            "region of": { defchecked: false },
+            "substance of": { defchecked: false },
+            "type of": { defchecked: false },
+        },
+        "bucket4": {
+            "has categories": { defchecked: false },
+            "has instances": { defchecked: false },
+            "has members": { defchecked: false },
+            "has parts": { defchecked: false },
+            "in region": { defchecked: false },
+            "has substances": { defchecked: false },
+            "has types": { defchecked: false },
+        },
+        "bucket5": {
+            "usage of": { defchecked: false },
+            "abbreviation": { defchecked: true },
+            "adjective": { defchecked: true },
+            "adverb": { defchecked: true },
+            "conjunction": { defchecked: true },
+            "determiner": { defchecked: true },
+            "exclamation": { defchecked: true },
+        },
+        "bucket55": {
+            "has usages": { defchecked: false },
+            "noun": { defchecked: true },
+            "participle": { defchecked: true },
+            "prefix": { defchecked: true },
+            "preposition": { defchecked: true },
+            "pronoun": { defchecked: true },
+            "suffix": { defchecked: true },
+        },
+        "bucket56": {
+            "symbol": { defchecked: true },
+            "verb": { defchecked: true },
+            "definite_article": { defchecked: true },
+            "WORDSAPI": { defchecked: true },
+            "GOOGLE": { defchecked: true },
+        },
+        "bucket6": {
+            "dictionary": { defchecked: true },
+            "synonym cluster": { defchecked: false },
+            "most common 3000 words": { defchecked: false },
+            "most common 5000 words": { defchecked: false },
+            "most common 10000 words": { defchecked: false },
+            "all words": { defchecked: false, classes: "inblock" },
+        },
+    },
+
+    de : {
+        "bucket1": {
+            "definition": { defchecked: true },
+            "examples": { defchecked: true },
+            "similar to": { defchecked: true },
+            "synonyms": { defchecked: true },
+        },
+        "bucket2": {
+            "Pronomen": { defchecked: true },
+            "Substantiv": { defchecked: true },
+            "starkes Verb": { defchecked: true },
+            "schwaches Verb": { defchecked: true },
+            "Adjektiv": { defchecked: true },
+            "Suffix": { defchecked: true },
+        },
+        "bucket3": {
+            "noun": { defchecked: true },
+            "participle": { defchecked: true },
+            "prefix": { defchecked: true },
+            "preposition": { defchecked: true },
+            "pronoun": { defchecked: true },
+            "suffix": { defchecked: true },
+        },
+        "bucket4": {
+            "symbol": { defchecked: true },
+            "verb": { defchecked: true },
+            "WORDSAPI": { defchecked: true },
+            "GOOGLE": { defchecked: true },
+        },
+        "bucket6": {
+            "dictionary": { defchecked: true },
+            "synonym cluster": { defchecked: false },
+            "most common 3000 words": { defchecked: false },
+            "most common 5000 words": { defchecked: false },
+            "most common 10000 words": { defchecked: false },
+            "all words": { defchecked: false, classes: "inblock" },
+        },
+    }
+    
+};
 var languages;
 
 // https://mdn.github.io/web-lang-api/speak-easy-synthesis/
@@ -482,7 +594,7 @@ function installLang(which) {
     //inputForm.onsubmit = function(event) {
     //event.preventDefault();
 
-    //speak();
+    //speak();"
 
     //inputTxt.blur();
     //}
@@ -498,10 +610,14 @@ function installLang(which) {
             curlang = $(`#${lang} select`).val();
             setCookie(lang, curlang);
             $("#langtitle").text(getLanguage(1).text);
+            checkboxdata = lang_checks[curlang] || {};
+            initChecks();
             changeSpeak();
         });
         $("#langtitle").text(getLanguage(1).text);
-    
+        checkboxdata = lang_checks[curlang] || {};
+        initChecks();
+
     }
 
     init();

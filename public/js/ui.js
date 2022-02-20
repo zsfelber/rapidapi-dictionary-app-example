@@ -205,3 +205,9 @@ function getSelectionBoundaryElement(isStart) {
         }
     }
 }
+
+function loadJavaScript(uri) {
+    let s = document.createElement("script");
+    s.setAttribute("src", uri);
+    document.body.appendChild(s);
+}
