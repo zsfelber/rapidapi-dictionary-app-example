@@ -946,7 +946,7 @@ exports.aCrawler = function (
     }
   }
 
-  async function loadCommonWord(result, word, noWords) {
+  async function loadCommonWordCluster(result, word, noWords) {
     const entry = await loadSingleWord(word, true);
 
     if (entry) {
@@ -999,7 +999,7 @@ exports.aCrawler = function (
     }
   }
 
-  async function loadCommonWords(words, word, asobject) {
+  async function loadCommonWordClusters(words, word, asobject) {
     // create new array to push data to
     let results = [];
     let result = {
@@ -1013,7 +1013,7 @@ exports.aCrawler = function (
     let promises = [];
     let noWords = Object.keys(words).length;
     for (let commonWord in words) {
-      let cwpromise = loadCommonWord(result, commonWord, noWords);
+      let cwpromise = loadCommonWordCluster(result, commonWord, noWords);
       promises.push(cwpromise);
     }
     await Promise.all(promises);
@@ -1051,7 +1051,7 @@ exports.aCrawler = function (
     }
   }
 
-  function loadCommonWordsLetter(words, word, letter, asobject) {
+  function loadCommonWordClustersLetter(words, word, letter, asobject) {
     let ofLetter = Object.create(null);
     let lc = letter.toLowerCase();
     for (let w of Object.keys(words)) {
@@ -1059,7 +1059,7 @@ exports.aCrawler = function (
         ofLetter[w] = 1;
       }
     }
-    return loadCommonWords(ofLetter, word, asobject);
+    return loadCommonWordClusters(ofLetter, word, asobject);
   }
 
   function loadWordsOnly(words0, word, asobject) {
@@ -1085,14 +1085,50 @@ exports.aCrawler = function (
     }
   }
 
+  function loadCommonWordsFrom(file, howmany) {
+    let cw1;
+    if (!file) {
+      return null;
+    }
+    if (/\.json$/.test(file)) {
+      cw1 = loadJson(DATA_DIR + "/" + file);
+    } else if (/\.txt$/.test(file)) {
+      let cw0 = loadHeadless1ColCsv(DATA_DIR + "/" + file);
+      if (cw0.length > howmany + 100) {
+        cw0 = cw0.slice(0, howmany + 100);
+      }
+      cw1 = {};
+      for (let w of cw0) {
+        cw1[w] = 1;
+      }
+    }
+    return cw1;
+  }
+  function loadCommonWords(howmany) {
+    let r;
+    if (howmany > 5000) {
+      r = loadCommonWordsFrom(langCache.COMMON_WORDS_10000, howmany);
+    }
+    if (!r) {
+      r = loadCommonWordsFrom(langCache.COMMON_WORDS_5000, howmany);
+    }
+    return r;
+  }
+
   function loadCommon3000_words(word, asobject) {
-    let cw1 = loadJson(DATA_DIR + "/common-words-10000.json");
+    let cw1 = loadCommonWords(3000);
     let TheMostCommon3000 = Object.assign({}, cw1.data);
     return loadWordsOnly(TheMostCommon3000, word, asobject);
   }
 
+  function loadCommon5000_words(word, asobject) {
+    let cw1 = loadCommonWords(5000);
+    let TheMostCommon5000 = Object.assign({}, cw1.data);
+    return loadWordsOnly(TheMostCommon5000, word, asobject);
+  }
+
   function loadCommon10000_words(word, asobject) {
-    let cw1 = loadJson(DATA_DIR + "/common-words-10000.json");
+    let cw1 = loadCommonWords(10000);
     let TheMostCommon10000 = Object.assign({},cw1.data);
     return loadWordsOnly(TheMostCommon10000, word, asobject);
   }
@@ -1602,6 +1638,8 @@ exports.aCrawler = function (
             // caggle freq records
             langCache.FREQ_CSV = `unigram_freq.csv`;
             langCache.WORD_LIST = "english_.csv";
+            langCache.COMMON_WORDS_10000 = "common-words-10000.json";
+            langCache.COMMON_WORDS_5000 = "common-words-5000.txt";
 
             const colf0 = `${DATA_DIR}/dict/${langCache.COLLOC}/OxfordCollocationsDictionary`;
             langCache.collocationStardict = stardict.loadStarDict(`${colf0}`, false);
@@ -1616,6 +1654,7 @@ exports.aCrawler = function (
             langCache.NAME = "german";
             langCache.FREQ_LIST = `german_wordlist_300k_most_frequent_from_web.txt`;
             langCache.WORD_LIST = `german_wordlist_300k_most_frequent_from_web.txt`;
+            langCache.COMMON_WORDS = "common-words-5000.txt";
             
           }
           break;
@@ -1825,9 +1864,8 @@ exports.aCrawler = function (
     loadSingleWord,
     traverseCluster,
     loadCluster,
-    loadCommonWords,
-    loadCommonWordsLetter,
     loadCommon3000_words,
+    loadCommon5000_words,
     loadCommon10000_words,
     loadAll_words,
     loadMyWords,

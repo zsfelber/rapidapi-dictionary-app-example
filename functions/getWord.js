@@ -111,6 +111,11 @@ async function get(lang, api, word, mode, letter, ffrom, fto, resolvePath, stopi
 
       data = await crawler.loadCommon3000_words(word, true);
       break;
+    case "most_common_5000_words":
+      stopiterateapis.stop = 1;
+
+      data = await crawler.loadCommon5000_words(word, true);
+      break;
     case "most_common_10000_words":
       stopiterateapis.stop = 1;
 

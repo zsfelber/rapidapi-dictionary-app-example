@@ -82,6 +82,7 @@ var checkboxdata = {
         "dictionary": { defchecked: true },
         "synonym cluster": { defchecked: false },
         "most common 3000 words": { defchecked: false },
+        "most common 5000 words": { defchecked: false },
         "most common 10000 words": { defchecked: false },
         "all words": { defchecked: false, classes: "inblock" },
     },
@@ -963,6 +964,7 @@ function update(firsttime) {
     switch (mode) {
     
     case "most_common_3000_words":
+    case "most_common_5000_words":
     case "most_common_10000_words":
     case "all_words":
     case "my_words":
