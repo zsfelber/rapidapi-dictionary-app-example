@@ -1,0 +1,487 @@
+[
+  {
+    "entry": {
+      "corpus": {
+        "language": "de",
+        "name": "de"
+      },
+      "entry_seq_no": 18367600,
+      "etymology": {
+        "etymology": {
+          "fragments": [
+            {
+              "text": "mittelhochdeutsch zwischen, verkürzt aus mittelhochdeutsch in zwischen, enzwischen, althochdeutsch in zuisken, "
+            },
+            {
+              "is_entry_link": true,
+              "text": "inzwischen"
+            },
+            {
+              "text": ";  eigentlich Dativ Plural von mittelhochdeutsch zwisc, althochdeutsch zuiski = zweifach, je zwei"
+            }
+          ],
+          "text": "mittelhochdeutsch zwischen, verkürzt aus mittelhochdeutsch in zwischen, enzwischen, althochdeutsch in zuisken, inzwischen;  eigentlich Dativ Plural von mittelhochdeutsch zwisc, althochdeutsch zuiski = zweifach, je zwei"
+        }
+      },
+      "headword": "zwischen",
+      "headword_matches_user_query": true,
+      "homograph_index": 1,
+      "locale": "de",
+      "parts_of_speech": [
+        {
+          "value": "Präposition"
+        }
+      ],
+      "phonetics": [
+        {
+          "text": "zwíschen",
+          "tts_audio_enabled": true
+        }
+      ],
+      "pronunciation_ob_data_exists": true,
+      "reference_id": "10008383",
+      "sense_families": [
+        {
+          "parts_of_speech": [
+            {
+              "value": "Präposition"
+            }
+          ],
+          "senses": [
+            {
+              "definition": {
+                "fragments": [
+                  {
+                    "text": "kennzeichnet das Vorhandensein von jemandem, einer Sache innerhalb eines durch zwei Begrenzungen markierten Raumes"
+                  }
+                ],
+                "text": "kennzeichnet das Vorhandensein von jemandem, einer Sache innerhalb eines durch zwei Begrenzungen markierten Raumes"
+              },
+              "displayed_index": "1a",
+              "example_groups": [
+                {
+                  "examples": [
+                    "er steht dort zwischen seinem Vater und seinem Bruder",
+                    "sie hält eine Zigarette zwischen den Fingern"
+                  ]
+                }
+              ],
+              "note": {
+                "text": "kennzeichnet das Vorhandensein von jemandem, einer Sache innerhalb eines durch zwei Begrenzungen markierten Raumes",
+                "type": "expl"
+              }
+            },
+            {
+              "definition": {
+                "fragments": [
+                  {
+                    "text": "kennzeichnet eine Erstreckung von etwas innerhalb von zwei begrenzenden Punkten"
+                  }
+                ],
+                "text": "kennzeichnet eine Erstreckung von etwas innerhalb von zwei begrenzenden Punkten"
+              },
+              "displayed_index": "1b",
+              "example_groups": [
+                {
+                  "examples": [
+                    "der Abstand zwischen den Häusern, den Punkten A und B"
+                  ]
+                }
+              ],
+              "note": {
+                "text": "kennzeichnet eine Erstreckung von etwas innerhalb von zwei begrenzenden Punkten",
+                "type": "expl"
+              }
+            },
+            {
+              "definition": {
+                "fragments": [
+                  {
+                    "text": "mitten in; mitten unter"
+                  }
+                ],
+                "text": "mitten in; mitten unter"
+              },
+              "displayed_index": "1c",
+              "example_groups": [
+                {
+                  "examples": [
+                    "der Brief lag zwischen alten Papieren",
+                    "sie saßen zwischen lauter fremden Leuten"
+                  ]
+                }
+              ],
+              "note": {
+                "text": "kennzeichnet das Vorhandensein inmitten einer Anzahl, Menge o. Ä.",
+                "type": "expl"
+              }
+            },
+            {
+              "definition": {
+                "fragments": [
+                  {
+                    "text": "etwa in der Mitte von"
+                  }
+                ],
+                "text": "etwa in der Mitte von"
+              },
+              "displayed_index": "2a",
+              "example_groups": [
+                {
+                  "examples": [
+                    "er stellt das Auto zwischen zwei Straßenbäume"
+                  ]
+                }
+              ]
+            },
+            {
+              "definition": {
+                "fragments": [
+                  {
+                    "text": "mitten in; mitten unter"
+                  }
+                ],
+                "text": "mitten in; mitten unter"
+              },
+              "displayed_index": "2b",
+              "example_groups": [
+                {
+                  "examples": [
+                    "er setzt sich zwischen seine Gäste",
+                    "den Brief zwischen alte Papiere legen…: {
+                "text": "kennzeichnet einen bestimmten Wert als [untere] Grenze einer bestimmten Spanne",
+                "type": "expl"
+              }
+            }
+          ]
+        }
+      ],
+      "show_pronunciation_promo": true,
+      "source_id": "10008383",
+      "syllabified_headword": "zwi·schen",
+      "user_intent": "DEFINE"
+    }
+  },
+  {
+    "thesaurus_result": {
+      "headword": "zwischen",
+      "homograph_index": 1,
+      "synonyms_group": [
+        {
+          "nyms": [
+            {
+              "nym_headword": "bei",
+              "nym_snippet": {
+                "definition": "in der Nähe von jemandem, etwas; nahe",
+                "example": "Bernau bei (Abkürzung: b.) Berlin",
+                "lemma": "bei",
+                "part_of_speech": "Präposition",
+                "tts_audio_enabled": true
+              }
+            },
+            {
+              "nym_headword": "in der Mitte von"
+            },
+            {
+              "nym_headword": "inmitten von"
+            },
+            {
+              "nym_headword": "mitten in"
+            },
+            {
+              "nym_headword": "mitten unter"
+            },
+            {
+              "nym_headword": "unter",
+              "nym_snippet": {
+                "definition": "kennzeichnet einen Abstand in vertikaler Richtung und bezeichnet die tiefere Lage im Verhältnis zu einem anderen Genannten",
+                "example": "unter einem Baum sitzen",
+                "lemma": "unter",
+                "part_of_speech": "Präposition",
+                "tts_audio_enabled": true
+              }
+            }
+          ]
+        }
+      ],
+      "thesaurus_onebox_metadata": {
+        "content_type": "ONLY_SYNONYMS",
+        "corpus_info": {
+          "language": "de",
+          "name": "de",
+          "type": "MONOLINGUAL"
+        },
+        "corpus_name": "de",
+        "is_first_thesaurus_result": true,
+        "language": "de",
+        "number_of_nyms": 6,
+        "number_of_thesaurus_results": 1
+      },
+      "user_intent": "DEFINE"
+    }
+  },
+  {
+    "entry": {
+      "corpus": {
+        "language": "de",
+        "name": "de"
+      },
+      "entry_seq_no": 18367700,
+      "headword": "zwischen",
+      "headword_matches_user_query": true,
+      "homograph_index": 2,
+      "locale": "de",
+      "parts_of_speech": [
+        {
+          "categories": [
+            "ADVERB"
+          ],
+          "value": "Adverb"
+        }
+      ],
+      "phonetics": [
+        {
+          "text": "zwíschen",
+          "tts_audio_enabled": true
+        }
+      ],
+      "pronunciation_ob_data_exists": true,
+      "reference_id": "10011161",
+      "sense_families": [
+        {
+          "parts_of_speech": [
+            {
+              "categories": [
+                "ADVERB"
+              ],
+              "value": "Adverb"
+            }
+          ],
+          "senses": [
+            {
+              "definition": {
+                "fragments": [
+                  {
+                    "text": "kennzeichnet bei Maß- und Mengenangaben einen Wert innerhalb der angegebenen Grenzwerte"
+                  }
+                ],
+                "text": "kennzeichnet bei Maß- und Mengenangaben einen Wert innerhalb der angegebenen Grenzwerte"
+              },
+              "displayed_index": "1",
+              "example_groups": [
+                {
+                  "examples": [
+                    "die Bäume sind zwischen 15 und 20 Meter hoch"
+                  ]
+                }
+              ],
+              "note": {
+                "text": "kennzeichnet bei Maß- und Mengenangaben einen Wert innerhalb der angegebenen Grenzwerte",
+                "type": "expl"
+              }
+            },
+            {
+              "definition": {
+                "fragments": [
+                  {
+                    "text": "als abgetrennter Teil von den Adverbien »dazwischen, wozwischen«"
+                  }
+                ],
+                "text": "als abgetrennter Teil von den Adverbien »dazwischen, wozwischen«"
+              },
+              "displayed_index": "2",
+              "example_groups": [
+                {
+                  "examples": [
+                    "das darf da nicht zwischen sein"
+                  ]
+                }
+              ],
+              "label_set": {
+                "labels": [
+                  "umgangssprachlich",
+                  "besonders norddeutsch"
+                ]
+              },
+              "note": {
+                "text": "als abgetrennter Teil von den Adverbien »dazwischen, wozwischen«",
+                "type": "expl"
+              }
+            }
+          ]
+        }
+      ],
+      "show_pronunciation_promo": true,
+      "source_id": "10011161",
+      "syllabified_headword": "zwi·schen",
+      "user_intent": "DEFINE"
+    }
+  },
+  {
+    "translation": {
+      "language_code": "",
+      "possible_target_languages": [
+        ""
+      ],
+      "source_language_code": "de",
+      "term": "zwischen"
+    }
+  }
+]…
+
+
+
+
+
+
+
+
+
+
+
+
+
+[
+  {
+    "entry": {
+      "corpus": {
+        "language": "de",
+        "name": "de"
+      },
+      "entry_seq_no": 17854600,
+      "headword": "wozwischen",
+      "headword_matches_user_query": true,
+      "locale": "de",
+      "parts_of_speech": [
+        {
+          "categories": [
+            "ADVERB"
+          ],
+          "value": "Adverb"
+        }
+      ],
+      "phonetics": [
+        {
+          "text": "wozwíschen",
+          "tts_audio_enabled": true
+        }
+      ],
+      "pronunciation_ob_data_exists": true,
+      "reference_id": "10010596",
+      "sense_families": [
+        {
+          "label_set": {
+            "labels": [
+              "selten"
+            ]
+          },
+          "parts_of_speech": [
+            {
+              "categories": [
+                "ADVERB"
+              ],
+              "value": "Adverb"
+            }
+          ],
+          "senses": [
+            {
+              "definition": {
+                "fragments": [
+                  {
+                    "text": "zwischen welchen Sachen"
+                  }
+                ],
+                "text": "zwischen welchen Sachen"
+              },
+              "displayed_index": "1a",
+              "example_groups": [
+                {
+                  "examples": [
+                    "wozwischen lag der Brief?"
+                  ]
+                }
+              ]
+            },
+            {
+              "definition": {
+                "fragments": [
+                  {
+                    "text": "zwischen welche Sachen"
+                  }
+                ],
+                "text": "zwischen welche Sachen"
+              },
+              "displayed_index": "1b",
+              "example_groups": [
+                {
+                  "examples": [
+                    "wozwischen ist es gerutscht?"
+                  ]
+                }
+              ]
+            },
+            {
+              "definition": {
+                "fragments": [
+                  {
+                    "text": "zwischen welchen (gerade genannten) Sachen"
+                  }
+                ],
+                "text": "zwischen welchen (gerade genannten) Sachen"
+              },
+              "displayed_index": "2a",
+              "example_groups": [
+                {
+                  "examples": [
+                    "irgendwas, wozwischen ich die Briefmarken trocknen kann"
+                  ]
+                }
+              ]
+            },
+            {
+              "definition": {
+                "fragments": [
+                  {
+                    "text": "zwischen welche (gerade genannten) Sachen"
+                  }
+                ],
+                "text": "zwischen welche (gerade genannten) Sachen"
+              },
+              "displayed_index": "2b",
+              "example_groups": [
+                {
+                  "examples": [
+                    "ich habe nichts, wozwischen ich es klemmen könnte"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "show_pronunciation_promo": true,
+      "source_id": "10010596",
+      "syllabified_headword": "wo·zwi·schen",
+      "user_intent": "DEFINE"
+    }
+  },
+  {
+    "translation": {
+      "language_code": "",
+      "possible_target_languages": [
+        ""
+      ],
+      "source_language_code": "de",
+      "term": "wozwischen"
+    }
+  }
+]
+
+
+
+
+
+
+
+
+

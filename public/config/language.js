@@ -528,8 +528,8 @@ var lang_checks = {
             "Suffix": { defchecked: true },
         },
         "bucket3": {
-            "noun": { defchecked: true },
-            "participle": { defchecked: true },
+            "Präposition": { defchecked: true },
+            "Adverb": { defchecked: true },
             "prefix": { defchecked: true },
             "preposition": { defchecked: true },
             "pronoun": { defchecked: true },

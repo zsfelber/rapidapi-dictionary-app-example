@@ -103,7 +103,7 @@ function transform (word, language, data, { include }) {
 						return {
 							partOfSpeech: _.get(parts_of_speech[0], 'value'),
 							definitions: senses.map((sense) => {							
-								let { definition = {}, example_groups = [], thesaurus_entries = [] } = sense,
+								let { definition = {}, example_groups = [], thesaurus_entries = [], thesaurus_result = [] } = sense,
 									result = {
 										definition: definition.text,
 										example: _.get(example_groups[0], 'examples.0'),
@@ -112,6 +112,14 @@ function transform (word, language, data, { include }) {
 										antonyms: _.get(thesaurus_entries[0], 'antonyms.0.nyms', [])
 											.map(e => e.nym)
 									};
+									if (!result.synonyms || !result.synonyms.length) {
+										result.synonyms = _.get(thesaurus_result[0], 'synonyms_group.0.nyms', [])
+											.map(e => e.nym)
+									}
+									if (!result.antonyms || !result.antonyms.length) {
+										result.antonyms = _.get(thesaurus_result[0], 'antonyms.0.nyms', [])
+											.map(e => e.nym)
+									}
 
 								if (include.example) {
 									result.examples =  _.reduce(example_groups, (accumulator, example_group) => {
