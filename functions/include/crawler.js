@@ -1062,77 +1062,9 @@ exports.aCrawler = function (
     return loadCommonWords(ofLetter, word, asobject);
   }
 
-  function loadCommonWords3000_a_e(word, asobject) {
-    const cw = loadJson(DATA_DIR + "/common-words-3000-a-e.json");
-    return loadCommonWords(cw.data, word, asobject);
-  }
-
-  function loadCommonWords3000_f_p(word, asobject) {
-    const cw = loadJson(DATA_DIR + "/common-words-3000-f-p.json");
-    return loadCommonWords(cw.data, word, asobject);
-  }
-
-  function loadCommonWords3000_q_z(word, asobject) {
-    const cw = loadJson(DATA_DIR + "/common-words-3000-q-z.json");
-    return loadCommonWords(cw.data, word, asobject);
-  }
-
-  function loadCommonWords10000_a_c(word, asobject) {
-    const cw = loadJson(DATA_DIR + "/common-words-10000-a-c.json");
-    return loadCommonWords(cw.data, word, asobject);
-  }
-
-  function loadCommonWords10000_d_h(word, asobject) {
-    const cw = loadJson(DATA_DIR + "/common-words-10000-d-h.json");
-    return loadCommonWords(cw.data, word, asobject);
-  }
-
-  function loadCommonWords10000_i_o(word, asobject) {
-    const cw = loadJson(DATA_DIR + "/common-words-10000-i-o.json");
-    return loadCommonWords(cw.data, word, asobject);
-  }
-
-  function loadCommonWords10000_p_r(word, asobject) {
-    const cw = loadJson(DATA_DIR + "/common-words-10000-p-r.json");
-    return loadCommonWords(cw.data, word, asobject);
-  }
-
-  function loadCommonWords10000_s_z(word, asobject) {
-    const cw = loadJson(DATA_DIR + "/common-words-10000-s-z.json");
-    return loadCommonWords(cw.data, word, asobject);
-  }
-
-  function loadCommonWords3000(word, letter, asobject) {
-    let lc = letter.toLowerCase(),
-      cw;
-    if ("a" <= lc && lc <= "e") {
-      cw = loadJson(DATA_DIR + "/common-words-3000-a-e.json");
-    } else if ("f" <= lc && lc <= "p") {
-      cw = loadJson(DATA_DIR + "/common-words-3000-f-p.json");
-    } else if ("q" <= lc && lc <= "z") {
-      cw = loadJson(DATA_DIR + "/common-words-3000-q-z.json");
-    } else {
-      cw = {};
-    }
-    return loadCommonWordsLetter(cw.data, word, letter, asobject);
-  }
-
   function loadCommonWords10000(word, letter, asobject) {
-    let lc = letter.toLowerCase(),
-      cw;
-    if ("a" <= lc && lc <= "c") {
-      cw = loadJson(DATA_DIR + "/common-words-10000-a-c.json");
-    } else if ("d" <= lc && lc <= "h") {
-      cw = loadJson(DATA_DIR + "/common-words-10000-d-h.json");
-    } else if ("i" <= lc && lc <= "o") {
-      cw = loadJson(DATA_DIR + "/common-words-10000-i-o.json");
-    } else if ("p" <= lc && lc <= "r") {
-      cw = loadJson(DATA_DIR + "/common-words-10000-p-r.json");
-    } else if ("s" <= lc && lc <= "z") {
-      cw = loadJson(DATA_DIR + "/common-words-10000-s-z.json");
-    } else {
-      cw = {};
-    }
+    let lc = letter.toLowerCase(), cw;
+    cw = loadJson(DATA_DIR + "/common-words-10000.json");
     return loadCommonWordsLetter(cw.data, word, letter, asobject);
   }
 
