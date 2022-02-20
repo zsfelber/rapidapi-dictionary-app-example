@@ -54,12 +54,24 @@ exports.aCrawler = function (
   MAX_NODE_FREQUENCY,
   TRAVERSE_ALL,
   MAX_LEVEL = 100,
-  resolvePath) {
+  resolvePath,
+  COLLOC
+  ) {
 
 
   const DATA_DIR = "data/" + LANG;
   const CACHE_DIR = "cache/" + LANG;
   const CACHE_DIR_API = CACHE_DIR + "/" + API;
+
+  const apicache = getCacheFor(API);
+  if (COLLOC) {
+    apicache.COLLOC = COLLOC;
+  } else {
+    COLLOC = apicache.COLLOC;
+  }
+
+  const COLLOC_DIR = `../${DATA_DIR}/dict/${COLLOC}/res/`;
+
   const TWELVE = (CACHE_DIR_API + "/words/").length;
   if (!resolvePath) resolvePath = noResolvePath;
 
@@ -75,7 +87,7 @@ exports.aCrawler = function (
   let totalWordsLastDay = 0;
   let cacheInitIsError = false;
 
-  let cache;
+  let apicache;
 
   let pendingObjects = {};
 
@@ -185,9 +197,8 @@ exports.aCrawler = function (
     }
   }
 
-  async function initCrawler() {
+  function initCrawler() {
 
-    cache = getCacheFor(API);
 
     switch (_API) {
       case "google":
@@ -389,10 +400,10 @@ exports.aCrawler = function (
     loadNativeStarDictAll();
 
     let itm;
-    if ((itm = cache.stardict_words.find(word))) {
+    if ((itm = apicache.stardict_words.find(word))) {
       data = Object.assign({}, itm.data);
       if (data.errind) {
-        data.error = cache.stardict_errors.get(data.errind).word;
+        data.error = apicache.stardict_errors.get(data.errind).word;
         console.warn(
           "StarDict data is of an error entry : " + word,
           " ",
@@ -405,7 +416,7 @@ exports.aCrawler = function (
         data.word = itm.word;
         if (data.definds)
           for (let meanind of data.definds) {
-            let d0 = cache.stardict_defs.get(meanind);
+            let d0 = apicache.stardict_defs.get(meanind);
             let def = Object.assign({}, d0.data);
             if (!def.synonyms && def.synonymSet) {
               delete def.synonymSet[itm.word];
@@ -1190,7 +1201,7 @@ exports.aCrawler = function (
   async function getAllDefinitions() {
 
     loadNativeStarDictAll();
-    let sd_defs_data = cache.stardict_defs.readall();
+    let sd_defs_data = apicache.stardict_defs.readall();
 
     let defs1 = [];
     for (let value of sd_defs_data) {
@@ -1610,18 +1621,18 @@ exports.aCrawler = function (
 
   function loadNativeStarDictAll() {
     if (
-      !cache.stardict_words ||
-      !cache.stardict_defs ||
-      !cache.stardict_errors
+      !apicache.stardict_words ||
+      !apicache.stardict_defs ||
+      !apicache.stardict_errors
     ) {
       console.time("load native StarDict datafiles");
       const f0 = `${CACHE_DIR_API}/dict/${API}-english/${API}-english`;
-      if (!cache.stardict_words)
-        cache.stardict_words = stardict.loadStarDict(`${f0}-words`);
-      if (!cache.stardict_defs)
-        cache.stardict_defs = stardict.loadStarDict(`${f0}-definitions`);
-      if (!cache.stardict_errors)
-        cache.stardict_errors = stardict.loadStarDict(`${f0}-errors`);
+      if (!apicache.stardict_words)
+        apicache.stardict_words = stardict.loadStarDict(`${f0}-words`);
+      if (!apicache.stardict_defs)
+        apicache.stardict_defs = stardict.loadStarDict(`${f0}-definitions`);
+      if (!apicache.stardict_errors)
+        apicache.stardict_errors = stardict.loadStarDict(`${f0}-errors`);
       console.timeEnd("load native StarDict datafiles");
     }
   }
@@ -1644,12 +1655,20 @@ exports.aCrawler = function (
 
     ) {
       console.time("load 3rd party StarDict datafiles");
-      const colf0 = `${DATA_DIR}/dict/stardict-OxfordCollocationsDictionary-2.4.2/OxfordCollocationsDictionary`;
-      staticCache.collocationStardict = stardict.loadStarDict(`${colf0}`, false);
-      const eh0 = `${DATA_DIR}/dict/stardict-jdict-EngHun-2.4.2/jdict-EngHun`;
-      staticCache.enghunStardict = stardict.loadStarDict(`${eh0}`, false);
-      const he0 = `${DATA_DIR}/dict/stardict-hungarian-english-2.4.2/hungarian-english`;
-      staticCache.hunengStardict = stardict.loadStarDict(`${he0}`, false);
+      switch (LANG) {
+        case "EN":{
+            const colf0 = `${DATA_DIR}/dict/stardict-OxfordCollocationsDictionary-2.4.2/OxfordCollocationsDictionary`;
+            staticCache.collocationStardict = stardict.loadStarDict(`${colf0}`, false);
+            const eh0 = `${DATA_DIR}/dict/stardict-jdict-EngHun-2.4.2/jdict-EngHun`;
+            staticCache.enghunStardict = stardict.loadStarDict(`${eh0}`, false);
+            const he0 = `${DATA_DIR}/dict/stardict-hungarian-english-2.4.2/hungarian-english`;
+            staticCache.hunengStardict = stardict.loadStarDict(`${he0}`, false);
+          }
+          break;
+        case "DE":{
+          }
+          break;
+      }
 
       console.timeEnd("load 3rd party StarDict datafiles");
     }
@@ -1710,16 +1729,16 @@ exports.aCrawler = function (
   }
 
   function mergeIntermediate(stage1) {
-    for (let i in cache.stardict_defs.indexes()) {
-      let itm = cache.stardict_defs.get(i);
+    for (let i in apicache.stardict_defs.indexes()) {
+      let itm = apicache.stardict_defs.get(i);
       stage1.meaning[itm.word] = itm.data;
     }
-    for (let i in cache.stardict_errors.indexes()) {
-      let itm = cache.stardict_errors.get(i);
+    for (let i in apicache.stardict_errors.indexes()) {
+      let itm = apicache.stardict_errors.get(i);
       stage1.error[itm.word] = itm.data;
     }
-    for (let i in cache.stardict_words.indexes()) {
-      let itm = cache.stardict_words.get(i);
+    for (let i in apicache.stardict_words.indexes()) {
+      let itm = apicache.stardict_words.get(i);
       stage1.word[itm.word] = itm.data;
     }
   }
@@ -1728,12 +1747,12 @@ exports.aCrawler = function (
     for (let s in stage1.word) {
       let worddata = stage1.word[s];
       if (worddata.errind) {
-        worddata.errortmp = cache.stardict_errors.get(worddata.errind).data;
+        worddata.errortmp = apicache.stardict_errors.get(worddata.errind).data;
         delete worddata.errind;
       } else if (worddata.definds) {
         worddata.meaningstmp = [];
         for (let meanind of worddata.definds) {
-          worddata.meaningstmp.push(cache.stardict_defs.get(meanind).data);
+          worddata.meaningstmp.push(apicache.stardict_defs.get(meanind).data);
         }
         delete worddata.definds;
       }
@@ -1809,7 +1828,7 @@ exports.aCrawler = function (
     if (itm) {
       src = itm.data;
 
-      let root = `../${DATA_DIR}/dict/stardict-OxfordCollocationsDictionary-2.4.2/res/`;
+      let root = COLLOC_DIR;
       src = src.replace(/\x1E/g, root);
       src = src.replace(/\x1F/g, "");
     }
@@ -1834,6 +1853,7 @@ exports.aCrawler = function (
     return result;
   }
 
+  initCrawler();
 
   return {
     LANG, API,
@@ -1846,9 +1866,9 @@ exports.aCrawler = function (
     DATA_DIR,
     CACHE_DIR,
     CACHE_DIR_API,
+    COLLOC_DIR,
     TWELVE,
     isApiLimitReached,
-    initCrawler,
     loadJson,
     singleWordToDisplay,
     loadSingleWord,

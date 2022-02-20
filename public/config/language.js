@@ -436,8 +436,11 @@ var LANGUAGE_BY_LOCALE = {
     zu_ZA: "Zulu (South Africa)",
     zu: "Zulu"
 };
-
-let languages;
+var APIS = {
+    "EN": ["WordsAPI", "Google"],
+    "DE": ["WordsAPI"]
+}
+var languages;
 
 // https://mdn.github.io/web-lang-api/speak-easy-synthesis/
 
@@ -513,7 +516,8 @@ function getLanguage(which) {
     let language = $(`#${lang} select`).val();
     if (language) {
         let text = LANGUAGE_BY_LOCALE[id];
-        let result = {language, text};
+        let apis = APIS[id];
+        let result = {language, text, apis};
         return result;
     } else {
         return null;

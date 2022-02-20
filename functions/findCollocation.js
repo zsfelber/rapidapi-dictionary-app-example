@@ -23,7 +23,7 @@ exports.handler = async function (event, context) {
         MAX_NODE_FREQUENCY,
         TRAVERSE_ALL
     ,resolvePath);
-    let root = "../data/dict/stardict-OxfordCollocationsDictionary-2.4.2/";
+    let root = crawler.COLLOC_DIR;
     let html = crawler.findCollocation(word);
 
     let result = {
