@@ -5,144 +5,154 @@ const fs = require('fs'),
 	errors = require('../errors.js'),
 	fetch = require('../fetch.js');
 
-exports.transformV2toV1 = function  (data) {
+exports.transformV2toV1 = function (data) {
 	return data.map((entry) => {
-    	let {
-    		meanings,
-    		...otherProps
-    	} = entry;
-    
-    	meanings = meanings.reduce((meanings, meaning) => {
-    		let partOfSpeech, definitions;
-    
-    		({
-    			partOfSpeech,
-    			definitions
-    		} = meaning);
-    		meanings[partOfSpeech] = definitions;
-    
-    		return meanings;
-    	}, {});
-    
-    	return {
-    		...otherProps,
-    		meaning: meanings
-    	};
-    });
+		let {
+			meanings,
+			...otherProps
+		} = entry;
+
+		meanings = meanings.reduce((meanings, meaning) => {
+			let partOfSpeech, definitions;
+
+			({
+				partOfSpeech,
+				definitions
+			} = meaning);
+			meanings[partOfSpeech] = definitions;
+
+			return meanings;
+		}, {});
+
+		return {
+			...otherProps,
+			meaning: meanings
+		};
+	});
 }
 
-function transform (word, language, data, { include }) {
-	return data
-	        .map(e => e.entry)
-	        .filter(e => e)
-			.reduce((accumulator, entry) => {
-				if (!entry.subentries) { return accumulator.push(entry) && accumulator; }
+function transform(word, language, data, { include }) {
+	let thesaurus = data
+		.map(e => e.thesaurus_result)
+		.filter(e => e)
+		.map((thesaurus_result) => {
+			let { headword, lemma, homograph_index } = thesaurus_result;
 
-				let { subentries } = entry,
-					mappedSubentries;
+			let result = {
+				word: lemma || headword,
+				homograph_index,
+				synonymsGroups: _.get(thesaurus_result, 'synonyms_group.0.nyms', [])
+			}
+			return result;
+		});
 
-				if (subentries.length > 1) {
-					utils.logEvent(word, language, 'subentries length is greater than 1', { data });
-				}
 
-				if (entry.sense_families) {
-					utils.logEvent(word, language, 'entry has subentries and sense families', { data });
-				}
+	let definitions = data
+		.map(e => e.entry)
+		.filter(e => e)
+		.reduce((accumulator, entry) => {
+			if (!entry.subentries) { return accumulator.push(entry) && accumulator; }
 
-				if (entry.etymology) {
-					utils.logEvent(word, language, 'entry has subentries and etymology', { data });
-				}
+			let { subentries } = entry,
+				mappedSubentries;
 
-				mappedSubentries = subentries
-						.map((subentry) => {
-							if (subentry.sense_families) {
-								utils.logEvent(word, language, 'subentry has sense families', { data });
+			if (subentries.length > 1) {
+				utils.logEvent(word, language, 'subentries length is greater than 1', { data });
+			}
+
+			if (entry.sense_families) {
+				utils.logEvent(word, language, 'entry has subentries and sense families', { data });
+			}
+
+			if (entry.etymology) {
+				utils.logEvent(word, language, 'entry has subentries and etymology', { data });
+			}
+
+			mappedSubentries = subentries
+				.map((subentry) => {
+					if (subentry.sense_families) {
+						utils.logEvent(word, language, 'subentry has sense families', { data });
+					}
+
+					if (subentry.sense_family) {
+						subentry.sense_families = [];
+						subentry.sense_families.push(subentry.sense_family);
+					}
+
+					return _.defaults(subentry, _.pick(entry, ['phonetics', 'etymology']))
+				})
+
+			return accumulator.concat(mappedSubentries);
+		}, [])
+		.map((entry) => {
+			let { headword, lemma, phonetics = [], etymology = {}, sense_families = [], thesaurus_result = [] } = entry;
+
+
+			return {
+				word: lemma || headword,
+				phonetic: _.get(phonetics, '0.text'),
+				phonetics: phonetics.map((e) => {
+					return {
+						text: e.text,
+						audio: e.oxford_audio
+					};
+				}),
+				origin: _.get(etymology, 'etymology.text'),
+				meanings: sense_families.map((sense_family) => {
+					let { parts_of_speech, senses = [] } = sense_family;
+
+					// if parts of speech is empty at this level.
+					// Current hypothesis tells that it means only one sense is present
+					// We need to take out parts_of_speech from it and use it.
+					if (!parts_of_speech) {
+						parts_of_speech = _.get(senses[0], 'parts_of_speech', []);
+
+						if (senses.length > 1) {
+							utils.logEvent(word, language, 'part of speech missing but more than one sense present', { data });
+						}
+					}
+
+					if (parts_of_speech.length > 1) {
+						utils.logEvent(word, language, 'more than one part of speech present', { data });
+					}
+
+					return {
+						partOfSpeech: _.get(parts_of_speech[0], 'value'),
+						definitions: senses.map((sense) => {
+							let { definition = {}, example_groups = [], thesaurus_entries = [] } = sense,
+								result = {
+									definition: definition.text,
+									example: _.get(example_groups[0], 'examples.0'),
+									synonyms: _.get(thesaurus_entries[0], 'synonyms.0.nyms', [])
+										.map(e => e.nym),
+									antonyms: _.get(thesaurus_entries[0], 'antonyms.0.nyms', [])
+										.map(e => e.nym)
+								};
+
+							if (include.example) {
+								result.examples = _.reduce(example_groups, (accumulator, example_group) => {
+									let example = _.get(example_group, 'examples', []);
+
+									accumulator = accumulator.concat(example);
+
+									return accumulator;
+								}, []);
 							}
 
-							if (subentry.sense_family) {
-								subentry.sense_families = [];
-								subentry.sense_families.push(subentry.sense_family);
-							}
-
-							return _.defaults(subentry, _.pick(entry, ['phonetics', 'etymology']))
+							return result;
 						})
+					};
+				})
+			};
+		});
 
-				return accumulator.concat(mappedSubentries);
-			}, [])
-			.map((entry) => {
-				let { headword, lemma, phonetics = [], etymology = {}, sense_families = [] } = entry;
-				
-				return {
-					word: lemma || headword,
-					phonetic: _.get(phonetics, '0.text'),
-					phonetics: phonetics.map((e) => {
-						return {
-							text: e.text,
-							audio: e.oxford_audio
-						};
-					}),
-					origin: _.get(etymology, 'etymology.text'),
-					meanings: sense_families.map((sense_family) => {
-						let { parts_of_speech, senses = []} = sense_family;
-
-						// if parts of speech is empty at this level.
-						// Current hypothesis tells that it means only one sense is present
-						// We need to take out parts_of_speech from it and use it.
-						if (!parts_of_speech) {
-							parts_of_speech = _.get(senses[0], 'parts_of_speech', []);
-
-							if (senses.length > 1) {
-								utils.logEvent(word, language, 'part of speech missing but more than one sense present', { data });
-							}
-						}
-						
-						if (parts_of_speech.length > 1) {
-							utils.logEvent(word, language, 'more than one part of speech present', { data });
-						}
-
-						return {
-							partOfSpeech: _.get(parts_of_speech[0], 'value'),
-							definitions: senses.map((sense) => {							
-								let { definition = {}, example_groups = [], thesaurus_entries = [], thesaurus_result = [] } = sense,
-									result = {
-										definition: definition.text,
-										example: _.get(example_groups[0], 'examples.0'),
-										synonyms: _.get(thesaurus_entries[0], 'synonyms.0.nyms', [])
-											.map(e => e.nym),
-										antonyms: _.get(thesaurus_entries[0], 'antonyms.0.nyms', [])
-											.map(e => e.nym)
-									};
-									if (!result.synonyms || !result.synonyms.length) {
-										result.synonyms = _.get(thesaurus_result[0], 'synonyms_group.0.nyms', [])
-											.map(e => e.nym)
-									}
-									if (!result.antonyms || !result.antonyms.length) {
-										result.antonyms = _.get(thesaurus_result[0], 'antonyms.0.nyms', [])
-											.map(e => e.nym)
-									}
-
-								if (include.example) {
-									result.examples =  _.reduce(example_groups, (accumulator, example_group) => {
-										let example = _.get(example_group, 'examples', []);
-
-										accumulator = accumulator.concat(example);
-
-										return accumulator;
-									}, []);
-								}
-
-								return result;
-							})
-						};
-					})
-				};
-			});
+	return {thesaurus, definitions};
 }
 
 async function fetchFromSource(word, language) {
 	// https://www.google.com/async/callback:5493?fc=ErUBCndBTlVfTnFUN29LdXdNSlQ2VlZoWUIwWE1HaElOclFNU29TOFF4ZGxGbV9zbzA3YmQ2NnJyQXlHNVlrb3l3OXgtREpRbXpNZ0M1NWZPeFo4NjQyVlA3S2ZQOHpYa292MFBMaDQweGRNQjR4eTlld1E4bDlCbXFJMBIWU2JzSllkLVpHc3J5OVFPb3Q2aVlDZxoiQU9NWVJ3QmU2cHRlbjZEZmw5U0lXT1lOR3hsM2xBWGFldw&fcv=3&async=term:Rettung,corpus:de,,hhdr:true,hwdgt:true,wfp:true,ttl:,tsl:,ptl:
 
-	
+
 	/*
 	https://githubhot.com/repo/meetDeveloper/freeDictionaryAPI/issues/111
 
@@ -172,24 +182,24 @@ async function fetchFromSource(word, language) {
 
 	url = url.toString();
 
-	let info = 		{ word, language };
+	let info = { word, language };
 
-	let body = await fetch.fetchTextFromHttpUrl(url, 
+	let body = await fetch.fetchTextFromHttpUrl(url,
 		{
 			"accept": "*/*",
 			"accept-encoding": "gzip, deflate, br",
-			"accept-language": "en-US,en,"+language+";q=0.9",
+			"accept-language": "en-US,en," + language + ";q=0.9",
 			"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36"
 		},
 		info
 	);
-    let data = JSON.parse(body.substring(4));
+	let data = JSON.parse(body.substring(4));
 
 	let single_results = _.get(data, 'feature-callback.payload.single_results', []),
-			error = _.chain(single_results)
-					.find('widget')
-					.get('widget.error')
-					.value()
+		error = _.chain(single_results)
+			.find('widget')
+			.get('widget.error')
+			.value()
 
 	if (single_results.length === 0) { throw new errors.NoDefinitionsFound(info); }
 
@@ -200,7 +210,7 @@ async function fetchFromSource(word, language) {
 	return single_results;
 }
 
-exports.findDefinitions = async function  (word, language, { include }) {
+exports.findDefinitions = async function (word, language, { include }) {
 	let dictionaryData = await fetchFromSource(word, language);
 
 	if (_.isEmpty(dictionaryData)) { throw new errors.UnexpectedError(); }

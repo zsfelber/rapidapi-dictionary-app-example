@@ -7,7 +7,9 @@ const V1 = 'v1';
 const V2 = 'v2';
 
 
-function transformToWordsApiLike(definitions) {
+function transformToWordsApiLike(result1) {
+
+    let {thesaurus, definitions} = result1;
 
     let result = {
         word:"",
@@ -84,12 +86,12 @@ exports.googleDictionary = async function (word, language="en", version="v2", in
 
     word = word.trim().toLocaleLowerCase(language);
 
-    let definitions = await dictionary.findDefinitions(word, language, { include }) ;
+    let result1 = await dictionary.findDefinitions(word, language, { include }) ;
 
     //if (version === V1) {
     //    definitions = dictionary.transformV2toV1(definitions);
     //}
-    definitions = transformToWordsApiLike(definitions);
+    let definitions = transformToWordsApiLike(result1);
 
     return definitions;
 };
