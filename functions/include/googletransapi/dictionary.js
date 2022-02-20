@@ -131,7 +131,31 @@ function transform (word, language, data, { include }) {
 			});
 }
 
-async function queryInternet (word, language) {
+async function fetchFromSource(word, language) {
+	// https://www.google.com/async/callback:5493?fc=ErUBCndBTlVfTnFUN29LdXdNSlQ2VlZoWUIwWE1HaElOclFNU29TOFF4ZGxGbV9zbzA3YmQ2NnJyQXlHNVlrb3l3OXgtREpRbXpNZ0M1NWZPeFo4NjQyVlA3S2ZQOHpYa292MFBMaDQweGRNQjR4eTlld1E4bDlCbXFJMBIWU2JzSllkLVpHc3J5OVFPb3Q2aVlDZxoiQU9NWVJ3QmU2cHRlbjZEZmw5U0lXT1lOR3hsM2xBWGFldw&fcv=3&async=term:Rettung,corpus:de,,hhdr:true,hwdgt:true,wfp:true,ttl:,tsl:,ptl:
+
+	
+	/*
+	https://githubhot.com/repo/meetDeveloper/freeDictionaryAPI/issues/111
+
+		Here is something you might want to try.
+
+		Open https://www.google.com/search?q=google+dictionary in your web browser.
+
+		Right-click on it and select Inspect from the pop-up menu. This will open "Developer Tools" screen.
+
+		Select Network tab in Developer Tools.
+
+		Enter a word in the edit box that says "Search for a word", but don't press ENTER yet.
+
+		Press the trash can icon in Developer Tools to clear the network traffic logs.
+
+		Now press ENTER. You should see the browser makes a call to https://www.google.com/async/callback:5493 with a long line of parameters.
+
+		Look for 1) fc, 2) fcv, and 3) async in the long line of parameters.
+
+		Update modules/dictionary.js in line 140 ~ 142. Note that _fmt:prog,_id:fc_15 at the end of async seem to cause a problem, so try without them first.*/
+
 	let url = new URL('https://www.google.com/async/callback:5493');
 
 	url.searchParams.set('fc', 'ErUBCndBTlVfTnFUN29LdXdNSlQ2VlZoWUIwWE1HaElOclFNU29TOFF4ZGxGbV9zbzA3YmQ2NnJyQXlHNVlrb3l3OXgtREpRbXpNZ0M1NWZPeFo4NjQyVlA3S2ZQOHpYa292MFBMaDQweGRNQjR4eTlld1E4bDlCbXFJMBIWU2JzSllkLVpHc3J5OVFPb3Q2aVlDZxoiQU9NWVJ3QmU2cHRlbjZEZmw5U0lXT1lOR3hsM2xBWGFldw');
@@ -166,12 +190,6 @@ async function queryInternet (word, language) {
 	if (error) { throw new errors.UnexpectedError({ error }); }
 
 	return single_results;
-}
-
-async function fetchFromSource (word, language) {
-	let dictionaryData = await queryInternet(word, language);
-
-	return dictionaryData;
 }
 
 exports.findDefinitions = async function  (word, language, { include }) {
