@@ -1148,15 +1148,20 @@ $(document).ready(function(){
     //    $(this).text() 
     //});
 
-    let language1 = getLanguage(1);
+    //let language1 = getLanguage(1);
     //let language2 = getLanguage(2);
-    initSpeak(language1);
-    if (!language1.apis["GOOGLE"]) {
+    initSpeak();
+
+    $(`#lang1 select`).change(()=>{
+        chkdict();
+    });
+
+    /*if (!language1.apis["GOOGLE"]) {
         $('#_GOOGLE').prop("disabled", false);
     }
     if (!language1.apis["WORDSAPI"]) {
         $('#_WORDSAPI').prop("disabled", false);
-    }
+    }*/
 
     if (!isElectron()) {
         console.log("It is not electron, hiding restricted pages.");

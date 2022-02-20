@@ -497,6 +497,7 @@ function installLang(which) {
         $(`#${lang} select`).change(()=>{
             curlang = $(`#${lang} select`).val();
             setCookie(lang, curlang);
+            initSpeak();
         });
     
     }

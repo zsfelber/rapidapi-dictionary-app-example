@@ -109,18 +109,25 @@ function selectAny(combo, lang, notthis, hint) {
     }
     return null;
 }
-function heurSelect(combo, lang, notthis, hints) {
-    for (let hint of hints) {
-        let item = selectAny(combo, lang, notthis, hint);
+function heurSelect(combo, langs, notthis, hints) {
 
-        if (item) {
-            return item;
+    if (!Array.isArray(langs)) langs = [langs];
+
+    for (let lang of langs) {
+        for (let hint of hints) {
+            let item = selectAny(combo, lang, notthis, hint);
+
+            if (item) {
+                return item;
+            }
         }
     }
     return null;
 }
 
-function initSpeak(language) {
+function initSpeak() {
+    let language = getLanguage(1);
+
     console.log("initSpeak", language);
     if (speechSynthesis.onvoiceschanged !== undefined) {
         speechSynthesis.onvoiceschanged = initSpeak;
@@ -135,11 +142,11 @@ function initSpeak(language) {
             second = heurSelect($("#speech2 select"), "english", first, [/\buk\b/i,/\bunited kingdom\b/i,/\bu\.k\b/i,/./]);
             break;
         case "de":
-            first = heurSelect($("#speech1 select"), "german", null, [/\bde\b/i,/\bgermany\b/i,/\bdeutschland\b/i,/./]);
-            second = heurSelect($("#speech2 select"), "german", null, [/./]);
+            first = heurSelect($("#speech1 select"), ["german","deutsch"], null, [/\bde\b/i,/\bgermany\b/i,/\bdeutschland\b/i,/./]);
+            second = heurSelect($("#speech2 select"), ["german","deutsch"], null, [/./]);
             break;
         default:
-            alert("No speech synthetizer for : "+language);
+            alert("No speech synthetizer for : "+language.text);
             break;
     }
     if (first && !second) {
