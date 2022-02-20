@@ -437,8 +437,8 @@ var LANGUAGE_BY_LOCALE = {
     zu: "Zulu"
 };
 var APIS = {
-    "EN": ["WordsAPI", "Google"],
-    "DE": ["WordsAPI"]
+    "EN": {"WORDSAPI":1, "GOOGLE":1},
+    "DE": {"WORDSAPI":1}
 }
 var languages;
 

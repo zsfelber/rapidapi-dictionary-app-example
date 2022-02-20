@@ -200,6 +200,30 @@ exports.aCrawler = function (
 
   function initCrawler() {
 
+    switch (LANG) {
+      case "EN":{
+          langCache.NAME = "english";
+          langCache.COLLOC = "stardict-OxfordCollocationsDictionary-2.4.2";
+          langCache.COLLOC_DIR = `../${DATA_DIR}/dict/${langCache.COLLOC}/res/`;
+          // caggle freq records
+          langCache.FREQ_CSV = `unigram_freq.csv`;
+          langCache.WORD_LIST = "english_.csv";
+          langCache.COMMON_WORDS_10000 = "common-words-10000.json";
+          langCache.COMMON_WORDS_5000 = "common-words-5000.txt";
+
+        }
+        break;
+      case "DE":{
+          // https://en.wiktionary.org/wiki/Wiktionary:Frequency_lists#German
+          langCache.NAME = "german";
+          langCache.FREQ_LIST = `german_wordlist_300k_most_frequent_from_web.txt`;
+          langCache.WORD_LIST = `german_wordlist_300k_most_frequent_from_web.txt`;
+          langCache.COMMON_WORDS = "common-words-5000.txt";
+          
+        }
+        break;
+    }
+
     switch (API) {
       case "google":{
         const googleDictionary = 
@@ -1427,7 +1451,7 @@ exports.aCrawler = function (
     let result = [];
     let allFileContents = fs.readFileSync(fnm, 'utf-8');
     allFileContents.split(/\r?\n/).forEach(line =>  {
-      result.pusj(line);
+      result.push(line);
     });
     return result;
   }
@@ -1636,14 +1660,6 @@ exports.aCrawler = function (
       console.time("load 3rd party StarDict datafiles");
       switch (LANG) {
         case "EN":{
-            langCache.NAME = "english";
-            langCache.COLLOC = "stardict-OxfordCollocationsDictionary-2.4.2";
-            langCache.COLLOC_DIR = `../${DATA_DIR}/dict/${langCache.COLLOC}/res/`;
-            // caggle freq records
-            langCache.FREQ_CSV = `unigram_freq.csv`;
-            langCache.WORD_LIST = "english_.csv";
-            langCache.COMMON_WORDS_10000 = "common-words-10000.json";
-            langCache.COMMON_WORDS_5000 = "common-words-5000.txt";
 
             const colf0 = `${DATA_DIR}/dict/${langCache.COLLOC}/OxfordCollocationsDictionary`;
             langCache.collocationStardict = stardict.loadStarDict(`${colf0}`, false);
@@ -1654,11 +1670,6 @@ exports.aCrawler = function (
           }
           break;
         case "DE":{
-            // https://en.wiktionary.org/wiki/Wiktionary:Frequency_lists#German
-            langCache.NAME = "german";
-            langCache.FREQ_LIST = `german_wordlist_300k_most_frequent_from_web.txt`;
-            langCache.WORD_LIST = `german_wordlist_300k_most_frequent_from_web.txt`;
-            langCache.COMMON_WORDS = "common-words-5000.txt";
             
           }
           break;

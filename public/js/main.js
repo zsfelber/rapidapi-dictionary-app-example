@@ -34,8 +34,6 @@ var checkboxdata = {
         "similar to": { defchecked: true },
         "synonyms": { defchecked: true },
         "verb group": { defchecked: false },
-        "WORDSAPI": { defchecked: true },
-        "GOOGLE": { defchecked: true },
     },
     "bucket3": {
         "in category": { defchecked: false },
@@ -77,6 +75,8 @@ var checkboxdata = {
         "symbol": { defchecked: true },
         "verb": { defchecked: true },
         "definite_article": { defchecked: true },
+        "WORDSAPI": { defchecked: true },
+        "GOOGLE": { defchecked: true },
     },
     "bucket6": {
         "dictionary": { defchecked: true },
@@ -200,8 +200,9 @@ function chkdict() {
     $('.checkboxes55 input').prop("disabled", !chk);
     $('.checkboxes56 input').prop("disabled", !chk);
 
-    $('#_WORDSAPI').prop("disabled", false);
-    $('#_GOOGLE').prop("disabled", false);
+    let language1 = getLanguage(1);
+    $('#_GOOGLE').prop("disabled", !language1.apis["GOOGLE"]);
+    $('#_WORDSAPI').prop("disabled", !language1.apis["WORDSAPI"]);
 
     let wbf = $("#words_by_frequency").is(':checked');
     $('#ffrom').prop("disabled", !wbf);
@@ -1104,7 +1105,7 @@ $(document).ready(function(){
     <input class='form-check-input input-sm' size=8 type='input' id='ffrom' name='ffrom' value='${urlffrom}' placeholder='0'/>..
     <input class='form-check-input input-sm' size=8 type='input' id='fto' name='fto' value='${urlfto}' placeholder='100'/>`;
 
-    addRadio(chbs7, "words by frequency", {defchecked:false}, "mode", null, ffromtoinputs);
+    addRadio(chbs6, "words by frequency", {defchecked:false}, "mode", null, ffromtoinputs);
 
     let A = 'A'.charCodeAt(0);
     let Z = 'Z'.charCodeAt(0);
@@ -1149,6 +1150,12 @@ $(document).ready(function(){
     let language1 = getLanguage(1);
     //let language2 = getLanguage(2);
     initSpeak(language1);
+    if (!language1.apis["GOOGLE"]) {
+        $('#_GOOGLE').prop("disabled", false);
+    }
+    if (!language1.apis["WORDSAPI"]) {
+        $('#_WORDSAPI').prop("disabled", false);
+    }
 
     if (!isElectron()) {
         console.log("It is not electron, hiding restricted pages.");
