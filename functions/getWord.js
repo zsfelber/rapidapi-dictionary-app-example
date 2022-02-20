@@ -12,7 +12,6 @@ exports.handler = async function(event, context) {
 
   //   extract the word query parameter from the HTTP request
   const word = event.queryStringParameters.word || "";
-  const lang = event.queryStringParameters.lang || "";
   const mode = event.queryStringParameters.mode || "";
   const letter = event.queryStringParameters.letter || "";
   const ffrom = event.queryStringParameters.ffrom || 0;

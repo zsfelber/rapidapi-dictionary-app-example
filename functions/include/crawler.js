@@ -44,7 +44,7 @@ let staticCache = { langs: {} };
 
 function getLangCache(lang) {
   let langCache = staticCache.langs[lang];
-  if (!langCache) staticCache.langs[lang] = langCache = {};
+  if (!langCache) staticCache.langs[lang] = langCache = {apis:{}};
   return langCache;
 }
 
