@@ -14,16 +14,14 @@ const TRAVERSE_ALL = true;
 
 exports.handler = async function(event, context) {
 
-  const crawler = require('../../functions/include/crawler').aCrawler(context.resolvePath);
-
-  const API = "wordsapi";
-  crawler.initCrawler(
-    API,
+  const crawler = require('../../functions/include/crawler').aCrawler(    API,
     API_DAILY_LIMIT,
     MAX_WORDS,
     MAX_NODE_FREQUENCY,
-    TRAVERSE_ALL
-    );
+    TRAVERSE_ALL,
+context.resolvePath);
+
+  const API = "wordsapi";
 
   return service.respond(async () => {
 
@@ -40,17 +38,15 @@ exports.handler = async function(event, context) {
     const cs0 = ws0.results;
     console.log("all words:"+cs0.length);
 
-    const CACHE_DIR = "cache/"+API;
-
     // descending !!!
     function cmp (a,b) {
-      let s1 = fs.statSync(`${CACHE_DIR}/words/${a}`);
-      let s2 = fs.statSync(`${CACHE_DIR}/words/${b}`);
+      let s1 = fs.statSync(`${crawler.CACHE_DIR_API}/words/${a}`);
+      let s2 = fs.statSync(`${crawler.CACHE_DIR_API}/words/${b}`);
       return s2.mtime-s1.mtime;
     }
 
     function inf(a) {
-      let s1 = fs.statSync(`${CACHE_DIR}/words/${a}`);
+      let s1 = fs.statSync(`${crawler.CACHE_DIR_API}/words/${a}`);
       return a+":"+s1.mtime.toUTCString();
     }
 
@@ -63,7 +59,7 @@ exports.handler = async function(event, context) {
     const cs2=[];
     const cs02 = crawler.loadCommon10000_words("", true);
     for (let a of cs02.results) {
-      if (fs.existsSync(`${CACHE_DIR}/words/${a}`)) {
+      if (fs.existsSync(`${crawler.CACHE_DIR_API}/words/${a}`)) {
         cs2.push(a);
       }
     }
@@ -87,12 +83,11 @@ exports.handler = async function(event, context) {
       return a.hashCode()-b.hashCode();
     });
     
-    let sorries = await findInFiles.findInFiles(`${CACHE_DIR}/words`, "Sorry pal, you were just rate limited by the upstream server.");
+    let sorries = await findInFiles.findInFiles(`${crawler.CACHE_DIR_API}/words`, "Sorry pal, you were just rate limited by the upstream server.");
     console.log("sorry-pals:"+sorries.length);
 
-    const TWELVE = (CACHE_DIR+"/words/").length;
     for (let strPath of sorries) {
-      let word = strPath.filePath.substring(TWELVE);
+      let word = strPath.filePath.substring(crawler.TWELVE);
       cs.unshift(word);
       console.log(word);
     }

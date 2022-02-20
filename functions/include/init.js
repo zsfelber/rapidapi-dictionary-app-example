@@ -7,15 +7,12 @@ const MAX_LEVEL_MINCL = 2;
 
 
 function initFor(api, resolvePath) {
-    const crawler = require('./crawler.js').aCrawler(resolvePath);
-    
-    crawler.initCrawler(
-        api,
+    const crawler = require('./crawler.js').aCrawler(        api,
         API_DAILY_LIMIT,
         MAX_WORDS,
         MAX_NODE_FREQUENCY,
         TRAVERSE_ALL
-    );
+,resolvePath);
     
     crawler.initializeCache();
 }

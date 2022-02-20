@@ -34,14 +34,12 @@ exports.handler = async function(event, context) {
 async function doItFor(api, indexes, stardict, resolvePath, indexgenerated) {
 
 
-  const crawler = require('../../functions/include/crawler').aCrawler(resolvePath);
-  crawler.initCrawler(
-    api,
+  const crawler = require('../../functions/include/crawler').aCrawler(    api,
     API_DAILY_LIMIT,
     MAX_WORDS,
     MAX_NODE_FREQUENCY,
     TRAVERSE_ALL
-    );
+,resolvePath);
 
   if (indexes && !indexgenerated) {
     indexgenerated = 1;

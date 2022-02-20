@@ -43,17 +43,15 @@ exports.handler = async function(event, context) {
 
 async function doItFor(api, deep, fix, fill, resolvePath) {
 
-  const crawler = require('../../functions/include/crawler').aCrawler();
-
-  if (deep) deep = Number(deep);
-  crawler.initCrawler(
-    api,
+  const crawler = require('../../functions/include/crawler').aCrawler(    api,
     API_DAILY_LIMIT[api],
     MAX_WORDS,
     MAX_NODE_FREQUENCY,
     TRAVERSE_ALL,
     deep
-    );
+);
+
+  if (deep) deep = Number(deep);
 
   console.log(api, "crawling and filling word list...");
 
@@ -64,18 +62,18 @@ async function doItFor(api, deep, fix, fill, resolvePath) {
 
   if (fix) {
     
-    const CACHE_DIR = "cache/"+api;
-    let sorries = await findInFiles.findInFiles(`${CACHE_DIR}/words`, "Sorry pal, you were just rate limited by the upstream server.");
+    let sorries = await findInFiles.findInFiles(`${crawler.CACHE_DIR_API}/words`, 
+        "Sorry pal, you were just rate limited by the upstream server.");
     console.log(api, "sorry-pals:"+sorries.length);
 
-    let cannotrs = await findInFiles.findInFiles(`${CACHE_DIR}/words`, `{"error":"Cannot read properties`);
+    let cannotrs = await findInFiles.findInFiles(`${crawler.CACHE_DIR_API}/words`, 
+        `{"error":"Cannot read properties`);
     console.log(api, "cannot-read-properties-es:"+cannotrs.length);
-    
+
     let errorstofix = sorries.concat(cannotrs);
 
-    const TWELVE = (CACHE_DIR+"/words/").length;
     for (let strPath of errorstofix) {
-      let word = strPath.filePath.substring(TWELVE);
+      let word = strPath.filePath.substring(crawler.TWELVE);
       cs.push(word);
       console.log(word);
       delete totwords[word];

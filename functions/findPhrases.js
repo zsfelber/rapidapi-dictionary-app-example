@@ -21,19 +21,16 @@ exports.handler = async function (event, context) {
   const lstar = "true"===event.queryStringParameters.lstar||true===event.queryStringParameters.lstar;
   const rstar = "true"===event.queryStringParameters.rstar||true===event.queryStringParameters.rstar;
   const all_words = "true"===event.queryStringParameters.all_words||true===event.queryStringParameters.all_words;
-  const crawler = require('./include/crawler.js').aCrawler(resolvePath);
   let apis = event.queryStringParameters.apis || "";
 
 
   async function find(api) {
-
-    crawler.initCrawler(
-        api,
-        100000,//no limit for occasional 1 or 2 single words
-        MAX_WORDS,
-        MAX_NODE_FREQUENCY,
-        TRAVERSE_ALL
-      );
+    const crawler = require('./include/crawler.js').aCrawler(       api,
+      100000,//no limit for occasional 1 or 2 single words
+      MAX_WORDS,
+      MAX_NODE_FREQUENCY,
+      TRAVERSE_ALL,
+  resolvePath);
 
     return crawler.findPhrases(phrase, { in_words, in_meanings, in_examples, per_word, lstar, rstar, all_words });
   }

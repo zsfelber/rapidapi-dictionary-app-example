@@ -15,7 +15,12 @@ exports.handler = async function (event, context) {
   //   extract the word query parameter from the HTTP request
   const resolvePath = context.resolvePath;
   const word = event.queryStringParameters.word || "";
-  const crawler = require('./include/crawler.js').aCrawler(resolvePath);
+  const crawler = require('./include/crawler.js').aCrawler(api,
+    API_DAILY_LIMIT,
+    MAX_WORDS,
+    MAX_NODE_FREQUENCY,
+    TRAVERSE_ALL
+,resolvePath);
 
   return service.respond(async () => {
     let root = "../data/dict/stardict-OxfordCollocationsDictionary-2.4.2/";

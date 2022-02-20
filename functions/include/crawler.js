@@ -31,12 +31,12 @@ function poorsolutioncallbackToPromise(therawfun, ...args0) {
 }
 
 function removearritm(arr, itm) {
-  for (let i=0; i<arr.length; ) {
-      if (arr[i]===itm) {
-          arr.splice(i, 1);
-      } else {
-          i++;
-      }
+  for (let i = 0; i < arr.length;) {
+    if (arr[i] === itm) {
+      arr.splice(i, 1);
+    } else {
+      i++;
+    }
   }
 }
 
@@ -47,20 +47,26 @@ function getCacheFor(api) {
   return c;
 }
 
-exports.aCrawler = function (resolvePath) {
+exports.aCrawler = function (
+  LANG, API,
+  API_DAILY_LIMIT,
+  MAX_WORDS,
+  MAX_NODE_FREQUENCY,
+  TRAVERSE_ALL,
+  MAX_LEVEL = 100,
+  resolvePath) {
+
+
+  const DATA_DIR = "data/" + LANG;
+  const CACHE_DIR = "cache/" + LANG;
+  const CACHE_DIR_API = CACHE_DIR + "/" + API;
+  const TWELVE = (CACHE_DIR_API + "/words/").length;
   if (!resolvePath) resolvePath = noResolvePath;
 
   const TURNING_TIME_GMT = [20, 55];
   const MAX_PARALLEL = 1;
-  let API;
-  let CACHE_DIR;
-  let API_DAILY_LIMIT;
-  let MAX_WORDS;
-  let MAX_NODE_FREQUENCY;
-  let TRAVERSE_ALL;
-  let MAX_LEVEL;
+
   let download, curtime, turntime;
-  let TWELVE;
 
   let cacheInitializerCommon;
   let cacheIsInitialized = false;
@@ -113,7 +119,7 @@ exports.aCrawler = function (resolvePath) {
     if (!cacheIsInitialized) {
       if (!cacheInitializerCommon) {
         cacheInitializerCommon = finder.findFiles(
-          `${CACHE_DIR}/words`,
+          `${CACHE_DIR_API}/words`,
           turntime
         );
         totalWordsLastDay = await cacheInitializerCommon;
@@ -179,22 +185,7 @@ exports.aCrawler = function (resolvePath) {
     }
   }
 
-  async function initCrawler(
-    _API,
-    _API_DAILY_LIMIT,
-    _MAX_WORDS,
-    _MAX_NODE_FREQUENCY,
-    _TRAVERSE_ALL,
-    _MAX_LEVEL = 100
-  ) {
-    API = _API;
-    CACHE_DIR = "cache/" + _API;
-    API_DAILY_LIMIT = _API_DAILY_LIMIT;
-    MAX_WORDS = _MAX_WORDS;
-    MAX_NODE_FREQUENCY = _MAX_NODE_FREQUENCY;
-    TRAVERSE_ALL = _TRAVERSE_ALL;
-    MAX_LEVEL = _MAX_LEVEL;
-    TWELVE = (CACHE_DIR + "/words/").length;
+  async function initCrawler() {
 
     cache = getCacheFor(API);
 
@@ -209,17 +200,17 @@ exports.aCrawler = function (resolvePath) {
         throw "API is not supported : " + _API;
     }
 
-    if (!fs.existsSync(resolvePath.abs(`${CACHE_DIR}/words`))) {
-      fs.mkdirSync(resolvePath.abs(`${CACHE_DIR}/words`), { recursive: true });
+    if (!fs.existsSync(resolvePath.abs(`${CACHE_DIR_API}/words`))) {
+      fs.mkdirSync(resolvePath.abs(`${CACHE_DIR_API}/words`), { recursive: true });
     }
-    if (!fs.existsSync(resolvePath.abs(`${CACHE_DIR}/clusters`))) {
-      fs.mkdirSync(resolvePath.abs(`${CACHE_DIR}/clusters`));
+    if (!fs.existsSync(resolvePath.abs(`${CACHE_DIR_API}/clusters`))) {
+      fs.mkdirSync(resolvePath.abs(`${CACHE_DIR_API}/clusters`));
     }
-    if (!fs.existsSync(resolvePath.abs(`cache/index`))) {
-      fs.mkdirSync(resolvePath.abs(`cache/index`));
+    if (!fs.existsSync(resolvePath.abs(`${CACHE_DIR}/index`))) {
+      fs.mkdirSync(resolvePath.abs(`${CACHE_DIR}/index`));
     }
-    if (!fs.existsSync(resolvePath.abs(`${CACHE_DIR}/dict/${API}-english`))) {
-      fs.mkdirSync(resolvePath.abs(`${CACHE_DIR}/dict/${API}-english`));
+    if (!fs.existsSync(resolvePath.abs(`${CACHE_DIR_API}/dict/${API}-english`))) {
+      fs.mkdirSync(resolvePath.abs(`${CACHE_DIR_API}/dict/${API}-english`));
     }
 
     curtime = new Date();
@@ -236,6 +227,8 @@ exports.aCrawler = function (resolvePath) {
     } else {
       turntime = new Date(turntime);
     }
+
+    initializeCache();
 
     console.log(
       API,
@@ -342,7 +335,7 @@ exports.aCrawler = function (resolvePath) {
   const CACHE_RAW = new Object({ cache: "raw" });
   async function loadSingleWord(word, asobject, cachedonly = false) {
     let fileword = word.replace(/[.,/']/g, "$").toLowerCase();
-    const wfpath = `${CACHE_DIR}/words/${fileword}`;
+    const wfpath = `${CACHE_DIR_API}/words/${fileword}`;
 
     let data, djson;
 
@@ -1058,42 +1051,42 @@ exports.aCrawler = function (resolvePath) {
   }
 
   function loadCommonWords3000_a_e(word, asobject) {
-    const cw = loadJson("data/common-words-3000-a-e.json");
+    const cw = loadJson(DATA_DUR + "/common-words-3000-a-e.json");
     return loadCommonWords(cw.data, word, asobject);
   }
 
   function loadCommonWords3000_f_p(word, asobject) {
-    const cw = loadJson("data/common-words-3000-f-p.json");
+    const cw = loadJson(DATA_DUR + "/common-words-3000-f-p.json");
     return loadCommonWords(cw.data, word, asobject);
   }
 
   function loadCommonWords3000_q_z(word, asobject) {
-    const cw = loadJson("data/common-words-3000-q-z.json");
+    const cw = loadJson(DATA_DUR + "/common-words-3000-q-z.json");
     return loadCommonWords(cw.data, word, asobject);
   }
 
   function loadCommonWords10000_a_c(word, asobject) {
-    const cw = loadJson("data/common-words-10000-a-c.json");
+    const cw = loadJson(DATA_DUR + "/common-words-10000-a-c.json");
     return loadCommonWords(cw.data, word, asobject);
   }
 
   function loadCommonWords10000_d_h(word, asobject) {
-    const cw = loadJson("data/common-words-10000-d-h.json");
+    const cw = loadJson(DATA_DUR + "/common-words-10000-d-h.json");
     return loadCommonWords(cw.data, word, asobject);
   }
 
   function loadCommonWords10000_i_o(word, asobject) {
-    const cw = loadJson("data/common-words-10000-i-o.json");
+    const cw = loadJson(DATA_DUR + "/common-words-10000-i-o.json");
     return loadCommonWords(cw.data, word, asobject);
   }
 
   function loadCommonWords10000_p_r(word, asobject) {
-    const cw = loadJson("data/common-words-10000-p-r.json");
+    const cw = loadJson(DATA_DUR + "/common-words-10000-p-r.json");
     return loadCommonWords(cw.data, word, asobject);
   }
 
   function loadCommonWords10000_s_z(word, asobject) {
-    const cw = loadJson("data/common-words-10000-s-z.json");
+    const cw = loadJson(DATA_DUR + "/common-words-10000-s-z.json");
     return loadCommonWords(cw.data, word, asobject);
   }
 
@@ -1101,11 +1094,11 @@ exports.aCrawler = function (resolvePath) {
     let lc = letter.toLowerCase(),
       cw;
     if ("a" <= lc && lc <= "e") {
-      cw = loadJson("data/common-words-3000-a-e.json");
+      cw = loadJson(DATA_DUR + "/common-words-3000-a-e.json");
     } else if ("f" <= lc && lc <= "p") {
-      cw = loadJson("data/common-words-3000-f-p.json");
+      cw = loadJson(DATA_DUR + "/common-words-3000-f-p.json");
     } else if ("q" <= lc && lc <= "z") {
-      cw = loadJson("data/common-words-3000-q-z.json");
+      cw = loadJson(DATA_DUR + "/common-words-3000-q-z.json");
     } else {
       cw = {};
     }
@@ -1116,15 +1109,15 @@ exports.aCrawler = function (resolvePath) {
     let lc = letter.toLowerCase(),
       cw;
     if ("a" <= lc && lc <= "c") {
-      cw = loadJson("data/common-words-10000-a-c.json");
+      cw = loadJson(DATA_DUR + "/common-words-10000-a-c.json");
     } else if ("d" <= lc && lc <= "h") {
-      cw = loadJson("data/common-words-10000-d-h.json");
+      cw = loadJson(DATA_DUR + "/common-words-10000-d-h.json");
     } else if ("i" <= lc && lc <= "o") {
-      cw = loadJson("data/common-words-10000-i-o.json");
+      cw = loadJson(DATA_DUR + "/common-words-10000-i-o.json");
     } else if ("p" <= lc && lc <= "r") {
-      cw = loadJson("data/common-words-10000-p-r.json");
+      cw = loadJson(DATA_DUR + "/common-words-10000-p-r.json");
     } else if ("s" <= lc && lc <= "z") {
-      cw = loadJson("data/common-words-10000-s-z.json");
+      cw = loadJson(DATA_DUR + "/common-words-10000-s-z.json");
     } else {
       cw = {};
     }
@@ -1132,7 +1125,7 @@ exports.aCrawler = function (resolvePath) {
   }
 
   function loadMyWordCls(word, letter, asobject) {
-    let cw = loadJson("data/my-words-" + letter.toLowerCase() + ".json");
+    let cw = loadJson(DATA_DUR + "/my-words-" + letter.toLowerCase() + ".json");
     return loadCommonWords(cw.data, word, asobject);
   }
 
@@ -1160,19 +1153,19 @@ exports.aCrawler = function (resolvePath) {
   }
 
   function loadCommon3000_words(word, asobject) {
-    let cw1 = loadJson("data/common-words-3000-a-e.json");
-    let cw2 = loadJson("data/common-words-3000-f-p.json");
-    let cw3 = loadJson("data/common-words-3000-q-z.json");
+    let cw1 = loadJson(DATA_DUR + "/common-words-3000-a-e.json");
+    let cw2 = loadJson(DATA_DUR + "/common-words-3000-f-p.json");
+    let cw3 = loadJson(DATA_DUR + "/common-words-3000-q-z.json");
     let TheMostCommon3000 = Object.assign({}, cw1.data, cw2.data, cw3.data);
     return loadWordsOnly(TheMostCommon3000, word, asobject);
   }
 
   function loadCommon10000_words(word, asobject) {
-    let cw1 = loadJson("data/common-words-10000-a-c.json");
-    let cw2 = loadJson("data/common-words-10000-d-h.json");
-    let cw3 = loadJson("data/common-words-10000-i-o.json");
-    let cw4 = loadJson("data/common-words-10000-p-r.json");
-    let cw5 = loadJson("data/common-words-10000-s-z.json");
+    let cw1 = loadJson(DATA_DUR + "/common-words-10000-a-c.json");
+    let cw2 = loadJson(DATA_DUR + "/common-words-10000-d-h.json");
+    let cw3 = loadJson(DATA_DUR + "/common-words-10000-i-o.json");
+    let cw4 = loadJson(DATA_DUR + "/common-words-10000-p-r.json");
+    let cw5 = loadJson(DATA_DUR + "/common-words-10000-s-z.json");
     let TheMostCommon10000 = Object.assign(
       {},
       cw1.data,
@@ -1329,7 +1322,7 @@ exports.aCrawler = function (resolvePath) {
           result2.push({
             definition: cyclemeaning.definition,
             synonyms: [].concat(Object.keys(cyclemeaning.synonymSet)),
-            similar: [].concat(cyclemeaning.similar?cyclemeaning.similar:[]),
+            similar: [].concat(cyclemeaning.similar ? cyclemeaning.similar : []),
             examples: (cyclemeaning.examples && cyclemeaning.examples.length ? ["..."] : [])
           });
         }
@@ -1347,7 +1340,7 @@ exports.aCrawler = function (resolvePath) {
                 {
                   definition: cyclemeaning.definition,
                   synonyms: [].concat(Object.keys(cyclemeaning.synonymSet)),
-                  similar: [].concat(cyclemeaning.similar?cyclemeaning.similar:[]),
+                  similar: [].concat(cyclemeaning.similar ? cyclemeaning.similar : []),
                   examples: [cycleexample],
                   example: cycleexample
                 });
@@ -1368,13 +1361,13 @@ exports.aCrawler = function (resolvePath) {
   }
 
   function loadMyWords(word, letter, asobject) {
-    let cw1 = loadJson("data/my-words-" + letter.toLowerCase() + ".json");
+    let cw1 = loadJson(DATA_DUR + "/my-words-" + letter.toLowerCase() + ".json");
     return loadWordsOnly(cw1.data, word, asobject);
   }
 
   async function wordsByFrequency(word0, ffrom, fto = 1000000, asobject) {
     let files = [];
-    const indpath = `cache/index/frequency`;
+    const indpath = `${CACHE_DIR}/index/frequency`;
 
     let ijson = fs.readFileSync(resolvePath.abs(indpath));
     let find = JSON.parse(ijson);
@@ -1408,7 +1401,7 @@ exports.aCrawler = function (resolvePath) {
       let word = strPath.substring(TWELVE);
       files.push(word);
     }
-    let nowords = await finder.findFiles(`${CACHE_DIR}/words`, 0, onFile);
+    let nowords = await finder.findFiles(`${CACHE_DIR_API}/words`, 0, onFile);
 
     let cntf = 0;
     let byf = Object.create(null);
@@ -1452,7 +1445,7 @@ exports.aCrawler = function (resolvePath) {
       function split(line, lineNumber) {
         return [line];
       }
-      const gglwords = csvParse.load(resolvePath.abs("data/english_.csv"), {
+      const gglwords = csvParse.load(resolvePath.abs(DATA_DUR + "/english_.csv"), {
         getColumns: split,
       });
       for (let gglword of gglwords) {
@@ -1470,7 +1463,7 @@ exports.aCrawler = function (resolvePath) {
   function loadExistingWordsAndFreqs() {
     if (!staticCache.caggleFreqRecords) {
       staticCache.caggleFreqRecords = csvParse.load(
-        resolvePath.abs("data/unigram_freq.csv"),
+        resolvePath.abs(DATA_DUR + "/unigram_freq.csv"),
         {
           convert: {
             count: parseInt,
@@ -1593,7 +1586,7 @@ exports.aCrawler = function (resolvePath) {
     let q2 = quantilize(3000);
     let q3 = quantilize(10000);
 
-    const indpath = `cache/index/frequency`;
+    const indpath = `${CACHE_DIR}/index/frequency`;
     const clindpath = `public/js/frequency.js`;
     const djson = JSON.stringify(byfs);
 
@@ -1622,7 +1615,7 @@ exports.aCrawler = function (resolvePath) {
       !cache.stardict_errors
     ) {
       console.time("load native StarDict datafiles");
-      const f0 = `${CACHE_DIR}/dict/${API}-english/${API}-english`;
+      const f0 = `${CACHE_DIR_API}/dict/${API}-english/${API}-english`;
       if (!cache.stardict_words)
         cache.stardict_words = stardict.loadStarDict(`${f0}-words`);
       if (!cache.stardict_defs)
@@ -1635,7 +1628,7 @@ exports.aCrawler = function (resolvePath) {
 
   function saveNativeStarDictAll(stage1, stage2) {
     console.time("save native StarDict datafiles");
-    const f0 = `${CACHE_DIR}/dict/${API}-english/${API}-english`;
+    const f0 = `${CACHE_DIR_API}/dict/${API}-english/${API}-english`;
     stardict.saveStarDict(`${f0}-words`, stage2.sortedwords, stage1.word);
     stardict.saveStarDict(`${f0}-definitions`, stage2.sorteddefs, stage1.meaning);
     stardict.saveStarDict(`${f0}-errors`, stage2.sortederrors, stage1.error);
@@ -1651,11 +1644,11 @@ exports.aCrawler = function (resolvePath) {
 
     ) {
       console.time("load 3rd party StarDict datafiles");
-      const colf0 = `data/dict/stardict-OxfordCollocationsDictionary-2.4.2/OxfordCollocationsDictionary`;
+      const colf0 = `${DATA_DUR}/dict/stardict-OxfordCollocationsDictionary-2.4.2/OxfordCollocationsDictionary`;
       staticCache.collocationStardict = stardict.loadStarDict(`${colf0}`, false);
-      const eh0 = `data/dict/stardict-jdict-EngHun-2.4.2/jdict-EngHun`;
+      const eh0 = `${DATA_DUR}/dict/stardict-jdict-EngHun-2.4.2/jdict-EngHun`;
       staticCache.enghunStardict = stardict.loadStarDict(`${eh0}`, false);
-      const he0 = `data/dict/stardict-hungarian-english-2.4.2/hungarian-english`;
+      const he0 = `${DATA_DUR}/dict/stardict-hungarian-english-2.4.2/hungarian-english`;
       staticCache.hunengStardict = stardict.loadStarDict(`${he0}`, false);
 
       console.timeEnd("load 3rd party StarDict datafiles");
@@ -1816,7 +1809,7 @@ exports.aCrawler = function (resolvePath) {
     if (itm) {
       src = itm.data;
 
-      let root = "../data/dict/stardict-OxfordCollocationsDictionary-2.4.2/res/";
+      let root = `../${DATA_DIR}/dict/stardict-OxfordCollocationsDictionary-2.4.2/res/`;
       src = src.replace(/\x1E/g, root);
       src = src.replace(/\x1F/g, "");
     }
@@ -1843,6 +1836,13 @@ exports.aCrawler = function (resolvePath) {
 
 
   return {
+    LANG, API,
+    API_DAILY_LIMIT,
+    MAX_WORDS,
+    MAX_NODE_FREQUENCY,
+    TRAVERSE_ALL,
+    MAX_LEVEL,
+    resolvePath,
     isApiLimitReached,
     initCrawler,
     loadJson,

@@ -65,39 +65,41 @@ exports.handler = async function(event, context) {
 
 async function get(api, lang, word, mode, letter, ffrom, fto, resolvePath, stopiterateapis) {
 
-  const crawler = require('./include/crawler.js').aCrawler(resolvePath);
-  stopiterateapis.crawler = crawler;
 
   switch (mode) {
     case "dictionary":
-      crawler.initCrawler(
+      crawler = require('./include/crawler.js').aCrawler(
         api,
         100000,//no limit for occasional 1 or 2 single words
         MAX_WORDS,
         MAX_NODE_FREQUENCY,
-        TRAVERSE_ALL
+        TRAVERSE_ALL,
+        resolvePath
       );
       break;
     case "minimal_cluster":
-      crawler.initCrawler(
+      crawler = require('./include/crawler.js').aCrawler(
         api,
         API_DAILY_LIMIT[api],
         MAX_WORDS,
         MAX_NODE_FREQUENCY,
         TRAVERSE_ALL,
-        MAX_LEVEL_MINCL
+        MAX_LEVEL_MINCL,
+        resolvePath
       );
       break;
     default:
-      crawler.initCrawler(
+      crawler = require('./include/crawler.js').aCrawler(
         api,
         API_DAILY_LIMIT[api],
         MAX_WORDS,
         MAX_NODE_FREQUENCY,
-        TRAVERSE_ALL
+        TRAVERSE_ALL,
+        resolvePath
       );
       break;
   }
+  stopiterateapis.crawler = crawler;
 
   let data;
   let forlang, colloc;

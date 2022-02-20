@@ -442,10 +442,21 @@ let languages;
 // https://mdn.github.io/web-lang-api/speak-easy-synthesis/
 
 function installLang(which) {
-    let lang = `#lang${which}`;
-    let inputForm = document.querySelector(`${lang}`);
+    let lang = `lang${which}`;
+
+    let curlang = getCookie(lang);
+    if (!curlang) {
+        setCookie(lang, curlang="EN");
+    }
+    $(`#${lang} select`).val(curlang);
+    $(`#${lang} select`).change(()=>{
+        curlang = $(`#${lang} select`).val();
+        setCookie(lang, curlang);
+    });
+
+    //let inputForm = document.querySelector(`#${lang}`);
     //let inputTxt = document.querySelector(`.txt`);
-    let voiceSelect = document.querySelector(`${lang} select`);
+    let voiceSelect = document.querySelector(`#${lang} select`);
 
     function populateLangList() {
         if (!languages) {
@@ -495,14 +506,11 @@ function initLang() {
     installLang(1);
     //installLang(2);
 
-    if (!getLanguage(1)) {
-        $(`${langfid} select`).val("EN");
-    }
 }
 
 function getLanguage(which) {
-    let langfid = `#lang${which}`;
-    let language = $(`${langfid} select`).val();
+    let lang = `lang${which}`;
+    let language = $(`#${lang} select`).val();
     if (language) {
         let text = LANGUAGE_BY_LOCALE[id];
         let result = {language, text};

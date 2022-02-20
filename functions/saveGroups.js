@@ -21,7 +21,6 @@ exports.handler = async function(event, context) {
   console.log("groupsdata:", groupsdata);
   const resolvePath = context.resolvePath;
   const curmywordsltr = event.queryStringParameters.curmywordsltr || "";
-  const crawler = require('./include/crawler.js').aCrawler(resolvePath);
 
   if (groupsdata) {
     if (curmywordsltr) {
@@ -29,7 +28,13 @@ exports.handler = async function(event, context) {
     }
 
     return service.respond(async () => {
-        for (letter of ['A','B','C','D','E','F','G','H','I','J','K','L','M']) {
+      const crawler = require('./include/crawler.js').aCrawler(       api,
+          100000,//no limit for occasional 1 or 2 single words
+          MAX_WORDS,
+          MAX_NODE_FREQUENCY,
+          TRAVERSE_ALL,
+      resolvePath);
+          for (letter of ['A','B','C','D','E','F','G','H','I','J','K','L','M']) {
           let {f, data, json} = crawler.loadJson("data/my-words-"+letter.toLowerCase()+".json");
 
           if (json) {
