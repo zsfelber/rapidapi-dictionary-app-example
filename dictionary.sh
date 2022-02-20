@@ -8,6 +8,8 @@
   # inside it (all functions run inside will also break on any error)
   set -e
 
+      notify-send "Starting dictionary server..."
+
     echo "start dictionary app server"
     echo $(date) # Will print the output of date command
 
