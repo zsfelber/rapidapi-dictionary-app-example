@@ -200,10 +200,14 @@ exports.aCrawler = function (
 
   function initCrawler() {
 
-
     switch (API) {
-      case "google":
-        download = require("./googletransapi/google_dict").googleDictionary;
+      case "google":{
+        const googleDictionary = 
+          require("./googletransapi/google_dict").googleDictionary;
+        download = function(word) {
+          return googleDictionary(word, LANG);
+        }
+      }
         break;
       case "wordsapi":
         download = require("./wordsapi/wordapi_dict").wordsApiDictionary;

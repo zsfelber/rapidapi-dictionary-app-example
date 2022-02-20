@@ -146,7 +146,7 @@ async function queryInternet (word, language) {
 		{
 			"accept": "*/*",
 			"accept-encoding": "gzip, deflate, br",
-			"accept-language": "en-US,en;q=0.9",
+			"accept-language": "en-US,en,"+language+";q=0.9",
 			"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36"
 		},
 		info

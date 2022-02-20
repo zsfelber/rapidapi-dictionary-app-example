@@ -69,7 +69,11 @@ exports.googleDictionary = async function (word, language="en", version="v2", in
     if (!utils.isVersionSupported(version)) { return handleError.call(res, new errors.NoDefinitionsFound()); }
 
     // Todo: Figure out better strategy.
-    if (language === 'en_US' || language === 'en_GB') { language = 'en'; }
+    //if (language === 'en_US' || language === 'en_GB') { language = 'en'; }
+    let _ = language.indexOf("_");
+    if (_!=-1) {
+        language = language.substring(0, _);
+    }
 
     // By default we are assuming person means American English
     // This is needed for backward compatibility.
