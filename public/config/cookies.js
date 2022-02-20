@@ -20,7 +20,7 @@ function writeCookies(cookies) {
         tags.push(id+"="+val);
     }
     let enc = tags.join("; ");
-    document.cookies = enc;
+    document.cookie = enc;
     return tags;
 }
 
