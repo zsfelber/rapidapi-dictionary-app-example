@@ -1062,17 +1062,6 @@ exports.aCrawler = function (
     return loadCommonWords(ofLetter, word, asobject);
   }
 
-  function loadCommonWords10000(word, letter, asobject) {
-    let lc = letter.toLowerCase(), cw;
-    cw = loadJson(DATA_DIR + "/common-words-10000.json");
-    return loadCommonWordsLetter(cw.data, word, letter, asobject);
-  }
-
-  function loadMyWordCls(word, letter, asobject) {
-    let cw = loadJson(DATA_DIR + "/my-words-" + letter.toLowerCase() + ".json");
-    return loadCommonWords(cw.data, word, asobject);
-  }
-
   function loadWordsOnly(words0, word, asobject) {
     let words;
     if (Array.isArray(words0)) {
@@ -1097,27 +1086,14 @@ exports.aCrawler = function (
   }
 
   function loadCommon3000_words(word, asobject) {
-    let cw1 = loadJson(DATA_DIR + "/common-words-3000-a-e.json");
-    let cw2 = loadJson(DATA_DIR + "/common-words-3000-f-p.json");
-    let cw3 = loadJson(DATA_DIR + "/common-words-3000-q-z.json");
-    let TheMostCommon3000 = Object.assign({}, cw1.data, cw2.data, cw3.data);
+    let cw1 = loadJson(DATA_DIR + "/common-words-10000.json");
+    let TheMostCommon3000 = Object.assign({}, cw1.data);
     return loadWordsOnly(TheMostCommon3000, word, asobject);
   }
 
   function loadCommon10000_words(word, asobject) {
-    let cw1 = loadJson(DATA_DIR + "/common-words-10000-a-c.json");
-    let cw2 = loadJson(DATA_DIR + "/common-words-10000-d-h.json");
-    let cw3 = loadJson(DATA_DIR + "/common-words-10000-i-o.json");
-    let cw4 = loadJson(DATA_DIR + "/common-words-10000-p-r.json");
-    let cw5 = loadJson(DATA_DIR + "/common-words-10000-s-z.json");
-    let TheMostCommon10000 = Object.assign(
-      {},
-      cw1.data,
-      cw2.data,
-      cw3.data,
-      cw4.data,
-      cw5.data
-    );
+    let cw1 = loadJson(DATA_DIR + "/common-words-10000.json");
+    let TheMostCommon10000 = Object.assign({},cw1.data);
     return loadWordsOnly(TheMostCommon10000, word, asobject);
   }
 
@@ -1851,21 +1827,10 @@ exports.aCrawler = function (
     loadCluster,
     loadCommonWords,
     loadCommonWordsLetter,
-    loadCommonWords3000_a_e,
-    loadCommonWords3000_f_p,
-    loadCommonWords3000_q_z,
-    loadCommonWords10000_a_c,
-    loadCommonWords10000_d_h,
-    loadCommonWords10000_i_o,
-    loadCommonWords10000_p_r,
-    loadCommonWords10000_s_z,
-    loadCommonWords3000,
-    loadCommonWords10000,
     loadCommon3000_words,
     loadCommon10000_words,
     loadAll_words,
     loadMyWords,
-    loadMyWordCls,
     wordsByFrequency,
     generateIndexes,
     loadExistingWords,

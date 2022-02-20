@@ -106,46 +106,6 @@ async function get(lang, api, word, mode, letter, ffrom, fto, resolvePath, stopi
   console.log(api + " " +mode + ":" + word + ":" + ffrom + ".." + fto+" letter:"+letter);
 
   switch (mode) {
-    case "most_common_3000_a-e":
-
-      data = await crawler.loadCommonWords3000_a_e(word, true);
-      break;
-    case "most_common_3000_f-p":
-
-      data = await crawler.loadCommonWords3000_f_p(word, true);
-      break;
-    case "most_common_3000_q-z":
-
-      data = await crawler.loadCommonWords3000_q_z(word, true);
-      break;
-    case "most_common_10000_a-c":
-
-      data = await crawler.loadCommonWords10000_a_c(word, true);
-      break;
-    case "most_common_10000_d-h":
-
-      data = await crawler.loadCommonWords10000_d_h(word, true);
-      break;
-    case "most_common_10000_i-o":
-
-      data = await crawler.loadCommonWords10000_i_o(word, true);
-      break;
-    case "most_common_10000_p-r":
-
-      data = await crawler.loadCommonWords10000_p_r(word, true);
-      break;
-    case "most_common_10000_s-z":
-
-      data = await crawler.loadCommonWords10000_s_z(word, true);
-      break;
-    case "top3000":
-
-      data = await crawler.loadCommonWords3000(word, letter, true);
-      break;
-    case "top10000":
-
-      data = await crawler.loadCommonWords10000(word, letter, true);
-      break;
     case "most_common_3000_words":
       stopiterateapis.stop = 1;
 
@@ -165,10 +125,6 @@ async function get(lang, api, word, mode, letter, ffrom, fto, resolvePath, stopi
       stopiterateapis.stop = 1;
 
       data = await crawler.loadMyWords(word, letter, true);
-      break;
-    case "my_word_cls":
-
-      data = await crawler.loadMyWordCls(word, letter, true);
       break;
     case "words_by_frequency":
       stopiterateapis.stop = 1;

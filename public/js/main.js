@@ -81,16 +81,6 @@ var checkboxdata = {
     "bucket6": {
         "dictionary": { defchecked: true },
         "synonym cluster": { defchecked: false },
-        "most common 3000 a-e": { defchecked: false },
-        "most common 3000 f-p": { defchecked: false },
-        "most common 3000 q-z": { defchecked: false },
-        "most common 10000 a-c": { defchecked: false },
-        "most common 10000 d-h": { defchecked: false },
-    },
-    "bucket7": {
-        "most common 10000 i-o": { defchecked: false },
-        "most common 10000 p-r": { defchecked: false },
-        "most common 10000 s-z": { defchecked: false },
         "most common 3000 words": { defchecked: false },
         "most common 10000 words": { defchecked: false },
         "all words": { defchecked: false, classes: "inblock" },
@@ -815,7 +805,7 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
     finishbox();
 }
 
-function updateMostCommon() {
+/*function updateMostCommon() {
 
     const mode = lastmode;
     const data = lastresult;
@@ -833,7 +823,7 @@ function updateMostCommon() {
 
     clusterBody(lastresult, wordInfoTbl, false);
 
-}
+}*/
 
 function updateWords() {
 
@@ -971,21 +961,6 @@ function update(firsttime) {
     $("#word-input").val(data.word?data.word:"");
 
     switch (mode) {
-    case "most_common_3000_a-e":
-    case "most_common_3000_f-p":
-    case "most_common_3000_q-z":
-    case "most_common_10000_a-c":
-    case "most_common_10000_d-h":
-    case "most_common_10000_i-o":
-    case "most_common_10000_p-r":
-    case "most_common_10000_s-z":
-    case "top3000":
-    case "top10000":
-    case "my_word_cls":
-        if (firsttime) {
-            updateMostCommon();
-        }
-        break;
     
     case "most_common_3000_words":
     case "most_common_10000_words":
@@ -1131,22 +1106,6 @@ $(document).ready(function(){
 
     let A = 'A'.charCodeAt(0);
     let Z = 'Z'.charCodeAt(0);
-    let top3000 = document.querySelector(".top3000");
-    for (let i = A; i<=Z; i++) {
-        let letter = String.fromCharCode(i);
-        let a = createlink(letter, null, "&top=3000&letter="+letter);
-        let spc = document.createTextNode("  ");
-        top3000.appendChild(a);
-        top3000.appendChild(spc);
-    }
-    let top10000 = document.querySelector(".top10000");
-    for (let i = A; i<=Z; i++) {
-        let letter = String.fromCharCode(i);
-        let a = createlink(letter, null, "&top=10000&letter="+letter);
-        let spc = document.createTextNode("  ");
-        top10000.appendChild(a);
-        top10000.appendChild(spc);
-    }
     function createfrlabs(N) {
         let freqlabels = document.querySelector(".freqlabels"+N);
         if (window["frqntlses"]) {
@@ -1173,7 +1132,6 @@ $(document).ready(function(){
     createfrlabs(3000);
     createfrlabs(10000);
     createmyworss();
-    createmyworss(".mywordscl", "my_word_cls")
 
     if (urltop) {
         $("input[type='radio'][name='mode']:checked").removeAttr('checked');
