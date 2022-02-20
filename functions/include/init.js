@@ -19,8 +19,8 @@ function initFor(lang, api, resolvePath) {
 
 exports.init = function() {
     console.time("app initialized");
-    initFor("EN","wordsapi");
-    initFor("EN","google");
-    initFor("DE","google");
+    initFor("en","wordsapi");
+    initFor("en","google");
+    initFor("de","google");
     console.timeEnd("app initialized");
 }

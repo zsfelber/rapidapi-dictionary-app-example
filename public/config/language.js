@@ -437,8 +437,8 @@ var LANGUAGE_BY_LOCALE = {
     zu: "Zulu"
 };
 var APIS = {
-    "EN": {"WORDSAPI":1, "GOOGLE":1},
-    "DE": {"WORDSAPI":1}
+    "en": {"WORDSAPI":1, "GOOGLE":1},
+    "de": {"WORDSAPI":1}
 }
 var languages;
 
@@ -446,16 +446,7 @@ var languages;
 
 function installLang(which) {
     let lang = `lang${which}`;
-
-    let curlang = getCookie(lang);
-    if (!curlang) {
-        setCookie(lang, curlang="EN");
-    }
-    $(`#${lang} select`).val(curlang);
-    $(`#${lang} select`).change(()=>{
-        curlang = $(`#${lang} select`).val();
-        setCookie(lang, curlang);
-    });
+    let curlang;
 
     //let inputForm = document.querySelector(`#${lang}`);
     //let inputTxt = document.querySelector(`.txt`);
@@ -463,6 +454,7 @@ function installLang(which) {
 
     function populateLangList() {
         if (!languages) {
+            languages = [];
             for (let locid in LANGUAGE_BY_LOCALE) {
                 if (locid.indexOf("_")==-1) {
                     let loc = LANGUAGE_BY_LOCALE[locid];
@@ -497,6 +489,16 @@ function installLang(which) {
     function init() {
         populateLangList();
 
+        curlang = getCookie(lang);
+        if (!curlang) {
+            setCookie(lang, curlang="en");
+        }
+        $(`#${lang} select`).val(curlang);
+        $(`#${lang} select`).change(()=>{
+            curlang = $(`#${lang} select`).val();
+            setCookie(lang, curlang);
+        });
+    
     }
 
     init();
@@ -504,7 +506,7 @@ function installLang(which) {
 
 
 function initLang() {
-    console.log("initLang", language);
+    console.log("initLang");
 
     installLang(1);
     //installLang(2);
@@ -515,8 +517,8 @@ function getLanguage(which) {
     let lang = `lang${which}`;
     let language = $(`#${lang} select`).val();
     if (language) {
-        let text = LANGUAGE_BY_LOCALE[id];
-        let apis = APIS[id];
+        let text = LANGUAGE_BY_LOCALE[language];
+        let apis = APIS[language];
         let result = {language, text, apis};
         return result;
     } else {

@@ -201,7 +201,7 @@ exports.aCrawler = function (
   function initCrawler() {
 
     switch (LANG) {
-      case "EN":{
+      case "en":{
           langCache.NAME = "english";
           langCache.COLLOC = "stardict-OxfordCollocationsDictionary-2.4.2";
           langCache.COLLOC_DIR = `../${DATA_DIR}/dict/${langCache.COLLOC}/res/`;
@@ -213,7 +213,7 @@ exports.aCrawler = function (
 
         }
         break;
-      case "DE":{
+      case "de":{
           // https://en.wiktionary.org/wiki/Wiktionary:Frequency_lists#German
           langCache.NAME = "german";
           langCache.FREQ_LIST = `german_wordlist_300k_most_frequent_from_web.txt`;
@@ -1659,7 +1659,7 @@ exports.aCrawler = function (
     ) {
       console.time("load 3rd party StarDict datafiles");
       switch (LANG) {
-        case "EN":{
+        case "en":{
 
             const colf0 = `${DATA_DIR}/dict/${langCache.COLLOC}/OxfordCollocationsDictionary`;
             langCache.collocationStardict = stardict.loadStarDict(`${colf0}`, false);
@@ -1669,7 +1669,7 @@ exports.aCrawler = function (
             langCache.hunengStardict = stardict.loadStarDict(`${he0}`, false);
           }
           break;
-        case "DE":{
+        case "de":{
             
           }
           break;

@@ -130,11 +130,11 @@ function initSpeak(language) {
 
     let first,second;
     switch (language.language) {
-        case "EN":
+        case "en":
             first = heurSelect($("#speech1 select"), "english", null, [/\bus\b/i,/\bunited states\b/i,/\bu\.s\b/i,/./]);
             second = heurSelect($("#speech2 select"), "english", first, [/\buk\b/i,/\bunited kingdom\b/i,/\bu\.k\b/i,/./]);
             break;
-        case "DE":
+        case "de":
             first = heurSelect($("#speech1 select"), "german", null, [/\bde\b/i,/\bgermany\b/i,/\bdeutschland\b/i,/./]);
             second = heurSelect($("#speech2 select"), "german", null, [/./]);
             break;

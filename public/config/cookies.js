@@ -10,6 +10,7 @@ function readCookies() {
             result[k0] = keyval[1];
         }
     }
+    return result;
 }
 
 function writeCookies(cookies) {
@@ -20,6 +21,7 @@ function writeCookies(cookies) {
     }
     let enc = tags.join("; ");
     document.cookies = enc;
+    return tags;
 }
 
 function getCookie(id) {
@@ -31,5 +33,5 @@ function getCookie(id) {
 function setCookie(id, value) {
     let cookies = readCookies();
     cookies[id] = value;
-    writeCookies();
+    return writeCookies(cookies);
 }

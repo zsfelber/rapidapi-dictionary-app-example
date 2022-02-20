@@ -1141,6 +1141,7 @@ $(document).ready(function(){
     } else if (!urlmode) {
         $("#dictionary").attr('checked', 'checked');
     }
+    initLang();
     chkdict();
 
       //$('.form-check-input').change(function(){
