@@ -1,20 +1,50 @@
 let synth = window.speechSynthesis;
 let speakers = {};
 let voices = [];
-let voices_bykey = {};
+let voices_bylang;
+let voices_bytext;
 
+function UtterSpeakAsync(utterThis) {
+    return new Promise((a, r) => {
+        utterThis.onend = function (event) {
+            console.log(`SpeechSynthesisUtterance.onend`);
+            a();
+        }
+        utterThis.onerror = function (event) {
+            console.error(`SpeechSynthesisUtterance.onerror`);
+            r();
+        }
+        synth.speak(utterThis);
+    });
+
+}
 // https://mdn.github.io/web-speech-api/speak-easy-synthesis/
 
 function installSpeak(which) {
-    let speech = `#speech${which}`;
-    let inputForm = document.querySelector(`${speech}`);
+    let speech = `speech${which}`;
+    //let inputForm = document.querySelector(`#${speech}`);
     //let inputTxt = document.querySelector(`.txt`);
-    let voiceSelect = document.querySelector(`${speech} select`);
 
-    let pitch = document.querySelector(`${speech} .pitch`);
-    let pitchValue = document.querySelector(`${speech} .pitch-value`);
-    let rate = document.querySelector(`${speech} .rate`);
-    let rateValue = document.querySelector(`${speech} .rate-value`);
+    let voiceSelect = document.querySelector(`#${speech} select`);
+    let pitch = document.querySelector(`#${speech} .pitch`);
+    let pitchValue = document.querySelector(`#${speech} .pitch-value`);
+    let rate = document.querySelector(`#${speech} .rate`);
+    let rateValue = document.querySelector(`#${speech} .rate-value`);
+
+
+    voiceSelect.onchange = function () {
+        setCookie(`${speech}:voice`, $(voiceSelect).val());
+    }
+
+    pitch.onchange = function () {
+        pitchValue.textContent = pitch.value;
+        setCookie(`${speech}:pitch`, $(pitch).val());
+    };
+
+    rate.onchange = function () {
+        rateValue.textContent = rate.value;
+        setCookie(`${speech}:rate`, $(rate).val());
+    }
 
     function populateVoiceList() {
         if (!voices.length) {
@@ -24,63 +54,53 @@ function installSpeak(which) {
                 else if (aname == bname) return 0;
                 else return +1;
             });
-
-            voices_bykey = {};
-            voiceSelect.innerHTML = ``;
-            let i = 0;
+            voices_bylang = {};
+            voices_bytext = {};
             for (let voice of voices) {
-                let option = document.createElement(`option`);
-                option.textContent = voice.name;
-
-                option.setAttribute(`data-lang`, voice.lang);
-                option.setAttribute(`data-name`, voice.name);
-                option.setAttribute(`value`, voice.lang+"_"+i);
-                voiceSelect.appendChild(option);
 
                 let l = voice.lang;
-                let _ = l.indexOf("_");
-                if (_!=-1) l = l.substring(0, _);
-                if (!voices_bykey[l]) {
-                    voices_bykey[l] = [];
+                let _ = l.indexOf("-");
+                if (_ != -1) l = l.substring(0, _);
+                if (!voices_bylang[l]) {
+                    voices_bylang[l] = [];
                 }
-                voices_bykey[l].push(voice);
-                i++;
+                voices_bylang[l].push(voice);
+                voices_bytext[voice.name] = voice;
             }
+        }
 
+        voiceSelect.innerHTML = ``;
+        let option0 = document.createElement(`option`);
+        option0.textContent = "";
+        voiceSelect.appendChild(option0);
+
+        for (let voice of voices) {
+            let option = document.createElement(`option`);
+            option.textContent = voice.name;
+            option.setAttribute(`data-lang`, voice.lang);
+            voiceSelect.appendChild(option);
         }
 
     }
 
 
-    function speak(text) {
-        if (synth.speaking) {
-            console.error(`speechSynthesis.speaking`);
-            return;
-        }
+    function utter(text) {
         if (text) {
-            let voice = $(voiceSelect).val();
-            console.log("speak "+voice+" : "+text);
-            return new Promise((a,r)=>{
+            let voicetx = $(voiceSelect).val();
+            voice = voices_bytext[voicetx];
+            if (voice) {
+                console.log("speak " + voicetx + " : " + text);
+
                 let utterThis = new SpeechSynthesisUtterance(text);
-                utterThis.onend = function (event) {
-                    console.log(`SpeechSynthesisUtterance.onend`);
-                    a();
-                }
-                utterThis.onerror = function (event) {
-                    console.error(`SpeechSynthesisUtterance.onerror`);
-                    r();
-                }
-                for (i = 0; i < voices.length; i++) {
-                    if (voices[i].name === voice) {
-                        console.log(`Found voice ${voice} : `, voices[i]);
-                        utterThis.voice = voices[i];
-                        break;
-                    }
-                }
+
+                utterThis.voice = voice;
                 utterThis.pitch = pitch.value;
                 utterThis.rate = rate.value;
-                synth.speak(utterThis);
-            });
+
+                return UtterSpeakAsync(utterThis);
+            } else {
+                return null;
+            }
         }
     };
 
@@ -94,28 +114,25 @@ function installSpeak(which) {
     function init() {
         populateVoiceList();
 
-        pitch.onchange = function () {
-            pitchValue.textContent = pitch.value;
-        }
+        $(voiceSelect).val(getCookie(`${speech}:voice`));
+        $(pitch).val(getCookie(`${speech}:pitch`));
+        $(rate).val(getCookie(`${speech}:rate`));
 
-        rate.onchange = function () {
-            rateValue.textContent = rate.value;
-        }
-
-        //voiceSelect.onchange = function(){
-        //  speak();
-        //}
+        setCookie(`${speech}:voice`, $(voiceSelect).val());
+        setCookie(`${speech}:pitch`, $(pitch).val());
+        setCookie(`${speech}:rate`, $(rate).val());
     }
 
-    speakers[which] = {speak};
+    speakers[which] = { speak };
     init();
 }
 
 function selectAny(combo, lang, notthis, hint) {
-    let voices = voices_bykey[lang];
-    for (let voice of voices) {
+
+    let voices1 = voices_bylang[lang];
+    for (let voice of voices1) {
         let name = voice.name;
-        if (name!=notthis && (!hint||hint.test(name))) {
+        if (name != notthis && (!hint || hint.test(name))) {
             combo.val(name);
             return name;
         }
@@ -124,24 +141,34 @@ function selectAny(combo, lang, notthis, hint) {
 }
 function heurSelect(combo, lang, notthis, hints) {
 
-    if (!Array.isArray(lang)) lang = [lang];
-
-    let oril = combo.val();
-    if (oril) {
-        let _ = oril.indexOf("_");
-        if (_!=-1) oril = oril.substring(0, _);
+    let oritx = combo.val(), oril;
+    if (oritx) {
+        let v = voices_bytext[oritx];
+        oril = v.lang;
+        let _ = oril.indexOf("-");
+        if (_ != -1) oril = oril.substring(0, _);
     }
- 
-    if (oril!==lang) {
+
+    if (oril !== lang) {
         for (let hint of hints) {
             let item = selectAny(combo, lang, notthis, hint);
-    
+
             if (item) {
                 return item;
             }
         }
     }
     return null;
+}
+
+function changeSpeak() {
+    setCookie(`speech1:pitch`, "");
+    setCookie(`speech1:rate`, "");
+    setCookie(`speech1:voice`, "");
+    setCookie(`speech2:pitch`, "");
+    setCookie(`speech2:rate`, "");
+    setCookie(`speech2:voice`, "");
+    initSpeak();
 }
 
 function initSpeak() {
@@ -154,30 +181,27 @@ function initSpeak() {
     installSpeak(1);
     installSpeak(2);
 
-    let first,second;
+    let first, second;
     switch (language.language) {
         case "en":
-            first = heurSelect($("#speech1 select"), "en", null, [/\bus\b/i,/\bunited states\b/i,/\bu\.s\b/i,/./]);
-            second = heurSelect($("#speech2 select"), "en", first, [/\buk\b/i,/\bunited kingdom\b/i,/\bu\.k\b/i,/./]);
-            break;0
+            first = heurSelect($("#speech1 select"), "en", null, [/\bus\b/i, /\bunited states\b/i, /\bu\.s\b/i, /./]);
+            second = heurSelect($("#speech2 select"), "en", first, [/\buk\b/i, /\bunited kingdom\b/i, /\bu\.k\b/i, /./]);
+            break; 0
         case "de":
-            first = heurSelect($("#speech1 select"), "de", null, [/\bde\b/i,/\bgermany\b/i,/\bdeutschland\b/i,/./]);
+            first = heurSelect($("#speech1 select"), "de", null, [/\bde\b/i, /\bgermany\b/i, /\bdeutschland\b/i, /./]);
             second = heurSelect($("#speech2 select"), "de", first, [/./]);
             break;
         default:
-            alert("No speech synthetizer for : "+language.text);
+            alert("No speech synthetizer for : " + language.text);
             break;
-    }
-    if (first && !second) {
-        $("#speech2 select").val(first);
     }
 }
 
-let doing=0;
+let doing = 0;
 let curspeak;
 async function speak(text, which) {
     while (doing) {
-        if (curspeak == text+":"+which) {
+        if (curspeak == text + ":" + which) {
             return doing;
         }
         await doing;
@@ -186,9 +210,9 @@ async function speak(text, which) {
     return doing;
 }
 async function dospeak(text, which) {
-    console.log("speak "+which+" : "+text);
-    curspeak = text+":"+which;
-    await speakers[which].speak(text);
+    console.log("speak " + which + " : " + text);
+    curspeak = text + ":" + which;
+    await speakers[which].utter(text);
     curspeak = null;
     doing = 0;
 }
