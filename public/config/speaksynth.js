@@ -1,6 +1,7 @@
 let synth = window.speechSynthesis;
 let speakers = {};
 let voices = [];
+let voices_bykey = {};
 
 // https://mdn.github.io/web-speech-api/speak-easy-synthesis/
 
@@ -23,18 +24,30 @@ function installSpeak(which) {
                 else if (aname == bname) return 0;
                 else return +1;
             });
+
+            voices_bykey = {};
+            voiceSelect.innerHTML = ``;
+            let i = 0;
+            for (let voice of voices) {
+                let option = document.createElement(`option`);
+                option.textContent = voice.name;
+
+                option.setAttribute(`data-lang`, voice.lang);
+                option.setAttribute(`data-name`, voice.name);
+                option.setAttribute(`value`, voice.lang+"_"+i);
+                voiceSelect.appendChild(option);
+
+                let l = voice.lang;
+                let _ = l.indexOf("_");
+                if (_!=-1) l = l.substring(0, _);
+                if (!voices_bykey[l]) {
+                    voices_bykey[l] = [];
+                }
+                voices_bykey[l].push(voice);
+                i++;
+            }
+
         }
-
-        voiceSelect.innerHTML = ``;
-        for (i = 0; i < voices.length; i++) {
-            let option = document.createElement(`option`);
-            option.textContent = voices[i].name;
-
-            option.setAttribute(`data-lang`, voices[i].lang);
-            option.setAttribute(`data-name`, voices[i].name);
-            voiceSelect.appendChild(option);
-        }
-
 
     }
 
@@ -99,24 +112,30 @@ function installSpeak(which) {
 }
 
 function selectAny(combo, lang, notthis, hint) {
-    let r = new RegExp(lang,"i");
-    for (i = 0; i < voices.length; i++) {
-        let name = voices[i].name;
-        if (name!=notthis && r.test(name) && (!hint||hint.test(name))) {
+    let voices = voices_bykey[lang];
+    for (let voice of voices) {
+        let name = voice.name;
+        if (name!=notthis && (!hint||hint.test(name))) {
             combo.val(name);
             return name;
         }
     }
     return null;
 }
-function heurSelect(combo, langs, notthis, hints) {
+function heurSelect(combo, lang, notthis, hints) {
 
-    if (!Array.isArray(langs)) langs = [langs];
+    if (!Array.isArray(lang)) lang = [lang];
 
-    for (let lang of langs) {
+    let oril = combo.val();
+    if (oril) {
+        let _ = oril.indexOf("_");
+        if (_!=-1) oril = oril.substring(0, _);
+    }
+ 
+    if (oril!==lang) {
         for (let hint of hints) {
             let item = selectAny(combo, lang, notthis, hint);
-
+    
             if (item) {
                 return item;
             }
@@ -138,12 +157,12 @@ function initSpeak() {
     let first,second;
     switch (language.language) {
         case "en":
-            first = heurSelect($("#speech1 select"), "english", null, [/\bus\b/i,/\bunited states\b/i,/\bu\.s\b/i,/./]);
-            second = heurSelect($("#speech2 select"), "english", first, [/\buk\b/i,/\bunited kingdom\b/i,/\bu\.k\b/i,/./]);
-            break;
+            first = heurSelect($("#speech1 select"), "en", null, [/\bus\b/i,/\bunited states\b/i,/\bu\.s\b/i,/./]);
+            second = heurSelect($("#speech2 select"), "en", first, [/\buk\b/i,/\bunited kingdom\b/i,/\bu\.k\b/i,/./]);
+            break;0
         case "de":
-            first = heurSelect($("#speech1 select"), ["german","deutsch"], null, [/\bde\b/i,/\bgermany\b/i,/\bdeutschland\b/i,/./]);
-            second = heurSelect($("#speech2 select"), ["german","deutsch"], null, [/./]);
+            first = heurSelect($("#speech1 select"), "de", null, [/\bde\b/i,/\bgermany\b/i,/\bdeutschland\b/i,/./]);
+            second = heurSelect($("#speech2 select"), "de", first, [/./]);
             break;
         default:
             alert("No speech synthetizer for : "+language.text);

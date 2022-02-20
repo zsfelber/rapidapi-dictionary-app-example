@@ -17,10 +17,9 @@ function writeCookies(cookies) {
     let tags = [];
     for (let id in cookies) {
         let val = cookies[id];
-        tags.push(id+"="+val);
+        let enc = id+"="+val;
+        document.cookie = enc;
     }
-    let enc = tags.join("; ");
-    document.cookie = enc;
     return tags;
 }
 
