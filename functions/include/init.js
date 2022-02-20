@@ -6,20 +6,20 @@ const TRAVERSE_ALL = false;
 const MAX_LEVEL_MINCL = 2;
 
 
-function initFor(lang, api, resolvePath, colloc) {
+function initFor(lang, api, resolvePath) {
     const crawler = require('./crawler.js').aCrawler(lang,        api,
         API_DAILY_LIMIT,
         MAX_WORDS,
         MAX_NODE_FREQUENCY,
         TRAVERSE_ALL
-        , resolvePath, colloc);
+        , resolvePath);
     
     crawler.initializeCache();
 }
 
 exports.init = function() {
     console.time("app initialized");
-    initFor("EN","wordsapi", "stardict-OxfordCollocationsDictionary-2.4.2");
+    initFor("EN","wordsapi");
     initFor("EN","google");
     initFor("DE","google");
     console.timeEnd("app initialized");
