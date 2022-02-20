@@ -14,14 +14,15 @@ const TRAVERSE_ALL = true;
 
 exports.handler = async function(event, context) {
 
-  const crawler = require('../../functions/include/crawler').aCrawler(    API,
+  const API = "wordsapi";
+  let lang = event.queryStringParameters.lang || "";
+
+  const crawler = require('../../functions/include/crawler').aCrawler(lang,    API,
     API_DAILY_LIMIT,
     MAX_WORDS,
     MAX_NODE_FREQUENCY,
     TRAVERSE_ALL,
 context.resolvePath);
-
-  const API = "wordsapi";
 
   return service.respond(async () => {
 

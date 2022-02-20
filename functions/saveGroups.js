@@ -15,6 +15,7 @@ exports.handler = async function(event, context) {
 
 
   //   extract the word query parameter from the HTTP request
+  let lang = event.queryStringParameters.lang || "";
   const groups64 = event.queryStringParameters.groups || "";
   const groups = groups64 ? atob(groups64) : "";
   const groupsdata = groups ? JSON.parse(groups) : null;
@@ -28,7 +29,7 @@ exports.handler = async function(event, context) {
     }
 
     return service.respond(async () => {
-      const crawler = require('./include/crawler.js').aCrawler(       api,
+      const crawler = require('./include/crawler.js').aCrawler(lang,       api,
           100000,//no limit for occasional 1 or 2 single words
           MAX_WORDS,
           MAX_NODE_FREQUENCY,

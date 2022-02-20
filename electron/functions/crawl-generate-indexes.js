@@ -10,6 +10,7 @@ const TRAVERSE_ALL = true;
 
 exports.handler = async function(event, context) {
 
+  let lang = event.queryStringParameters.lang || "";
   let apis = event.queryStringParameters.apis || "";
   let indexes = "true"===event.queryStringParameters.indexes||true===event.queryStringParameters.indexes;
   let stardict = "true"===event.queryStringParameters.stardict||true===event.queryStringParameters.stardict;
@@ -22,7 +23,7 @@ exports.handler = async function(event, context) {
 
       apis = apis.split("-");
       for (let api of apis) {
-        indexgenerated = await doItFor(api, indexes, stardict, resolvePath, indexgenerated);
+        indexgenerated = await doItFor(lang, api, indexes, stardict, resolvePath, indexgenerated);
       }
     }
     console.log("Done.");
@@ -31,10 +32,10 @@ exports.handler = async function(event, context) {
 
 }
 
-async function doItFor(api, indexes, stardict, resolvePath, indexgenerated) {
+async function doItFor(lang, api, indexes, stardict, resolvePath, indexgenerated) {
 
 
-  const crawler = require('../../functions/include/crawler').aCrawler(    api,
+  const crawler = require('../../functions/include/crawler').aCrawler(lang,    api,
     API_DAILY_LIMIT,
     MAX_WORDS,
     MAX_NODE_FREQUENCY,

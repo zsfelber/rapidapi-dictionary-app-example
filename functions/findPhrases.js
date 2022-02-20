@@ -21,11 +21,12 @@ exports.handler = async function (event, context) {
   const lstar = "true"===event.queryStringParameters.lstar||true===event.queryStringParameters.lstar;
   const rstar = "true"===event.queryStringParameters.rstar||true===event.queryStringParameters.rstar;
   const all_words = "true"===event.queryStringParameters.all_words||true===event.queryStringParameters.all_words;
+  let lang = event.queryStringParameters.lang || "";
   let apis = event.queryStringParameters.apis || "";
 
 
   async function find(api) {
-    const crawler = require('./include/crawler.js').aCrawler(       api,
+    const crawler = require('./include/crawler.js').aCrawler(lang,       api,
       100000,//no limit for occasional 1 or 2 single words
       MAX_WORDS,
       MAX_NODE_FREQUENCY,

@@ -6,8 +6,8 @@ const TRAVERSE_ALL = false;
 const MAX_LEVEL_MINCL = 2;
 
 
-function initFor(api, resolvePath) {
-    const crawler = require('./crawler.js').aCrawler(        api,
+function initFor(lang, api, resolvePath) {
+    const crawler = require('./crawler.js').aCrawler(lang,        api,
         API_DAILY_LIMIT,
         MAX_WORDS,
         MAX_NODE_FREQUENCY,
@@ -19,7 +19,7 @@ function initFor(api, resolvePath) {
 
 exports.init = function() {
     console.time("app initialized");
-    initFor("wordsapi");
-    initFor("google");
+    initFor("EN","wordsapi");
+    initFor("EN","google");
     console.timeEnd("app initialized");
 }

@@ -14,15 +14,15 @@ exports.handler = async function (event, context) {
 
   //   extract the word query parameter from the HTTP request
   const resolvePath = context.resolvePath;
+  let lang = event.queryStringParameters.lang || "";
   const word = event.queryStringParameters.word || "";
-  const crawler = require('./include/crawler.js').aCrawler(api,
-    API_DAILY_LIMIT,
-    MAX_WORDS,
-    MAX_NODE_FREQUENCY,
-    TRAVERSE_ALL
-,resolvePath);
-
-  return service.respond(async () => {
+  function doItFor(api) {
+    const crawler = require('./include/crawler.js').aCrawler(lang,api,
+        API_DAILY_LIMIT,
+        MAX_WORDS,
+        MAX_NODE_FREQUENCY,
+        TRAVERSE_ALL
+    ,resolvePath);
     let root = "../data/dict/stardict-OxfordCollocationsDictionary-2.4.2/";
     let html = crawler.findCollocation(word);
 
@@ -32,6 +32,10 @@ exports.handler = async function (event, context) {
     if (!html) {
       result.error = "notfound";
     }
+    return result;
+  }
+  return service.respond(async () => {
+    let result = doItFor("");
     return result;
   }, context);
 

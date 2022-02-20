@@ -14,6 +14,7 @@ const TRAVERSE_ALL = true;
 
 exports.handler = async function(event, context) {
 
+  let lang = event.queryStringParameters.lang || "";
   let apis = event.queryStringParameters.apis || "";
   let deep = event.queryStringParameters.deep || "";
   let fix = "true"===event.queryStringParameters.fix||true===event.queryStringParameters.fix;
@@ -32,7 +33,7 @@ exports.handler = async function(event, context) {
 
       apis = apis.split("-");
       for (let api of apis) {
-        await doItFor(api, deep, fix, fill, resolvePath);
+        await doItFor(lang, api, deep, fix, fill, resolvePath);
       }
     }
     console.log("Done.");
@@ -41,9 +42,9 @@ exports.handler = async function(event, context) {
 
 }
 
-async function doItFor(api, deep, fix, fill, resolvePath) {
+async function doItFor(lang, api, deep, fix, fill, resolvePath) {
 
-  const crawler = require('../../functions/include/crawler').aCrawler(    api,
+  const crawler = require('../../functions/include/crawler').aCrawler(lang,    api,
     API_DAILY_LIMIT[api],
     MAX_WORDS,
     MAX_NODE_FREQUENCY,
