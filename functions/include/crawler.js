@@ -1130,6 +1130,7 @@ exports.aCrawler = function (
         cw1[w] = 1;
       }
     }
+    delete cw1[""];
     return cw1;
   }
   function loadCommonWords(howmany) {
