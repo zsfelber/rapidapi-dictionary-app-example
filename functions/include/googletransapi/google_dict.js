@@ -7,14 +7,15 @@ const V1 = 'v1';
 const V2 = 'v2';
 
 
-function transformToWordsApiLike(result1) {
+function transformToWordsApiLike(definitions) {
 
-    let {thesaurus, definitions} = result1;
-
+    function lst(s) {
+        return s&&s.length?s:undefined;        
+    }
     let result = {
         word:"",
         results:[],
-        pronunciation : {},
+        pronunciation : {}
     };
     let antipron = {};
     let idx=1;
@@ -22,6 +23,7 @@ function transformToWordsApiLike(result1) {
     for (let data of definitions) {
         let word = data.word;
         if (!result.word) result.word = word;
+
 
         for (let meaning of data.meanings) {
             for (let meaningdef of meaning.definitions) {
@@ -37,8 +39,9 @@ function transformToWordsApiLike(result1) {
                     definition:  meaningdef.definition,
                     examples: meaningdef.examples?meaningdef.examples:
                             (meaningdef.example?[meaningdef.example]:undefined),
-                    synonyms: meaningdef.synonyms&&meaningdef.synonyms.length?meaningdef.synonyms:undefined,
-                    antonyms: meaningdef.antonyms&&meaningdef.antonyms.length?meaningdef.antonyms:undefined,
+                    synonyms: lst(meaningdef.synonyms),
+                    antonyms: lst(meaningdef.antonyms),
+                    synonymsGroup: lst(data.synonymsGroup),
                     word
                 };
                 result.results.push(item);

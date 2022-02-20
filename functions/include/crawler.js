@@ -218,7 +218,7 @@ exports.aCrawler = function (
         langCache.NAME = "german";
         langCache.FREQ_LIST = `german_wordlist_300k_most_frequent_from_web.txt`;
         langCache.WORD_LIST = `german_wordlist_300k_most_frequent_from_web.txt`;
-        langCache.COMMON_WORDS = "common-words-5000.txt";
+        langCache.COMMON_WORDS_5000 = "common-words-5000.txt";
 
       }
         break;
@@ -328,6 +328,7 @@ exports.aCrawler = function (
         addif(skeys, "definition");
         addif(skeys, "synonyms");
         addif(skeys, "similarTo");
+        addif(skeys, "synonymsGroup");
         addif(skeys, "antonyms");
 
         delete therest["examples"];
@@ -1135,12 +1136,13 @@ exports.aCrawler = function (
   }
   function loadCommonWords(howmany) {
     let r;
-    if (howmany > 5000) {
+    if (howmany > 5000 && langCache.COMMON_WORDS_10000) {
       r = loadCommonWordsFrom(langCache.COMMON_WORDS_10000, howmany);
     }
-    if (!r) {
+    if (!r && langCache.COMMON_WORDS_5000) {
       r = loadCommonWordsFrom(langCache.COMMON_WORDS_5000, howmany);
     }
+    if (!r) r = {}
     return r;
   }
 

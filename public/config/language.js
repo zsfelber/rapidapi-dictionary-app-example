@@ -518,6 +518,7 @@ var lang_checks = {
             "examples": { defchecked: true },
             "similar to": { defchecked: true },
             "synonyms": { defchecked: true },
+            "synonyms group": { defchecked: true },
         },
         "bucket2": {
             "Pronomen": { defchecked: true },

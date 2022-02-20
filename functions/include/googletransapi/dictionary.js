@@ -32,26 +32,24 @@ exports.transformV2toV1 = function (data) {
 }
 
 function transform(word, language, data, { include }) {
-	let thesaurus = data
-		.map(e => e.thesaurus_result)
-		.filter(e => e)
-		.map((thesaurus_result) => {
-			let { headword, lemma, homograph_index } = thesaurus_result;
 
-			let result = {
-				word: lemma || headword,
-				homograph_index,
-				synonymsGroups: _.get(thesaurus_result, 'synonyms_group.0.nyms', [])
-			}
-			return result;
-		});
-
-
+	let lastEntry;
 	let definitions = data
-		.map(e => e.entry)
-		.filter(e => e)
-		.reduce((accumulator, entry) => {
-			if (!entry.subentries) { return accumulator.push(entry) && accumulator; }
+		//.map(e => (e.entry || e.thesaurus_result))
+		//.filter(e => e)
+		.filter(e => (e.entry || e.thesaurus_result))
+		.reduce((accumulator, e) => {
+			let entry = e.entry;
+			if (entry) {
+				if (!entry.subentries) {
+					lastEntry = entry;
+					accumulator.push(entry);
+					return accumulator; 
+				}
+			} else {
+				lastEntry.thesaurus_result = e.thesaurus_result;
+				return accumulator; 
+			}
 
 			let { subentries } = entry,
 				mappedSubentries;
@@ -87,6 +85,10 @@ function transform(word, language, data, { include }) {
 		.map((entry) => {
 			let { headword, lemma, phonetics = [], etymology = {}, sense_families = [], thesaurus_result = [] } = entry;
 
+			//let { headword, lemma, homograph_index } = thesaurus_result;
+			let synonymsGroup = _.get(thesaurus_result, 
+				'synonyms_group.0.nyms', []).map(stuff=>stuff.nym_headword);
+
 
 			return {
 				word: lemma || headword,
@@ -98,6 +100,7 @@ function transform(word, language, data, { include }) {
 					};
 				}),
 				origin: _.get(etymology, 'etymology.text'),
+				synonymsGroup,
 				meanings: sense_families.map((sense_family) => {
 					let { parts_of_speech, senses = [] } = sense_family;
 
@@ -146,7 +149,7 @@ function transform(word, language, data, { include }) {
 			};
 		});
 
-	return {thesaurus, definitions};
+	return definitions;
 }
 
 async function fetchFromSource(word, language) {
