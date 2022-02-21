@@ -337,6 +337,8 @@ function proplabel(property, masterword, parselabel=false, linksIdxLabFrom=0, li
     if (!parselabel && (property.label === 'examples'||property.kind === 'examples')) {
         createaas(value, property.value, ", ", origin);
     } else if (Array.isArray(property.value)) {
+        if (!value) value = document.createElement('span');
+
         let normal = property.value.slice(0, linksIdxValTo);
         createas(value, normal, null, ", ", "", 0, 100000, origin);
 
@@ -346,11 +348,11 @@ function proplabel(property, masterword, parselabel=false, linksIdxLabFrom=0, li
 
         if (property.value.groupby) {
             intable = {groupby:property.value.groupby,
-                tabletags:["table", "tr", "td"], cur:0};
+                tabletags:["table", "tr", "td"], cur:-1};
             
         } else if (intable) {
-            intable = {groupby:intable.groupby,
-                tabletags:intable.tabletags, cur:tabletags.cur+1};
+            intable = {groupby:intable.groupby, firstrow:intable.firstrow,
+                tabletags:intable.tabletags, cur:intable.cur+1};
             
         } else {
             console.warn("No property.value.groupby for object property, omitting ", property.label);
@@ -363,23 +365,48 @@ function proplabel(property, masterword, parselabel=false, linksIdxLabFrom=0, li
             return childlab;
         }
 
-        let childlab,wrapper;
+        let tableelem,childlab,b;
         switch (intable.cur) {
-            case -1:
-                value = fwdprop({label:groupby[0], value:property.value.root});
-                break;
             case 0:
+                value = document.createElement("div");
             case 1:
             case 2:
-                value = document.createElement(intable.tabletags[intable.cur]);
-                //value.appendChild(roworcol);
-                for (let mainlabel in property.value) {
-                    let vals = property.value[mainlabel];
-                    childlab = fwdprop({label:mainlabel, value:vals});
-
-                    roworcol.appendChild(childlab);
-                }
+                tableelem = document.createElement(intable.tabletags[intable.cur]);
                 break;
+        }
+        if (!value) value = tableelem;
+
+        switch (intable.cur) {
+        case 0:
+            intable.firstrow = document.createElement("tr");
+            tableelem.appendChild(intable.firstrow);
+            value.appendChild(tableelem);
+            break;
+        case 1:
+            b = document.createElement("th");
+            b.innerHTML = intable.groupby[2]+":<br/>"+intable.groupby[1];
+            intable.firstrow.appendChild(b);
+            break;
+        }
+        for (let mainlabel in property.value) {
+            switch (intable.cur) {
+            case 0:
+                b = document.createElement("b");
+                b.innerText = intable.groupby[0]+": "+mainlabel;
+                value.appendChild(b);
+                break;
+            case 1:
+                b = document.createElement("th");
+                b.innerText = mainlabel;
+                intable.firstrow.appendChild(b);
+                break;
+
+            }
+
+            let vals = property.value[mainlabel];
+            childlab = fwdprop({value:vals});
+
+            value.appendChild(childlab);
         }
 
     } else {
@@ -624,8 +651,12 @@ function updateSingleWord() {
                     if (property.label==="inflections") {
 
                         for (let mainlabel in property.value) {
-                            const inflan = proplabel({label:"inflections of "+mainlabel, value:property.value[mainlabel]});
-                            if (inflan) wordInfoBox.appendChild(inflan);
+                            let mainvalue = property.value[mainlabel];
+                            for (let firstlabel in mainvalue) {
+                                let firstvalue = mainvalue[firstlabel];
+                                const inflan = proplabel({label:"inflections, "+mainlabel, firstlabel, value:firstvalue});
+                                if (inflan) wordInfoBox.appendChild(inflan);
+                            }
                         }
                     } else {
         
