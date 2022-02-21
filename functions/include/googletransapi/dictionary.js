@@ -201,9 +201,9 @@ function transform(word, language, data, { include }) {
 				}
 			}
 
-			groupby = groupby.map(e=>e.fid);
-
 			let root = groupChildren(maingroupleaves, 0);
+
+			groupby = groupby.map(e=>e.fid);
 			result[maingroup] = {groupby, root};
 		}
 		return result;

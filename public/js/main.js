@@ -346,16 +346,17 @@ function proplabel(property, masterword, parselabel=false, linksIdxLabFrom=0, li
         createaas(value, remainder, ", ", origin);
     } else if (typeof property.value=="object") {
 
-        if (property.value.groupby) {
-            intable = {groupby:property.value.groupby,
-                tabletags:["table", "tr", "td"], cur:-1};
+        if (property.groupby) {
+            intable = {groupby:property.groupby, columns:{},
+                tabletags:["table", "tr", "span"], cur:0};
             
         } else if (intable) {
-            intable = {groupby:intable.groupby, firstrow:intable.firstrow,
+            intable = {groupby:intable.groupby, 
+                columns:intable.columns, cc:intable.cc, firstrow:intable.firstrow,
                 tabletags:intable.tabletags, cur:intable.cur+1};
             
         } else {
-            console.warn("No property.value.groupby for object property, omitting ", property.label);
+            console.warn("No property.groupby for object property, omitting ", property.label);
             return null;
         }
         let fwdprop = (childprop)=>{
@@ -370,44 +371,69 @@ function proplabel(property, masterword, parselabel=false, linksIdxLabFrom=0, li
             case 0:
                 value = document.createElement("div");
             case 1:
-            case 2:
                 tableelem = document.createElement(intable.tabletags[intable.cur]);
                 break;
         }
         if (!value) value = tableelem;
 
+        let i = 0;
         switch (intable.cur) {
         case 0:
+            b = document.createElement("b");
+            b.innerText = intable.groupby[0]+": "+property.firstlabel;
+            value.appendChild(b);
+
             intable.firstrow = document.createElement("tr");
             tableelem.appendChild(intable.firstrow);
             value.appendChild(tableelem);
-            break;
-        case 1:
+
             b = document.createElement("th");
             b.innerHTML = intable.groupby[2]+":<br/>"+intable.groupby[1];
             intable.firstrow.appendChild(b);
+
+            for (let mainlabel in property.value) {
+
+                let vals = property.value[mainlabel];
+                childlab = fwdprop({value:vals});
+    
+                tableelem.appendChild(childlab);
+            }
+            break;
+        case 1:
+
+            intable.cc = [];
+            for (let mainlabel in property.value) {
+                let column = document.createElement("th");
+                intable.cc.push(column);
+                tableelem.appendChild(column);
+            }
+            for (let mainlabel in property.value) {
+                let vals = property.value[mainlabel];
+                fwdprop({value:vals});
+            }
+            break;
+
+        case 2:
+            for (let mainlabel in property.value) {
+                let columnindex = intable.columns[mainlabel];
+                if (columnindex===undefined) {
+                    intable.columns[mainlabel] = columnindex = i++;
+
+                    b = document.createElement("th");
+                    b.innerHTML = mainlabel;
+                    intable.firstrow.appendChild(b);
+                }
+
+                let vals = property.value[mainlabel];
+                childlab = fwdprop({value:vals});
+
+                let column = intable.ccs[columnindex];
+                column.appendChild(childlab);
+            }
             break;
         }
-        for (let mainlabel in property.value) {
-            switch (intable.cur) {
-            case 0:
-                b = document.createElement("b");
-                b.innerText = intable.groupby[0]+": "+mainlabel;
-                value.appendChild(b);
-                break;
-            case 1:
-                b = document.createElement("th");
-                b.innerText = mainlabel;
-                intable.firstrow.appendChild(b);
-                break;
 
-            }
 
-            let vals = property.value[mainlabel];
-            childlab = fwdprop({value:vals});
-
-            value.appendChild(childlab);
-        }
 
     } else {
         value.innerText = property.value;
@@ -652,9 +678,9 @@ function updateSingleWord() {
 
                         for (let mainlabel in property.value) {
                             let mainvalue = property.value[mainlabel];
-                            for (let firstlabel in mainvalue) {
-                                let firstvalue = mainvalue[firstlabel];
-                                const inflan = proplabel({label:"inflections, "+mainlabel, firstlabel, value:firstvalue});
+                            for (let firstlabel in mainvalue.root) {
+                                let firstvalue = mainvalue.root[firstlabel];
+                                const inflan = proplabel({label:"inflections, "+mainlabel, firstlabel, value:firstvalue, groupby:mainvalue.groupby});
                                 if (inflan) wordInfoBox.appendChild(inflan);
                             }
                         }
