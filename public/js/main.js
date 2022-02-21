@@ -330,12 +330,14 @@ function proplabel(property, masterword, parselabel=false, linksIdxLabFrom=0, li
 
     if (!parselabel && (property.label === 'examples'||property.kind === 'examples')) {
         createaas(value, property.value, ", ", origin);
-    } else {
+    } else if (Array.isArray(property.value)) {
         let normal = property.value.slice(0, linksIdxValTo);
         createas(value, normal, null, ", ", "", 0, 100000, origin);
 
         let remainder = property.value.slice(linksIdxValTo, property.value.length);
         createaas(value, remainder, ", ", origin);
+    } else {
+        value.innerText = property.value;
     }
 
     value.className = 'col-sm-9';
@@ -504,6 +506,13 @@ function updateSingleWord() {
     if (!data.results || data.results.length < 1) {
         return wordInfoTbl.appendChild(document.createTextNode('No results matched.'));
     }
+    let defprops = {
+        "origin":1,
+        "word":1,
+        "pronunciation":1,
+        "group id":1,
+        "part of speech":1
+    };
 
     data.results.map(val => {
 
@@ -537,15 +546,30 @@ function updateSingleWord() {
                     // adds the element to our list item
                     wordInfoBox.appendChild(def);
                 } else if (property.isString || property.isNumber || property.label === 'part of speech') {
-                    const italicLabel = document.createElement('small');
-                    italicLabel.innerText = property.value ? property.value : property.label+"?";
-                    italicLabel.classList.add('lead');
-                    if (property.label === 'part of speech') {
-                        italicLabel.classList.add('font-italic');
-                    } else if (property.label === 'pronunciation') {
-                        italicLabel.classList.add('semismall');
+
+                    if (defprops[property.label] || isch(property.label)) {
+
+                        let justval=()=>{
+
+                            const italicLabel = document.createElement('small');
+                            italicLabel.innerText = property.value ? property.value : property.label+"?";
+                            italicLabel.classList.add('lead');
+
+                            wordInfoBox.appendChild(italicLabel);
+
+                            return italicLabel;
+                        };
+                        if (property.label === 'part of speech') {
+                            justval().classList.add('font-italic');
+                        } else if (property.label === 'pronunciation') {
+                            justval().classList.add('semismall');
+                        } else if (defprops[property.label]) {
+                            justval();
+                        } else {
+                            const prop = proplabel(property);
+                            if (prop) wordInfoBox.appendChild(prop);
+                        }
                     }
-                    wordInfoBox.appendChild(italicLabel);
                 } else if (property.value && isch(property.label)) {
                     const characteristic = proplabel(property);
 

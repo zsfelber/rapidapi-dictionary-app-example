@@ -109,9 +109,9 @@ async function fetchFromSource(word, language) {
 	let single_results = _.get(data, 'feature-callback.payload.single_results', []);
 
 	let error = _.chain(single_results)
-			.find('widget')
-			.get('widget.error')
-			.value()
+		.find('widget')
+		.get('widget.error')
+		.value()
 
 	if (single_results.length === 0) { throw new errors.NoDefinitionsFound(info); }
 
@@ -124,6 +124,86 @@ async function fetchFromSource(word, language) {
 
 function transform(word, language, data, { include }) {
 
+	function boxinflections(inflections_result) {
+		let result = {};
+		// head1 : noun_forms, ...
+		for (let maingroup in inflections_result) {
+			let maingroupleaves = inflections_result[maingroup];
+
+
+			let featuretypes = {};
+			// head2 : 0,1,2, ...
+			for (let leaf of maingroupleaves) {
+				// fid : case, gender, number
+				for (let fid in leaf.features) {
+					// f   : NOMINATIVE, FEMININE, SINGULAR
+					let f = leaf.features[fid];
+					let currenttype = featuretypes[fid];
+					if (!currenttype) featuretypes[fid] = currenttype = {};
+
+					currenttype[f] = 1;
+				}
+			}
+
+			// group by gender, case, number
+			// sections, columns, rows
+			let groupby = [];
+			// fid : case, gender, number
+			for (let fid in featuretypes) {
+				// features   : NOMINATIVE=>{}, FEMININE, SINGULAR
+				let features = featuretypes[fid];
+				let cnt = Object.keys(features).length;
+				groupby.push({ fid, cnt });
+			}
+			groupby.sort((a, b) => {
+				return a.cnt - b.cnt;
+			});
+			if (groupby.length>=3) {
+				let head1 = groupby.splice(0, 1);
+				groupby.reverse();
+				groupby.unshift(head1);
+			}
+
+			let groupChildren = (parentgroup, level) => {
+
+				if (level < groupby.length) {
+					let fpair = groupby[level];
+					let section = { type: fpair.fid, children: {} };
+					let childgroups = {};
+
+					for (let leaf of parentgroup) {
+						let f = leaf.features[fpair.fid];
+						let cursect = childgroups[f];
+						if (!cursect) {
+							childgroups[f] = cursect = [leaf];
+						} else {
+							cursect.push(leaf);
+						}
+					}
+					for (let ch in childgroups) {
+						let childgroup = childgroups[ch];
+
+						let group = section.groupBy(childgroup, level+1);
+						section.children[ch] = group;
+					}
+					return section;
+				} else {
+					let result = [];
+					for (let leaf of parentgroup) {
+						let text = leaf.text ? leaf.text :
+							[leaf.preceding_text,leaf.form_text].join(" ");
+						result.push(text);
+					}
+					return result;
+				}
+			}
+
+			let thisgroupresult = groupChildren(maingroupleaves, 0, groupby.length);
+			result[maingroup] = thisgroupresult;
+		}
+		return result;
+	}
+
 	let lastEntry;
 	let definitions = data
 		//.map(e => (e.entry || e.thesaurus_result))
@@ -135,11 +215,11 @@ function transform(word, language, data, { include }) {
 				if (!entry.subentries) {
 					lastEntry = entry;
 					accumulator.push(entry);
-					return accumulator; 
+					return accumulator;
 				}
 			} else {
 				lastEntry.thesaurus_result = e.thesaurus_result;
-				return accumulator; 
+				return accumulator;
 			}
 
 			let { subentries } = entry,
@@ -174,15 +254,15 @@ function transform(word, language, data, { include }) {
 			return accumulator.concat(mappedSubentries);
 		}, [])
 		.map((entry) => {
-			let { headword, lemma, phonetics = [], etymology = {}, sense_families = [], thesaurus_result = [] } = entry;
+			let { headword, lemma, phonetics = [], etymology = {}, sense_families = [], thesaurus_result = [], inflections_result = {} } = entry;
 
 			//let { headword, lemma, homograph_index } = thesaurus_result;
-			let synonymsGroup = _.get(thesaurus_result, 
-				'synonyms_group.0.nyms', []).map(stuff=>stuff.nym_headword);
-			let originContents = _.get(etymology, 
+			let synonymsGroup = _.get(thesaurus_result,
+				'synonyms_group.0.nyms', []).map(stuff => stuff.nym_headword);
+			let originContents = _.get(etymology,
 				'etymology.fragments', []).
-				filter(e=>e.is_entry_link).map(stuff=>stuff.text);
-
+				filter(e => e.is_entry_link).map(stuff => stuff.text);
+			let inflections = boxinflections(inflections_result);
 
 			return {
 				word: lemma || headword,
@@ -194,7 +274,8 @@ function transform(word, language, data, { include }) {
 					};
 				}),
 				origin: _.get(etymology, 'etymology.text'),
-				originContents, 
+				inflections,
+				originContents,
 				synonymsGroup,
 				meanings: sense_families.map((sense_family) => {
 					let { parts_of_speech, senses = [] } = sense_family;
