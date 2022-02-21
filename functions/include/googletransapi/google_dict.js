@@ -24,16 +24,18 @@ function transformToWordsApiLike(definitions) {
         let word = data.word;
         if (!result.word) result.word = word;
 
-        let groupId=1;
+        let groupId=0;
         for (let meaning of data.meanings) {
             let defitem;
-            if (data.synonymsGroup || data.origin || data.originContents) {
+            if ((data.synonymsGroup&&data.synonymsGroup.length) || 
+                 data.origin || 
+                 (data.originContents&&data.originContents.length)) {
                 defitem = {
                     partOfSpeech : "common definitions",
                     synonymsGroup: lst(data.synonymsGroup),
                     origin: data.origin,
                     originContents: data.originContents,
-                    "groupId":groupId++ 
+                    "groupId":++groupId 
                 };
                 result.results.push(defitem);
             }

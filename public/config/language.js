@@ -561,6 +561,12 @@ var lang_checks = {
 };
 var languages;
 
+function countryFromLocale(l) {
+    let _ = l.indexOf("-");
+    if (_ != -1) l = l.substring(0, _);
+    return l;
+}
+
 // https://mdn.github.io/web-lang-api/speak-easy-synthesis/
 
 function installLang(which) {
@@ -609,11 +615,15 @@ function installLang(which) {
         populateLangList();
 
         curlang = getCookie(lang);
-        if (!curlang) {
-            setCookie(lang, curlang="en");
-        }
-        $(`#${lang} select`).val(curlang);
+        console.log("Current "+lang+" "+curlang);
+
         if (which==1) {
+            if (!curlang) {
+                setCookie(lang, curlang="en");
+                console.log("Defaulting "+lang+"="+curlang);
+            }
+            $(`#${lang} select`).val(curlang);
+
             $(`#${lang} select`).change(()=>{
                 curlang = $(`#${lang} select`).val();
                 setCookie(lang, curlang);
@@ -625,6 +635,16 @@ function installLang(which) {
             $("#langtitle").text(getLanguage(1).text);
             checkboxdata = lang_checks[curlang] || {};
             initChecks();
+        } else {
+            if (!curlang) {
+                setCookie(lang, curlang=countryFromLocale(navigator.language));
+                console.log("Defaulting "+lang+"="+curlang);
+            }
+            $(`#${lang} select`).val(curlang);
+            $(`#${lang} select`).change(()=>{
+                curlang = $(`#${lang} select`).val();
+                setCookie(lang, curlang);
+            });
         }
 
     }
