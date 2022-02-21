@@ -171,7 +171,7 @@ function transform(word, language, data, { include }) {
 
 				if (level < groupby.length) {
 					let fpair = groupby[level];
-					let section = { type: fpair.fid, children: {} };
+					let section = {};
 					let childgroups = {};
 
 					for (let leaf of parentgroup) {
@@ -187,7 +187,7 @@ function transform(word, language, data, { include }) {
 						let childgroup = childgroups[ch];
 
 						let group = groupChildren(childgroup, level+1);
-						section.children[ch] = group;
+						section[ch] = group;
 					}
 					return section;
 				} else {
@@ -201,7 +201,8 @@ function transform(word, language, data, { include }) {
 				}
 			}
 
-			let thisgroupresult = groupChildren(maingroupleaves, 0, groupby.length);
+			let thisgroupresult = groupChildren(maingroupleaves, 0);
+			thisgroupresult.groupby = groupby.map(e=>e.fid);
 			result[maingroup] = thisgroupresult;
 		}
 		return result;
