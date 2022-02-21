@@ -1670,7 +1670,8 @@ exports.aCrawler = function (
         }
           break;
         case "de": {
-
+          const colf0 = `${DATA_DIR}/dict/stardict-ger_hung-2.4.2/ger_hung`;
+          langCache.gerhunStardict = stardict.loadStarDict(`${eh0}`, false);
         }
           break;
       }
@@ -1853,6 +1854,10 @@ exports.aCrawler = function (
       case "en":
         langcache.enghun = langCache.enghunStardict.find(word);
         if (langcache.enghun) langcache.enghun = langcache.enghun.data;
+        break;
+      case "de":
+        langcache.gerhun = langCache.gerhunStardict.find(word);
+        if (langcache.gerhun) langcache.gerhun = langcache.gerhun.data;
         break;
       case "hu":
         langcache.huneng = langCache.hunengStardict.find(word);

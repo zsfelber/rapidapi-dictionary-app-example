@@ -711,6 +711,10 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
         expandcoll.onclick = colls;
         collsect.appendChild(expandcoll);
 
+        if (data.forlang) {
+            $(collsect).append($(`<div>${data.forlang}</div>`));
+        }
+
         async function colls() {
             if (collsect.chtml) {
                 expandcoll.innerText = "collocations [+]";
