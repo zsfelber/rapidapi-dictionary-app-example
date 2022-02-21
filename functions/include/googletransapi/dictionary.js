@@ -183,7 +183,7 @@ function transform(word, language, data, { include }) {
 					for (let ch in childgroups) {
 						let childgroup = childgroups[ch];
 
-						let group = section.groupBy(childgroup, level+1);
+						let group = groupChildren(childgroup, level+1);
 						section.children[ch] = group;
 					}
 					return section;
