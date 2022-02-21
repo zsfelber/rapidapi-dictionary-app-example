@@ -314,20 +314,24 @@ function createaas(cont, sentences, sep, origin) {
     });
 }
 
-function proplabel(property, masterword, parselabel=false, linksIdxLabFrom=0, linksIdxValTo=9999999, prefix="",comma=", ",apostr="", origin) {
+function proplabel(property, masterword, parselabel=false, linksIdxLabFrom=0, linksIdxValTo=9999999, prefix="",comma=", ",apostr="", origin, intable) {
     if (!property.value || (Array.isArray(property.value)&&!property.value.length)) {
         return null;
     }
-    const characteristic = document.createElement('dl');
-    characteristic.className = 'row';
-    const label = document.createElement('dt');
-    label.className = 'col-sm-3';
-    const value = document.createElement('dd');
-
-    if (parselabel) {
-        createas(label, property.label, masterword, comma, apostr, linksIdxLabFrom, 100000, origin);
-    } else {
-        label.innerText = prefix + property.label;
+    let characteristic,label,value;
+    if (property.label) {
+        characteristic = document.createElement('dl');
+        characteristic.className = 'row';
+        label = document.createElement('dt');
+        label.className = 'col-sm-3';
+        
+        value = document.createElement('dd');
+    
+        if (parselabel) {
+            createas(label, property.label, masterword, comma, apostr, linksIdxLabFrom, 100000, origin);
+        } else {
+            label.innerText = prefix + property.label;
+        }
     }
 
     if (!parselabel && (property.label === 'examples'||property.kind === 'examples')) {
@@ -339,21 +343,57 @@ function proplabel(property, masterword, parselabel=false, linksIdxLabFrom=0, li
         let remainder = property.value.slice(linksIdxValTo, property.value.length);
         createaas(value, remainder, ", ", origin);
     } else if (typeof property.value=="object") {
-        if (property.value.groupby) {
-            for (let mainlabel in property.value) {
-                
-            }
-            let  proplabel(property, masterword, parselabel=false, linksIdxLabFrom=0, linksIdxValTo=9999999, prefix="",comma=", ",apostr="", origin) {
 
+        if (property.value.groupby) {
+            intable = {groupby:property.value.groupby,
+                tabletags:["table", "tr", "td"], cur:0};
+            
+        } else if (intable) {
+            intable = {groupby:intable.groupby,
+                tabletags:intable.tabletags, cur:tabletags.cur+1};
+            
+        } else {
+            console.warn("No property.value.groupby for object property, omitting ", property.label);
+            return null;
         }
+        let fwdprop = (childprop)=>{
+            let childlab = proplabel(
+                childprop, masterword, false, 0, 99999999, "", ", ", "", null, 
+                intable                 );
+            return childlab;
+        }
+
+        let childlab,wrapper;
+        switch (intable.cur) {
+            case -1:
+                value = fwdprop({label:groupby[0], value:property.value.root});
+                break;
+            case 0:
+            case 1:
+            case 2:
+                value = document.createElement(intable.tabletags[intable.cur]);
+                //value.appendChild(roworcol);
+                for (let mainlabel in property.value) {
+                    let vals = property.value[mainlabel];
+                    childlab = fwdprop({label:mainlabel, value:vals});
+
+                    roworcol.appendChild(childlab);
+                }
+                break;
+        }
+
     } else {
         value.innerText = property.value;
     }
 
-    value.className = 'col-sm-9';
-    characteristic.appendChild(label);
-    characteristic.appendChild(value);
-    return characteristic;
+    if (characteristic) {
+        value.className = 'col-sm-9';
+        characteristic.appendChild(label);
+        characteristic.appendChild(value);
+        return characteristic;
+    } else {
+        return value;
+    }
 }
 
 function printLabel(data) {
@@ -581,9 +621,18 @@ function updateSingleWord() {
                         }
                     }
                 } else if (property.value && isch(property.label)) {
-                    const characteristic = proplabel(property);
+                    if (property.label==="inflections") {
 
-                    if (characteristic) wordInfoBox.appendChild(characteristic);
+                        for (let mainlabel in property.value) {
+                            const inflan = proplabel({label:"inflections of "+mainlabel, value:property.value[mainlabel]});
+                            if (inflan) wordInfoBox.appendChild(inflan);
+                        }
+                    } else {
+        
+                        const characteristic = proplabel(property);
+
+                        if (characteristic) wordInfoBox.appendChild(characteristic);
+                    }
                 }
             });
 
