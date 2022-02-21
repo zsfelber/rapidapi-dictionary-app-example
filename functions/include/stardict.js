@@ -170,6 +170,7 @@ sametypesequence=h
         let itm = get(i);
         result.push(itm);
       }
+      console.log(wordindex0.length+" items.");
       return result;
     }
 

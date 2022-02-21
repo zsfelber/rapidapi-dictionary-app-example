@@ -36,6 +36,9 @@ exports.handler = async function(event, context) {
           if (!data.word) {
             data.word = ad.word;
           }
+          if (!data.forlang) {
+            data.forlang = ad.forlang ? ad.forlang[lang] : null;
+          }
           if (!data.colloc) {
             data.colloc = ad.colloc;
           }

@@ -1670,7 +1670,7 @@ exports.aCrawler = function (
         }
           break;
         case "de": {
-          const colf0 = `${DATA_DIR}/dict/stardict-ger_hung-2.4.2/ger_hung`;
+          const eh0 = `${DATA_DIR}/dict/stardict-ger_hung-2.4.2/ger_hung`;
           langCache.gerhunStardict = stardict.loadStarDict(`${eh0}`, false);
         }
           break;
