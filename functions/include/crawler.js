@@ -1847,21 +1847,19 @@ exports.aCrawler = function (
   }
 
   function getForLang(lang, word) {
-    let result = {};
-    let langcache = {};
-    result[lang] = langcache;
+    let result;
     switch (lang) {
       case "en":
-        langcache.enghun = langCache.enghunStardict.find(word);
-        if (langcache.enghun) langcache.enghun = langcache.enghun.data;
+        result = langCache.enghunStardict.find(word);
+        if (result) result = result.data;
         break;
       case "de":
-        langcache.gerhun = langCache.gerhunStardict.find(word);
-        if (langcache.gerhun) langcache.gerhun = langcache.gerhun.data;
+        result = langCache.gerhunStardict.find(word);
+        if (result) result = result.data;
         break;
       case "hu":
-        langcache.huneng = langCache.hunengStardict.find(word);
-        if (langcache.huneng) langcache.huneng = langcache.huneng.data;
+        result = langCache.hunengStardict.find(word);
+        if (result) result = result.data;
         break;
     }
     return result;
