@@ -1098,7 +1098,7 @@ exports.aCrawler = function (
     } else {
       words = [].concat(Object.keys(words0));
     }
-    words.sort();
+    words.sort((a,b)=>a.toLowerCase().localeCompare(b.toLowerCase(), LANG));
 
     let result = {
       word,

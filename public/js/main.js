@@ -818,20 +818,17 @@ function updateWords() {
     wordInfoBox.classList.add('definition');
     let i = 0, ln = data.results.length;
     let group = [];
+    let lcc="~"; 
+    function replaceSpec(l) {
+        return l.replace(/[öóő]/g, "o")
+            .replace(/[úùûü]/g, "u").replace(/[áàâä]/g, "a");
+    }
     for (let wi=0; wi<ln; wi++) {
         let w = data.results[wi];
-        let let0 = w[0].charCodeAt(0);
-        let cc = letters[i].charCodeAt(0);
-        if (let0 > cc) {
-            finishbox(i?letters[i]:"~");
-            do {
-                i++;
-                if (i==letters.length) {
-                    break;
-                }
-                cc = letters[i].charCodeAt(0);
-            } while (let0 >= cc);
-            i--;
+        let let0 = replaceSpec(w[0].toLowerCase());
+        if (let0 != lcc) {
+            finishbox(lcc.toUpperCase());
+            lcc = let0;
 
             if (group.length) {
                 createas(wordInfoBox, group, null, ", ");
@@ -843,7 +840,7 @@ function updateWords() {
     }
 
     if (group.length) {
-        finishbox(letters[i]);
+        finishbox(lcc.toUpperCase());
         createas(wordInfoBox, group, null, ", ");
     }
     finishbox("1");
