@@ -34,6 +34,7 @@
                             <label>Extend dictionary until API limit...</label>
                             <input type="hidden" name="started" value="true"/>
                             <input id='word-input' type="text" class="form-control" name="word" placeholder=""/>
+                            <input id='lang' type="text" class="form-control" name="lang" value="en" placeholder=""/>
                             <label for="how-deep">Crawling how deep (level from 1)</label>
                             <input id='how-deep' type="text" class="form-control" name="how-deep" placeholder=""/>
 
@@ -90,6 +91,8 @@
     <!-- import jquery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
+    <script src="../public/config/cookies.js"></script>
+    <script src="../public/config/language.js"></script>
     <script src="../public/js/serve.js"></script>
     <script src="../public/js/ui.js"></script>
     <script src="js/collect.js"></script>

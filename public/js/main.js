@@ -132,8 +132,8 @@ function chkdict() {
     $('.checkboxes56 input').prop("disabled", !chk);
 
     let language1 = getLanguage(1);
-    $('#_GOOGLE').prop("disabled", !language1.apis["GOOGLE"]);
-    $('#_WORDSAPI').prop("disabled", !language1.apis["WORDSAPI"]);
+    $('#_GOOGLE').prop("disabled", !language1||!language1.apis||!language1.apis["GOOGLE"]);
+    $('#_WORDSAPI').prop("disabled", !language1||!language1.apis||!language1.apis["WORDSAPI"]);
 
     let wbf = $("#words_by_frequency").is(':checked');
     $('#ffrom').prop("disabled", !wbf);
@@ -227,7 +227,8 @@ function createpopoverlink(word0, masterword, extraarg="", apostr="", origin) {
     const tmp = $("<div>"+word0+"</div>")[0];
     a.onmouseover = selectElementContents.bind(a, a);
     word0 = tmp.innerText;
-    const word = word0.replace(/[^a-zA-Z0-9\- ]/g, "");
+    //const word = word0.replace(/[^a-zA-Z0-9\- ]/g, "");
+    const word = word0.replace(/[^a-zA-Z0-9\- öóőúùûüáàâäíéÖÓŐÚÙÛÜÁÀÂÄÍÉ]/g, "");
     a.id =     'popoveritm'+poidx++;
     a.classList.add('popoveritm');
     if (masterword==word) {
@@ -337,13 +338,15 @@ function proplabel(property, masterword, parselabel=false, linksIdxLabFrom=0, li
     if (!parselabel && (property.label === 'examples'||property.kind === 'examples')) {
         createaas(value, property.value, ", ", origin);
     } else if (Array.isArray(property.value)) {
+        let vcomma = ", ";
+        if (intable) vcomma = "";
         if (!value) value = document.createElement('span');
 
         let normal = property.value.slice(0, linksIdxValTo);
-        createas(value, normal, null, ", ", "", 0, 100000, origin);
+        createas(value, normal, null, vcomma, "", 0, 100000, origin);
 
         let remainder = property.value.slice(linksIdxValTo, property.value.length);
-        createaas(value, remainder, ", ", origin);
+        createaas(value, remainder, vcomma, origin);
     } else if (typeof property.value=="object") {
 
         if (property.groupby) {
@@ -361,24 +364,18 @@ function proplabel(property, masterword, parselabel=false, linksIdxLabFrom=0, li
         }
         let fwdprop = (childprop)=>{
             let childlab = proplabel(
-                childprop, masterword, false, 0, 99999999, "", ", ", "", null, 
+                childprop, masterword, false, 0, 99999999, "", ""/*-comma*/, "", null, 
                 intable                 );
             return childlab;
         }
 
         let tableelem,childlab,b;
-        switch (intable.cur) {
-            case 0:
-                value = document.createElement("div");
-            case 1:
-                tableelem = document.createElement(intable.tabletags[intable.cur]);
-                break;
-        }
-        if (!value) value = tableelem;
-
         let i = 0;
         switch (intable.cur) {
         case 0:
+            value = document.createElement("div");
+            tableelem = document.createElement("table");
+
             b = document.createElement("b");
             b.innerText = intable.groupby[0]+": "+property.firstlabel;
             value.appendChild(b);
@@ -394,26 +391,26 @@ function proplabel(property, masterword, parselabel=false, linksIdxLabFrom=0, li
             for (let mainlabel in property.value) {
 
                 let vals = property.value[mainlabel];
-                childlab = fwdprop({value:vals});
+                childlab = fwdprop({value:vals, mainlabel});
     
                 tableelem.appendChild(childlab);
             }
             break;
         case 1:
 
+            value = tableelem = document.createElement("tr");
             intable.cc = [];
+
+            let column0 = document.createElement("th");
+            column0.innerText = property.mainlabel;
+            tableelem.appendChild(column0);
+
             for (let mainlabel in property.value) {
-                let column = document.createElement("th");
+                let column = document.createElement("td");
                 intable.cc.push(column);
                 tableelem.appendChild(column);
             }
-            for (let mainlabel in property.value) {
-                let vals = property.value[mainlabel];
-                fwdprop({value:vals});
-            }
-            break;
 
-        case 2:
             for (let mainlabel in property.value) {
                 let columnindex = intable.columns[mainlabel];
                 if (columnindex===undefined) {
@@ -427,9 +424,15 @@ function proplabel(property, masterword, parselabel=false, linksIdxLabFrom=0, li
                 let vals = property.value[mainlabel];
                 childlab = fwdprop({value:vals});
 
-                let column = intable.ccs[columnindex];
-                column.appendChild(childlab);
+                let column = intable.cc[columnindex];
+                if (childlab) {
+                    column.appendChild(childlab);
+                }
             }
+
+            break;
+
+        case 2:
             break;
         }
 
@@ -680,7 +683,13 @@ function updateSingleWord() {
                             let mainvalue = property.value[mainlabel];
                             for (let firstlabel in mainvalue.root) {
                                 let firstvalue = mainvalue.root[firstlabel];
-                                const inflan = proplabel({label:"inflections, "+mainlabel, firstlabel, value:firstvalue, groupby:mainvalue.groupby});
+
+                                const head = proplabel({label:"inflections, "+mainlabel, 
+                                    value:firstlabel});
+                                if (head) wordInfoBox.appendChild(head);
+
+                                const inflan = proplabel({ 
+                                    firstlabel, value:firstvalue, groupby:mainvalue.groupby});
                                 if (inflan) wordInfoBox.appendChild(inflan);
                             }
                         }
@@ -1072,7 +1081,9 @@ function update(firsttime) {
     initpop();
 }
 
-function initChecks() {
+let page_loaded = false;
+
+function asyncInit() {
 
     let chbs1 = document.querySelector('.checkboxes1');
     let chbs2 = document.querySelector('.checkboxes2');
@@ -1118,6 +1129,7 @@ function initChecks() {
     let Z = 'Z'.charCodeAt(0);
     function createfrlabs(N) {
         let freqlabels = document.querySelector(".freqlabels"+N);
+        $(freqlabels).empty();
         if (window["frqntlses"]) {
             let frqntls = window["frqntlses"][N];
             for (let i=1; i<frqntls.length; i++) {
@@ -1131,6 +1143,7 @@ function initChecks() {
     function createmyworss(cl=".mywords", mode="my_words") {
         let letters=['A','B','C','D','E','F', 'G', 'H', 'I', 'J', 'K', 'L', 'M'];
         let mywlabels = document.querySelector(cl);
+        $(mywlabels).empty();
         for (let letter of letters) {
             let iv = createMywLetterLink(letter, mode);
             mywlabels.appendChild(iv.a);
@@ -1151,6 +1164,57 @@ function initChecks() {
 
     chkdict();
 
+
+    if (!page_loaded) {
+        page_loaded = 1;
+        // adds a submit listened to our <form> element
+        if ((urlmode && urlmode!="dictionary") || urltop || url_word) {
+            dosubmit(url_word);
+        }
+
+    }
+}
+
+async function dosubmit(word) {
+
+    // adds the text 'Loading...' to our word 
+    // data container for UX purposes
+    $('#word-info').html('Loading...');
+
+    try {
+        var mode = $("input[type='radio'][name='mode']:checked").val();
+        const qs = [];
+        qs.push(`letter=${urlletter}`);
+        if (!mode) {
+            if (urltop) {
+                mode = `top${urltop}`;
+                qs.push(`top=${urltop}`);
+            } else {
+                if (urlmode) {
+                    mode = urlmode;
+                } else {
+                    mode = "dictionary";
+                }
+            }
+        }
+    
+        qs.push(`ffrom=${urlffrom}`);
+        qs.push(`fto=${urlfto}`);
+    
+        const data = await fetchWord(word, mode, qs);
+
+        lastmode = mode;
+        lastresult = data;
+        
+        update(true);
+
+    } catch (e) {
+        // logs the error if one exists
+        console.log(e);
+
+        // displays message to user if there is an error
+        $('#word-info').html('There was an error fetching the word data');
+    }
 }
 
 let curword, groups = {};
@@ -1252,50 +1316,5 @@ $(document).ready(function(){
         $(".restricted-electron").show();
     }
     
-    async function dosubmit(word) {
 
-        // adds the text 'Loading...' to our word 
-        // data container for UX purposes
-        $('#word-info').html('Loading...');
-
-        try {
-            var mode = $("input[type='radio'][name='mode']:checked").val();
-            const qs = [];
-            qs.push(`letter=${urlletter}`);
-            if (!mode) {
-                if (urltop) {
-                    mode = `top${urltop}`;
-                    qs.push(`top=${urltop}`);
-                } else {
-                    if (urlmode) {
-                        mode = urlmode;
-                    } else {
-                        mode = "dictionary";
-                    }
-                }
-            }
-        
-            qs.push(`ffrom=${urlffrom}`);
-            qs.push(`fto=${urlfto}`);
-        
-            const data = await fetchWord(word, mode, qs);
-
-            lastmode = mode;
-            lastresult = data;
-            
-            update(true);
-
-        } catch (e) {
-            // logs the error if one exists
-            console.log(e);
-
-            // displays message to user if there is an error
-            $('#word-info').html('There was an error fetching the word data');
-        }
-    }
-
-    // adds a submit listened to our <form> element
-    if ((urlmode && urlmode!="dictionary") || urltop || url_word) {
-        dosubmit(url_word);
-    }
 });

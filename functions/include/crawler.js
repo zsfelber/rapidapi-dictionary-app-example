@@ -1602,7 +1602,7 @@ exports.aCrawler = function (
     let q3 = quantilize(10000);
 
     const indpath = `${CACHE_DIR}/index/frequency`;
-    const clindpath = `public/js/frequency.js`;
+    const clindpath = `public/js/${LANG}/frequency.js`;
     const djson = JSON.stringify(byfs);
 
     console.log(API, "Saving cache file/index " + indpath);
@@ -1618,7 +1618,9 @@ exports.aCrawler = function (
     var frqntlses = {
       800:frqntls800, 3000:frqntls3000, 10000:frqntls10000
     };
-      `;
+
+    asyncInit();
+    `;
     fs.writeFileSync(resolvePath.abs(clindpath), clfq);
   }
 

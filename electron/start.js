@@ -59,7 +59,8 @@ function loadMainWindow() {
     printVersion();
 
     loadWindow({uri:"index.html"});
-}
+
+ }
 
 app.on("ready", loadMainWindow);
 app.on("window-all-closed", () => {

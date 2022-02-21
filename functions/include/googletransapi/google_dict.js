@@ -21,11 +21,11 @@ function transformToWordsApiLike(definitions) {
     let antipron = {};
     let idx=1;
     let pid = 'a'.charCodeAt(0);
+    let groupId=0;
     for (let data of definitions) {
         let word = data.word;
         if (!result.word) result.word = word;
 
-        let groupId=0;
         for (let meaning of data.meanings) {
             let defitem;
             if ((data.synonymsGroup&&data.synonymsGroup.length) || 

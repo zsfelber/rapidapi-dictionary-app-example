@@ -528,12 +528,13 @@ var lang_checks = {
             "Substantiv": { defchecked: true },
             "starkes Verb": { defchecked: true },
             "schwaches Verb": { defchecked: true },
-            "Adjektiv": { defchecked: true },
-            "Suffix": { defchecked: true },
+            "unregelmäßiges Verb": { defchecked: true },
+            "Adverb": { defchecked: true },
         },
         "bucket3": {
+            "Adjektiv": { defchecked: true },
             "Präposition": { defchecked: true },
-            "Adverb": { defchecked: true },
+            "Suffix": { defchecked: true },
         },
         "bucket4": {
             "common definitions": { defchecked: true },
@@ -622,12 +623,12 @@ function installLang(which) {
                 setCookie(lang, curlang);
                 $("#langtitle").text(getLanguage(1).text);
                 checkboxdata = lang_checks[curlang] || {};
-                initChecks();
+
+                loadJavaScript(`js/${curlang}/frequency.js`);
                 changeSpeak();
             });
             $("#langtitle").text(getLanguage(1).text);
             checkboxdata = lang_checks[curlang] || {};
-            initChecks();
         } else {
             if (!curlang) {
                 setCookie(lang, curlang=countryFromLocale(navigator.language));
@@ -651,6 +652,9 @@ function initLang() {
 
     installLang(1);
     installLang(2);
+
+    let lang = getLanguage(1);
+    loadJavaScript(`js/${lang.language}/frequency.js`);
 
 }
 

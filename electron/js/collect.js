@@ -18,10 +18,11 @@ $(document).ready(function(){
         $(".restricted-electron").show();
     }
 
-    async function fetchCollect(word, qs=[]) {
+    async function fetchCollect(word, lang, qs=[]) {
         let apis=[];
         if (isch("WORDSAPI")) apis.push("wordsapi");
         if (isch("GOOGLE")) apis.push("google");
+        qs.push(`lang=${lang}`);
         qs.push(`apis=${apis.join("-")}`);
         qs.push(`word=${word}`);
         qs.push(`deep=${$.urlParam('how-deep')}`);
@@ -41,7 +42,7 @@ $(document).ready(function(){
 
         try {
 
-            const data = await fetchCollect($.urlParam('word'));
+            const data = await fetchCollect($.urlParam('word'),$.urlParam('lang'));
 
             console.log("response:", data);
 

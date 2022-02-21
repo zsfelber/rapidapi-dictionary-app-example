@@ -12,3 +12,5 @@ contextBridge.exposeInMainWorld('api', {
     loadWindow: data => ipcRenderer.invoke("loadWindow", data)
 });
 
+//require('electron-cookies');
+ 

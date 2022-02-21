@@ -13,11 +13,11 @@
     "e-start": "electron .",
     "e-pack": "electron-packager ./ --overwrite --asar=true --platform=linux --arch=x64 --prune=true --out=dist"
   },
-  "build":{
+  "build": {
     "extraResources": [
       {
-          "from": "data",
-          "to": "data"
+        "from": "data",
+        "to": "data"
       },
       {
         "from": "cache",
@@ -34,6 +34,7 @@
     "csv-load-sync": "^2.3.1",
     "csv-parse": "^5.0.4",
     "dotenv": "^16.0.0",
+    "electron-cookies": "^1.1.0",
     "express": "^4.17.3",
     "find-in-files": "^0.5.0",
     "jsdom": "^15.2.1",
