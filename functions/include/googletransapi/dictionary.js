@@ -31,6 +31,97 @@ exports.transformV2toV1 = function (data) {
 	});
 }
 
+async function fetchFromSource(word, language) {
+	// https://www.google.com/async/callback:5493?fc=ErUBCndBTlVfTnFUN29LdXdNSlQ2VlZoWUIwWE1HaElOclFNU29TOFF4ZGxGbV9zbzA3YmQ2NnJyQXlHNVlrb3l3OXgtREpRbXpNZ0M1NWZPeFo4NjQyVlA3S2ZQOHpYa292MFBMaDQweGRNQjR4eTlld1E4bDlCbXFJMBIWU2JzSllkLVpHc3J5OVFPb3Q2aVlDZxoiQU9NWVJ3QmU2cHRlbjZEZmw5U0lXT1lOR3hsM2xBWGFldw&fcv=3&async=term:Rettung,corpus:de,,hhdr:true,hwdgt:true,wfp:true,ttl:,tsl:,ptl:
+
+
+	/*
+	https://githubhot.com/repo/meetDeveloper/freeDictionaryAPI/issues/111
+
+		Here is something you might want to try.
+
+		Open https://www.google.com/search?q=google+dictionary in your web browser.
+
+		Right-click on it and select Inspect from the pop-up menu. This will open "Developer Tools" screen.
+
+		Select Network tab in Developer Tools.
+
+		Enter a word in the edit box that says "Search for a word", but don't press ENTER yet.
+
+		Press the trash can icon in Developer Tools to clear the network traffic logs.
+
+		Now press ENTER. You should see the browser makes a call to https://www.google.com/async/callback:5493 with a long line of parameters.
+
+		Look for 1) fc, 2) fcv, and 3) async in the long line of parameters.
+
+		Update modules/dictionary.js in line 140 ~ 142. Note that _fmt:prog,_id:fc_15 at the end of async seem to cause a problem, so try without them first.*/
+
+	let url = new URL('https://www.google.com/async/callback:5493');
+
+	/*
+	/async/callback:5493?
+	fc=EswBCowBQVBFMkdXQnFMVWhYcVpTTV9oeUFlbDFGVkFYYl94QlBLc0w2dVdFOGpJblNpaHFjRzlPWWpFMExvMENKcHZBMjZtY2otNnEyaUNXRUp4SWEydGFzSFpYRFRpNTJ6UkJ1Z0xYTXNBSkxkTjJyX1lod0M3TFdPLVNVeUlBaTBGOTFmNGlzT3c3Y0Q1cGISF1VVd1RZcHFzTHJDSTl1OFBpSzYzZ0FrGiJBRGpXXzNJSFVKQUMwWENfN3dCVk9zcjc3UHZmQno3LUVB
+	&
+	fcv=3
+	&
+	vet=12ahUKEwjamKq6r5D2AhUwhP0HHQjXDZAQg4MCegQIExAB..i
+	&
+	ved=2ahUKEwjamKq6r5D2AhUwhP0HHQjXDZAQu-gBegQIExAH
+	&
+	yv=3
+	&
+	oq=turning
+	&
+	gs_l=dictionary-widget.3..0l4.182563.184451.0.190263.7.7.0.0.0.0.119.626.6j1.7.0....0....1.64.dictionary-widget..0.7.626....0.FlLryQLJ8Ns
+	&
+	expnd=1
+	&
+	async=term:turning,corpus:en,hhdr:true,hwdgt:true,wfp:true,ttl:hu,tsl:en,ptl:hu,htror:false,_fmt:prog,_id:fc_2
+	*/
+	let translateTo = "";// "hu"
+	// OLD
+	//url.searchParams.set('fc', 'ErUBCndBTlVfTnFUN29LdXdNSlQ2VlZoWUIwWE1HaElOclFNU29TOFF4ZGxGbV9zbzA3YmQ2NnJyQXlHNVlrb3l3OXgtREpRbXpNZ0M1NWZPeFo4NjQyVlA3S2ZQOHpYa292MFBMaDQweGRNQjR4eTlld1E4bDlCbXFJMBIWU2JzSllkLVpHc3J5OVFPb3Q2aVlDZxoiQU9NWVJ3QmU2cHRlbjZEZmw5U0lXT1lOR3hsM2xBWGFldw');
+	url.searchParams.set('fcv', '3');
+	//url.searchParams.set('async', `term:${encodeURIComponent(word)},corpus:${language},hhdr:true,hwdgt:true,wfp:true,ttl:,tsl:,ptl:`);
+	// NEW
+	url.searchParams.set('fc', 'EswBCowBQVBFMkdXQnFMVWhYcVpTTV9oeUFlbDFGVkFYYl94QlBLc0w2dVdFOGpJblNpaHFjRzlPWWpFMExvMENKcHZBMjZtY2otNnEyaUNXRUp4SWEydGFzSFpYRFRpNTJ6UkJ1Z0xYTXNBSkxkTjJyX1lod0M3TFdPLVNVeUlBaTBGOTFmNGlzT3c3Y0Q1cGISF1VVd1RZcHFzTHJDSTl1OFBpSzYzZ0FrGiJBRGpXXzNJSFVKQUMwWENfN3dCVk9zcjc3UHZmQno3LUVB');
+	//url.searchParams.set('fcv', '3');
+	url.searchParams.set('async', `term:${encodeURIComponent(word)},corpus:${language},hhdr:true,hwdgt:true,wfp:true,ttl:${translateTo},tsl:${language},ptl:${translateTo},_id:fc_2`);//,htror:false,_fmt:prog
+
+	url = url.toString();
+
+	let info = { word, language };
+
+	let body = await fetch.fetchTextFromHttpUrl(url,
+		{
+			"accept": "*/*",
+			"accept-encoding": "gzip, deflate, br",
+			"accept-language": "en-US,en," + language + ";q=0.9",
+			"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36"
+		},
+		info
+	);
+	let data = JSON.parse(body.substring(4));
+
+	//let callback = _.get(data, 'feature-callback', []);
+	//let payload = _.get(data, 'feature-callback.payload', []);
+
+	let single_results = _.get(data, 'feature-callback.payload.single_results', []);
+
+	let error = _.chain(single_results)
+			.find('widget')
+			.get('widget.error')
+			.value()
+
+	if (single_results.length === 0) { throw new errors.NoDefinitionsFound(info); }
+
+	if (error === 'TERM_NOT_FOUND_ERROR') { throw new errors.NoDefinitionsFound(info); }
+
+	if (error) { throw new errors.UnexpectedError({ error }); }
+
+	return single_results;
+}
+
 function transform(word, language, data, { include }) {
 
 	let lastEntry;
@@ -88,6 +179,9 @@ function transform(word, language, data, { include }) {
 			//let { headword, lemma, homograph_index } = thesaurus_result;
 			let synonymsGroup = _.get(thesaurus_result, 
 				'synonyms_group.0.nyms', []).map(stuff=>stuff.nym_headword);
+			let originContents = _.get(etymology, 
+				'etymology.fragments', []).
+				filter(e=>e.is_entry_link).map(stuff=>stuff.text);
 
 
 			return {
@@ -100,6 +194,7 @@ function transform(word, language, data, { include }) {
 					};
 				}),
 				origin: _.get(etymology, 'etymology.text'),
+				originContents, 
 				synonymsGroup,
 				meanings: sense_families.map((sense_family) => {
 					let { parts_of_speech, senses = [] } = sense_family;
@@ -152,66 +247,6 @@ function transform(word, language, data, { include }) {
 	return definitions;
 }
 
-async function fetchFromSource(word, language) {
-	// https://www.google.com/async/callback:5493?fc=ErUBCndBTlVfTnFUN29LdXdNSlQ2VlZoWUIwWE1HaElOclFNU29TOFF4ZGxGbV9zbzA3YmQ2NnJyQXlHNVlrb3l3OXgtREpRbXpNZ0M1NWZPeFo4NjQyVlA3S2ZQOHpYa292MFBMaDQweGRNQjR4eTlld1E4bDlCbXFJMBIWU2JzSllkLVpHc3J5OVFPb3Q2aVlDZxoiQU9NWVJ3QmU2cHRlbjZEZmw5U0lXT1lOR3hsM2xBWGFldw&fcv=3&async=term:Rettung,corpus:de,,hhdr:true,hwdgt:true,wfp:true,ttl:,tsl:,ptl:
-
-
-	/*
-	https://githubhot.com/repo/meetDeveloper/freeDictionaryAPI/issues/111
-
-		Here is something you might want to try.
-
-		Open https://www.google.com/search?q=google+dictionary in your web browser.
-
-		Right-click on it and select Inspect from the pop-up menu. This will open "Developer Tools" screen.
-
-		Select Network tab in Developer Tools.
-
-		Enter a word in the edit box that says "Search for a word", but don't press ENTER yet.
-
-		Press the trash can icon in Developer Tools to clear the network traffic logs.
-
-		Now press ENTER. You should see the browser makes a call to https://www.google.com/async/callback:5493 with a long line of parameters.
-
-		Look for 1) fc, 2) fcv, and 3) async in the long line of parameters.
-
-		Update modules/dictionary.js in line 140 ~ 142. Note that _fmt:prog,_id:fc_15 at the end of async seem to cause a problem, so try without them first.*/
-
-	let url = new URL('https://www.google.com/async/callback:5493');
-
-	url.searchParams.set('fc', 'ErUBCndBTlVfTnFUN29LdXdNSlQ2VlZoWUIwWE1HaElOclFNU29TOFF4ZGxGbV9zbzA3YmQ2NnJyQXlHNVlrb3l3OXgtREpRbXpNZ0M1NWZPeFo4NjQyVlA3S2ZQOHpYa292MFBMaDQweGRNQjR4eTlld1E4bDlCbXFJMBIWU2JzSllkLVpHc3J5OVFPb3Q2aVlDZxoiQU9NWVJ3QmU2cHRlbjZEZmw5U0lXT1lOR3hsM2xBWGFldw');
-	url.searchParams.set('fcv', '3');
-	url.searchParams.set('async', `term:${encodeURIComponent(word)},corpus:${language},hhdr:true,hwdgt:true,wfp:true,ttl:,tsl:,ptl:`);
-
-	url = url.toString();
-
-	let info = { word, language };
-
-	let body = await fetch.fetchTextFromHttpUrl(url,
-		{
-			"accept": "*/*",
-			"accept-encoding": "gzip, deflate, br",
-			"accept-language": "en-US,en," + language + ";q=0.9",
-			"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36"
-		},
-		info
-	);
-	let data = JSON.parse(body.substring(4));
-
-	let single_results = _.get(data, 'feature-callback.payload.single_results', []),
-		error = _.chain(single_results)
-			.find('widget')
-			.get('widget.error')
-			.value()
-
-	if (single_results.length === 0) { throw new errors.NoDefinitionsFound(info); }
-
-	if (error === 'TERM_NOT_FOUND_ERROR') { throw new errors.NoDefinitionsFound(info); }
-
-	if (error) { throw new errors.UnexpectedError({ error }); }
-
-	return single_results;
-}
 
 exports.findDefinitions = async function (word, language, { include }) {
 	let dictionaryData = await fetchFromSource(word, language);

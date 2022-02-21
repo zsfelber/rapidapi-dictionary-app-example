@@ -362,6 +362,7 @@ exports.aCrawler = function (
             label,
             value,
             isString: typeof value === "string" ? true : false,
+            isNumber: typeof value === "number" ? true : false,
           };
 
           definitionArray.push(newObj);

@@ -458,6 +458,7 @@ var lang_checks = {
             "similar to": { defchecked: true },
             "synonyms": { defchecked: true },
             "verb group": { defchecked: false },
+            "origin contents": { defchecked: true },
         },
         "bucket3": {
             "in category": { defchecked: false },
@@ -499,6 +500,8 @@ var lang_checks = {
             "symbol": { defchecked: true },
             "verb": { defchecked: true },
             "definite_article": { defchecked: true },
+            "common definitions": { defchecked: true },
+            "group id": { defchecked: true },
             "WORDSAPI": { defchecked: true },
             "GOOGLE": { defchecked: true },
         },
@@ -519,6 +522,7 @@ var lang_checks = {
             "similar to": { defchecked: true },
             "synonyms": { defchecked: true },
             "synonyms group": { defchecked: true },
+            "origin contents": { defchecked: true },
         },
         "bucket2": {
             "Pronomen": { defchecked: true },
@@ -539,6 +543,8 @@ var lang_checks = {
         "bucket4": {
             "symbol": { defchecked: true },
             "verb": { defchecked: true },
+            "common definitions": { defchecked: true },
+            "group id": { defchecked: true },
             "WORDSAPI": { defchecked: true },
             "GOOGLE": { defchecked: true },
         },
@@ -607,17 +613,19 @@ function installLang(which) {
             setCookie(lang, curlang="en");
         }
         $(`#${lang} select`).val(curlang);
-        $(`#${lang} select`).change(()=>{
-            curlang = $(`#${lang} select`).val();
-            setCookie(lang, curlang);
+        if (which==1) {
+            $(`#${lang} select`).change(()=>{
+                curlang = $(`#${lang} select`).val();
+                setCookie(lang, curlang);
+                $("#langtitle").text(getLanguage(1).text);
+                checkboxdata = lang_checks[curlang] || {};
+                initChecks();
+                changeSpeak();
+            });
             $("#langtitle").text(getLanguage(1).text);
             checkboxdata = lang_checks[curlang] || {};
             initChecks();
-            changeSpeak();
-        });
-        $("#langtitle").text(getLanguage(1).text);
-        checkboxdata = lang_checks[curlang] || {};
-        initChecks();
+        }
 
     }
 
@@ -629,7 +637,7 @@ function initLang() {
     console.log("initLang");
 
     installLang(1);
-    //installLang(2);
+    installLang(2);
 
 }
 

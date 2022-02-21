@@ -536,7 +536,7 @@ function updateSingleWord() {
 
                     // adds the element to our list item
                     wordInfoBox.appendChild(def);
-                } else if (property.isString || property.label === 'part of speech') {
+                } else if (property.isString || property.isNumber || property.label === 'part of speech') {
                     const italicLabel = document.createElement('small');
                     italicLabel.innerText = property.value ? property.value : property.label+"?";
                     italicLabel.classList.add('lead');

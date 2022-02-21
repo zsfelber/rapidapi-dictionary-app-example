@@ -9,8 +9,8 @@ const V2 = 'v2';
 
 function transformToWordsApiLike(definitions) {
 
-    function lst(s) {
-        return s&&s.length?s:undefined;        
+    function lst(s,single,alternative) {
+        return (s&&s.length)?s:(single?[single]:alternative);        
     }
     let result = {
         word:"",
@@ -24,8 +24,20 @@ function transformToWordsApiLike(definitions) {
         let word = data.word;
         if (!result.word) result.word = word;
 
-
+        let groupId=1;
         for (let meaning of data.meanings) {
+            let defitem;
+            if (data.synonymsGroup || data.origin || data.originContents) {
+                defitem = {
+                    partOfSpeech : "common definitions",
+                    synonymsGroup: lst(data.synonymsGroup),
+                    origin: data.origin,
+                    originContents: data.originContents,
+                    "groupId":groupId++ 
+                };
+                result.results.push(defitem);
+            }
+
             for (let meaningdef of meaning.definitions) {
                 if (data.phonetic) { 
                     if (!antipron[data.phonetic]) {
@@ -37,11 +49,9 @@ function transformToWordsApiLike(definitions) {
                     partOfSpeech : meaning.partOfSpeech,
                     pronunciation : data.phonetic,
                     definition:  meaningdef.definition,
-                    examples: meaningdef.examples?meaningdef.examples:
-                            (meaningdef.example?[meaningdef.example]:undefined),
-                    synonyms: lst(meaningdef.synonyms),
-                    antonyms: lst(meaningdef.antonyms),
-                    synonymsGroup: lst(data.synonymsGroup),
+                    examples: lst(meaningdef.examples,meaningdef.example),
+                    antonyms: lst(meaningdef.antonyms,meaningdef.antonym),
+                    commonDefinitions: defitem?groupId:undefined,
                     word
                 };
                 result.results.push(item);
