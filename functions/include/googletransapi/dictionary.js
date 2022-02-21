@@ -125,6 +125,9 @@ async function fetchFromSource(word, language) {
 function transform(word, language, data, { include }) {
 
 	function boxinflections(inflections_result) {
+
+		if (!inflections_result) return undefined;
+
 		let result = {};
 		// head1 : noun_forms, ...
 		for (let maingroup in inflections_result) {
@@ -161,7 +164,7 @@ function transform(word, language, data, { include }) {
 			if (groupby.length>=3) {
 				let head1 = groupby.splice(0, 1);
 				groupby.reverse();
-				groupby.unshift(head1);
+				groupby.unshift(head1[0]);
 			}
 
 			let groupChildren = (parentgroup, level) => {
@@ -255,7 +258,7 @@ function transform(word, language, data, { include }) {
 			return accumulator.concat(mappedSubentries);
 		}, [])
 		.map((entry) => {
-			let { headword, lemma, phonetics = [], etymology = {}, sense_families = [], thesaurus_result = [], inflections_result = {} } = entry;
+			let { headword, lemma, phonetics = [], etymology = {}, sense_families = [], thesaurus_result = [], inflections_result } = entry;
 
 			//let { headword, lemma, homograph_index } = thesaurus_result;
 			let synonymsGroup = _.get(thesaurus_result,

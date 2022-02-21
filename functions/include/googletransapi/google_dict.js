@@ -29,12 +29,14 @@ function transformToWordsApiLike(definitions) {
         for (let meaning of data.meanings) {
             let defitem;
             if ((data.synonymsGroup&&data.synonymsGroup.length) || 
-                 data.origin || 
-                 (data.originContents&&data.originContents.length)) {
+                    data.origin || 
+                    data.inflections || 
+                    (data.originContents&&data.originContents.length)) {
                 defitem = {
                     partOfSpeech : "common definitions",
                     synonymsGroup: lst(data.synonymsGroup),
                     origin: data.origin,
+                    inflections: data.inflections,
                     originContents: data.originContents,
                     "groupId":++groupId 
                 };
