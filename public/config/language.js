@@ -534,15 +534,10 @@ var lang_checks = {
         "bucket3": {
             "Präposition": { defchecked: true },
             "Adverb": { defchecked: true },
-            "prefix": { defchecked: true },
-            "preposition": { defchecked: true },
-            "pronoun": { defchecked: true },
-            "suffix": { defchecked: true },
         },
         "bucket4": {
-            "symbol": { defchecked: true },
-            "verb": { defchecked: true },
             "common definitions": { defchecked: true },
+            "inflections": { defchecked: true },
             "WORDSAPI": { defchecked: true },
             "GOOGLE": { defchecked: true },
         },
