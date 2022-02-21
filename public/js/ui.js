@@ -25,7 +25,7 @@ function isch(id) {
     id = id.replace(/ /g, "_");
     var chh = $("#"+id);
     if (chh.length) {
-        return chh.val()=="true";
+        return !chh.prop('disabled') && chh.val()=="true";
     } else {
         alert("unknown label : "+id);
     }
