@@ -204,6 +204,7 @@ function transform(word, language, data, { include }) {
 		return result;
 	}
 
+	try {
 	let lastEntry;
 	let definitions = data
 		//.map(e => (e.entry || e.thesaurus_result))
@@ -326,6 +327,10 @@ function transform(word, language, data, { include }) {
 		});
 
 	return definitions;
+	} catch (e) {
+		console.log(e);
+		throw e;
+	}
 }
 
 

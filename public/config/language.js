@@ -438,7 +438,7 @@ var LANGUAGE_BY_LOCALE = {
 };
 var APIS = {
     "en": {"WORDSAPI":1, "GOOGLE":1},
-    "de": {"WORDSAPI":1}
+    "de": {"GOOGLE":1}
 }
 var lang_checks = {
 

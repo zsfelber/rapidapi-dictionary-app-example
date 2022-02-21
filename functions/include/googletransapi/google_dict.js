@@ -9,6 +9,7 @@ const V2 = 'v2';
 
 function transformToWordsApiLike(definitions) {
 
+    try {
     function lst(s,single,alternative) {
         return (s&&s.length)?s:(single?[single]:alternative);        
     }
@@ -73,6 +74,10 @@ function transformToWordsApiLike(definitions) {
 
 
     return result;
+    } catch (e) {
+        console.log(e);
+		throw e;
+    }
 }
 
 
