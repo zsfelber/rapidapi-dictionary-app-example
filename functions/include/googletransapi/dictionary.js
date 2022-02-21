@@ -201,9 +201,10 @@ function transform(word, language, data, { include }) {
 				}
 			}
 
-			let thisgroupresult = groupChildren(maingroupleaves, 0);
-			thisgroupresult.groupby = groupby.map(e=>e.fid);
-			result[maingroup] = thisgroupresult;
+			groupby = groupby.map(e=>e.fid);
+
+			let root = groupChildren(maingroupleaves, 0);
+			result[maingroup] = {groupby, root};
 		}
 		return result;
 	}

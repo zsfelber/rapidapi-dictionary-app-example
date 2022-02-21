@@ -292,7 +292,9 @@ function createas(cont, words, masterword, sep, apostr="", linksIdxFrom=0, links
     if (words) words.forEach(word => {
         let a;
         if (typeof word=="string") {
-            a = (linksIdxFrom<=index&&index<linksIdxTo) ? createpopoverlink(word, masterword, "", apostr, origin) : createi(word);
+            a = (linksIdxFrom<=index&&index<linksIdxTo) ? 
+                createpopoverlink(word, masterword, "", apostr, origin) : 
+                createi(word);
         } else {
             a = word;
         }
@@ -336,6 +338,14 @@ function proplabel(property, masterword, parselabel=false, linksIdxLabFrom=0, li
 
         let remainder = property.value.slice(linksIdxValTo, property.value.length);
         createaas(value, remainder, ", ", origin);
+    } else if (typeof property.value=="object") {
+        if (property.value.groupby) {
+            for (let mainlabel in property.value) {
+                
+            }
+            let  proplabel(property, masterword, parselabel=false, linksIdxLabFrom=0, linksIdxValTo=9999999, prefix="",comma=", ",apostr="", origin) {
+
+        }
     } else {
         value.innerText = property.value;
     }
