@@ -125,3 +125,9 @@ https://en.wiktionary.org/wiki/Wiktionary:Frequency_lists/A_Frequency_Dictionary
 
 
 https://www.wordfrequency.info/samples.asp
+
+https://invokeit.wordpress.com/frequency-word-lists/
+
+https://onedrive.live.com/?id=3732E80B128D016F%213584&cid=3732E80B128D016F
+
+opensubtitles_frequencies.txt

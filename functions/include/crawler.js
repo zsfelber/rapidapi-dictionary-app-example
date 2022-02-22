@@ -109,6 +109,18 @@ exports.aCrawler = function (
     }
     return { f, json, data };
   }
+
+  function loadFrequenyCsv(file) {
+    let result = csvParse.load(
+      resolvePath.abs(file),
+      {
+        convert: {
+          count: parseInt,
+        },
+      }
+    );
+  }
+  
   async function parallelBottleneck() {
     pendingParallelRequests++;
     if (!(pendingParallelRequests % 1000)) {
@@ -216,8 +228,8 @@ exports.aCrawler = function (
       case "de": {
         // https://en.wiktionary.org/wiki/Wiktionary:Frequency_lists#German
         langCache.NAME = "german";
-        langCache.FREQ_LIST = `german_wordlist_300k_most_frequent_from_web.txt`;
-        langCache.WORD_LIST = `german_wordlist_300k_most_frequent_from_web.txt`;
+        langCache.FREQ_CSV = `opensubtitles_frequencies.csv`;
+        langCache.WORD_CSV = `opensubtitles_frequencies.csv`;
         langCache.COMMON_WORDS_5000 = "common-words-5000.txt";
 
       }
@@ -1428,22 +1440,24 @@ exports.aCrawler = function (
     if (!langCache.existingRealWords) {
       langCache.existingRealWords = Object.create(null);
 
-      let words;
-      if (langCache.existingRealWordsArray) {
-        words = langCache.existingRealWordsArray;
-      } else {
+      if (langCache.WORD_CSV) {
+        langCache.existingRealWordsCsv = loadFrequenyCsv(DATA_DIR + "/" + langCache.WORD_CSV);
+        for (let rec of langCache.existingRealWordsCsv) {
+          langCache.existingRealWords[rec.word] = 1;
+        }
+      } else if (langCache.WORD_LIST) {
         words = langCache.existingRealWordsArray =
           loadHeadless1ColCsv(resolvePath.abs(DATA_DIR + "/" + langCache.WORD_LIST));
+        for (let word of words) {
+          langCache.existingRealWords[word] = 1;
+        }
       }
 
-      for (let word of words) {
-        langCache.existingRealWords[word] = 1;
-      }
     }
     return langCache.existingRealWords;
   }
 
-  function doesGoogleWordExist(word) {
+  function doesRealWordExist(word) {
     loadExistingWords();
     return langCache.existingRealWords[word];
   }
@@ -1463,14 +1477,11 @@ exports.aCrawler = function (
 
     if (!langCache.frequencyRecords) {
       if (langCache.FREQ_CSV && fs.existsSync(resolvePath.abs(DATA_DIR + "/" + langCache.FREQ_CSV))) {
-        langCache.frequencyRecords = csvParse.load(
-          resolvePath.abs(DATA_DIR + "/" + langCache.FREQ_CSV),
-          {
-            convert: {
-              count: parseInt,
-            },
-          }
-        );
+        if (langCache.WORD_CSV == langCache.FREQ_CSV) {
+          langCache.frequencyRecords = langCache.existingRealWordsCsv;
+        } else {
+          langCache.frequencyRecords = loadFrequenyCsv(DATA_DIR + "/" + langCache.FREQ_CSV);
+        }
       } else if (langCache.FREQ_LIST && fs.existsSync(resolvePath.abs(DATA_DIR + "/" + langCache.FREQ_LIST))) {
         langCache.frequencyRecords = [];
         let words;
@@ -1489,7 +1500,7 @@ exports.aCrawler = function (
       langCache.frequencies = Object.create(null);
 
       for (let frec of langCache.frequencyRecords) {
-        if (doesGoogleWordExist(frec.word)) {
+        if (doesRealWordExist(frec.word)) {
           langCache.frequencies[frec.word] = frec.count;
         }
       }
@@ -1521,7 +1532,7 @@ exports.aCrawler = function (
         return es;
       }
       for (let frec of langCache.frequencyRecords) {
-        if (doesGoogleWordExist(frec.word)) {
+        if (doesRealWordExist(frec.word)) {
           entry(frec.count).push(frec.word);
         }
       }
@@ -1898,7 +1909,7 @@ exports.aCrawler = function (
     generateIndexes,
     loadExistingWords,
     loadExistingWordsAndFreqs,
-    doesGoogleWordExist,
+    doesRealWordExist,
     getWordCaggleFrequency,
     loadAllFromFileCache,
     updateStarDict,
