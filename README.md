@@ -126,8 +126,24 @@ https://en.wiktionary.org/wiki/Wiktionary:Frequency_lists/A_Frequency_Dictionary
 
 https://www.wordfrequency.info/samples.asp
 
+
+
+
+
+opensubtitles_frequencies.txt
+
 https://invokeit.wordpress.com/frequency-word-lists/
 
 https://onedrive.live.com/?id=3732E80B128D016F%213584&cid=3732E80B128D016F
 
-opensubtitles_frequencies.txt
+
+original data source
+
+https://opus.nlpl.eu/OpenSubtitles-v1.php
+https://opus.nlpl.eu/OpenSubtitles-v2011.php
+https://opus.nlpl.eu/OpenSubtitles-v2012.php
+https://opus.nlpl.eu/OpenSubtitles-v2013.php
+https://opus.nlpl.eu/OpenSubtitles-v2016.php
+https://opus.nlpl.eu/OpenSubtitles.php
+
+

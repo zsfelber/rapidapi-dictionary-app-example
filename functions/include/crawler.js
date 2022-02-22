@@ -111,7 +111,7 @@ exports.aCrawler = function (
   }
 
   function loadFrequenyCsv(file) {
-    let result = csvParse.load(
+    let raw = csvParse.load(
       resolvePath.abs(file),
       {
         convert: {
@@ -119,6 +119,27 @@ exports.aCrawler = function (
         },
       }
     );
+    let result = [];
+    let dropped = [];
+    let tot=BigInt(0), totresult=BigInt(0), totdropped=BigInt(0);
+    for (let rec of raw) {
+      if (!rec.count) {
+        console.log("Bad", rec);
+        continue;
+      }
+      let rc = BigInt(rec.count);
+      tot += rc;
+      if (rec.count < 10) {
+        totdropped += rc;
+        dropped.push(rec);
+      } else {
+        totresult += rc;
+        result.push(rec);
+      }
+    }
+    console.log(`Frequency CSV processed:${file}   words freq   total:${raw.length} ${tot}   kept:${result.length} ${totresult}   dropped(where fr<10):${dropped.length} ${totdropped}`)
+    
+    return result;
   }
   
   async function parallelBottleneck() {
