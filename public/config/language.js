@@ -535,6 +535,7 @@ var lang_checks = {
             "Adjektiv": { defchecked: true },
             "Präposition": { defchecked: true },
             "Suffix": { defchecked: true },
+            "Interjektion": { defchecked: true },
         },
         "bucket4": {
             "common definitions": { defchecked: true },

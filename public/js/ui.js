@@ -123,7 +123,7 @@ function createlink(word0, masterword, extraarg="", apostr="") {
     const tmp = $("<div>"+word0+"</div>")[0];
 
     word0 = tmp.innerText;
-    const word = word0.replace(/[^a-zA-Z0-9\- öóőúùûüáàâäíéÖÓŐÚÙÛÜÁÀÂÄÍÉ]/g, "");
+    const word = word0.replace(/[^a-zA-Z0-9\- öóőúùûüáàâäíéÖÓŐÚÙÛÜÁÀÂÄÍÉß]/g, "");
 
     if (masterword==word) {
         a.classList.add('master');

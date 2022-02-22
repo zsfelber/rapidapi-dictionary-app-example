@@ -228,7 +228,7 @@ function createpopoverlink(word0, masterword, extraarg="", apostr="", origin) {
     a.onmouseover = selectElementContents.bind(a, a);
     word0 = tmp.innerText;
     //const word = word0.replace(/[^a-zA-Z0-9\- ]/g, "");
-    const word = word0.replace(/[^a-zA-Z0-9\- öóőúùûüáàâäíéÖÓŐÚÙÛÜÁÀÂÄÍÉ]/g, "");
+    const word = word0.replace(/[^a-zA-Z0-9\- öóőúùûüáàâäíéÖÓŐÚÙÛÜÁÀÂÄÍÉß]/g, "");
     a.id =     'popoveritm'+poidx++;
     a.classList.add('popoveritm');
     if (masterword==word) {
