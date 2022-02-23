@@ -9,23 +9,31 @@ exports.initCrawler = function (langCache) {
 };
 
 
-function ending(base, exphead, form) {
-    let rx = new RegExp(exphead + base + "(.*)").exec(form);
-    let phrase;
+function ending0(base, exphead, form, addregexp=0) {
+    let rx = new RegExp("^"+exphead + base + "(.*)", "i").exec(form);
+    let items;
     if (rx) {
-        phrase = " -" + rx[1];
+        items = [" "];
+        for (let i=1; i<=addregexp; i++) items.push(rx[i]);
+        items.push("-" + rx[addregexp+1]);
     } else {
-        rx = new RegExp(exphead + "(.*)").exec(form);
+        rx = new RegExp("^"+exphead + "(.*)", "i").exec(form);
         if (rx) {
-            phrase = " " + rx[1];
+            items = [" "];
+            addregexp++;
+            for (let i=1; i<=addregexp; i++) items.push(rx[i]);
         } else {
-            phrase = "," + form;
+            items = [",", form];
         }
     }
-    return phrase;
+    return items;
 }
-function middle(expend, form) {
-    rx = new RegExp("(.*)"+expend).exec(form);
+function ending(base, exphead, form, addregexp=0) {
+    let r = ending0(base, exphead, form, addregexp);
+    return r.join("");
+}
+function middle(form, exphead, expend) {
+    rx = new RegExp("^"+exphead+"(.*)"+expend+"$", "i").exec(form);
     if (rx) {
         return rx[1];
     } else {
@@ -38,6 +46,8 @@ exports.transformSingle = function (data) {
         if (result.inflections) {
             let noun = result.inflections["noun_forms"];
             let verb = result.inflections["verb_forms"];
+            let adj = result.inflections["adjective_forms"];
+
             let shortform = "";
             let ris;
             if (noun) {
@@ -60,12 +70,35 @@ exports.transformSingle = function (data) {
                 noun.shortform = shortform;
             } else if (verb) {
                 let ris = verb.root;
-                let verbbase = middle(ris.PRESENT.SIMPLE.INDICATIVE.PLURAL.THIRD, "en");
+                let verbbase = middle(ris.PRESENT.SIMPLE.INDICATIVE.PLURAL.THIRD, "Sie ", "en");
+                let r;
 
-                shortform += ending(verbbase, "", ris.PRESENT.SIMPLE.INDICATIVE.SINGULAR.THIRD);
-                shortform += ending(verbbase, "", ris.PART.SIMPLE.INDICATIVE.PLURAL.THIRD);
-                shortform += ending(verbbase, "", ris.PART.PERFECT.INDICATIVE.PLURAL.THIRD);
+                r = ending0(verbbase+"t", "Er/Sie/Es ", ris.PRESENT.SIMPLE.INDICATIVE.SINGULAR.THIRD);
+                if (r[1] != "-") {
+                    shortform += r.join("");
+                }
+
+                r = ending0(verbbase, "Ich ", ris.PAST.SIMPLE.INDICATIVE.SINGULAR.FIRST);
+                let past1base1 = r[1];
+
+                r = ending0(verbbase, "Er/Sie/Es ", ris.PAST.SIMPLE.INDICATIVE.SINGULAR.THIRD);
+                let past1base3 = r[1];
+
+                if (past1base1 != past1base3) {
+                    shortform += " "+past1base1+"("+r.join("")+")";
+                } else {
+                    shortform += r.join("");
+                }
+
+                r = ending0(verbbase, "Sie (haben|sind) ge", ris.PAST.PERFECT.INDICATIVE.PLURAL.THIRD, 1);
+                r[1] = r[1].replace("haben","h ge").replace("sind","i ge");
+                shortform += r.join("");
+
                 verb.shortform = shortform;
+
+            } else if (adj) {
+
+                adj.shortform = "adjective infections...";
             }
         }
     }

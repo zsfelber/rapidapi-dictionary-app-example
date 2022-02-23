@@ -617,7 +617,8 @@ function updateSingleWord() {
         "word":1,
         "pronunciation":1,
         "group id":1,
-        "part of speech":1
+        "part of speech":1,
+        "group part of speech":1
     };
 
     data.results.map(val => {
