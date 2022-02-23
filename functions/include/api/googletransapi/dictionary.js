@@ -148,7 +148,7 @@ function transform(word, language, data, { include }) {
 			groupby0.reverse();
 			groupby0.unshift(head1[0]);
 		}
-		for (let rec in groupby0) {
+		for (let rec of groupby0) {
 			groupby.push(rec.fid);
 		}
 		return groupby;
@@ -159,6 +159,7 @@ function transform(word, language, data, { include }) {
 				switch (rootid) {
 					case "noun_forms": return ['gender', 'case', 'number'];
 					case "verb_forms": return ['tense', 'sub_tense', 'mood', 'number', 'person'];
+					case "adjective_forms": return ['inflection_type', 'case', 'gender', 'number', 'degree'];
 				}
 			default: {
 				console.log(language+" "+rootid+" : default inflection group by");
@@ -220,7 +221,9 @@ function transform(word, language, data, { include }) {
 					let result = [];
 					for (let leaf of parentgroup) {
 						let text = leaf.text ? leaf.text :
-							[leaf.preceding_text,leaf.form_text].join(" ");
+							(leaf.preceding_text ? [leaf.preceding_text,leaf.form_text].join(" ")
+							: leaf.form_text
+							);
 						result.push(text);
 					}
 					return result;
