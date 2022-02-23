@@ -4,7 +4,7 @@ exports.initCrawler=function(langCache) {
 
     langCache.NAME = "english";
     langCache.COLLOC = "stardict-OxfordCollocationsDictionary-2.4.2";
-    langCache.COLLOC_DIR = `../${DATA_DIR}/dict/${langCache.COLLOC}/res/`;
+    langCache.COLLOC_REL = `dict/${langCache.COLLOC}/res/`;
     // caggle freq records
     langCache.FREQ_CSV = `unigram_freq.csv`;
     langCache.WORD_LIST = "english_.csv";

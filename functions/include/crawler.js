@@ -238,6 +238,11 @@ exports.aCrawler = function (
 
     lang.initCrawler(langCache);
 
+    if (langCache.COLLOC_REL) {
+      langCache.COLLOC_DIR = `../${DATA_DIR}/${langCache.COLLOC_REL}`;
+    }
+
+
     switch (API) {
       case "google": {
         const googleDictionary =

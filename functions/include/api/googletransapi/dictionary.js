@@ -2,8 +2,8 @@ const fs = require('fs'),
 	_ = require('lodash'),
 
 	utils = require('./utils.js'),
-	errors = require('../errors.js'),
-	fetch = require('../fetch.js');
+	errors = require('../../errors.js'),
+	fetch = require('../../fetch.js');
 
 exports.transformV2toV1 = function (data) {
 	return data.map((entry) => {

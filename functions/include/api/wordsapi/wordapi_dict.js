@@ -1,7 +1,7 @@
 //const axios = require('axios');
 //const fs = require('fs');
 
-const fetch = require("../fetch");
+const fetch = require("../../fetch");
 
 exports.wordsApiDictionary = async function(word) {
     let url = `https://wordsapiv1.p.rapidapi.com/words/${word}`;

@@ -679,7 +679,20 @@ function updateSingleWord() {
                 } else if (property.value && isch(property.label)) {
                     if (property.label==="inflections") {
 
-                        for (let mainlabel in property.value) {
+                        let v;
+                        if (v=property.value.noun_forms) {
+                            if (v.shortform) {
+                                const shortform = proplabel({label:"inflections", value:v.shortform});
+                                if (shortform) wordInfoBox.appendChild(shortform);        
+                            }
+                        } else if (v=property.value.verb_forms) {
+                            if (v.shortform) {
+                                const shortform = proplabel({label:"inflections", value:v.shortform});
+                                if (shortform) wordInfoBox.appendChild(shortform);        
+                            }
+                        }
+
+                        /*for (let mainlabel in property.value) {
                             let mainvalue = property.value[mainlabel];
                             for (let firstlabel in mainvalue.root) {
                                 let firstvalue = mainvalue.root[firstlabel];
@@ -692,7 +705,7 @@ function updateSingleWord() {
                                     firstlabel, value:firstvalue, groupby:mainvalue.groupby});
                                 if (inflan) wordInfoBox.appendChild(inflan);
                             }
-                        }
+                        }*/
                     } else {
         
                         const characteristic = proplabel(property);
