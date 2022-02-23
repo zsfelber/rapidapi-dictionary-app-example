@@ -2,6 +2,7 @@ node_modules
 # Local Netlify folder
 .netlify
 dist
+package-lock.json
 cache/wordsapi/words/c.o.d.
 cache/wordsapi/words/d.o.a.
 cache/wordsapi/words/o.k.

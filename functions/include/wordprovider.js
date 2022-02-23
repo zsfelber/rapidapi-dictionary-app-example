@@ -81,6 +81,7 @@ exports.anInstance = function (options) {
 
   const TURNING_TIME_GMT = [20, 55];
   const MAX_PARALLEL = 1;
+  const PARALLEL_MILLIS = 500;
 
   let download, curtime, turntime;
 
@@ -155,7 +156,7 @@ exports.anInstance = function (options) {
       );
     }
     while (admittedParallelRequests >= MAX_PARALLEL) {
-      await timeoutAsPromise(200);
+      await timeoutAsPromise(PARALLEL_MILLIS);
     }
     admittedParallelRequests++;
   }
