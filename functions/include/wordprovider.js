@@ -601,6 +601,60 @@ exports.anInstance = function (options) {
     return { byf, byword, cntf, nowords };
   }
 
+
+  function convertFileCacheToIntermediate(byword) {
+    let result = {
+      word: {},
+      meaning: {},
+      error: {},
+    };
+
+    for (let word in byword) {
+      let worddata = byword[word];
+
+      if (worddata.error) {
+        let worddata2 = Object.create(null);
+        result.word[word] = worddata2;
+        let e = result.error[worddata.error];
+        if (!e) {
+          result.error[worddata.error] = e = Object.create(null);
+        }
+        worddata2.errortmp = e;
+      } else {
+        result.word[word] = worddata;
+
+        worddata.meaningstmp = [];
+        for (let defidx in worddata.results) {
+          let def = worddata.results[defidx];
+          let olddef = result.meaning[def.definition];
+          if (olddef) {
+            // worddata.word !  to exclude  jumps, jumping, to jump etc
+            olddef.synonymSet[worddata.word] = 1;
+            def = olddef;
+          } else {
+            // definition, synonyms, ...
+            result.meaning[def.definition] = def;
+            if (!def.synonymSet) {
+              def.synonymSet = Object.create(null);
+              // worddata.word !  to exclude  jumps, jumping, to jump etc
+              def.synonymSet[worddata.word] = 1;
+              if (def.synonyms) {
+                for (let s of def.synonyms) def.synonymSet[s] = 1;
+              }
+            }
+          }
+          delete def.definition;
+          delete def.synonyms;
+          worddata.meaningstmp.push(def);
+        }
+        delete worddata.results;
+        delete worddata.word;
+      }
+    }
+
+    return result;
+  }
+
   async function getAllDefinitions() {
 
     loadNativeStarDictAll();
