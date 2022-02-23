@@ -24,8 +24,8 @@ exports.handler = async function (event, context) {
         TRAVERSE_ALL
     ,resolvePath});
     let root = wordprovider.COLLOC_DIR;
-    const util = require("./include/module.js").getModule()
-    let html = wordprovider.findCollocation(word);
+    const apirunner = require("./include/api-interface.js").getRunner(wordprovider);
+    let html = apirunner.findCollocation(word);
 
     let result = {
       root, html

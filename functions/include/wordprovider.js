@@ -59,14 +59,14 @@ function getCacheFor(lang, api) {
 
 exports.anInstance = function (options) {
 
-  const {LANG, API,
+  const { LANG, API,
     API_DAILY_LIMIT,
     MAX_WORDS,
     MAX_NODE_FREQUENCY,
     TRAVERSE_ALL,
     MAX_LEVEL = 100,
-    resolvePath} = options;
-  
+    resolvePath } = options;
+
 
   const DATA_DIR = "data/" + LANG;
   const CACHE_DIR = "cache/" + LANG;
@@ -122,7 +122,7 @@ exports.anInstance = function (options) {
     );
     let result = [];
     let dropped = [];
-    let tot=BigInt(0), totresult=BigInt(0), totdropped=BigInt(0);
+    let tot = BigInt(0), totresult = BigInt(0), totdropped = BigInt(0);
     for (let rec of raw) {
       if (!rec.count) {
         console.log("Bad", rec);
@@ -139,10 +139,10 @@ exports.anInstance = function (options) {
       }
     }
     console.log(`Frequency CSV processed:${file}   words freq   total:${raw.length} ${tot}   kept:${result.length} ${totresult}   dropped(where fr<10):${dropped.length} ${totdropped}`)
-    
+
     return result;
   }
-  
+
   async function parallelBottleneck() {
     pendingParallelRequests++;
     if (!(pendingParallelRequests % 1000)) {
@@ -233,7 +233,7 @@ exports.anInstance = function (options) {
   }
 
   function initCrawler() {
-    
+
     lang = require(`./lang/${LANG}`);
 
     lang.initCrawler(langCache);
@@ -802,9 +802,71 @@ exports.anInstance = function (options) {
     }
   }
 
+
+  function loadNativeStarDictAll() {
+    if (
+      !apiCache.stardict_words ||
+      !apiCache.stardict_defs ||
+      !apiCache.stardict_errors
+    ) {
+      console.time("load native StarDict datafiles");
+      const f0 = `${CACHE_DIR_API}/dict/${API}-${langCache.NAME}/${API}-${langCache.NAME}`;
+      if (!apiCache.stardict_words)
+        apiCache.stardict_words = stardict.loadStarDict(`${f0}-words`);
+      if (!apiCache.stardict_defs)
+        apiCache.stardict_defs = stardict.loadStarDict(`${f0}-definitions`);
+      if (!apiCache.stardict_errors)
+        apiCache.stardict_errors = stardict.loadStarDict(`${f0}-errors`);
+      console.timeEnd("load native StarDict datafiles");
+    }
+  }
+
+  function saveNativeStarDictAll(stage1, stage2) {
+    console.time("save native StarDict datafiles");
+    const f0 = `${CACHE_DIR_API}/dict/${API}-${langCache.NAME}/${API}-${langCache.NAME}`;
+    stardict.saveStarDict(`${f0}-words`, stage2.sortedwords, stage1.word);
+    stardict.saveStarDict(`${f0}-definitions`, stage2.sorteddefs, stage1.meaning);
+    stardict.saveStarDict(`${f0}-errors`, stage2.sortederrors, stage1.error);
+    console.timeEnd("save native StarDict datafiles");
+  }
+
+
+
+  function load3rdPartyStarDicts() {
+    if (
+      !langCache.collocationStardict ||
+      !langCache.enghunStardict ||
+      !langCache.hunengStardict
+
+    ) {
+      console.time("load 3rd party StarDict datafiles");
+      switch (LANG) {
+        case "en": {
+
+          const colf0 = `${DATA_DIR}/dict/${langCache.COLLOC}/OxfordCollocationsDictionary`;
+          langCache.collocationStardict = stardict.loadStarDict(`${colf0}`, false);
+          const eh0 = `${DATA_DIR}/dict/stardict-jdict-EngHun-2.4.2/jdict-EngHun`;
+          langCache.enghunStardict = stardict.loadStarDict(`${eh0}`, false);
+          const he0 = `${DATA_DIR}/dict/stardict-hungarian-english-2.4.2/hungarian-english`;
+          langCache.hunengStardict = stardict.loadStarDict(`${he0}`, false);
+        }
+          break;
+        case "de": {
+          const eh0 = `${DATA_DIR}/dict/stardict-ger_hung-2.4.2/ger_hung`;
+          langCache.gerhunStardict = stardict.loadStarDict(`${eh0}`, false);
+        }
+          break;
+      }
+
+      console.timeEnd("load 3rd party StarDict datafiles");
+    }
+  }
+
   initCrawler();
 
   return {
+    getLangCache, getCacheFor,
+    options,
     LANG, API,
     API_DAILY_LIMIT,
     MAX_WORDS,
@@ -826,6 +888,6 @@ exports.anInstance = function (options) {
     doesRealWordExist,
     getWordCaggleFrequency,
     initializeCache,
-    findCollocation, findPhrases
+    checkAPIlimitAndFinish, getAllWords, getAllDefinitions, invertFrequencies, loadNativeStarDictAll, saveNativeStarDictAll
   };
 };

@@ -2,21 +2,23 @@ const fs = require("fs");
 const finder = require("./finder.js");
 const csvParse = require("csv-load-sync");
 const stardict = require("./stardict");
+const node = require("./node");
 const { result, lastIndexOf } = require("lodash");
 
 
 
-exports.getModule = function (options, wordprovider) {
+exports.getRunner = function (wordprovider) {
+    let options = wordprovider.options;
     const { LANG, API,
         API_DAILY_LIMIT,
         MAX_WORDS,
         MAX_NODE_FREQUENCY,
-        TRAVERSE_ALL, 
+        TRAVERSE_ALL,
         MAX_LEVEL = 100,
         resolvePath } = options;
 
-    const langCache = getLangCache(LANG);
-    const apiCache = getCacheFor(LANG, API);
+    const langCache = wordprovider.getLangCache(LANG);
+    const apiCache = wordprovider.getCacheFor(LANG, API);
 
 
     async function loadDictionaryAndChildren(
@@ -31,7 +33,7 @@ exports.getModule = function (options, wordprovider) {
         }
 
         const by_def = tresult.by_def;
-        const entry = await loadSingleWord(word, true);
+        const entry = await wordprovider.loadSingleWord(word, true);
 
         if (entry && !entry.fromCache) {
             tresult.newWords++;
@@ -53,7 +55,7 @@ exports.getModule = function (options, wordprovider) {
             }
 
             if (loadChildren) {
-                let node = new ClusterDefinitionNode(
+                let node = new node.ClusterDefinitionNode(
                     by_def,
                     entry,
                     val,
@@ -84,7 +86,7 @@ exports.getModule = function (options, wordprovider) {
             tresult.newWords = 0;
         }
 
-        tresult.master = await loadSingleWord(word, true);
+        tresult.master = await wordprovider.loadSingleWord(word, true);
         if (!tresult.master) {
             return false;
         }
@@ -132,7 +134,7 @@ exports.getModule = function (options, wordprovider) {
                     );
                     promises.push(nodepromise);
 
-                    if (stopwhenallloaded && !(await checkAPIlimitAndFinish(promises))) {
+                    if (stopwhenallloaded && !(await wordprovider.checkAPIlimitAndFinish(promises))) {
                         console.log(
                             API,
                             word +
@@ -238,7 +240,7 @@ exports.getModule = function (options, wordprovider) {
     }
 
     async function loadCommonWordCluster(result, word, noWords) {
-        const entry = await loadSingleWord(word, true);
+        const entry = await wordprovider.loadSingleWord(word, true);
 
         if (entry) {
             if (!entry.fromCache) {
@@ -252,7 +254,7 @@ exports.getModule = function (options, wordprovider) {
             for (let key in entry.results) {
                 const val = entry.results[key];
 
-                const definitionNode = new DefinitionNode(entry, val);
+                const definitionNode = new node.DefinitionNode(entry, val);
 
                 let promises = [];
                 try {
@@ -428,7 +430,7 @@ exports.getModule = function (options, wordprovider) {
     async function generateIndexes() {
         //wordsapi works
         //let {byf, cntf, nowords} = await collectFileFrequencies();
-        let { byf, cntf, nowords } = await invertFrequencies();
+        let { byf, cntf, nowords } = await wordprovider.invertFrequencies();
 
         var fkeys = [].concat(Object.keys(byf));
         // descending order !!
@@ -598,14 +600,14 @@ exports.getModule = function (options, wordprovider) {
 
         let allmeanings;
         if (in_meanings || in_examples) {
-            allmeanings = await getAllDefinitions();
+            allmeanings = await wordprovider.getAllDefinitions();
         }
 
         let result = { words: {}, meanings: [], examples: [] };
 
         if (in_words) {
             let result1 = {};
-            let allwords = getAllWords();
+            let allwords = wordprovider.getAllWords();
             for (let cycleword of allwords) {
                 if (matcher(cycleword)) {
                     result1[cycleword] = { word: cycleword };
@@ -654,7 +656,7 @@ exports.getModule = function (options, wordprovider) {
     }
 
     function loadAll_words(word0, asobject, fromtime = 0) {
-        let allwords0 = getAllWords();
+        let allwords0 = wordprovider.getAllWords();
 
         return loadWordsOnly(allwords0, word0, asobject);
     }
@@ -714,7 +716,7 @@ exports.getModule = function (options, wordprovider) {
             return es;
         }
         let chkFile = async function (word) {
-            let data = await loadSingleWord(word, true, CACHE_RAW);
+            let data = await wordprovider.loadSingleWord(word, true, CACHE_RAW);
             if (data) {
                 let df = data.frequency ? data.frequency : 0;
                 byword[word] = data;
@@ -736,65 +738,6 @@ exports.getModule = function (options, wordprovider) {
         let result = loadAllFromFileCache();
 
         return result;
-    }
-
-
-    function loadNativeStarDictAll() {
-        if (
-            !apiCache.stardict_words ||
-            !apiCache.stardict_defs ||
-            !apiCache.stardict_errors
-        ) {
-            console.time("load native StarDict datafiles");
-            const f0 = `${CACHE_DIR_API}/dict/${API}-${langCache.NAME}/${API}-${langCache.NAME}`;
-            if (!apiCache.stardict_words)
-                apiCache.stardict_words = stardict.loadStarDict(`${f0}-words`);
-            if (!apiCache.stardict_defs)
-                apiCache.stardict_defs = stardict.loadStarDict(`${f0}-definitions`);
-            if (!apiCache.stardict_errors)
-                apiCache.stardict_errors = stardict.loadStarDict(`${f0}-errors`);
-            console.timeEnd("load native StarDict datafiles");
-        }
-    }
-
-    function saveNativeStarDictAll(stage1, stage2) {
-        console.time("save native StarDict datafiles");
-        const f0 = `${CACHE_DIR_API}/dict/${API}-${langCache.NAME}/${API}-${langCache.NAME}`;
-        stardict.saveStarDict(`${f0}-words`, stage2.sortedwords, stage1.word);
-        stardict.saveStarDict(`${f0}-definitions`, stage2.sorteddefs, stage1.meaning);
-        stardict.saveStarDict(`${f0}-errors`, stage2.sortederrors, stage1.error);
-        console.timeEnd("save native StarDict datafiles");
-    }
-
-
-    function load3rdPartyStarDicts() {
-        if (
-            !langCache.collocationStardict ||
-            !langCache.enghunStardict ||
-            !langCache.hunengStardict
-
-        ) {
-            console.time("load 3rd party StarDict datafiles");
-            switch (LANG) {
-                case "en": {
-
-                    const colf0 = `${DATA_DIR}/dict/${langCache.COLLOC}/OxfordCollocationsDictionary`;
-                    langCache.collocationStardict = stardict.loadStarDict(`${colf0}`, false);
-                    const eh0 = `${DATA_DIR}/dict/stardict-jdict-EngHun-2.4.2/jdict-EngHun`;
-                    langCache.enghunStardict = stardict.loadStarDict(`${eh0}`, false);
-                    const he0 = `${DATA_DIR}/dict/stardict-hungarian-english-2.4.2/hungarian-english`;
-                    langCache.hunengStardict = stardict.loadStarDict(`${he0}`, false);
-                }
-                    break;
-                case "de": {
-                    const eh0 = `${DATA_DIR}/dict/stardict-ger_hung-2.4.2/ger_hung`;
-                    langCache.gerhunStardict = stardict.loadStarDict(`${eh0}`, false);
-                }
-                    break;
-            }
-
-            console.timeEnd("load 3rd party StarDict datafiles");
-        }
     }
 
 
@@ -899,7 +842,7 @@ exports.getModule = function (options, wordprovider) {
     }
 
     async function updateStarDict() {
-        loadNativeStarDictAll();
+        wordprovider.loadNativeStarDictAll();
 
         let { byf, byword, cntf, nowords } = await loadAllFromFileCache();
 
@@ -985,6 +928,7 @@ exports.getModule = function (options, wordprovider) {
 
 
     return {
+        collectFileFrequencies, loadCommonWordClustersLetter,
         traverseCluster,
         loadCluster,
         loadCommon3000_words,
