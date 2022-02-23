@@ -65,7 +65,7 @@ exports.anInstance = function (options) {
     MAX_NODE_FREQUENCY,
     TRAVERSE_ALL,
     MAX_LEVEL = 100,
-    resolvePath } = options;
+    resolvePath = noResolvePath } = options;
 
 
   const DATA_DIR = "data/" + LANG;
@@ -77,7 +77,7 @@ exports.anInstance = function (options) {
   const apiCache = getCacheFor(LANG, API);
 
   const TWELVE = (CACHE_DIR_API + "/words/").length;
-  if (!resolvePath) resolvePath = noResolvePath;
+  //if (!resolvePath) resolvePath = noResolvePath;
 
   const TURNING_TIME_GMT = [20, 55];
   const MAX_PARALLEL = 1;
@@ -821,7 +821,6 @@ exports.anInstance = function (options) {
     loadAllFromFileCache,
     isApiLimitReached,
     loadJson,
-    singleWordToDisplay,
     loadSingleWord,
     loadExistingWords,
     loadExistingWordsAndFreqs,

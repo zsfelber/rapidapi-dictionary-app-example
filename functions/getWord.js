@@ -71,8 +71,8 @@ async function get(lang, api, word, mode, letter, ffrom, fto, resolvePath, stopi
 
   switch (mode) {
     case "dictionary":
-      wordprovider = require('./include/wordprovider.js').anInstance({lang,
-        api,
+      wordprovider = require('./include/wordprovider.js').anInstance({
+        LANG:lang,API:api,
         API_DAILY_LIMIT:100000,//no limit for occasional 1 or 2 single words
         MAX_WORDS,
         MAX_NODE_FREQUENCY,
@@ -81,8 +81,8 @@ async function get(lang, api, word, mode, letter, ffrom, fto, resolvePath, stopi
       });
       break;
     case "minimal_cluster":
-      wordprovider = require('./include/wordprovider.js').anInstance({lang,
-        api,
+      wordprovider = require('./include/wordprovider.js').anInstance({
+        LANG:lang,API:api,
         API_DAILY_LIMIT:API_DAILY_LIMIT[api],
         MAX_WORDS,
         MAX_NODE_FREQUENCY,
@@ -92,8 +92,8 @@ async function get(lang, api, word, mode, letter, ffrom, fto, resolvePath, stopi
       });
       break;
     default:
-      wordprovider = require('./include/wordprovider.js').anInstance({lang,
-        api,
+      wordprovider = require('./include/wordprovider.js').anInstance({
+        LANG:lang,API:api,
         API_DAILY_LIMIT:API_DAILY_LIMIT[api],
         MAX_WORDS,
         MAX_NODE_FREQUENCY,

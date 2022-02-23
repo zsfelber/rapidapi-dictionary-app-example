@@ -17,7 +17,7 @@ exports.handler = async function(event, context) {
   const API = "wordsapi";
   let lang = event.queryStringParameters.lang || "";
 
-  const wordprovider = require('../../functions/include/wordprovider').anInstance({lang,    API,
+  const wordprovider = require('../../functions/include/wordprovider').anInstance({LANG:lang,API:api,
     API_DAILY_LIMIT,
     MAX_WORDS,
     MAX_NODE_FREQUENCY,
