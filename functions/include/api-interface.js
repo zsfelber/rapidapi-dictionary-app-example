@@ -695,47 +695,8 @@ exports.getRunner = function (wordprovider) {
         return loadWordsOnly(words0, word0, asobject);
     }
 
-    async function loadAllFromFileCache() {
-        console.time("parse file cache");
-        let files = [];
-        async function onFile(strPath, stat) {
-            let word = strPath.substring(TWELVE);
-            files.push(word);
-        }
-        let nowords = await finder.findFiles(`${CACHE_DIR_API}/words`, 0, onFile);
-
-        let cntf = 0;
-        let byf = Object.create(null);
-        let byword = Object.create(null);
-        function entry(f) {
-            let es = byf[f];
-            if (!es) {
-                byf[f] = es = [];
-                cntf++;
-            }
-            return es;
-        }
-        let chkFile = async function (word) {
-            let data = await wordprovider.loadSingleWord(word, true, CACHE_RAW);
-            if (data) {
-                let df = data.frequency ? data.frequency : 0;
-                byword[word] = data;
-                entry(df).push(word);
-            }
-        };
-
-        let promises = [];
-        for (let file of files) {
-            promises.push(chkFile(file));
-        }
-        await Promise.all(promises);
-        console.timeEnd("parse file cache");
-
-        return { byf, byword, cntf, nowords };
-    }
-
     function collectFileFrequencies() {
-        let result = loadAllFromFileCache();
+        let result = wordprovider.loadAllFromFileCache();
 
         return result;
     }
@@ -844,7 +805,7 @@ exports.getRunner = function (wordprovider) {
     async function updateStarDict() {
         wordprovider.loadNativeStarDictAll();
 
-        let { byf, byword, cntf, nowords } = await loadAllFromFileCache();
+        let { byf, byword, cntf, nowords } = await wordprovider.loadAllFromFileCache();
 
         console.time("stage1");
         let stage1 = convertFileCacheToIntermediate(byword);
@@ -937,7 +898,6 @@ exports.getRunner = function (wordprovider) {
         loadAll_words,
         loadMyWords,
         wordsByFrequency,
-        loadAllFromFileCache,
         generateIndexes,
         updateStarDict,
         getForLang,

@@ -662,6 +662,45 @@ exports.anInstance = function (options) {
   }
 
 
+  async function loadAllFromFileCache() {
+    console.time("parse file cache");
+    let files = [];
+    async function onFile(strPath, stat) {
+      let word = strPath.substring(TWELVE);
+      files.push(word);
+    }
+    let nowords = await finder.findFiles(`${CACHE_DIR_API}/words`, 0, onFile);
+
+    let cntf = 0;
+    let byf = Object.create(null);
+    let byword = Object.create(null);
+    function entry(f) {
+      let es = byf[f];
+      if (!es) {
+        byf[f] = es = [];
+        cntf++;
+      }
+      return es;
+    }
+    let chkFile = async function (word) {
+      let data = await wordprovider.loadSingleWord(word, true, CACHE_RAW);
+      if (data) {
+        let df = data.frequency ? data.frequency : 0;
+        byword[word] = data;
+        entry(df).push(word);
+      }
+    };
+
+    let promises = [];
+    for (let file of files) {
+      promises.push(chkFile(file));
+    }
+    await Promise.all(promises);
+    console.timeEnd("parse file cache");
+
+    return { byf, byword, cntf, nowords };
+  }
+
   async function getAllDefinitions() {
 
     loadNativeStarDictAll();
@@ -879,6 +918,7 @@ exports.anInstance = function (options) {
     CACHE_DIR_API,
     COLLOC_DIR: langCache.COLLOC_DIR,
     TWELVE,
+    loadAllFromFileCache,
     isApiLimitReached,
     loadJson,
     singleWordToDisplay,
