@@ -98,10 +98,10 @@ exports.transformSingle = function (data) {
 
             } else if (adj) {
 
-                let leaf = adj.ZERO[undefined][undefined][undefined];
+                let leaf = adj.root.ZERO[undefined][undefined][undefined];
                 let shortform="";
-                shortform += ending(data.word, "", leaf.COMPARATIVE);
-                shortform += ending(data.word, "", leaf.SUPERLATIVE);
+                shortform += ending(data.word, "", leaf.COMPARATIVE[0]);
+                shortform += ending(data.word, "", leaf.SUPERLATIVE[0]);
 
                 adj.shortform = shortform;
 
