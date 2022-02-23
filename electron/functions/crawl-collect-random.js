@@ -23,7 +23,7 @@ exports.handler = async function(event, context) {
     MAX_NODE_FREQUENCY,
     TRAVERSE_ALL,
     resolvePath:context.resolvePath});
-  const apirunner = require("../../include/api-interface.js").getRunner(wordprovider);
+  const apirunner = require("../../functions/include/api-interface").getRunner(wordprovider);
 
   return service.respond(async () => {
 

@@ -103,7 +103,7 @@ async function get(lang, api, word, mode, letter, ffrom, fto, resolvePath, stopi
       break;
   }
 
-  const apirunner = require("./include/api-interface.js").getRunner(wordprovider);
+  const apirunner = require("./include/api-interface").getRunner(wordprovider);
   stopiterateapis.wordprovider = wordprovider;
   stopiterateapis.apirunner = apirunner;
 

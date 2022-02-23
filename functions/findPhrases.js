@@ -32,7 +32,7 @@ exports.handler = async function (event, context) {
       MAX_NODE_FREQUENCY,
       TRAVERSE_ALL,
   resolvePath});
-    const apirunner = require("./include/api-interface.js").getRunner(wordprovider);
+    const apirunner = require("./include/api-interface").getRunner(wordprovider);
 
     return apirunner.findPhrases(phrase, { in_words, in_meanings, in_examples, per_word, lstar, rstar, all_words });
   }

@@ -35,7 +35,7 @@ exports.handler = async function(event, context) {
           MAX_NODE_FREQUENCY,
           TRAVERSE_ALL,
       resolvePath});
-      const apirunner = require("./include/api-interface.js").getRunner(wordprovider);
+      const apirunner = require("./include/api-interface").getRunner(wordprovider);
         for (letter of ['A','B','C','D','E','F','G','H','I','J','K','L','M']) {
           let {f, data, json} = wordprovider.loadJson(wordprovider.DATA_DIR+"/my-words-"+letter.toLowerCase()+".json");
 

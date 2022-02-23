@@ -52,7 +52,7 @@ async function doItFor(lang, api, deep, fix, fill, resolvePath) {
     resolvePath,
     deep
   });
-  const apirunner = require("../../include/api-interface.js").getRunner(wordprovider);
+  const apirunner = require("../../functions/include/api-interface").getRunner(wordprovider);
 
   if (deep) deep = Number(deep);
 
