@@ -98,7 +98,13 @@ exports.transformSingle = function (data) {
 
             } else if (adj) {
 
-                adj.shortform = "adjective infections...";
+                let leaf = adj.ZERO[undefined][undefined][undefined];
+                let shortform="";
+                shortform += ending(data.word, "", leaf.COMPARATIVE);
+                shortform += ending(data.word, "", leaf.SUPERLATIVE);
+
+                adj.shortform = shortform;
+
             }
         }
     }
