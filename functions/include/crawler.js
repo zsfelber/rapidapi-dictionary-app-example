@@ -2,7 +2,7 @@ const fs = require("fs");
 const finder = require("./finder.js");
 const csvParse = require("csv-load-sync");
 const stardict = require("./stardict");
-const { result } = require("lodash");
+const { result, lastIndexOf } = require("lodash");
 
 const API_LIMIT_EXCEPTION = {
   apiLimitException: 1,
@@ -72,6 +72,7 @@ exports.aCrawler = function (
   const CACHE_DIR = "cache/" + LANG;
   const CACHE_DIR_API = CACHE_DIR + "/" + API;
 
+  let lang;
   const langCache = getLangCache(LANG);
   const apiCache = getCacheFor(LANG, API);
 
@@ -232,42 +233,22 @@ exports.aCrawler = function (
   }
 
   function initCrawler() {
+    
+    lang = require(`./lang/${LANG}`);
 
-    switch (LANG) {
-      case "en": {
-        langCache.NAME = "english";
-        langCache.COLLOC = "stardict-OxfordCollocationsDictionary-2.4.2";
-        langCache.COLLOC_DIR = `../${DATA_DIR}/dict/${langCache.COLLOC}/res/`;
-        // caggle freq records
-        langCache.FREQ_CSV = `unigram_freq.csv`;
-        langCache.WORD_LIST = "english_.csv";
-        langCache.COMMON_WORDS_10000 = "common-words-10000.json";
-        langCache.COMMON_WORDS_5000 = "common-words-5000.txt";
-
-      }
-        break;
-      case "de": {
-        // https://en.wiktionary.org/wiki/Wiktionary:Frequency_lists#German
-        langCache.NAME = "german";
-        langCache.FREQ_CSV = `opensubtitles_frequencies.csv`;
-        langCache.WORD_CSV = `opensubtitles_frequencies.csv`;
-        langCache.COMMON_WORDS_5000 = "common-words-5000.txt";
-
-      }
-        break;
-    }
+    lang.initCrawler(langCache);
 
     switch (API) {
       case "google": {
         const googleDictionary =
-          require("./googletransapi/google_dict").googleDictionary;
+          require("./api/googletransapi/google_dict").googleDictionary;
         download = function (word) {
           return googleDictionary(word, LANG);
         }
       }
         break;
       case "wordsapi":
-        download = require("./wordsapi/wordapi_dict").wordsApiDictionary;
+        download = require("./api/wordsapi/wordapi_dict").wordsApiDictionary;
         break;
       default:
         throw "API is not supported : " + API;
@@ -415,6 +396,9 @@ exports.aCrawler = function (
     let data, djson;
 
     function convertResult(fromCache, encode) {
+      if (lang && lang.transformSingle) {
+        data = lang.transformSingle(data);
+      }
       if (encode) {
         djson = JSON.stringify(data); // original
       }
