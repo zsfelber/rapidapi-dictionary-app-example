@@ -489,9 +489,9 @@ exports.getRunner = function (wordprovider) {
             return null;
         }
         if (/\.json$/.test(file)) {
-            cw1 = loadJson(DATA_DIR + "/" + file);
+            cw1 = wordprovider.loadJson(DATA_DIR + "/" + file);
         } else if (/\.txt$/.test(file)) {
-            let cw0 = loadHeadless1ColCsv(DATA_DIR + "/" + file);
+            let cw0 = wordprovider.loadHeadless1ColCsv(DATA_DIR + "/" + file);
             if (cw0.length > howmany + 100) {
                 cw0 = cw0.slice(0, howmany + 100);
             }
@@ -767,7 +767,7 @@ exports.getRunner = function (wordprovider) {
     }
 
     function loadMyWords(word, letter, asobject) {
-        let cw1 = loadJson(DATA_DIR + "/my-words-" + letter.toLowerCase() + ".json");
+        let cw1 = wordprovider.loadJson(DATA_DIR + "/my-words-" + letter.toLowerCase() + ".json");
         return loadWordsOnly(cw1.data, word, asobject);
     }
 

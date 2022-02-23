@@ -533,10 +533,11 @@ var lang_checks = {
         },
         "bucket3": {
             "Adjektiv": { defchecked: true },
+            "Interjektion": { defchecked: true },
+            "Eigenname": { defchecked: true },
             "Präposition": { defchecked: true },
             "Präfix": { defchecked: true },
             "Suffix": { defchecked: true },
-            "Interjektion": { defchecked: true },
         },
         "bucket4": {
             "common definitions": { defchecked: true },
