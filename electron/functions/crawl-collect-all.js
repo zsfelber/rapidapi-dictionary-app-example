@@ -49,7 +49,7 @@ async function doItFor(lang, api, deep, fix, fill, resolvePath) {
     MAX_WORDS,
     MAX_NODE_FREQUENCY,
     TRAVERSE_ALL,
-    resolvePath:context.resolvePath,
+    resolvePath,
     deep
   });
   const apirunner = require("../../include/api-interface.js").getRunner(wordprovider);
