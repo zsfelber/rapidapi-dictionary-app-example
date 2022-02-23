@@ -685,6 +685,9 @@ function updateSingleWord() {
                                 const shortform = proplabel({label:"inflections", value:v.shortform});
                                 if (shortform) wordInfoBox.appendChild(shortform);        
                             }
+                            // } else   later
+                            // https://github.com/helion3/inspire-tree
+                            // or so
                         } else if (v=property.value.verb_forms) {
                             if (v.shortform) {
                                 const shortform = proplabel({label:"inflections", value:v.shortform});

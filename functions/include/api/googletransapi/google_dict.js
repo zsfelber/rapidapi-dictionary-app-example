@@ -59,6 +59,15 @@ function transformToWordsApiLike(definitions) {
                     commonDefinitions: defitem?groupId:undefined,
                     word
                 };
+                if (defitem) {
+                    if (!defitem.partOfSpeech) {
+                        defitem.partOfSpeech = meaning.partOfSpeech;
+                    } else {
+                        if (defitem.partOfSpeech !== meaning.partOfSpeech) {
+                            console.warn("Multiple partOfSpeech with common("+groupId+") : "+defitem.partOfSpeech+" vs "+meaning.partOfSpeech);
+                        }
+                    }
+                }
                 result.results.push(item);
                 idx++;
             }
