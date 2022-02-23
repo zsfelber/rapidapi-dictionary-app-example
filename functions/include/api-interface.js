@@ -162,7 +162,7 @@ exports.getRunner = function (wordprovider) {
                 let node = new nodecl.ClusterDefinitionNode(
                     by_def,
                     entry,
-                    val,
+                    key, val,
                     traversion.level,
                     TRAVERSE_ALL
                 );
@@ -359,7 +359,7 @@ exports.getRunner = function (wordprovider) {
             for (let key in entry.results) {
                 const val = entry.results[key];
 
-                const definitionNode = new nodecl.DefinitionNode(entry, val);
+                const definitionNode = new nodecl.DefinitionNode(entry, key, val);
 
                 let promises = [];
                 try {

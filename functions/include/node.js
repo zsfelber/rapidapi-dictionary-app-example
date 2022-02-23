@@ -11,10 +11,11 @@ exports.DefinitionNode = class {
     word;
     examples;
     examplesTmp;
-    key;
+    vkey;val;
 
-    constructor(entry, val) {
+    constructor(entry, vkey, val) {
         this.entry = entry;
+        this.vkey = vkey;
         this.val = val;
 
         this.definition = val.definition;
@@ -45,6 +46,10 @@ exports.DefinitionNode = class {
             this.synonyms.join(", ") +
             "::::::" +
             this.definition;
+        if (this.partOfSpeech==='common definitions') {
+            this.key = " "+this.key;
+        }
+        
     }
 
     addExamples(examples) {
@@ -72,8 +77,8 @@ exports.ClusterDefinitionNode = class extends exports.DefinitionNode {
     defkey;
     words;
 
-    constructor(by_def, entry, val, level, traverseAll) {
-        super(entry, val);
+    constructor(by_def, entry, vkey, val, level, traverseAll) {
+        super(entry, vkey, val);
         this.level = level;
 
         this.words = [];
@@ -112,6 +117,9 @@ exports.ClusterDefinitionNode = class extends exports.DefinitionNode {
             "::::::" +
             this.definition;
         this.key = this.level + ":::::::" + this.defkey;
+        if (this.partOfSpeech==='common definitions') {
+            this.key = " "+this.key;
+        }
 
         if (!by_def[this.defkey]) {
             by_def[this.defkey] = this;
