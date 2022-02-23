@@ -17,13 +17,14 @@ exports.handler = async function (event, context) {
   let lang = event.queryStringParameters.lang || "";
   const word = event.queryStringParameters.word || "";
   function doItFor(api) {
-    const wordprovider = require('./include/wordprovider.js').anInstance(lang,api,
+    const wordprovider = require('./include/wordprovider.js').anInstance({lang,api,
         API_DAILY_LIMIT,
         MAX_WORDS,
         MAX_NODE_FREQUENCY,
         TRAVERSE_ALL
-    ,resolvePath);
+    ,resolvePath});
     let root = wordprovider.COLLOC_DIR;
+    const util = require("./include/module.js").getModule()
     let html = wordprovider.findCollocation(word);
 
     let result = {

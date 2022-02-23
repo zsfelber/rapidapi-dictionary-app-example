@@ -44,13 +44,14 @@ exports.handler = async function(event, context) {
 
 async function doItFor(lang, api, deep, fix, fill, resolvePath) {
 
-  const wordprovider = require('../../functions/include/wordprovider').anInstance(lang,    api,
-    API_DAILY_LIMIT[api],
+  const wordprovider = require('../../functions/include/wordprovider').anInstance({lang,    api,
+    API_DAILY_LIMIT:API_DAILY_LIMIT[api],
     MAX_WORDS,
     MAX_NODE_FREQUENCY,
     TRAVERSE_ALL,
+    resolvePath:context.resolvePath,
     deep
-);
+  });
 
   if (deep) deep = Number(deep);
 

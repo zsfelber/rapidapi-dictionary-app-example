@@ -7,12 +7,12 @@ const MAX_LEVEL_MINCL = 2;
 
 
 function initFor(lang, api, resolvePath) {
-    const wordprovider = require('./wordprovider.js').anInstance(lang,        api,
+    const wordprovider = require('./wordprovider.js').anInstance({lang,        api,
         API_DAILY_LIMIT,
         MAX_WORDS,
         MAX_NODE_FREQUENCY,
         TRAVERSE_ALL
-        , resolvePath);
+        , resolvePath});
     
     wordprovider.initializeCache();
 }

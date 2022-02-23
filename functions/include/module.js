@@ -1,3 +1,8 @@
+const fs = require("fs");
+const finder = require("./finder.js");
+const csvParse = require("csv-load-sync");
+const stardict = require("./stardict");
+const { result, lastIndexOf } = require("lodash");
 
 
 
@@ -6,7 +11,7 @@ exports.getModule = function (options, wordprovider) {
         API_DAILY_LIMIT,
         MAX_WORDS,
         MAX_NODE_FREQUENCY,
-        TRAVERSE_ALL,
+        TRAVERSE_ALL, 
         MAX_LEVEL = 100,
         resolvePath } = options;
 

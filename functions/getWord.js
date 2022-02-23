@@ -71,35 +71,35 @@ async function get(lang, api, word, mode, letter, ffrom, fto, resolvePath, stopi
 
   switch (mode) {
     case "dictionary":
-      wordprovider = require('./include/wordprovider.js').anInstance(lang,
+      wordprovider = require('./include/wordprovider.js').anInstance({lang,
         api,
-        100000,//no limit for occasional 1 or 2 single words
+        API_DAILY_LIMIT:100000,//no limit for occasional 1 or 2 single words
         MAX_WORDS,
         MAX_NODE_FREQUENCY,
         TRAVERSE_ALL,
         resolvePath
-      );
+      });
       break;
     case "minimal_cluster":
-      wordprovider = require('./include/wordprovider.js').anInstance(lang,
+      wordprovider = require('./include/wordprovider.js').anInstance({lang,
         api,
-        API_DAILY_LIMIT[api],
+        API_DAILY_LIMIT:API_DAILY_LIMIT[api],
         MAX_WORDS,
         MAX_NODE_FREQUENCY,
         TRAVERSE_ALL,
         MAX_LEVEL_MINCL,
         resolvePath
-      );
+      });
       break;
     default:
-      wordprovider = require('./include/wordprovider.js').anInstance(lang,
+      wordprovider = require('./include/wordprovider.js').anInstance({lang,
         api,
-        API_DAILY_LIMIT[api],
+        API_DAILY_LIMIT:API_DAILY_LIMIT[api],
         MAX_WORDS,
         MAX_NODE_FREQUENCY,
         TRAVERSE_ALL,
         resolvePath
-      );
+      });
       break;
   }
   stopiterateapis.wordprovider = wordprovider;

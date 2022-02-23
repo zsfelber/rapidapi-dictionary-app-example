@@ -35,12 +35,12 @@ exports.handler = async function(event, context) {
 async function doItFor(lang, api, indexes, stardict, resolvePath, indexgenerated) {
 
 
-  const wordprovider = require('../../functions/include/wordprovider').anInstance(lang,    api,
+  const wordprovider = require('../../functions/include/wordprovider').anInstance({lang,    api,
     API_DAILY_LIMIT,
     MAX_WORDS,
     MAX_NODE_FREQUENCY,
     TRAVERSE_ALL
-,resolvePath);
+,resolvePath});
 
   if (indexes && !indexgenerated) {
     indexgenerated = 1;
