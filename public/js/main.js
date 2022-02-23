@@ -1,9 +1,9 @@
 
 var lastresult;
 var lastmode;
-var page,col=2,wordInfoTbl,wordInfoRow,wordInfoBox,info;
+var page, col = 2, wordInfoTbl, wordInfoRow, wordInfoBox, info;
 
-var letters=[String.fromCharCode(1)].concat(numbers()).concat([":"]).concat(ucases()).concat(lcases());
+var letters = [String.fromCharCode(1)].concat(numbers()).concat([":"]).concat(ucases()).concat(lcases());
 var checkboxdata;
 
 init$();
@@ -20,8 +20,8 @@ let urlN = $.urlParam('N');
 
 
 function removearritm(arr, itm) {
-    for (let i=0; i<arr.length; ) {
-        if (arr[i]===itm) {
+    for (let i = 0; i < arr.length;) {
+        if (arr[i] === itm) {
             arr.splice(i, 1);
         } else {
             i++;
@@ -29,8 +29,8 @@ function removearritm(arr, itm) {
     }
 }
 
-async function fetchWord(word, mode, qs=[]) {
-    let apis=[];
+async function fetchWord(word, mode, qs = []) {
+    let apis = [];
     if (isch("WORDSAPI")) apis.push("wordsapi");
     if (isch("GOOGLE")) apis.push("google");
     qs.push(`word=${word}`);
@@ -42,7 +42,7 @@ async function fetchWord(word, mode, qs=[]) {
     return data;
 }
 
-async function saveGroups(qs=[]) {
+async function saveGroups(qs = []) {
     qs.push(`groups=${btoa(JSON.stringify(groups))}`);
     qs.push(`curmywordsltr=${urlletter}`);
 
@@ -53,7 +53,7 @@ async function saveGroups(qs=[]) {
     return data;
 }
 
-async function findCollocation(word, qs=[]) {
+async function findCollocation(word, qs = []) {
     qs.push(`word=${word}`);
 
     let data = await serve("findCollocation", qs);
@@ -61,30 +61,30 @@ async function findCollocation(word, qs=[]) {
     return data;
 }
 
-async function findPhrases(phrase, qs=[]) {
-    let apis=[];
+async function findPhrases(phrase, qs = []) {
+    let apis = [];
     if (isch("WORDSAPI")) apis.push("wordsapi");
     if (isch("GOOGLE")) apis.push("google");
 
     qs.push(`phrase=${phrase}`);
-    qs.push(`in_words=${$("#pop_in_words").val()=="true"}`);
-    qs.push(`in_meanings=${$("#pop_in_meanings").val()=="true"}`);
-    qs.push(`in_examples=${$("#pop_in_examples").val()=="true"}`);
-    qs.push(`per_word=${$("#pop_per_word").val()=="true"}`);
-    qs.push(`lstar=${$("#pop_lstar").val()=="true"}`);
-    qs.push(`rstar=${$("#pop_rstar").val()=="true"}`);
-    qs.push(`all_words=${$("#pop_all_words").val()=="true"}`);
-    
+    qs.push(`in_words=${$("#pop_in_words").val() == "true"}`);
+    qs.push(`in_meanings=${$("#pop_in_meanings").val() == "true"}`);
+    qs.push(`in_examples=${$("#pop_in_examples").val() == "true"}`);
+    qs.push(`per_word=${$("#pop_per_word").val() == "true"}`);
+    qs.push(`lstar=${$("#pop_lstar").val() == "true"}`);
+    qs.push(`rstar=${$("#pop_rstar").val() == "true"}`);
+    qs.push(`all_words=${$("#pop_all_words").val() == "true"}`);
+
     qs.push(`apis=${apis.join("-")}`);
 
     let data = await serve("findPhrases", qs);
-/*
-    "pop_in_words",  "in words"
-    "popchdefs", "in meanings"
-    "popchxs", "in examples"
-    "popchwms", "per word matching"
-    "popchalws", "all words" */
-    
+    /*
+        "pop_in_words",  "in words"
+        "popchdefs", "in meanings"
+        "popchxs", "in examples"
+        "popchwms", "per word matching"
+        "popchalws", "all words" */
+
     return data;
 }
 
@@ -92,8 +92,8 @@ async function findPhrases(phrase, qs=[]) {
 function numbers() {
     let a = '0'.charCodeAt(0);
     let z = '9'.charCodeAt(0);
-    let result=[];
-    for (var i=a; i<=z; i++) {
+    let result = [];
+    for (var i = a; i <= z; i++) {
         result.push(String.fromCharCode(i));
     }
     return result;
@@ -102,8 +102,8 @@ function numbers() {
 function ucases() {
     let a = 'A'.charCodeAt(0);
     let z = 'Z'.charCodeAt(0);
-    let result=[];
-    for (var i=a; i<=z; i++) {
+    let result = [];
+    for (var i = a; i <= z; i++) {
         result.push(String.fromCharCode(i));
     }
     return result;
@@ -112,8 +112,8 @@ function ucases() {
 function lcases() {
     let a = 'a'.charCodeAt(0);
     let z = 'z'.charCodeAt(0);
-    let result=[];
-    for (var i=a; i<=z; i++) {
+    let result = [];
+    for (var i = a; i <= z; i++) {
         result.push(String.fromCharCode(i));
     }
     return result;
@@ -122,7 +122,7 @@ function lcases() {
 
 function chkdict() {
     let chk = $("#dictionary").is(':checked');
-    console.log("dictionary is checked:"+chk);
+    console.log("dictionary is checked:" + chk);
     $('.checkboxes1 input').prop("disabled", !chk);
     $('.checkboxes2 input').prop("disabled", !chk);
     $('.checkboxes3 input').prop("disabled", !chk);
@@ -132,13 +132,13 @@ function chkdict() {
     $('.checkboxes56 input').prop("disabled", !chk);
 
     let language1 = getLanguage(1);
-    $('#_GOOGLE').prop("disabled", !language1||!language1.apis||!language1.apis["GOOGLE"]);
-    $('#_WORDSAPI').prop("disabled", !language1||!language1.apis||!language1.apis["WORDSAPI"]);
+    $('#_GOOGLE').prop("disabled", !language1 || !language1.apis || !language1.apis["GOOGLE"]);
+    $('#_WORDSAPI').prop("disabled", !language1 || !language1.apis || !language1.apis["WORDSAPI"]);
 
     let wbf = $("#words_by_frequency").is(':checked');
     $('#ffrom').prop("disabled", !wbf);
     $('#fto').prop("disabled", !wbf);
-    
+
 }
 
 function racha(id) {
@@ -147,14 +147,14 @@ function racha(id) {
 
 
 function newrow(wordInfoTbl) {
-    if (col++%3==2) {
+    if (col++ % 3 == 2) {
         wordInfoRow = document.createElement('div');
         wordInfoRow.classList.add(['list-row']);
         wordInfoTbl.appendChild(wordInfoRow);
     }
 }
 
-function finishbox(pagenum='') {
+function finishbox(pagenum = '') {
     if (wordInfoBox) {
         let pg = document.createElement('center');
         pg.innerText = pagenum ? pagenum : page++;
@@ -162,7 +162,7 @@ function finishbox(pagenum='') {
     }
 }
 
-function newbox(listitm="list-item") {
+function newbox(listitm = "list-item") {
     finishbox();
     wordInfoBox = document.createElement('div');
     wordInfoBox.classList.add('my-4', 'p-4', listitm);
@@ -175,17 +175,17 @@ function checkp(qs, id, buckcheck) {
 
     var ischecked = ischeckedparam(id, ischeckeddef);
     if (ischecked != ischeckeddef) {
-        qs.push(id+"="+ischecked);
+        qs.push(id + "=" + ischecked);
     }
     return ischecked;
 }
 function checkps() {
-    var qs=[];
+    var qs = [];
 
     for (bucketid in checkboxdata) {
         var bucket = checkboxdata[bucketid];
         for (chid in bucket) {
-            if (!/^most common/.test(chid) && chid!="all words") {
+            if (!/^most common/.test(chid) && chid != "all words") {
                 checkp(qs, chid, bucket[chid]);
             }
         }
@@ -200,64 +200,64 @@ function createFreqLetterLink(i, N) {
     let frqntls = frqntlses[N];
     let len = frqntls.length;
     let result;
-    if (i==1) {
-        result = {ffrom:frqntls[1], fto:Number.MAX_SAFE_INTEGER, lab:"1"};
+    if (i == 1) {
+        result = { ffrom: frqntls[1], fto: Number.MAX_SAFE_INTEGER, lab: "1" };
     } else {
-        result = {ffrom:frqntls[i], fto:frqntls[i-1]-0.005, lab:""+i};
+        result = { ffrom: frqntls[i], fto: frqntls[i - 1] - 0.005, lab: "" + i };
     }
-    let a = createlink(i,null,`&mode=words_by_frequency&N=${N}&i=${i}&len=${frqntls.length}&ffrom=${result.ffrom}&fto=${result.fto}`);
+    let a = createlink(i, null, `&mode=words_by_frequency&N=${N}&i=${i}&len=${frqntls.length}&ffrom=${result.ffrom}&fto=${result.fto}`);
     a.innerText = result.lab;
     result.a = a;
     return result;
 }
 
 
-function createMywLetterLink(letter, mode="my_words") {
+function createMywLetterLink(letter, mode = "my_words") {
     let result;
-    let a = createlink(letter,null,`&mode=${mode}&letter=`+letter);
+    let a = createlink(letter, null, `&mode=${mode}&letter=` + letter);
     a.innerText = letter;
-    result = {letter,a};
+    result = { letter, a };
     return result;
 }
 
-let poidx=0;
-function createpopoverlink(word0, masterword, extraarg="", apostr="", origin) {
+let poidx = 0;
+function createpopoverlink(word0, masterword, extraarg = "", apostr = "", origin) {
 
     const a = document.createElement('a');
-    const tmp = $("<div>"+word0+"</div>")[0];
+    const tmp = $("<div>" + word0 + "</div>")[0];
     a.onmouseover = selectElementContents.bind(a, a);
     word0 = tmp.innerText;
     //const word = word0.replace(/[^a-zA-Z0-9\- ]/g, "");
     const word = word0.replace(/[^a-zA-Z0-9\- öóőúùûüáàâäíéÖÓŐÚÙÛÜÁÀÂÄÍÉß]/g, "");
-    a.id =     'popoveritm'+poidx++;
+    a.id = 'popoveritm' + poidx++;
     a.classList.add('popoveritm');
-    if (masterword==word) {
+    if (masterword == word) {
         a.classList.add('master');
     } else {
         a.classList.add('none');
     }
 
     // it does the trick
-    a.setAttribute("id",a.id);
-    a.setAttribute("tabindex","0");
-    a.setAttribute("type","button");
+    a.setAttribute("id", a.id);
+    a.setAttribute("tabindex", "0");
+    a.setAttribute("type", "button");
 
-    a.setAttribute("data-toggle","popover");
-    a.setAttribute("data-placement","bottom");
-    a.setAttribute("data-popover-content",word+extraarg);
-    a.setAttribute("word",a.word = word+extraarg);
+    a.setAttribute("data-toggle", "popover");
+    a.setAttribute("data-placement", "bottom");
+    a.setAttribute("data-popover-content", word + extraarg);
+    a.setAttribute("word", a.word = word + extraarg);
 
     if (origin) {
-        a.href = "javascript:showPopup('"+a.word+"')";
+        a.href = "javascript:showPopup('" + a.word + "')";
     }
 
-    a.onfocus=()=>{
-        console.log("focus:"+word);
+    a.onfocus = () => {
+        console.log("focus:" + word);
         curword = word;
         selectElementContents.apply(a, a);
     };
 
-    a.innerHTML = apostr+tmp.innerHTML+apostr;
+    a.innerHTML = apostr + tmp.innerHTML + apostr;
     return a;
 }
 
@@ -268,33 +268,33 @@ function findwordlink(word) {
     return wls;
 }
 
-let xidx=0;
+let xidx = 0;
 function createexpandlink(word0, func) {
 
     const a = document.createElement('a');
-    const tmp = $("<div>"+word0+"</div>")[0];
+    const tmp = $("<div>" + word0 + "</div>")[0];
     word0 = tmp.innerText;
     //const word = word0.replace(/[^a-zA-Z0-9\- ]/g, "");
-    a.id =     'expoveritm'+xidx++;
+    a.id = 'expoveritm' + xidx++;
     a.classList.add('popoveritm');
     a.classList.add('none');
 
     // it does the trick
-    a.setAttribute("id",a.id);
-    a.setAttribute("tabindex","0");
-    a.href = "javascript:"+func;
+    a.setAttribute("id", a.id);
+    a.setAttribute("tabindex", "0");
+    a.href = "javascript:" + func;
 
     a.innerHTML = tmp.innerHTML;
     return a;
 }
 
-function createas(cont, words, masterword, sep, apostr="", linksIdxFrom=0, linksIdxTo=999999999, origin) {
-    let index=0;
+function createas(cont, words, masterword, sep, apostr = "", linksIdxFrom = 0, linksIdxTo = 999999999, origin) {
+    let index = 0;
     if (words) words.forEach(word => {
         let a;
-        if (typeof word=="string") {
-            a = (linksIdxFrom<=index&&index<linksIdxTo) ? 
-                createpopoverlink(word, masterword, "", apostr, origin) : 
+        if (typeof word == "string") {
+            a = (linksIdxFrom <= index && index < linksIdxTo) ?
+                createpopoverlink(word, masterword, "", apostr, origin) :
                 createi(word);
         } else {
             a = word;
@@ -315,19 +315,19 @@ function createaas(cont, sentences, sep, origin) {
     });
 }
 
-function proplabel(property, masterword, parselabel=false, linksIdxLabFrom=0, linksIdxValTo=9999999, prefix="",comma=", ",apostr="", origin, intable) {
-    if (!property.value || (Array.isArray(property.value)&&!property.value.length)) {
+function proplabel(property, masterword, parselabel = false, linksIdxLabFrom = 0, linksIdxValTo = 9999999, prefix = "", comma = ", ", apostr = "", origin, intable) {
+    if (!property.value || (Array.isArray(property.value) && !property.value.length)) {
         return null;
     }
-    let characteristic,label,value;
+    let characteristic, label, value;
     if (property.label) {
         characteristic = document.createElement('dl');
         characteristic.className = 'row';
         label = document.createElement('dt');
         label.className = 'col-sm-3';
-        
+
         value = document.createElement('dd');
-    
+
         if (parselabel) {
             createas(label, property.label, masterword, comma, apostr, linksIdxLabFrom, 100000, origin);
         } else {
@@ -335,7 +335,7 @@ function proplabel(property, masterword, parselabel=false, linksIdxLabFrom=0, li
         }
     }
 
-    if (!parselabel && (property.label === 'examples'||property.kind === 'examples')) {
+    if (!parselabel && (property.label === 'examples' || property.kind === 'examples')) {
         createaas(value, property.value, ", ", origin);
     } else if (Array.isArray(property.value)) {
         let vcomma = ", ";
@@ -347,93 +347,97 @@ function proplabel(property, masterword, parselabel=false, linksIdxLabFrom=0, li
 
         let remainder = property.value.slice(linksIdxValTo, property.value.length);
         createaas(value, remainder, vcomma, origin);
-    } else if (typeof property.value=="object") {
+    } else if (typeof property.value == "object") {
 
         if (property.groupby) {
-            intable = {groupby:property.groupby, columns:{},
-                tabletags:["table", "tr", "span"], cur:0};
-            
+            intable = {
+                groupby: property.groupby, columns: {},
+                tabletags: ["table", "tr", "span"], cur: 0
+            };
+
         } else if (intable) {
-            intable = {groupby:intable.groupby, 
-                columns:intable.columns, cc:intable.cc, firstrow:intable.firstrow,
-                tabletags:intable.tabletags, cur:intable.cur+1};
-            
+            intable = {
+                groupby: intable.groupby,
+                columns: intable.columns, cc: intable.cc, firstrow: intable.firstrow,
+                tabletags: intable.tabletags, cur: intable.cur + 1
+            };
+
         } else {
             console.warn("No property.groupby for object property, omitting ", property.label);
             return null;
         }
-        let fwdprop = (childprop)=>{
+        let fwdprop = (childprop) => {
             let childlab = proplabel(
-                childprop, masterword, false, 0, 99999999, "", ""/*-comma*/, "", null, 
-                intable                 );
+                childprop, masterword, false, 0, 99999999, "", ""/*-comma*/, "", null,
+                intable);
             return childlab;
         }
 
-        let tableelem,childlab,b;
+        let tableelem, childlab, b;
         let i = 0;
         switch (intable.cur) {
-        case 0:
-            value = document.createElement("div");
-            tableelem = document.createElement("table");
+            case 0:
+                value = document.createElement("div");
+                tableelem = document.createElement("table");
 
-            b = document.createElement("b");
-            b.innerText = intable.groupby[0]+": "+property.firstlabel;
-            value.appendChild(b);
+                b = document.createElement("b");
+                b.innerText = intable.groupby[0] + ": " + property.firstlabel;
+                value.appendChild(b);
 
-            intable.firstrow = document.createElement("tr");
-            tableelem.appendChild(intable.firstrow);
-            value.appendChild(tableelem);
+                intable.firstrow = document.createElement("tr");
+                tableelem.appendChild(intable.firstrow);
+                value.appendChild(tableelem);
 
-            b = document.createElement("th");
-            b.innerHTML = intable.groupby[2]+":<br/>"+intable.groupby[1];
-            intable.firstrow.appendChild(b);
+                b = document.createElement("th");
+                b.innerHTML = intable.groupby[2] + ":<br/>" + intable.groupby[1];
+                intable.firstrow.appendChild(b);
 
-            for (let mainlabel in property.value) {
+                for (let mainlabel in property.value) {
 
-                let vals = property.value[mainlabel];
-                childlab = fwdprop({value:vals, mainlabel});
-    
-                tableelem.appendChild(childlab);
-            }
-            break;
-        case 1:
+                    let vals = property.value[mainlabel];
+                    childlab = fwdprop({ value: vals, mainlabel });
 
-            value = tableelem = document.createElement("tr");
-            intable.cc = [];
+                    tableelem.appendChild(childlab);
+                }
+                break;
+            case 1:
 
-            let column0 = document.createElement("th");
-            column0.innerText = property.mainlabel;
-            tableelem.appendChild(column0);
+                value = tableelem = document.createElement("tr");
+                intable.cc = [];
 
-            for (let mainlabel in property.value) {
-                let column = document.createElement("td");
-                intable.cc.push(column);
-                tableelem.appendChild(column);
-            }
+                let column0 = document.createElement("th");
+                column0.innerText = property.mainlabel;
+                tableelem.appendChild(column0);
 
-            for (let mainlabel in property.value) {
-                let columnindex = intable.columns[mainlabel];
-                if (columnindex===undefined) {
-                    intable.columns[mainlabel] = columnindex = i++;
-
-                    b = document.createElement("th");
-                    b.innerHTML = mainlabel;
-                    intable.firstrow.appendChild(b);
+                for (let mainlabel in property.value) {
+                    let column = document.createElement("td");
+                    intable.cc.push(column);
+                    tableelem.appendChild(column);
                 }
 
-                let vals = property.value[mainlabel];
-                childlab = fwdprop({value:vals});
+                for (let mainlabel in property.value) {
+                    let columnindex = intable.columns[mainlabel];
+                    if (columnindex === undefined) {
+                        intable.columns[mainlabel] = columnindex = i++;
 
-                let column = intable.cc[columnindex];
-                if (childlab) {
-                    column.appendChild(childlab);
+                        b = document.createElement("th");
+                        b.innerHTML = mainlabel;
+                        intable.firstrow.appendChild(b);
+                    }
+
+                    let vals = property.value[mainlabel];
+                    childlab = fwdprop({ value: vals });
+
+                    let column = intable.cc[columnindex];
+                    if (childlab) {
+                        column.appendChild(childlab);
+                    }
                 }
-            }
 
-            break;
+                break;
 
-        case 2:
-            break;
+            case 2:
+                break;
         }
 
 
@@ -463,8 +467,8 @@ function printLabel(data) {
         var prons = [];
         for (pron in data.pronunciation) {
             let p = data.pronunciation[pron];
-            if (p && p!=="undefined") {
-                prons.push(pron+":"+p);
+            if (p && p !== "undefined") {
+                prons.push(pron + ":" + p);
             }
         }
         const dlp1 = labelled("pronunciation ", prons.join(", "));
@@ -477,22 +481,22 @@ async function gocur() {
     let e = isElectron();
 
     if (e) {
-        window.api.loadWindow({uri:"index.html?word="+currentpopword,width:800,height:600});
+        window.api.loadWindow({ uri: "index.html?word=" + currentpopword, width: 800, height: 600 });
     } else {
-        window.open("?word="+currentpopword, "_blank");
+        window.open("?word=" + currentpopword, "_blank");
     }
 }
 
 function initPopup() {
-    currentlink=null;
-    currentpopword=null;
-    currentmodal=null;
+    currentlink = null;
+    currentpopword = null;
+    currentmodal = null;
 }
 
 
 function hidePopup() {
     initPopup();
-    popupcache=null;
+    popupcache = null;
     //$("[data-toggle=popover]").popover("hide");
     hidepopover($("[data-toggle=popover]"));
 }
@@ -510,11 +514,11 @@ function showPopup(word, modal) {
 function speakIt(which) {
     var sel = window.getSelection();
     let txt;
-    let lpg=$(`#livepop .pg`);
+    let lpg = $(`#livepop .pg`);
     let e = getSelectionBoundaryElement(true);
     if (lpg.length && lpg[0].contains(e)) {
         console.log("contains");
-        for (let i=0; i<sel.rangeCount; i++) {
+        for (let i = 0; i < sel.rangeCount; i++) {
             let r = sel.getRangeAt(i);
             txt = r.toString();
             if (txt) break;
@@ -525,7 +529,7 @@ function speakIt(which) {
     speak(txt, which);
 }
 function selectPopupAll() {
-    let lpg=$(`#livepop .pg`);
+    let lpg = $(`#livepop .pg`);
 
     var range = document.createRange();
     range.selectNodeContents(lpg[0]);
@@ -553,17 +557,17 @@ function fetchPhrasesLookup(phrase) {
 
 function createPopup(data) {
 
-    let div=document.createElement("div");
+    let div = document.createElement("div");
     div.data = data;
     div.classList.add("popover-body");
     div.id = "livepop";
-    let def=document.createElement("div");
+    let def = document.createElement("div");
     def.classList.add("pg");
     div.appendChild(def);
 
     appendPopupCluster(data, def);
 
-    function aha(fun,label) {
+    function aha(fun, label) {
         let a2 = document.createElement("a");
         a2.href = `javascript:${fun}`;
         a2.innerText = label;
@@ -571,19 +575,19 @@ function createPopup(data) {
         div.appendChild(document.createTextNode("\u00A0\u00A0\u00A0"));
     }
 
-    if (currentpopword!=currentlink.word) {
-        aha(`showPopup(currentlink.word)`,"--Back--");
+    if (currentpopword != currentlink.word) {
+        aha(`showPopup(currentlink.word)`, "--Back--");
     }
     /*if (currentmodal === "examples") {
         aha(`showPopup(null,'light')`,"--More--");
     } else {
         aha(`showPopup(null,'examples')`,"--Less--");
     }*/
-    aha(`gocur()`,"--Nav--");
-    aha(`speakIt(1)`,"voice 1");
-    aha(`speakIt(2)`,"voice 2");
-    aha(`selectPopupAll()`,"--select all--");
-    aha(`hidePopup()`,"--Hide--");
+    aha(`gocur()`, "--Nav--");
+    aha(`speakIt(1)`, "voice 1");
+    aha(`speakIt(2)`, "voice 2");
+    aha(`selectPopupAll()`, "--select all--");
+    aha(`hidePopup()`, "--Hide--");
 
 
     return div;
@@ -599,12 +603,12 @@ function updateSingleWord() {
     // previous data
     $('#word-info').empty();
     $('#info').empty();
-    $("#title").html(data.word?data.word:"");
+    $("#title").html(data.word ? data.word : "");
 
-    page=1;
-    col=2;
-    wordInfoBox=null;
-    wordInfoRow=null;
+    page = 1;
+    col = 2;
+    wordInfoBox = null;
+    wordInfoRow = null;
 
     printLabel(data);
 
@@ -613,12 +617,12 @@ function updateSingleWord() {
         return wordInfoTbl.appendChild(document.createTextNode('No results matched.'));
     }
     let defprops = {
-        "origin":1,
-        "word":1,
-        "pronunciation":1,
-        "group id":1,
-        "part of speech":1,
-        "group part of speech":1
+        "origin": 1,
+        "word": 1,
+        "pronunciation": 1,
+        "group id": 1,
+        "part of speech": 1,
+        "group part of speech": 1
     };
 
     data.results.map(val => {
@@ -656,10 +660,10 @@ function updateSingleWord() {
 
                     if (defprops[property.label] || isch(property.label)) {
 
-                        let justval=()=>{
+                        let justval = () => {
 
                             const italicLabel = document.createElement('small');
-                            italicLabel.innerText = property.value ? property.value : property.label+"?";
+                            italicLabel.innerText = property.value ? property.value : property.label + "?";
                             italicLabel.classList.add('lead');
 
                             wordInfoBox.appendChild(italicLabel);
@@ -678,13 +682,13 @@ function updateSingleWord() {
                         }
                     }
                 } else if (property.value && isch(property.label)) {
-                    if (property.label==="inflections") {
+                    if (property.label === "inflections") {
 
                         let v;
-                        if (v=property.value.noun_forms||property.value.verb_forms||property.value.adjective_forms) {
+                        if (v = property.value.noun_forms || property.value.verb_forms || property.value.adjective_forms) {
                             if (v.shortform) {
-                                const shortform = proplabel({label:"inflections", value:v.shortform});
-                                if (shortform) wordInfoBox.appendChild(shortform);        
+                                const shortform = proplabel({ label: "inflections", value: v.shortform });
+                                if (shortform) wordInfoBox.appendChild(shortform);
                             }
                             // } else   later
                             // https://github.com/helion3/inspire-tree
@@ -706,7 +710,7 @@ function updateSingleWord() {
                             }
                         }*/
                     } else {
-        
+
                         const characteristic = proplabel(property);
 
                         if (characteristic) wordInfoBox.appendChild(characteristic);
@@ -722,15 +726,15 @@ function updateSingleWord() {
 
 function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
 
-    let itms=99;
-    page=1;
-    col=2;
-    wordInfoBox=null;
-    wordInfoRow=null;
-    const word = withmainword?data.word:val.word;
-    let sil,property;
+    let itms = 99;
+    page = 1;
+    col = 2;
+    wordInfoBox = null;
+    wordInfoRow = null;
+    const word = withmainword ? data.word : val.word;
+    let sil, property;
     let expandcoll;
-    currentchecks=[];
+    currentchecks = [];
     let collsect;
 
 
@@ -740,20 +744,20 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
 
     data.results.map(val => {
         let thissect;
-        let  cmp,comma,apostr,labarr,labarr2,sarr;
-        let expandsynop,expandsyncl;
-        let expandsimop,expandimcl;
+        let cmp, comma, apostr, labarr, labarr2, sarr;
+        let expandsynop, expandsyncl;
+        let expandsimop, expandimcl;
 
         function syns(id, label, wordlist, expandsynop, expandsyncl) {
             if (thissect[id]) {
-                expandsynop.innerText = label+" [+]";
+                expandsynop.innerText = label + " [+]";
                 $(thissect[id]).remove();
                 delete thissect[id];
             } else {
                 expandsynop.innerText = "";
                 const sproperty = {
-                    label:[expandsyncl], 
-                    value:wordlist
+                    label: [expandsyncl],
+                    value: wordlist
                 };
                 thissect[id] = proplabel(sproperty, word, true, 1, val.synonyms.length, "", comma, apostr, origin);
                 if (thissect[id]) {
@@ -762,11 +766,11 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
                 }
             }
         }
-        function checkpair(wordlist,id,label) {
+        function checkpair(wordlist, id, label) {
             let expandsynop, expandsyncl;
-            
-            expandsynop = createexpandlink(label+" [+]", "");
-            expandsyncl = createexpandlink(label+" [-]", "");
+
+            expandsynop = createexpandlink(label + " [+]", "");
+            expandsyncl = createexpandlink(label + " [-]", "");
 
             currentchecks.push(expandsyncl);
             currentchecks.push(expandsynop);
@@ -774,23 +778,23 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
             expandsynop.onclick = syns.bind(expandsynop, id, label, wordlist, expandsynop, expandsyncl);
             expandsyncl.onclick = syns.bind(expandsyncl, id, label, wordlist, expandsynop, expandsyncl);
 
-            return {expandsynop, expandsyncl};
+            return { expandsynop, expandsyncl };
         }
 
         if (modalMode === "light" || modalMode === "examples") {
-    
+
             cmp = document.createElement("div");
             cmp.classList.add('smallf');
             wordInfoTbl.appendChild(cmp);
-            comma="  ";
-            apostr="'";
+            comma = "  ";
+            apostr = "'";
             /*modalMode === "examples" was
             if (val.examples && val.examples.length) {
                 createaas(wordInfoTbl, ["("+val.definition+"):"].concat(val.examples), ", ", origin);
             } else {
                 createaas(wordInfoTbl, ["("+val.definition+")"], ", ", origin);
             }*/
-            labarr = val.partOfSpeech?[val.partOfSpeech]:[];
+            labarr = val.partOfSpeech ? [val.partOfSpeech] : [];
             labarr2 = labarr.concat([]);
 
             if (val.synonyms && val.synonyms.length) {
@@ -805,7 +809,7 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
             }
 
             if (val.similar && val.similar.length) {
-                console.log("similar:",val.similar);
+                console.log("similar:", val.similar);
                 let simp = checkpair(val.similar, "simdef", "similar");
                 expandsimop = simp.expandsynop;
                 expandsimcl = simp.expandsyncl;
@@ -813,25 +817,38 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
             }
 
             property = {
-                label:labarr2, 
-                value:[(val.definition ? val.definition :
-                            (val.word ? val.word : ""))]
+                label: labarr2,
+                value: [(val.definition ? val.definition :
+                    (val.word ? val.word : ""))]
             };
             sil = 0;
-    
+
         } else {
-            if (itms++%100==99) {
+            if (itms++ % 100 == 99) {
                 newrow(wordInfoTbl);
                 newbox("list-item-lg");
             }
             cmp = wordInfoBox;
-            labarr = val.level||val.partOfSpeech?["("+(val.level?val.level+" ":"")+val.partOfSpeech+")"]:[];
+            labarr = val.level || val.partOfSpeech ? ["(" + (val.level ? val.level + " " : "") + val.partOfSpeech + ")"] : [];
             labarr2 = labarr.concat(val.synonyms);
             property = {
-                label:labarr2, 
-                value:val.similar.concat([val.definition])
+                label: labarr2,
+                value: val.similar.concat([val.definition])
             };
             sil = val.similar.length;
+        }
+        let v0,v;
+        if (v0 = val.inflections) {
+
+            if ((v = v0.verb_forms) && v.shortform) {
+                property.value.push(v.shortform);
+            }
+            if ((v = v0.noun_forms) && v.shortform) {
+                property.value.push(v.shortform);
+            }
+            if ((v = v0.adjective_forms) && v.shortform) {
+                property.value.push(v.shortform);
+            }
         }
 
 
@@ -850,7 +867,7 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
             thissect.appendChild(def);
 
             //if (modalMode === "light" && sarr && sarr.length) {
-                //syns("sdef", sarr, expandsynop, expandsyncl);
+            //syns("sdef", sarr, expandsynop, expandsyncl);
             //}
         }
 
@@ -884,9 +901,9 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
             } else {
                 expandcoll.innerText = "collocations [-]";
                 if (!collsect.data) collsect.data = data.colloc;//await findCollocation(word);
-                
+
                 //collsect.chtmltxt = "<br/><b>No entry in collocations dictionary.</b>";
-                
+
                 if (collsect.data && !collsect.data.error) {
                     collsect.chtmltxt = collsect.data;
                     collsect.chtml = $(`<div>${collsect.chtmltxt}</div>`);
@@ -932,7 +949,7 @@ function updateWords() {
     // previous data
     $('#word-info').empty();
     $('#info').empty();
-    $("#title").html(mode?mode:"");
+    $("#title").html(mode ? mode : "");
 
 
     const dlclust = labelled("no. words", data.noWords);
@@ -947,7 +964,7 @@ function updateWords() {
 
         urllen = Number(urllen);
         urli = Number(urli);
-        const dlpag = labelled("Page "+(urli)+" of "+(urllen-1), "Go to ");
+        const dlpag = labelled("Page " + (urli) + " of " + (urllen - 1), "Go to ");
 
         function addnav(i, lab0) {
             let iv = createFreqLetterLink(i, urlN);
@@ -956,26 +973,26 @@ function updateWords() {
             let spc = document.createTextNode("  ");
             dlpag.children[1].appendChild(spc);
         }
-        if (urli>1) {
+        if (urli > 1) {
             if (urli != 2) {
                 addnav(1, "first")
             }
-            addnav(urli-1, "prev")
+            addnav(urli - 1, "prev")
         }
-        if (urli<urllen-1) {
-            addnav(urli+1, "next")
-            if (urli != urllen-2) {
-                addnav(urllen-1, "last")
+        if (urli < urllen - 1) {
+            addnav(urli + 1, "next")
+            if (urli != urllen - 2) {
+                addnav(urllen - 1, "last")
             }
         }
         info.appendChild(dlpag);
     }
 
-    let itms=999;
-    page=1;
-    col=2;
-    wordInfoBox=null;
-    wordInfoRow=null;
+    let itms = 999;
+    page = 1;
+    col = 2;
+    wordInfoBox = null;
+    wordInfoRow = null;
 
     newrow(wordInfoTbl);
     newbox("list-item-lg");
@@ -983,12 +1000,12 @@ function updateWords() {
     wordInfoBox.classList.add('definition');
     let i = 0, ln = data.results.length;
     let group = [];
-    let lcc="~"; 
+    let lcc = "~";
     function replaceSpec(l) {
         return l.replace(/[öóő]/g, "o")
             .replace(/[úùûü]/g, "u").replace(/[áàâä]/g, "a");
     }
-    for (let wi=0; wi<ln; wi++) {
+    for (let wi = 0; wi < ln; wi++) {
         let w = data.results[wi];
         let let0 = replaceSpec(w[0].toLowerCase());
         if (let0 != lcc) {
@@ -1021,13 +1038,13 @@ function updateCluster() {
     // previous data
     $('#word-info').empty();
     $('#info').empty();
-    $("#title").html(data.word?data.word:"");
+    $("#title").html(data.word ? data.word : "");
 
-    let itms=99;
-    page=1;
-    col=2;
-    wordInfoBox=null;
-    wordInfoRow=null;
+    let itms = 99;
+    page = 1;
+    col = 2;
+    wordInfoBox = null;
+    wordInfoRow = null;
 
     const dlclust = labelled("word cluster entries", data.noClusterEntries);
     info.appendChild(dlclust);
@@ -1037,11 +1054,11 @@ function updateCluster() {
 
 function appendPopupCluster(data, wordInfoTbl) {
 
-    let itms=99;
-    page=1;
-    col=2;
-    wordInfoBox=null;
-    wordInfoRow=null;
+    let itms = 99;
+    page = 1;
+    col = 2;
+    wordInfoBox = null;
+    wordInfoRow = null;
 
 
     clusterBody(data, wordInfoTbl, true, currentmodal, true);
@@ -1053,43 +1070,43 @@ function update(firsttime) {
     const mode = lastmode;
     const data = lastresult;
 
-    $("#word-input").val(data.word?data.word:"");
+    $("#word-input").val(data.word ? data.word : "");
 
     switch (mode) {
-    
-    case "most_common_3000_words":
-    case "most_common_5000_words":
-    case "most_common_10000_words":
-    case "all_words":
-    case "my_words":
-    case "words_by_frequency":
-        if (firsttime) {
-            updateWords();
-        }
-        break;
 
-    case "synonym_cluster":
-    case "minimal_cluster":
-        if (firsttime) {
-            updateCluster();
-        }
-        break;
-    default:
-        updateSingleWord();
-        break;
+        case "most_common_3000_words":
+        case "most_common_5000_words":
+        case "most_common_10000_words":
+        case "all_words":
+        case "my_words":
+        case "words_by_frequency":
+            if (firsttime) {
+                updateWords();
+            }
+            break;
+
+        case "synonym_cluster":
+        case "minimal_cluster":
+            if (firsttime) {
+                updateCluster();
+            }
+            break;
+        default:
+            updateSingleWord();
+            break;
     }
 
-/*
-    $(".popoveritm").hover(function(){
-        if (!this.popped) {
-            this.popped=1;
-            PopoverComponent.init({
-                ele: "#"+$(this).attr("id"),
-                showOnHover: true
-              });
-        }
-    });
-*/
+    /*
+        $(".popoveritm").hover(function(){
+            if (!this.popped) {
+                this.popped=1;
+                PopoverComponent.init({
+                    ele: "#"+$(this).attr("id"),
+                    showOnHover: true
+                  });
+            }
+        });
+    */
     initpop();
 }
 
@@ -1106,7 +1123,7 @@ function asyncInit() {
     let chbs56 = document.querySelector('.checkboxes56');
     let chbs6 = document.querySelector('.checkboxes6');
     let chbs7 = document.querySelector('.checkboxes7');
-    var chbuckets = {bucket1:chbs1,bucket2:chbs2,bucket3:chbs3,bucket4:chbs4,bucket5:chbs5,bucket55:chbs55,bucket56:chbs56};
+    var chbuckets = { bucket1: chbs1, bucket2: chbs2, bucket3: chbs3, bucket4: chbs4, bucket5: chbs5, bucket55: chbs55, bucket56: chbs56 };
 
     for (bucketid in chbuckets) {
         var chbuck = chbuckets[bucketid];
@@ -1131,20 +1148,20 @@ function asyncInit() {
 
     if (!urlffrom) urlffrom = 5;
     if (!urlfto) urlfto = 100;
-    let ffromtoinputs=`
+    let ffromtoinputs = `
     <input class='form-check-input input-sm' size=8 type='input' id='ffrom' name='ffrom' value='${urlffrom}' placeholder='0'/>..
     <input class='form-check-input input-sm' size=8 type='input' id='fto' name='fto' value='${urlfto}' placeholder='100'/>`;
 
-    addRadio(chbs6, "words by frequency", {defchecked:false}, "mode", null, ffromtoinputs);
+    addRadio(chbs6, "words by frequency", { defchecked: false }, "mode", null, ffromtoinputs);
 
     let A = 'A'.charCodeAt(0);
     let Z = 'Z'.charCodeAt(0);
     function createfrlabs(N) {
-        let freqlabels = document.querySelector(".freqlabels"+N);
+        let freqlabels = document.querySelector(".freqlabels" + N);
         $(freqlabels).empty();
         if (window["frqntlses"]) {
             let frqntls = window["frqntlses"][N];
-            for (let i=1; i<frqntls.length; i++) {
+            for (let i = 1; i < frqntls.length; i++) {
                 let iv = createFreqLetterLink(i, N);
                 freqlabels.appendChild(iv.a);
                 let spc = document.createTextNode("  ");
@@ -1152,8 +1169,8 @@ function asyncInit() {
             }
         }
     }
-    function createmyworss(cl=".mywords", mode="my_words") {
-        let letters=['A','B','C','D','E','F', 'G', 'H', 'I', 'J', 'K', 'L', 'M'];
+    function createmyworss(cl = ".mywords", mode = "my_words") {
+        let letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M'];
         let mywlabels = document.querySelector(cl);
         $(mywlabels).empty();
         for (let letter of letters) {
@@ -1180,7 +1197,7 @@ function asyncInit() {
     if (!page_loaded) {
         page_loaded = 1;
         // adds a submit listened to our <form> element
-        if ((urlmode && urlmode!="dictionary") || urltop || url_word) {
+        if ((urlmode && urlmode != "dictionary") || urltop || url_word) {
             dosubmit(url_word);
         }
 
@@ -1209,15 +1226,15 @@ async function dosubmit(word) {
                 }
             }
         }
-    
+
         qs.push(`ffrom=${urlffrom}`);
         qs.push(`fto=${urlfto}`);
-    
+
         const data = await fetchWord(word, mode, qs);
 
         lastmode = mode;
         lastresult = data;
-        
+
         update(true);
 
     } catch (e) {
@@ -1239,7 +1256,7 @@ function addToGroup(group, word, caps) {
     groups[group][word] = caps ? 2 : 1;
     doLater(saveGroups, 2500);
 }
-$(document).keydown(function(evt) {
+$(document).keydown(function (evt) {
     evt = evt || window.event;
     var isEscape = false;
     altdown = !!evt.altKey;
@@ -1252,10 +1269,10 @@ $(document).keydown(function(evt) {
         hidePopup();
     }
 });
-$(document).keyup(function(evt) {
+$(document).keyup(function (evt) {
     altdown = 0;
 });
-$(document).keypress(async function(e){
+$(document).keypress(async function (e) {
 
     if (curword) {
         var focused = $(':focus');
@@ -1265,15 +1282,15 @@ $(document).keypress(async function(e){
             if (/Key[A-M]/.test(e.code)) {
                 const key = e.key;
                 const keyLower = key.toLowerCase();
-                let caps = key!==keyLower;
+                let caps = key !== keyLower;
                 console.log(` ${e.code}  curword:${curword}  caps:${caps}   added`);
                 addToGroup(e.code[3], curword, caps);
                 //await navigator.clipboard.writeText(s);
-            } else if ("Digit1"==(e.code)) {
+            } else if ("Digit1" == (e.code)) {
                 speakIt(1);
-            } else if ("Digit2"==(e.code)) {
+            } else if ("Digit2" == (e.code)) {
                 speakIt(2);
-            } else if (e.code==='Space') {
+            } else if (e.code === 'Space') {
                 let wls = findwordlink(curword);
                 $(wls).click();
                 //showpopover(wls);
@@ -1284,14 +1301,14 @@ $(document).keypress(async function(e){
     }
 });
 
-    
+
 // wait on voices to be loaded before fetching list
-window.speechSynthesis.onvoiceschanged = function() {
+window.speechSynthesis.onvoiceschanged = function () {
     console.log("speechSynthesis voices:", window.speechSynthesis.getVoices());
 };
 
 // Specifies a function to execute when the DOM is fully loaded.
-$(document).ready(function(){
+$(document).ready(function () {
 
     console.log("speechSynthesis voices(document ready):", window.speechSynthesis.getVoices());
 
@@ -1301,7 +1318,7 @@ $(document).ready(function(){
     info = document.querySelector("#info");
 
     initLang();
-      //$('.form-check-input').change(function(){
+    //$('.form-check-input').change(function(){
     //    $(this).text() 
     //});
 
@@ -1310,7 +1327,7 @@ $(document).ready(function(){
     initSpeak();
 
 
-    $(`#lang1 select`).change(()=>{
+    $(`#lang1 select`).change(() => {
         chkdict();
     });
 
@@ -1327,6 +1344,6 @@ $(document).ready(function(){
         console.log("It is electron, showing restricted pages.");
         $(".restricted-electron").show();
     }
-    
+
 
 });

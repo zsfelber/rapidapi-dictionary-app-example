@@ -526,6 +526,7 @@ var lang_checks = {
         "bucket2": {
             "Pronomen": { defchecked: true },
             "Substantiv": { defchecked: true },
+            "substantiviertes_Adjektiv": { defchecked: true },
             "starkes Verb": { defchecked: true },
             "schwaches Verb": { defchecked: true },
             "unregelmäßiges Verb": { defchecked: true },

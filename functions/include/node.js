@@ -7,6 +7,7 @@ exports.DefinitionNode = class {
     definition;
     synonyms;
     similar;
+    inflections;
     word;
     examples;
     examplesTmp;
@@ -31,6 +32,8 @@ exports.DefinitionNode = class {
 
         this.similar.push.apply(this.similar, this.val.similarTo);
         this.similar.sort();
+
+        this.inflections = this.val.inflections;
 
         this.addExamples(this.val.examples);
 

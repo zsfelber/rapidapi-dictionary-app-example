@@ -90,8 +90,12 @@ exports.transformSingle = function (data) {
                     shortform += r.join("");
                 }
 
-                r = ending0(verbbase, "Sie (haben|sind) ge", ris.PAST.PERFECT.INDICATIVE.PLURAL.THIRD, 1);
-                r[1] = r[1].replace("haben","h ge").replace("sind","i ge");
+                r = ending0(verbbase, "Sie (haben|sind) ", ris.PAST.PERFECT.INDICATIVE.PLURAL.THIRD, 1);
+                if (typeof r[1] == "string") {
+                    r[1] = r[1].replace("haben","h ").replace("sind","i ");
+                } else {
+                    console.log("very unra:gelma3ig: '"+data.word+"' ", r);
+                }
                 shortform += r.join("");
 
                 verb.shortform = shortform;
