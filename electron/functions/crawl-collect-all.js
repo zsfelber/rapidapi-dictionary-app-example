@@ -52,6 +52,7 @@ async function doItFor(lang, api, deep, fix, fill, resolvePath) {
     resolvePath:context.resolvePath,
     deep
   });
+  const apirunner = require("../../include/api-interface.js").getRunner(wordprovider);
 
   if (deep) deep = Number(deep);
 
@@ -114,9 +115,9 @@ async function doItFor(lang, api, deep, fix, fill, resolvePath) {
     for (let w of cs) {
       let trpromise;
       if (deep)
-        trpromise = wordprovider.traverseCluster(tresult, w, false, true);
+        trpromise = apirunner.traverseCluster(tresult, w, false, true);
       else
-        trpromise = wordprovider.loadSingleWord(w, true);
+        trpromise = apirunner.loadSingleWord(w, true);
   
       promises.push(trpromise);
   

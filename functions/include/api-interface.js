@@ -20,6 +20,107 @@ exports.getRunner = function (wordprovider) {
     const langCache = wordprovider.getLangCache(LANG);
     const apiCache = wordprovider.getCacheFor(LANG, API);
 
+    function singleWordToDisplay(data) {
+        // create new array to push data to
+        let results = [];
+        let result = {
+          word: data.word,
+          results,
+          etc: "",
+        };
+        if (data.pronunciation && Object.keys(data.pronunciation).length) {
+          result.pronunciation = data.pronunciation;
+        }
+        let f1 = getWordCaggleFrequency(data.word);
+        if (f1) {
+          result.frequency = f1;
+          if (data.frequency) {
+            result.dataFrequency = data.frequency;
+          }
+        } else if (data.frequency) {
+          result.frequency = data.frequency + "(" + API + ")";
+          result.dataFrequency = data.frequency;
+        }
+    
+        if (data.results)
+          data.results.map((def) => {
+            let definitionArray = [];
+            let definition = {
+              partOfSpeech: def.partOfSpeech,
+              properties: definitionArray,
+            };
+    
+            // creates array of keys in object
+            const skeys = [];
+            const therest = Object.assign({}, def);
+            function addif(skeys, key) {
+              if (def[key]) skeys.push(key);
+              delete therest[key];
+            }
+            addif(skeys, "word");
+            addif(skeys, "pronunciation");
+            addif(skeys, "partOfSpeech");
+            addif(skeys, "inflections");
+            addif(skeys, "definition");
+            addif(skeys, "synonyms");
+            addif(skeys, "similarTo");
+            addif(skeys, "synonymsGroup");
+            addif(skeys, "antonyms");
+    
+            delete therest["inflections"];
+            delete therest["examples"];
+            delete therest["synonymSet"];
+            delete therest["defind"];
+    
+            const more = Object.keys(therest);
+            more.sort();
+            skeys.push.apply(skeys, more);
+    
+            const skeys2 = [];
+            addif(skeys2, "examples");
+            skeys.push.apply(skeys, skeys2);
+    
+            skeys.map((key) => {
+              // builds regex that looks for capital letters
+              // The response parameters are in camelCase, so we need to ID
+              // the capital letters and add spaces instead so the
+              // front end can easily display the parameter labels
+              const regex = /(?=[A-Z])/;
+    
+              // creates presentable label
+              const label = key.split(regex).join(" ").toLowerCase();
+    
+              // grabs the value for the parameter from the
+              // definition object in response
+              const value = def[key];
+    
+              // constructs new object to send to frontend
+              let newObj = {
+                label,
+                value,
+                isString: typeof value === "string" ? true : false,
+                isNumber: typeof value === "number" ? true : false,
+              };
+    
+              definitionArray.push(newObj);
+            });
+    
+            results.push(definition);
+          });
+    
+        return result;
+      }
+      
+      async function loadSingleWord(word, asobject, cachedonly = false) {
+        let data = wordprovider.loadSingleWord(word, cachedonly);
+        if (!asobject) {
+            let result = singleWordToDisplay(data);
+            const ojson = JSON.stringify(result); // modified
+            return ojson;
+        } else {
+            return data;
+        }
+    }
 
     async function loadDictionaryAndChildren(
         tresult,
@@ -33,7 +134,7 @@ exports.getRunner = function (wordprovider) {
         }
 
         const by_def = tresult.by_def;
-        const entry = await wordprovider.loadSingleWord(word, true);
+        const entry = await wordprovider.loadSingleWord(word);
 
         if (entry && !entry.fromCache) {
             tresult.newWords++;
@@ -86,7 +187,7 @@ exports.getRunner = function (wordprovider) {
             tresult.newWords = 0;
         }
 
-        tresult.master = await wordprovider.loadSingleWord(word, true);
+        tresult.master = await wordprovider.loadSingleWord(word);
         if (!tresult.master) {
             return false;
         }
@@ -240,7 +341,7 @@ exports.getRunner = function (wordprovider) {
     }
 
     async function loadCommonWordCluster(result, word, noWords) {
-        const entry = await wordprovider.loadSingleWord(word, true);
+        const entry = await wordprovider.loadSingleWord(word);
 
         if (entry) {
             if (!entry.fromCache) {
@@ -889,6 +990,7 @@ exports.getRunner = function (wordprovider) {
 
 
     return {
+        singleWordToDisplay, loadSingleWord,
         collectFileFrequencies, loadCommonWordClustersLetter,
         traverseCluster,
         loadCluster,

@@ -41,19 +41,20 @@ async function doItFor(lang, api, indexes, stardict, resolvePath, indexgenerated
     MAX_NODE_FREQUENCY,
     TRAVERSE_ALL
 ,resolvePath});
+  const apirunner = require("../../include/api-interface.js").getRunner(wordprovider);
 
   if (indexes && !indexgenerated) {
     indexgenerated = 1;
     console.log("generate indices...");
 
-    await wordprovider.generateIndexes();
+    await apirunner.generateIndexes();
 
   }
 
   if (stardict) {
     console.log("update stardict...");
 
-    await wordprovider.updateStarDict();
+    await apirunner.updateStarDict();
   }
 
   return indexgenerated;

@@ -59,7 +59,7 @@ exports.handler = async function(event, context) {
         if (stopiterateapis.stop) break;
       }
 
-      if (mode === "dictionary" && stopiterateapis.wordprovider) data = stopiterateapis.wordprovider.singleWordToDisplay(data);
+      if (mode === "dictionary" && stopiterateapis.wordprovider) data = stopiterateapis.apirunner.singleWordToDisplay(data);
 
       return data;
     }
@@ -102,7 +102,10 @@ async function get(lang, api, word, mode, letter, ffrom, fto, resolvePath, stopi
       });
       break;
   }
+
+  const apirunner = require("./include/api-interface.js").getRunner(wordprovider);
   stopiterateapis.wordprovider = wordprovider;
+  stopiterateapis.apirunner = apirunner;
 
   let data;
   let forlang, colloc;
@@ -112,49 +115,49 @@ async function get(lang, api, word, mode, letter, ffrom, fto, resolvePath, stopi
     case "most_common_3000_words":
       stopiterateapis.stop = 1;
 
-      data = await wordprovider.loadCommon3000_words(word, true);
+      data = await apirunner.loadCommon3000_words(word, true);
       break;
     case "most_common_5000_words":
       stopiterateapis.stop = 1;
 
-      data = await wordprovider.loadCommon5000_words(word, true);
+      data = await apirunner.loadCommon5000_words(word, true);
       break;
     case "most_common_10000_words":
       stopiterateapis.stop = 1;
 
-      data = await wordprovider.loadCommon10000_words(word, true);
+      data = await apirunner.loadCommon10000_words(word, true);
       break;
     case "all_words":
       stopiterateapis.stop = 1;
 
-      data = await wordprovider.loadAll_words(word, true);
+      data = await apirunner.loadAll_words(word, true);
       break;
     case "my_words":
       stopiterateapis.stop = 1;
 
-      data = await wordprovider.loadMyWords(word, letter, true);
+      data = await apirunner.loadMyWords(word, letter, true);
       break;
     case "words_by_frequency":
       stopiterateapis.stop = 1;
 
-      data = await wordprovider.wordsByFrequency(word, Number(ffrom), Number(fto), true);
+      data = await apirunner.wordsByFrequency(word, Number(ffrom), Number(fto), true);
       break;
 
     case "minimal_cluster":
-      forlang = wordprovider.getForLang(lang, word);
-      colloc = wordprovider.findCollocation(word);
+      forlang = apirunner.getForLang(lang, word);
+      colloc = apirunner.findCollocation(word);
 
     case "synonym_cluster":
 
       // TODO : it depends on English ::
       //if (!lang || lang == "en")
-      data = await wordprovider.loadCluster(word, true);
+      data = await apirunner.loadCluster(word, true);
       data.lang = lang;
       data.forlang = forlang;
       data.colloc = colloc;
       break;
     default:
-      data = await wordprovider.loadSingleWord(word, true);
+      data = await apirunner.loadSingleWord(word, true);
       break;
   }
   return data;

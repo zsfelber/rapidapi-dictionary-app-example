@@ -23,6 +23,7 @@ exports.handler = async function(event, context) {
     MAX_NODE_FREQUENCY,
     TRAVERSE_ALL,
     resolvePath:context.resolvePath});
+  const apirunner = require("../../include/api-interface.js").getRunner(wordprovider);
 
   return service.respond(async () => {
 
@@ -35,7 +36,7 @@ exports.handler = async function(event, context) {
 
     console.log("crawling in the background starting from random words...");
 
-    const ws0 = await wordprovider.loadAll_words("", true);
+    const ws0 = await apirunner.loadAll_words("", true);
     const cs0 = ws0.results;
     console.log("all words:"+cs0.length);
 
@@ -58,7 +59,7 @@ exports.handler = async function(event, context) {
     console.log("now:"+cs.length+" oldest:"+inf(cs[cs.length-1])+" newest:"+inf(cs[0]));
 
     const cs2=[];
-    const cs02 = wordprovider.loadCommon10000_words("", true);
+    const cs02 = apirunner.loadCommon10000_words("", true);
     for (let a of cs02.results) {
       if (fs.existsSync(`${wordprovider.CACHE_DIR_API}/words/${a}`)) {
         cs2.push(a);
@@ -105,7 +106,7 @@ exports.handler = async function(event, context) {
 
     let promises = [];
     for (let w of cs) {
-      let trpromise = wordprovider.traverseCluster(tresult, w, false, true);
+      let trpromise = apirunner.traverseCluster(tresult, w, false, true);
       promises.push(trpromise);
 
       if (promises.length >= 10) {
