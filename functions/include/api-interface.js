@@ -2,7 +2,7 @@ const fs = require("fs");
 const finder = require("./finder.js");
 const csvParse = require("csv-load-sync");
 const stardict = require("./stardict");
-const node = require("./node");
+const nodecl = require("./node");
 const { result, lastIndexOf } = require("lodash");
 
 
@@ -17,6 +17,9 @@ exports.getRunner = function (wordprovider) {
         MAX_LEVEL = 100,
         resolvePath } = options;
 
+    const CACHE_DIR = wordprovider.CACHE_DIR;
+    const DATA_DIR = wordprovider.DATA_DIR;
+
     const langCache = wordprovider.getLangCache(LANG);
     const apiCache = wordprovider.getCacheFor(LANG, API);
 
@@ -24,94 +27,94 @@ exports.getRunner = function (wordprovider) {
         // create new array to push data to
         let results = [];
         let result = {
-          word: data.word,
-          results,
-          etc: "",
+            word: data.word,
+            results,
+            etc: "",
         };
         if (data.pronunciation && Object.keys(data.pronunciation).length) {
-          result.pronunciation = data.pronunciation;
+            result.pronunciation = data.pronunciation;
         }
-        let f1 = getWordCaggleFrequency(data.word);
+        let f1 = wordprovider.getWordCaggleFrequency(data.word);
         if (f1) {
-          result.frequency = f1;
-          if (data.frequency) {
-            result.dataFrequency = data.frequency;
-          }
-        } else if (data.frequency) {
-          result.frequency = data.frequency + "(" + API + ")";
-          result.dataFrequency = data.frequency;
-        }
-    
-        if (data.results)
-          data.results.map((def) => {
-            let definitionArray = [];
-            let definition = {
-              partOfSpeech: def.partOfSpeech,
-              properties: definitionArray,
-            };
-    
-            // creates array of keys in object
-            const skeys = [];
-            const therest = Object.assign({}, def);
-            function addif(skeys, key) {
-              if (def[key]) skeys.push(key);
-              delete therest[key];
+            result.frequency = f1;
+            if (data.frequency) {
+                result.dataFrequency = data.frequency;
             }
-            addif(skeys, "word");
-            addif(skeys, "pronunciation");
-            addif(skeys, "partOfSpeech");
-            addif(skeys, "inflections");
-            addif(skeys, "definition");
-            addif(skeys, "synonyms");
-            addif(skeys, "similarTo");
-            addif(skeys, "synonymsGroup");
-            addif(skeys, "antonyms");
-    
-            delete therest["inflections"];
-            delete therest["examples"];
-            delete therest["synonymSet"];
-            delete therest["defind"];
-    
-            const more = Object.keys(therest);
-            more.sort();
-            skeys.push.apply(skeys, more);
-    
-            const skeys2 = [];
-            addif(skeys2, "examples");
-            skeys.push.apply(skeys, skeys2);
-    
-            skeys.map((key) => {
-              // builds regex that looks for capital letters
-              // The response parameters are in camelCase, so we need to ID
-              // the capital letters and add spaces instead so the
-              // front end can easily display the parameter labels
-              const regex = /(?=[A-Z])/;
-    
-              // creates presentable label
-              const label = key.split(regex).join(" ").toLowerCase();
-    
-              // grabs the value for the parameter from the
-              // definition object in response
-              const value = def[key];
-    
-              // constructs new object to send to frontend
-              let newObj = {
-                label,
-                value,
-                isString: typeof value === "string" ? true : false,
-                isNumber: typeof value === "number" ? true : false,
-              };
-    
-              definitionArray.push(newObj);
+        } else if (data.frequency) {
+            result.frequency = data.frequency + "(" + API + ")";
+            result.dataFrequency = data.frequency;
+        }
+
+        if (data.results)
+            data.results.map((def) => {
+                let definitionArray = [];
+                let definition = {
+                    partOfSpeech: def.partOfSpeech,
+                    properties: definitionArray,
+                };
+
+                // creates array of keys in object
+                const skeys = [];
+                const therest = Object.assign({}, def);
+                function addif(skeys, key) {
+                    if (def[key]) skeys.push(key);
+                    delete therest[key];
+                }
+                addif(skeys, "word");
+                addif(skeys, "pronunciation");
+                addif(skeys, "partOfSpeech");
+                addif(skeys, "inflections");
+                addif(skeys, "definition");
+                addif(skeys, "synonyms");
+                addif(skeys, "similarTo");
+                addif(skeys, "synonymsGroup");
+                addif(skeys, "antonyms");
+
+                delete therest["inflections"];
+                delete therest["examples"];
+                delete therest["synonymSet"];
+                delete therest["defind"];
+
+                const more = Object.keys(therest);
+                more.sort();
+                skeys.push.apply(skeys, more);
+
+                const skeys2 = [];
+                addif(skeys2, "examples");
+                skeys.push.apply(skeys, skeys2);
+
+                skeys.map((key) => {
+                    // builds regex that looks for capital letters
+                    // The response parameters are in camelCase, so we need to ID
+                    // the capital letters and add spaces instead so the
+                    // front end can easily display the parameter labels
+                    const regex = /(?=[A-Z])/;
+
+                    // creates presentable label
+                    const label = key.split(regex).join(" ").toLowerCase();
+
+                    // grabs the value for the parameter from the
+                    // definition object in response
+                    const value = def[key];
+
+                    // constructs new object to send to frontend
+                    let newObj = {
+                        label,
+                        value,
+                        isString: typeof value === "string" ? true : false,
+                        isNumber: typeof value === "number" ? true : false,
+                    };
+
+                    definitionArray.push(newObj);
+                });
+
+                results.push(definition);
             });
-    
-            results.push(definition);
-          });
-    
+
         return result;
-      }
-      
-      async function loadSingleWord(word, asobject, cachedonly = false) {
+    }
+
+    async function loadSingleWord(word, asobject, cachedonly = false) {
         let data = wordprovider.loadSingleWord(word, cachedonly);
         if (!asobject) {
             let result = singleWordToDisplay(data);
@@ -156,11 +159,12 @@ exports.getRunner = function (wordprovider) {
             }
 
             if (loadChildren) {
-                let node = new node.ClusterDefinitionNode(
+                let node = new nodecl.ClusterDefinitionNode(
                     by_def,
                     entry,
                     val,
-                    traversion.level
+                    traversion.level,
+                    TRAVERSE_ALL
                 );
                 for (let word of node.words) {
                     let pair = { parent: node, word };
@@ -355,7 +359,7 @@ exports.getRunner = function (wordprovider) {
             for (let key in entry.results) {
                 const val = entry.results[key];
 
-                const definitionNode = new node.DefinitionNode(entry, val);
+                const definitionNode = new nodecl.DefinitionNode(entry, val);
 
                 let promises = [];
                 try {

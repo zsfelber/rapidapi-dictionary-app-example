@@ -64,18 +64,18 @@ exports.DefinitionNode = class {
     }
 }
 
-exports.ClusterDefinitionNode = class extends DefinitionNode {
+exports.ClusterDefinitionNode = class extends exports.DefinitionNode {
     level;
     defkey;
     words;
 
-    constructor(by_def, entry, val, level) {
+    constructor(by_def, entry, val, level, traverseAll) {
         super(entry, val);
         this.level = level;
 
         this.words = [];
 
-        if (TRAVERSE_ALL) {
+        if (traverseAll) {
             appendTo(this.words, val.synonyms);
             appendTo(this.words, val.similarTo);
             appendTo(this.words, val.antonyms);
