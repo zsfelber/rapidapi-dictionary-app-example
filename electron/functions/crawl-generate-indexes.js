@@ -35,7 +35,7 @@ exports.handler = async function(event, context) {
 async function doItFor(lang, api, indexes, stardict, resolvePath, indexgenerated) {
 
 
-  const crawler = require('../../functions/include/crawler').aCrawler(lang,    api,
+  const wordprovider = require('../../functions/include/wordprovider').anInstance(lang,    api,
     API_DAILY_LIMIT,
     MAX_WORDS,
     MAX_NODE_FREQUENCY,
@@ -46,14 +46,14 @@ async function doItFor(lang, api, indexes, stardict, resolvePath, indexgenerated
     indexgenerated = 1;
     console.log("generate indices...");
 
-    await crawler.generateIndexes();
+    await wordprovider.generateIndexes();
 
   }
 
   if (stardict) {
     console.log("update stardict...");
 
-    await crawler.updateStarDict();
+    await wordprovider.updateStarDict();
   }
 
   return indexgenerated;

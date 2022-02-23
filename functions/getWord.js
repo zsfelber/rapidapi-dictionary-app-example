@@ -59,7 +59,7 @@ exports.handler = async function(event, context) {
         if (stopiterateapis.stop) break;
       }
 
-      if (mode === "dictionary" && stopiterateapis.crawler) data = stopiterateapis.crawler.singleWordToDisplay(data);
+      if (mode === "dictionary" && stopiterateapis.wordprovider) data = stopiterateapis.wordprovider.singleWordToDisplay(data);
 
       return data;
     }
@@ -71,7 +71,7 @@ async function get(lang, api, word, mode, letter, ffrom, fto, resolvePath, stopi
 
   switch (mode) {
     case "dictionary":
-      crawler = require('./include/crawler.js').aCrawler(lang,
+      wordprovider = require('./include/wordprovider.js').anInstance(lang,
         api,
         100000,//no limit for occasional 1 or 2 single words
         MAX_WORDS,
@@ -81,7 +81,7 @@ async function get(lang, api, word, mode, letter, ffrom, fto, resolvePath, stopi
       );
       break;
     case "minimal_cluster":
-      crawler = require('./include/crawler.js').aCrawler(lang,
+      wordprovider = require('./include/wordprovider.js').anInstance(lang,
         api,
         API_DAILY_LIMIT[api],
         MAX_WORDS,
@@ -92,7 +92,7 @@ async function get(lang, api, word, mode, letter, ffrom, fto, resolvePath, stopi
       );
       break;
     default:
-      crawler = require('./include/crawler.js').aCrawler(lang,
+      wordprovider = require('./include/wordprovider.js').anInstance(lang,
         api,
         API_DAILY_LIMIT[api],
         MAX_WORDS,
@@ -102,7 +102,7 @@ async function get(lang, api, word, mode, letter, ffrom, fto, resolvePath, stopi
       );
       break;
   }
-  stopiterateapis.crawler = crawler;
+  stopiterateapis.wordprovider = wordprovider;
 
   let data;
   let forlang, colloc;
@@ -112,49 +112,49 @@ async function get(lang, api, word, mode, letter, ffrom, fto, resolvePath, stopi
     case "most_common_3000_words":
       stopiterateapis.stop = 1;
 
-      data = await crawler.loadCommon3000_words(word, true);
+      data = await wordprovider.loadCommon3000_words(word, true);
       break;
     case "most_common_5000_words":
       stopiterateapis.stop = 1;
 
-      data = await crawler.loadCommon5000_words(word, true);
+      data = await wordprovider.loadCommon5000_words(word, true);
       break;
     case "most_common_10000_words":
       stopiterateapis.stop = 1;
 
-      data = await crawler.loadCommon10000_words(word, true);
+      data = await wordprovider.loadCommon10000_words(word, true);
       break;
     case "all_words":
       stopiterateapis.stop = 1;
 
-      data = await crawler.loadAll_words(word, true);
+      data = await wordprovider.loadAll_words(word, true);
       break;
     case "my_words":
       stopiterateapis.stop = 1;
 
-      data = await crawler.loadMyWords(word, letter, true);
+      data = await wordprovider.loadMyWords(word, letter, true);
       break;
     case "words_by_frequency":
       stopiterateapis.stop = 1;
 
-      data = await crawler.wordsByFrequency(word, Number(ffrom), Number(fto), true);
+      data = await wordprovider.wordsByFrequency(word, Number(ffrom), Number(fto), true);
       break;
 
     case "minimal_cluster":
-      forlang = crawler.getForLang(lang, word);
-      colloc = crawler.findCollocation(word);
+      forlang = wordprovider.getForLang(lang, word);
+      colloc = wordprovider.findCollocation(word);
 
     case "synonym_cluster":
 
       // TODO : it depends on English ::
       //if (!lang || lang == "en")
-      data = await crawler.loadCluster(word, true);
+      data = await wordprovider.loadCluster(word, true);
       data.lang = lang;
       data.forlang = forlang;
       data.colloc = colloc;
       break;
     default:
-      data = await crawler.loadSingleWord(word, true);
+      data = await wordprovider.loadSingleWord(word, true);
       break;
   }
   return data;

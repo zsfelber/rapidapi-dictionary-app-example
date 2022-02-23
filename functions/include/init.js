@@ -7,14 +7,14 @@ const MAX_LEVEL_MINCL = 2;
 
 
 function initFor(lang, api, resolvePath) {
-    const crawler = require('./crawler.js').aCrawler(lang,        api,
+    const wordprovider = require('./wordprovider.js').anInstance(lang,        api,
         API_DAILY_LIMIT,
         MAX_WORDS,
         MAX_NODE_FREQUENCY,
         TRAVERSE_ALL
         , resolvePath);
     
-    crawler.initializeCache();
+    wordprovider.initializeCache();
 }
 
 exports.init = function() {

@@ -17,14 +17,14 @@ exports.handler = async function (event, context) {
   let lang = event.queryStringParameters.lang || "";
   const word = event.queryStringParameters.word || "";
   function doItFor(api) {
-    const crawler = require('./include/crawler.js').aCrawler(lang,api,
+    const wordprovider = require('./include/wordprovider.js').anInstance(lang,api,
         API_DAILY_LIMIT,
         MAX_WORDS,
         MAX_NODE_FREQUENCY,
         TRAVERSE_ALL
     ,resolvePath);
-    let root = crawler.COLLOC_DIR;
-    let html = crawler.findCollocation(word);
+    let root = wordprovider.COLLOC_DIR;
+    let html = wordprovider.findCollocation(word);
 
     let result = {
       root, html

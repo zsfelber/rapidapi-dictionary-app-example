@@ -44,7 +44,7 @@ exports.handler = async function(event, context) {
 
 async function doItFor(lang, api, deep, fix, fill, resolvePath) {
 
-  const crawler = require('../../functions/include/crawler').aCrawler(lang,    api,
+  const wordprovider = require('../../functions/include/wordprovider').anInstance(lang,    api,
     API_DAILY_LIMIT[api],
     MAX_WORDS,
     MAX_NODE_FREQUENCY,
@@ -58,23 +58,23 @@ async function doItFor(lang, api, deep, fix, fill, resolvePath) {
 
   let cs=[];
 
-  const totwords = crawler.loadExistingWordsAndFreqs();
+  const totwords = wordprovider.loadExistingWordsAndFreqs();
   console.log(api, "word count:"+Object.keys(totwords).length);
 
   if (fix) {
     
-    let sorries = await findInFiles.findInFiles(`${crawler.CACHE_DIR_API}/words`, 
+    let sorries = await findInFiles.findInFiles(`${wordprovider.CACHE_DIR_API}/words`, 
         "Sorry pal, you were just rate limited by the upstream server.");
     console.log(api, "sorry-pals:"+sorries.length);
 
-    let cannotrs = await findInFiles.findInFiles(`${crawler.CACHE_DIR_API}/words`, 
+    let cannotrs = await findInFiles.findInFiles(`${wordprovider.CACHE_DIR_API}/words`, 
         `{"error":"Cannot read properties`);
     console.log(api, "cannot-read-properties-es:"+cannotrs.length);
 
     let errorstofix = sorries.concat(cannotrs);
 
     for (let strPath of errorstofix) {
-      let word = strPath.filePath.substring(crawler.TWELVE);
+      let word = strPath.filePath.substring(wordprovider.TWELVE);
       cs.push(word);
       console.log(word);
       delete totwords[word];
@@ -113,16 +113,16 @@ async function doItFor(lang, api, deep, fix, fill, resolvePath) {
     for (let w of cs) {
       let trpromise;
       if (deep)
-        trpromise = crawler.traverseCluster(tresult, w, false, true);
+        trpromise = wordprovider.traverseCluster(tresult, w, false, true);
       else
-        trpromise = crawler.loadSingleWord(w, true);
+        trpromise = wordprovider.loadSingleWord(w, true);
   
       promises.push(trpromise);
   
       if (promises.length >= 10) {
         await Promise.all(promises);
         promises = [];
-        if (crawler.isApiLimitReached()) {
+        if (wordprovider.isApiLimitReached()) {
           console.log(api, "API limit reached. STOP whole crawling");
         }
       }

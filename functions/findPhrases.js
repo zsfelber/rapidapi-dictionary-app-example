@@ -26,14 +26,14 @@ exports.handler = async function (event, context) {
 
 
   async function find(api) {
-    const crawler = require('./include/crawler.js').aCrawler(lang,       api,
+    const wordprovider = require('./include/wordprovider.js').anInstance(lang,       api,
       100000,//no limit for occasional 1 or 2 single words
       MAX_WORDS,
       MAX_NODE_FREQUENCY,
       TRAVERSE_ALL,
   resolvePath);
 
-    return crawler.findPhrases(phrase, { in_words, in_meanings, in_examples, per_word, lstar, rstar, all_words });
+    return wordprovider.findPhrases(phrase, { in_words, in_meanings, in_examples, per_word, lstar, rstar, all_words });
   }
   return service.respond(async () => {
 

@@ -17,7 +17,7 @@ exports.handler = async function(event, context) {
   const API = "wordsapi";
   let lang = event.queryStringParameters.lang || "";
 
-  const crawler = require('../../functions/include/crawler').aCrawler(lang,    API,
+  const wordprovider = require('../../functions/include/wordprovider').anInstance(lang,    API,
     API_DAILY_LIMIT,
     MAX_WORDS,
     MAX_NODE_FREQUENCY,
@@ -35,19 +35,19 @@ context.resolvePath);
 
     console.log("crawling in the background starting from random words...");
 
-    const ws0 = await crawler.loadAll_words("", true);
+    const ws0 = await wordprovider.loadAll_words("", true);
     const cs0 = ws0.results;
     console.log("all words:"+cs0.length);
 
     // descending !!!
     function cmp (a,b) {
-      let s1 = fs.statSync(`${crawler.CACHE_DIR_API}/words/${a}`);
-      let s2 = fs.statSync(`${crawler.CACHE_DIR_API}/words/${b}`);
+      let s1 = fs.statSync(`${wordprovider.CACHE_DIR_API}/words/${a}`);
+      let s2 = fs.statSync(`${wordprovider.CACHE_DIR_API}/words/${b}`);
       return s2.mtime-s1.mtime;
     }
 
     function inf(a) {
-      let s1 = fs.statSync(`${crawler.CACHE_DIR_API}/words/${a}`);
+      let s1 = fs.statSync(`${wordprovider.CACHE_DIR_API}/words/${a}`);
       return a+":"+s1.mtime.toUTCString();
     }
 
@@ -58,9 +58,9 @@ context.resolvePath);
     console.log("now:"+cs.length+" oldest:"+inf(cs[cs.length-1])+" newest:"+inf(cs[0]));
 
     const cs2=[];
-    const cs02 = crawler.loadCommon10000_words("", true);
+    const cs02 = wordprovider.loadCommon10000_words("", true);
     for (let a of cs02.results) {
-      if (fs.existsSync(`${crawler.CACHE_DIR_API}/words/${a}`)) {
+      if (fs.existsSync(`${wordprovider.CACHE_DIR_API}/words/${a}`)) {
         cs2.push(a);
       }
     }
@@ -84,11 +84,11 @@ context.resolvePath);
       return a.hashCode()-b.hashCode();
     });
     
-    let sorries = await findInFiles.findInFiles(`${crawler.CACHE_DIR_API}/words`, "Sorry pal, you were just rate limited by the upstream server.");
+    let sorries = await findInFiles.findInFiles(`${wordprovider.CACHE_DIR_API}/words`, "Sorry pal, you were just rate limited by the upstream server.");
     console.log("sorry-pals:"+sorries.length);
 
     for (let strPath of sorries) {
-      let word = strPath.filePath.substring(crawler.TWELVE);
+      let word = strPath.filePath.substring(wordprovider.TWELVE);
       cs.unshift(word);
       console.log(word);
     }
@@ -105,13 +105,13 @@ context.resolvePath);
 
     let promises = [];
     for (let w of cs) {
-      let trpromise = crawler.traverseCluster(tresult, w, false, true);
+      let trpromise = wordprovider.traverseCluster(tresult, w, false, true);
       promises.push(trpromise);
 
       if (promises.length >= 10) {
         await Promise.all(promises);
         promises = [];
-        if (crawler.isApiLimitReached()) {
+        if (wordprovider.isApiLimitReached()) {
           console.log("API limit reached. STOP whole crawling");
 
         }

@@ -29,14 +29,14 @@ exports.handler = async function(event, context) {
     }
 
     return service.respond(async () => {
-      const crawler = require('./include/crawler.js').aCrawler(lang,       api,
+      const wordprovider = require('./include/wordprovider.js').anInstance(lang,       api,
           100000,//no limit for occasional 1 or 2 single words
           MAX_WORDS,
           MAX_NODE_FREQUENCY,
           TRAVERSE_ALL,
       resolvePath);
           for (letter of ['A','B','C','D','E','F','G','H','I','J','K','L','M']) {
-          let {f, data, json} = crawler.loadJson(crawler.DATA_DIR+"/my-words-"+letter.toLowerCase()+".json");
+          let {f, data, json} = wordprovider.loadJson(wordprovider.DATA_DIR+"/my-words-"+letter.toLowerCase()+".json");
 
           if (json) {
             let mod = 0;
