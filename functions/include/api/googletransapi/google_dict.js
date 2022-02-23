@@ -60,11 +60,11 @@ function transformToWordsApiLike(definitions) {
                     word
                 };
                 if (defitem) {
-                    if (!defitem.partOfSpeech) {
-                        defitem.partOfSpeech = meaning.partOfSpeech;
+                    if (!defitem.groupPartOfSpeech) {
+                        defitem.groupPartOfSpeech = meaning.partOfSpeech;
                     } else {
-                        if (defitem.partOfSpeech !== meaning.partOfSpeech) {
-                            console.warn("Multiple partOfSpeech with common("+groupId+") : "+defitem.partOfSpeech+" vs "+meaning.partOfSpeech);
+                        if (defitem.groupPartOfSpeech !== meaning.partOfSpeech) {
+                            console.warn("Multiple partOfSpeech with common("+groupId+") : "+defitem.groupPartOfSpeech+" vs "+meaning.partOfSpeech);
                         }
                     }
                 }

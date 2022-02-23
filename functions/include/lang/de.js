@@ -9,13 +9,13 @@ exports.initCrawler = function (langCache) {
 };
 
 
-function ending(data, exphead, form) {
-    let rx = new RegExp(exphead + " " + data.word + "(.*)").exec(form);
+function ending(base, exphead, form) {
+    let rx = new RegExp(exphead + base + "(.*)").exec(form);
     let phrase;
     if (rx) {
         phrase = " -" + rx[1];
     } else {
-        rx = new RegExp(exphead + " (.*)").exec(form);
+        rx = new RegExp(exphead + "(.*)").exec(form);
         if (rx) {
             phrase = " " + rx[1];
         } else {
@@ -23,6 +23,14 @@ function ending(data, exphead, form) {
         }
     }
     return phrase;
+}
+function middle(expend, form) {
+    rx = new RegExp("(.*)"+expend).exec(form);
+    if (rx) {
+        return rx[1];
+    } else {
+        return form;
+    }
 }
 
 exports.transformSingle = function (data) {
@@ -35,26 +43,29 @@ exports.transformSingle = function (data) {
             if (noun) {
                 if (ris = noun.root.NEUTER) {
                     shortform += "s";
-                    shortform += ending(data, "die", ris.NOMINATIVE.PLURAL[0]);
-                    shortform += ending(data, "des", ris.GENITIVE.SINGULAR[0]);
-                    shortform += ending(data, "den", ris.DATIVE.PLURAL[0]);
+                    shortform += ending(data.word, "die ", ris.NOMINATIVE.PLURAL[0]);
+                    shortform += ending(data.word, "des ", ris.GENITIVE.SINGULAR[0]);
+                    shortform += ending(data.word, "den ", ris.DATIVE.PLURAL[0]);
                 } else if (ris = noun.root.FEMININE) {
                     shortform += "e";
-                    shortform += ending(data, "die", ris.NOMINATIVE.PLURAL[0]);
-                    shortform += ending(data, "der", ris.GENITIVE.SINGULAR[0]);
-                    shortform += ending(data, "den", ris.DATIVE.PLURAL[0]);
+                    shortform += ending(data.word, "die ", ris.NOMINATIVE.PLURAL[0]);
+                    shortform += ending(data.word, "der ", ris.GENITIVE.SINGULAR[0]);
+                    shortform += ending(data.word, "den ", ris.DATIVE.PLURAL[0]);
                 } else if (ris = noun.root.MASCULINE) {
                     shortform += "r";
-                    shortform += ending(data, "die", ris.NOMINATIVE.PLURAL[0]);
-                    shortform += ending(data, "des", ris.GENITIVE.SINGULAR[0]);
-                    shortform += ending(data, "den", ris.DATIVE.PLURAL[0]);
+                    shortform += ending(data.word, "die ", ris.NOMINATIVE.PLURAL[0]);
+                    shortform += ending(data.word, "des ", ris.GENITIVE.SINGULAR[0]);
+                    shortform += ending(data.word, "den ", ris.DATIVE.PLURAL[0]);
                 }
                 noun.shortform = shortform;
             } else if (verb) {
                 let ris = verb.root;
-                if (ris.partOfSpeech == "schwaches Verb") {
-                } else if (ris.partOfSpeech == "starkes Verb") {
-                }
+                let verbbase = middle(ris.PRESENT.SIMPLE.INDICATIVE.PLURAL.THIRD, "en");
+
+                shortform += ending(verbbase, "", ris.PRESENT.SIMPLE.INDICATIVE.SINGULAR.THIRD);
+                shortform += ending(verbbase, "", ris.PART.SIMPLE.INDICATIVE.PLURAL.THIRD);
+                shortform += ending(verbbase, "", ris.PART.PERFECT.INDICATIVE.PLURAL.THIRD);
+                verb.shortform = shortform;
             }
         }
     }
