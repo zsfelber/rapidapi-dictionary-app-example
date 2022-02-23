@@ -681,7 +681,7 @@ function updateSingleWord() {
                     if (property.label==="inflections") {
 
                         let v;
-                        if (v=property.value.noun_forms) {
+                        if (v=property.value.noun_forms||property.value.verb_forms||property.value.adjective_forms) {
                             if (v.shortform) {
                                 const shortform = proplabel({label:"inflections", value:v.shortform});
                                 if (shortform) wordInfoBox.appendChild(shortform);        
@@ -689,11 +689,6 @@ function updateSingleWord() {
                             // } else   later
                             // https://github.com/helion3/inspire-tree
                             // or so
-                        } else if (v=property.value.verb_forms) {
-                            if (v.shortform) {
-                                const shortform = proplabel({label:"inflections", value:v.shortform});
-                                if (shortform) wordInfoBox.appendChild(shortform);
-                            }
                         }
 
                         /*for (let mainlabel in property.value) {
