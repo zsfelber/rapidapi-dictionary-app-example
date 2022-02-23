@@ -344,12 +344,14 @@ exports.aCrawler = function (
         addif(skeys, "word");
         addif(skeys, "pronunciation");
         addif(skeys, "partOfSpeech");
+        addif(skeys, "inflections");
         addif(skeys, "definition");
         addif(skeys, "synonyms");
         addif(skeys, "similarTo");
         addif(skeys, "synonymsGroup");
         addif(skeys, "antonyms");
 
+        delete therest["inflections"];
         delete therest["examples"];
         delete therest["synonymSet"];
         delete therest["defind"];

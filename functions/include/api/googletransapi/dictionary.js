@@ -124,6 +124,49 @@ async function fetchFromSource(word, language) {
 
 function transform(word, language, data, { include }) {
 
+	// german verb : verb.groupby
+	//(5) ['tense', 'sub_tense', 'mood', 'number', 'person']
+	// german noun : noun.groupby
+	//(5) ['gender', 'case', 'number']
+	function defaultsortinflections(featuretypes) {
+		// group by gender, case, number
+		// sections, columns, rows
+		let groupby0 = [];
+		let groupby = [];
+		// fid : case, gender, number
+		for (let fid in featuretypes) {
+			// features   : NOMINATIVE=>{}, FEMININE, SINGULAR
+			let features = featuretypes[fid];
+			let cnt = Object.keys(features).length;
+			groupby0.push({ fid, cnt });
+		}
+		groupby0.sort((a, b) => {
+			return a.cnt - b.cnt;
+		});
+		if (groupby0.length>=3) {
+			let head1 = groupby0.splice(0, 1);
+			groupby0.reverse();
+			groupby0.unshift(head1[0]);
+		}
+		for (let rec in groupby0) {
+			groupby.push(rec.fid);
+		}
+		return groupby;
+	}
+	function sortinflectionkinds(rootid, featuretypes) {
+		switch (language) {
+			case "de":
+				switch (rootid) {
+					case "noun_forms": return ['gender', 'case', 'number'];
+					case "verb_forms": return ['tense', 'sub_tense', 'mood', 'number', 'person'];
+				}
+			default: {
+				console.log(language+" "+rootid+" : default inflection group by");
+				return defaultsortinflections(featuretypes);
+			}
+		}
+	}
+
 	function boxinflections(inflections_result) {
 
 		if (!inflections_result) return undefined;
@@ -148,34 +191,17 @@ function transform(word, language, data, { include }) {
 				}
 			}
 
-			// group by gender, case, number
-			// sections, columns, rows
-			let groupby = [];
-			// fid : case, gender, number
-			for (let fid in featuretypes) {
-				// features   : NOMINATIVE=>{}, FEMININE, SINGULAR
-				let features = featuretypes[fid];
-				let cnt = Object.keys(features).length;
-				groupby.push({ fid, cnt });
-			}
-			groupby.sort((a, b) => {
-				return a.cnt - b.cnt;
-			});
-			if (groupby.length>=3) {
-				let head1 = groupby.splice(0, 1);
-				groupby.reverse();
-				groupby.unshift(head1[0]);
-			}
+			let groupby = sortinflectionkinds(maingroup, featuretypes);
 
 			let groupChildren = (parentgroup, level) => {
 
 				if (level < groupby.length) {
-					let fpair = groupby[level];
+					let gfid = groupby[level];
 					let section = {};
 					let childgroups = {};
 
 					for (let leaf of parentgroup) {
-						let f = leaf.features[fpair.fid];
+						let f = leaf.features[gfid];
 						let cursect = childgroups[f];
 						if (!cursect) {
 							childgroups[f] = cursect = [leaf];
@@ -203,7 +229,6 @@ function transform(word, language, data, { include }) {
 
 			let root = groupChildren(maingroupleaves, 0);
 
-			groupby = groupby.map(e=>e.fid);
 			result[maingroup] = {groupby, root};
 		}
 		return result;
