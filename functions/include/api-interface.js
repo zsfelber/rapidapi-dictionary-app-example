@@ -807,98 +807,9 @@ exports.getRunner = function (wordprovider) {
     }
 
 
-    function mergeIntermediate(stage1) {
-        for (let i in apiCache.stardict_defs.indexes()) {
-            let itm = apiCache.stardict_defs.get(i);
-            stage1.meaning[itm.word] = itm.data;
-        }
-        for (let i in apiCache.stardict_errors.indexes()) {
-            let itm = apiCache.stardict_errors.get(i);
-            stage1.error[itm.word] = itm.data;
-        }
-        for (let i in apiCache.stardict_words.indexes()) {
-            let itm = apiCache.stardict_words.get(i);
-            stage1.word[itm.word] = itm.data;
-        }
-    }
-
-    function decodeSdIndexes(stage1) {
-        for (let s in stage1.word) {
-            let worddata = stage1.word[s];
-            if (worddata.errind) {
-                worddata.errortmp = apiCache.stardict_errors.get(worddata.errind).data;
-                delete worddata.errind;
-            } else if (worddata.definds) {
-                worddata.meaningstmp = [];
-                for (let meanind of worddata.definds) {
-                    worddata.meaningstmp.push(apiCache.stardict_defs.get(meanind).data);
-                }
-                delete worddata.definds;
-            }
-        }
-    }
-
-    function encodeSdIndexes(stage1) {
-        for (let s in stage1.word) {
-            let worddata = stage1.word[s];
-            if (worddata.errortmp) {
-                worddata.errind = worddata.errortmp.errind;
-                delete worddata.errortmp;
-            } else if (worddata.meaningstmp) {
-                worddata.definds = [];
-                for (let defdata of worddata.meaningstmp) {
-                    worddata.definds.push(defdata.defind);
-                }
-                delete worddata.meaningstmp;
-            }
-        }
-    }
 
     async function updateStarDict() {
-        wordprovider.loadNativeStarDictAll();
-
-        let { byf, byword, cntf, nowords } = await wordprovider.loadAllFromFileCache();
-
-        console.time("stage1");
-        let stage1 = wordprovider.convertFileCacheToIntermediate(byword);
-
-        mergeIntermediate(stage1);
-
-        console.timeEnd("stage1");
-
-        console.time("stage2");
-        let stage2 = {};
-
-        decodeSdIndexes(stage1);
-
-        stage2.sortedwords = [].concat(Object.keys(stage1.word));
-        stage2.sortedwords.sort();
-        stage2.sorteddefs = [].concat(Object.keys(stage1.meaning));
-        stage2.sorteddefs.sort();
-        stage2.sortederrors = [].concat(Object.keys(stage1.error));
-        stage2.sortederrors.sort();
-        let i = 0;
-        for (let def of stage2.sorteddefs) {
-            stage1.meaning[def].defind = i++;
-        }
-        i = 0;
-        for (let err of stage2.sortederrors) {
-            stage1.error[err].errind = i++;
-        }
-
-        encodeSdIndexes(stage1);
-
-        console.log(
-            "words:",
-            stage2.sortedwords.length,
-            "defs:",
-            stage2.sorteddefs.length,
-            "errors:",
-            stage2.sortederrors.length
-        );
-        console.timeEnd("stage2");
-
-        wordprovider.saveNativeStarDictAll(stage1, stage2);
+        apistardict.updateStarDict();
     }
 
     function findCollocation(word) {
