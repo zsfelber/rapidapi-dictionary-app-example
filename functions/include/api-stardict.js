@@ -67,7 +67,12 @@ exports.getRunner = function (wordprovider) {
                         worddata.meaningstmp.push(def);
                     } else if (def.partOfSpeech == "common definitions") {
                         let commonid = worddata.word + ":" + def.groupId;
-                        result.common[commonid] = def;
+                        let olddef = result.common[commonid];
+                        if (olddef) {
+                            def = olddef;
+                        } else {
+                            result.common[commonid] = def;
+                        }
                         worddata.commonstmp.push(def);
                     } else {
                         console.log("unknown results.item type, ", def);
