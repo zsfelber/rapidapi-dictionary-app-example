@@ -365,8 +365,10 @@ exports.anInstance = function (options) {
     let itm;
     if ((itm = apiCache.stardict_words.find(word))) {
       data = Object.assign({}, itm.data);
-      if (data.errind) {
-        data.error = apiCache.stardict_errors.get(data.errind).word;
+      data.word = itm.word;
+      apistardict.convertSdDataIndexes(data);
+
+      if (data.error) {
         console.warn(
           "StarDict data is of an error entry : " + word,
           " ",
@@ -375,12 +377,8 @@ exports.anInstance = function (options) {
         data = convertError();
         return data;
       } else {
-        data.results = [];
-        data.word = itm.word;
-        if (!data.results && data.definds) {
-          apistardict.convertSdDataIndexes(data);
-        }
-        return convertResult(true);
+        data = convertResult(true);
+        return data;
       }
     }
 

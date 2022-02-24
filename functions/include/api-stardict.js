@@ -146,23 +146,33 @@ exports.getRunner = function (wordprovider) {
 
 
     function convertSdDataIndexes(data) {
-        for (let comind of data.cominds) {
-            let d0 = apiCache.stardict_coms.get(comind);
-            let com = Object.assign({}, d0.data);
-            data.results.push(com);
-        }
-        for (let meanind of data.definds) {
-            let d0 = apiCache.stardict_defs.get(meanind);
-            let def = Object.assign({}, d0.data);
-            if (!def.synonyms && def.synonymSet) {
-                delete def.synonymSet[itm.word];
-                def.synonyms = [].concat(Object.keys(def.synonymSet));
-                def.synonyms.sort();
+
+        if (!data.results && !data.error) {
+            data.results = [];
+
+            if (data.errind) {
+                data.error = apiCache.stardict_errors.get(data.errind).word;
             }
-            if (!def.definition) {
-                def.definition = d0.word;
+        
+            if (data.cominds) for (let comind of data.cominds) {
+                let d0 = apiCache.stardict_coms.get(comind);
+                let com = Object.assign({}, d0.data);
+                data.results.push(com);
             }
-            data.results.push(def);
+
+            if (data.definds) for (let meanind of data.definds) {
+                let d0 = apiCache.stardict_defs.get(meanind);
+                let def = Object.assign({}, d0.data);
+                if (!def.synonyms && def.synonymSet) {
+                    delete def.synonymSet[itm.word];
+                    def.synonyms = [].concat(Object.keys(def.synonymSet));
+                    def.synonyms.sort();
+                }
+                if (!def.definition) {
+                    def.definition = d0.word;
+                }
+                data.results.push(def);
+            }
         }
     }
 
