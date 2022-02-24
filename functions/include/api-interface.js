@@ -898,7 +898,7 @@ exports.getRunner = function (wordprovider) {
         );
         console.timeEnd("stage2");
 
-        saveNativeStarDictAll(stage1, stage2);
+        wordprovider.saveNativeStarDictAll(stage1, stage2);
     }
 
     function findCollocation(word) {

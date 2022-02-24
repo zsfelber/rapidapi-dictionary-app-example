@@ -584,7 +584,7 @@ exports.anInstance = function (options) {
       return es;
     }
     let chkFile = async function (word) {
-      let data = await wordprovider.loadSingleWord(word, CACHE_RAW);
+      let data = await loadSingleWord(word, CACHE_RAW);
       if (data) {
         let df = data.frequency ? data.frequency : 0;
         byword[word] = data;
@@ -880,7 +880,7 @@ exports.anInstance = function (options) {
     loadExistingWords,
     loadExistingWordsAndFreqs,
     doesRealWordExist,
-    getWordCaggleFrequency,
+    getWordCaggleFrequency,convertFileCacheToIntermediate,
     initializeCache,
     checkAPIlimitAndFinish, getAllWords, getAllDefinitions, invertFrequencies, loadNativeStarDictAll, saveNativeStarDictAll
   };
