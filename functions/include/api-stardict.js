@@ -68,6 +68,8 @@ exports.getRunner = function (wordprovider) {
                         let commonid = worddata.word + ":" + def.groupId;
                         result.common[commonid] = def;
                         worddata.commonstmp.push(def);
+                    } else {
+                        console.log("unknown results.item type, ", def);
                     }
                     delete def.definition;
                     delete def.synonyms;
