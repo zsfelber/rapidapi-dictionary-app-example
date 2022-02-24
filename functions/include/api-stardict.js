@@ -203,38 +203,6 @@ exports.getRunner = function (wordprovider) {
 
 
 
-    function load3rdPartyStarDicts() {
-        if (
-            !langCache.collocationStardict ||
-            !langCache.enghunStardict ||
-            !langCache.hunengStardict
-
-        ) {
-            console.time("load 3rd party StarDict datafiles");
-            switch (LANG) {
-                case "en": {
-
-                    const colf0 = `${DATA_DIR}/dict/${langCache.COLLOC}/OxfordCollocationsDictionary`;
-                    langCache.collocationStardict = stardict.loadStarDict(`${colf0}`, false);
-                    const eh0 = `${DATA_DIR}/dict/stardict-jdict-EngHun-2.4.2/jdict-EngHun`;
-                    langCache.enghunStardict = stardict.loadStarDict(`${eh0}`, false);
-                    const he0 = `${DATA_DIR}/dict/stardict-hungarian-english-2.4.2/hungarian-english`;
-                    langCache.hunengStardict = stardict.loadStarDict(`${he0}`, false);
-                }
-                    break;
-                case "de": {
-                    const eh0 = `${DATA_DIR}/dict/stardict-ger_hung-2.4.2/ger_hung`;
-                    langCache.gerhunStardict = stardict.loadStarDict(`${eh0}`, false);
-                }
-                    break;
-            }
-
-            console.timeEnd("load 3rd party StarDict datafiles");
-        }
-    }
-
-
-
     async function updateStarDict() {
         loadNativeStarDictAll();
 
@@ -290,10 +258,42 @@ exports.getRunner = function (wordprovider) {
         saveNativeStarDictAll(stage1, stage2);
     }
 
+
+
+    function load3rdPartyStarDicts() {
+        if (
+            !langCache.collocationStardict ||
+            !langCache.enghunStardict ||
+            !langCache.hunengStardict
+
+        ) {
+            console.time("load 3rd party StarDict datafiles");
+            switch (LANG) {
+                case "en": {
+
+                    const colf0 = `${DATA_DIR}/dict/${langCache.COLLOC}/OxfordCollocationsDictionary`;
+                    langCache.collocationStardict = stardict.loadStarDict(`${colf0}`, false);
+                    const eh0 = `${DATA_DIR}/dict/stardict-jdict-EngHun-2.4.2/jdict-EngHun`;
+                    langCache.enghunStardict = stardict.loadStarDict(`${eh0}`, false);
+                    const he0 = `${DATA_DIR}/dict/stardict-hungarian-english-2.4.2/hungarian-english`;
+                    langCache.hunengStardict = stardict.loadStarDict(`${he0}`, false);
+                }
+                    break;
+                case "de": {
+                    const eh0 = `${DATA_DIR}/dict/stardict-ger_hung-2.4.2/ger_hung`;
+                    langCache.gerhunStardict = stardict.loadStarDict(`${eh0}`, false);
+                }
+                    break;
+            }
+
+            console.timeEnd("load 3rd party StarDict datafiles");
+        }
+    }
+
     return {
         convertFileCacheToIntermediate,
         mergeIntermediate, encodeSdIndexes, decodeSdIndexes, convertSdDataIndexes,
-        loadNativeStarDictAll, saveNativeStarDictAll, load3rdPartyStarDicts,
-        updateStarDict
+        loadNativeStarDictAll, saveNativeStarDictAll, updateStarDict, 
+        load3rdPartyStarDicts
     };
 };
