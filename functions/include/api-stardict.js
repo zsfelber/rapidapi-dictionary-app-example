@@ -153,7 +153,7 @@ exports.getRunner = function (wordprovider) {
         }
     }
 
-    function sortSdAll(stage1) {
+    function sortSdAll(stage1,stage2) {
         stage2.sortedwords = [].concat(Object.keys(stage1.word));
         stage2.sortedwords.sort();
         stage2.sorteddefs = [].concat(Object.keys(stage1.meaning));
@@ -261,7 +261,7 @@ exports.getRunner = function (wordprovider) {
 
         decodeSdIndexes(stage1);
 
-        sortSdAll(stage1);
+        sortSdAll(stage1,stage2);
 
         encodeSdIndexes(stage1);
 
