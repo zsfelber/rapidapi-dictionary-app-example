@@ -1,3 +1,4 @@
+const stardict = require("./stardict");
 
 exports.getRunner = function (wordprovider) {
     let options = wordprovider.options;
@@ -11,10 +12,10 @@ exports.getRunner = function (wordprovider) {
 
     const CACHE_DIR = wordprovider.CACHE_DIR;
     const DATA_DIR = wordprovider.DATA_DIR;
+    const CACHE_DIR_API = wordprovider.CACHE_DIR_API;
 
     const langCache = wordprovider.getLangCache(LANG);
     const apiCache = wordprovider.getCacheFor(LANG, API);
-
 
     function convertFileCacheToIntermediate(byword) {
         let result = {
@@ -166,7 +167,7 @@ exports.getRunner = function (wordprovider) {
                 let d0 = apiCache.stardict_defs.get(meanind);
                 let def = Object.assign({}, d0.data);
                 if (!def.synonyms && def.synonymSet) {
-                    delete def.synonymSet[itm.word];
+                    delete def.synonymSet[data.word];
                     def.synonyms = [].concat(Object.keys(def.synonymSet));
                     def.synonyms.sort();
                 }

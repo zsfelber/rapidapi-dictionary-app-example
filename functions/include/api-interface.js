@@ -19,10 +19,12 @@ exports.getRunner = function (wordprovider) {
 
     const CACHE_DIR = wordprovider.CACHE_DIR;
     const DATA_DIR = wordprovider.DATA_DIR;
+    const CACHE_DIR_API = wordprovider.CACHE_DIR_API;
 
     const langCache = wordprovider.getLangCache(LANG);
     const apiCache = wordprovider.getCacheFor(LANG, API);
-
+    const apistardict = wordprovider.apistardict;
+  
     function singleWordToDisplay(data) {
         // create new array to push data to
         let results = [];

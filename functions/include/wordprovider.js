@@ -1,8 +1,6 @@
 const fs = require("fs");
 const finder = require("./finder.js");
 const csvParse = require("csv-load-sync");
-const stardict = require("./stardict");
-const { result, lastIndexOf } = require("lodash");
 
 const API_LIMIT_EXCEPTION = {
   apiLimitException: 1,
@@ -82,6 +80,37 @@ exports.anInstance = function (options) {
   const TURNING_TIME_GMT = [20, 55];
   const MAX_PARALLEL = 1;
   const PARALLEL_MILLIS = 500;
+
+  const wordprovider = {
+    getLangCache, getCacheFor,
+    options,
+    LANG, API,
+    API_DAILY_LIMIT,
+    MAX_WORDS,
+    MAX_NODE_FREQUENCY,
+    TRAVERSE_ALL,
+    MAX_LEVEL,
+    resolvePath,
+    DATA_DIR,
+    CACHE_DIR,
+    CACHE_DIR_API,
+    COLLOC_DIR: langCache.COLLOC_DIR,
+    TWELVE,
+    loadAllFromFileCache,
+    isApiLimitReached,
+    loadJson,
+    loadSingleWord,
+    loadExistingWords,
+    loadExistingWordsAndFreqs,
+    doesRealWordExist,
+    getWordCaggleFrequency,
+    initializeCache,
+    checkAPIlimitAndFinish, getAllWords, getAllDefinitions, invertFrequencies,
+  };
+
+  const apistardict = require("./api-stardict").getRunner(wordprovider);
+  wordprovider.apistardict = apistardict;
+
 
   let download, curtime, turntime;
 
@@ -534,12 +563,13 @@ exports.anInstance = function (options) {
     let sooner10mins = new Date();
     sooner10mins.setTime(sooner10mins.getTime() - 600000);
     for (let i = 0; i < deletedPendingObjects.length; ) {
-        if (p.time < sooner10mins) {
-          delete pendingObjects[p.word];
-          deletedPendingObjects.splice(i, 1);
-        } else {
-          i++;
-        }
+      let p = deletedPendingObjects[i];
+      if (p.time < sooner10mins) {
+        delete pendingObjects[p.word];
+        deletedPendingObjects.splice(i, 1);
+      } else {
+        i++;
+      }
     }
   }
 
@@ -758,30 +788,5 @@ exports.anInstance = function (options) {
 
   initCrawler();
 
-  return {
-    getLangCache, getCacheFor,
-    options,
-    LANG, API,
-    API_DAILY_LIMIT,
-    MAX_WORDS,
-    MAX_NODE_FREQUENCY,
-    TRAVERSE_ALL,
-    MAX_LEVEL,
-    resolvePath,
-    DATA_DIR,
-    CACHE_DIR,
-    CACHE_DIR_API,
-    COLLOC_DIR: langCache.COLLOC_DIR,
-    TWELVE,
-    loadAllFromFileCache,
-    isApiLimitReached,
-    loadJson,
-    loadSingleWord,
-    loadExistingWords,
-    loadExistingWordsAndFreqs,
-    doesRealWordExist,
-    getWordCaggleFrequency,
-    initializeCache,
-    checkAPIlimitAndFinish, getAllWords, getAllDefinitions, invertFrequencies,
-  };
+  return wordprovider;
 };
