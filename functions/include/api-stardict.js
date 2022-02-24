@@ -109,18 +109,21 @@ exports.getRunner = function (wordprovider) {
             if (worddata.errind) {
                 worddata.errortmp = apiCache.stardict_errors.get(worddata.errind).data;
                 delete worddata.errind;
-            } else if (worddata.definds) {
-                worddata.meaningstmp = [];
-                for (let meanind of worddata.definds) {
-                    worddata.meaningstmp.push(apiCache.stardict_defs.get(meanind).data);
+            } else {
+                if (worddata.definds) {
+                    worddata.meaningstmp = [];
+                    for (let meanind of worddata.definds) {
+                        worddata.meaningstmp.push(apiCache.stardict_defs.get(meanind).data);
+                    }
+                    delete worddata.definds;
                 }
-                delete worddata.definds;
-            } else if (worddata.cominds) {
-                worddata.commonstmp = [];
-                for (let comind of worddata.cominds) {
-                    worddata.commonstmp.push(apiCache.stardict_coms.get(comind).data);
+                if (worddata.cominds) {
+                    worddata.commonstmp = [];
+                    for (let comind of worddata.cominds) {
+                        worddata.commonstmp.push(apiCache.stardict_coms.get(comind).data);
+                    }
+                    delete worddata.cominds;
                 }
-                delete worddata.cominds;
             }
         }
     }
@@ -131,22 +134,47 @@ exports.getRunner = function (wordprovider) {
             if (worddata.errortmp) {
                 worddata.errind = worddata.errortmp.errind;
                 delete worddata.errortmp;
-            } else if (worddata.meaningstmp) {
-                worddata.definds = [];
-                for (let defdata of worddata.meaningstmp) {
-                    worddata.definds.push(defdata.defind);
+            } else {
+                if (worddata.meaningstmp) {
+                    worddata.definds = [];
+                    for (let defdata of worddata.meaningstmp) {
+                        worddata.definds.push(defdata.defind);
+                    }
+                    delete worddata.meaningstmp;
                 }
-                delete worddata.meaningstmp;
-            } else if (worddata.commonstmp) {
-                worddata.cominds = [];
-                for (let comdata of worddata.commonstmp) {
-                    worddata.cominds.push(comdata.comind);
+                if (worddata.commonstmp) {
+                    worddata.cominds = [];
+                    for (let comdata of worddata.commonstmp) {
+                        worddata.cominds.push(comdata.comind);
+                    }
+                    delete worddata.commonstmp;
                 }
-                delete worddata.commonstmp;
             }
         }
     }
 
+    function sortSdAll(stage1) {
+        stage2.sortedwords = [].concat(Object.keys(stage1.word));
+        stage2.sortedwords.sort();
+        stage2.sorteddefs = [].concat(Object.keys(stage1.meaning));
+        stage2.sorteddefs.sort();
+        stage2.sortedcoms = [].concat(Object.keys(stage1.common));
+        stage2.sortedcoms.sort();
+        stage2.sortederrors = [].concat(Object.keys(stage1.error));
+        stage2.sortederrors.sort();
+        let i = 0;
+        for (let def of stage2.sorteddefs) {
+            stage1.meaning[def].defind = i++;
+        }
+        i = 0;
+        for (let com of stage2.sortedcoms) {
+            stage1.common[com].comind = i++;
+        }
+        i = 0;
+        for (let err of stage2.sortederrors) {
+            stage1.error[err].errind = i++;
+        }
+    }
 
     function convertSdDataIndexes(data) {
 
@@ -233,26 +261,7 @@ exports.getRunner = function (wordprovider) {
 
         decodeSdIndexes(stage1);
 
-        stage2.sortedwords = [].concat(Object.keys(stage1.word));
-        stage2.sortedwords.sort();
-        stage2.sorteddefs = [].concat(Object.keys(stage1.meaning));
-        stage2.sorteddefs.sort();
-        stage2.sortedcoms = [].concat(Object.keys(stage1.common));
-        stage2.sortedcoms.sort();
-        stage2.sortederrors = [].concat(Object.keys(stage1.error));
-        stage2.sortederrors.sort();
-        let i = 0;
-        for (let def of stage2.sorteddefs) {
-            stage1.meaning[def].defind = i++;
-        }
-        i = 0;
-        for (let com of stage2.sortedcoms) {
-            stage1.common[com].comind = i++;
-        }
-        i = 0;
-        for (let err of stage2.sortederrors) {
-            stage1.error[err].errind = i++;
-        }
+        sortSdAll(stage1);
 
         encodeSdIndexes(stage1);
 
