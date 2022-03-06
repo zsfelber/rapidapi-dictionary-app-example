@@ -288,38 +288,88 @@ function createexpandlink(word0, func) {
     return a;
 }
 
-function createas(cont, words, masterword, sep, apostr = "", linksIdxFrom = 0, linksIdxTo = 999999999, origin) {
-    let index = 0;
-    if (words) words.forEach(word => {
-        let a;
-        if (typeof word == "string") {
-            a = (linksIdxFrom <= index && index < linksIdxTo) ?
-                createpopoverlink(word, masterword, "", apostr, origin) :
-                createi(word);
-        } else {
-            a = word;
-        }
-        const sp = document.createTextNode(sep);
+function createas_wargs(cont, words, masterword, sep, apostr = "", linksIdxFrom = 0, linksIdxTo = 999999999, origin) {
+    let options = { apostr, linksIdxFrom, linksIdxTo, origin };
+    return createas(cont, words, masterword, sep, options);
+}
 
-        cont.appendChild(a);
-        cont.appendChild(sp);
-        index++;
-    });
+function createas(cont, words, masterword, sep, options={}) {
+    let { apostr = "", linksIdxFrom = 0, linksIdxSelectFrom = 0, selectSectId = "", linksIdxTo = 999999999, origin } = options;
+    let index = 0;
+    if (words) {
+        let span = document.createElement("div");
+        span.classList.add("il0");
+        cont.appendChild(span);
+
+        words.forEach(word => {
+            let a;
+            if (typeof word == "string") {
+                if (linksIdxFrom <= index && index < linksIdxTo) {
+                    a = createpopoverlink(word, masterword, "", apostr, origin);
+                } else if (linksIdxSelectFrom <= index && index < linksIdxTo) {
+                    a = createpopoverlink(word, masterword, "", apostr);
+                    a.href = `javascript:selectSectionAll("${selectSectId}")`;
+                } else {
+                    a = createi(word);
+                }
+            } else {
+                a = word;
+            }
+            const sp = document.createTextNode(sep);
+
+            let span2 = document.createElement("div");
+            span2.classList.add("il");
+            span.appendChild(span2);
+    
+            span2.appendChild(a);
+            span2.appendChild(sp);
+            index++;
+        });
+    }
 }
 function createaas(cont, sentences, sep, origin) {
     sentences.forEach(txt => {
         var words = txt.split(" ");
-        createas(cont, words, null, " ", "", 0, 10000, origin);
+
+        createas_wargs(cont, words, null, " ", "", 0, 10000, origin);
+
+        let span2 = document.createElement("div");
+        span2.classList.add("il");
+        cont.appendChild(span2);
+
         const sp = document.createTextNode(sep);
-        cont.appendChild(sp);
+        span2.appendChild(sp);
     });
 }
 
-function proplabel(property, masterword, parselabel = false, linksIdxLabFrom = 0, linksIdxValTo = 9999999, prefix = "", comma = ", ", apostr = "", origin, intable) {
+function proplabel_wargs(   property, masterword, parselabel = false, 
+                            linksIdxLabFrom = 0, 
+                            linksIdxValTo = 9999999, 
+                            prefix = "", 
+                            comma = ", ", 
+                            apostr = "", origin, intable) {
+
+    let options = { parselabel, 
+        linksIdxLabFrom, linksIdxValTo, 
+        prefix, comma, apostr, origin, intable };
+
+    return proplabel(property, masterword, options);
+}
+
+let selcol=0;
+function proplabel(property, masterword, options={}) {
+    let { parselabel = false, 
+          linksIdxLabFrom = 0, 
+          linksIdxLabSelectFrom = 0, 
+          linksIdxValTo = 9999999, 
+          prefix = "", 
+          comma = ", ", 
+          apostr = "", origin, intable } = options;
+
     if (!property.value || (Array.isArray(property.value) && !property.value.length)) {
         return null;
     }
-    let characteristic, label, value;
+    let characteristic, label, value, selectSectId="";
     if (property.label) {
         characteristic = document.createElement('dl');
         characteristic.className = 'row';
@@ -329,7 +379,16 @@ function proplabel(property, masterword, parselabel = false, linksIdxLabFrom = 0
         value = document.createElement('dd');
 
         if (parselabel) {
-            createas(label, property.label, masterword, comma, apostr, linksIdxLabFrom, 100000, origin);
+            selectSectId = 'selcolitm' + selcol++;
+            value.setAttribute("id", selectSectId);
+
+            let options = { apostr, 
+                    linksIdxFrom:linksIdxLabFrom, 
+                    linksIdxSelectFrom:linksIdxLabSelectFrom, 
+                    selectSectId, linksIdxTo:100000, origin };
+
+            createas(label, property.label, masterword, comma, options);
+
         } else {
             label.innerText = prefix + property.label;
         }
@@ -343,7 +402,7 @@ function proplabel(property, masterword, parselabel = false, linksIdxLabFrom = 0
         if (!value) value = document.createElement('span');
 
         let normal = property.value.slice(0, linksIdxValTo);
-        createas(value, normal, null, vcomma, "", 0, 100000, origin);
+        createas_wargs(value, normal, null, vcomma, "", 0, 100000, origin);
 
         let remainder = property.value.slice(linksIdxValTo, property.value.length);
         createaas(value, remainder, vcomma, origin);
@@ -367,7 +426,7 @@ function proplabel(property, masterword, parselabel = false, linksIdxLabFrom = 0
             return null;
         }
         let fwdprop = (childprop) => {
-            let childlab = proplabel(
+            let childlab = proplabel_wargs(
                 childprop, masterword, false, 0, 99999999, "", ""/*-comma*/, "", null,
                 intable);
             return childlab;
@@ -528,8 +587,8 @@ function speakIt(which) {
     if (!txt) txt = curword;
     speak(txt, which);
 }
-function selectPopupAll() {
-    let lpg = $(`#livepop .pg`);
+function selectElemAll(selectSectSel) {
+    let lpg = $(selectSectSel);
 
     var range = document.createRange();
     range.selectNodeContents(lpg[0]);
@@ -537,6 +596,29 @@ function selectPopupAll() {
     sel.removeAllRanges();
     sel.addRange(range);
     lpg.trigger("mouseup");
+    return lpg;
+}
+function selectPopupAll() {
+    let lpg = selectElemAll(`#livepop .pg`);
+    return lpg;
+}
+let selsects = {};
+function selectSectionAll(selectSectId) {
+    let selsect = selsects[selectSectId];
+    if (selsect === undefined) {
+        selsects[selectSectId] = selsect = 1;
+    } else {
+        selsects[selectSectId] = ++selsect;
+    }
+    console.log(selectSectId+" : "+selsect);
+
+    let lpall = selectElemAll(`#${selectSectId} div.il0`);
+    if (selsect === lpall.length+1) {
+        selsects[selectSectId] = selsect = 1;
+    }
+
+    let lpg = selectElemAll(`#${selectSectId} div.il0:eq(${selsect})`);
+    return lpg;
 }
 
 function fetchWordLookup() {
@@ -759,7 +841,7 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
                     label: [expandsyncl],
                     value: wordlist
                 };
-                thissect[id] = proplabel(sproperty, word, true, 1, val.synonyms.length, "", comma, apostr, origin);
+                thissect[id] = proplabel_wargs(sproperty, word, true, 1, val.synonyms.length, "", comma, apostr, origin);
                 if (thissect[id]) {
                     thissect[id].classList.add('definition-sm');
                     thissect.appendChild(thissect[id]);
@@ -851,9 +933,12 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
             }
         }
 
-
-
-        const def = proplabel(property, word, true, labarr.length, sil, "", comma, apostr, origin);
+        //const def = proplabel_wargs(property, word, true, labarr.length, sil, "", comma, apostr, origin);
+        const def = proplabel(property, word, { parselabel:true, 
+            linksIdxLabFrom:labarr.length, linksIdxLabSelectFrom:0,
+            linksIdxValTo:sil, 
+            prefix:"", comma, apostr, origin });
+    
         if (def) {
             thissect = document.createElement("div");
             cmp.appendChild(thissect);

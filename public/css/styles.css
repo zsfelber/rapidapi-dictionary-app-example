@@ -263,6 +263,12 @@ a:hover.none {
 .b {
     display:block;
 }
+.il0 {
+    display:inline;
+}
+.il {
+    display:inline;
+}
 .ib {
     display:inline-block;
     min-width: 49%;
