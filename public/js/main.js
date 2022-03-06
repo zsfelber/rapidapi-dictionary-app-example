@@ -221,11 +221,13 @@ function createMywLetterLink(letter, mode = "my_words") {
 }
 
 let poidx = 0;
-function createpopoverlink(word0, masterword, extraarg = "", apostr = "", origin) {
+function createpopoverlink(word0, masterword, extraarg = "", apostr = "", origin, nofocus) {
 
     const a = document.createElement('a');
     const tmp = $("<div>" + word0 + "</div>")[0];
-    a.onmouseover = selectElementContents.bind(a, a);
+    if (!nofocus) {
+        a.onmouseover = selectElementContents.bind(a, a);
+    }
     word0 = tmp.innerText;
     //const word = word0.replace(/[^a-zA-Z0-9\- ]/g, "");
     const word = word0.replace(/[^a-zA-Z0-9\- öóőúùûüáàâäíéÖÓŐÚÙÛÜÁÀÂÄÍÉß]/g, "");
@@ -251,11 +253,13 @@ function createpopoverlink(word0, masterword, extraarg = "", apostr = "", origin
         a.href = "javascript:showPopup('" + a.word + "')";
     }
 
-    a.onfocus = () => {
-        console.log("focus:" + word);
-        curword = word;
-        selectElementContents.apply(a, a);
-    };
+    if (!nofocus) {
+        a.onfocus = () => {
+            console.log("focus:" + word);
+            curword = word;
+            selectElementContents.apply(a, a);
+        };
+    }
 
     a.innerHTML = apostr + tmp.innerHTML + apostr;
     return a;
@@ -305,11 +309,7 @@ function createas(cont, words, masterword, sep, options = {}) {
             let a;
             if (typeof word == "string") {
                 if (linksIdxFrom <= index && index < linksIdxTo) {
-                    a = createpopoverlink(word, masterword, "", apostr, origin);
-                    if (mobileAndTabletCheck()) {
-                        delete a.onmouseover;
-                        delete a.onfocus;
-                    }
+                    a = createpopoverlink(word, masterword, "", apostr, origin, mobileAndTabletCheck());
                 } else if (linksIdxSelectFrom <= index && index < linksIdxTo) {
                     a = createpopoverlink(word, masterword, "", apostr);
                     a.href = `javascript:selectSectionAll("${selectSectId}")`;
