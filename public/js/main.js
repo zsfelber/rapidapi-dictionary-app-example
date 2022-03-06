@@ -293,7 +293,7 @@ function createas_wargs(cont, words, masterword, sep, apostr = "", linksIdxFrom 
     return createas(cont, words, masterword, sep, options);
 }
 
-function createas(cont, words, masterword, sep, options={}) {
+function createas(cont, words, masterword, sep, options = {}) {
     let { apostr = "", linksIdxFrom = 0, linksIdxSelectFrom = 0, selectSectId = "", linksIdxTo = 999999999, origin } = options;
     let index = 0;
     if (words) {
@@ -320,7 +320,7 @@ function createas(cont, words, masterword, sep, options={}) {
             let span2 = document.createElement("div");
             span2.classList.add("il");
             span.appendChild(span2);
-    
+
             span2.appendChild(a);
             span2.appendChild(sp);
             index++;
@@ -342,34 +342,36 @@ function createaas(cont, sentences, sep, origin) {
     });
 }
 
-function proplabel_wargs(   property, masterword, parselabel = false, 
-                            linksIdxLabFrom = 0, 
-                            linksIdxValTo = 9999999, 
-                            prefix = "", 
-                            comma = ", ", 
-                            apostr = "", origin, intable) {
+function proplabel_wargs(property, masterword, parselabel = false,
+    linksIdxLabFrom = 0,
+    linksIdxValTo = 9999999,
+    prefix = "",
+    comma = ", ",
+    apostr = "", origin, intable) {
 
-    let options = { parselabel, 
-        linksIdxLabFrom, linksIdxValTo, 
-        prefix, comma, apostr, origin, intable };
+    let options = {
+        parselabel,
+        linksIdxLabFrom, linksIdxValTo,
+        prefix, comma, apostr, origin, intable
+    };
 
     return proplabel(property, masterword, options);
 }
 
-let selcol=0;
-function proplabel(property, masterword, options={}) {
-    let { parselabel = false, 
-          linksIdxLabFrom = 0, 
-          linksIdxLabSelectFrom = 0, 
-          linksIdxValTo = 9999999, 
-          prefix = "", 
-          comma = ", ", 
-          apostr = "", origin, intable } = options;
+let selcol = 0;
+function proplabel(property, masterword, options = {}) {
+    let { parselabel = false,
+        linksIdxLabFrom = 0,
+        linksIdxLabSelectFrom = 0,
+        linksIdxValTo = 9999999,
+        prefix = "",
+        comma = ", ",
+        apostr = "", origin, intable } = options;
 
     if (!property.value || (Array.isArray(property.value) && !property.value.length)) {
         return null;
     }
-    let characteristic, label, value, selectSectId="";
+    let characteristic, label, value, selectSectId = "";
     if (property.label) {
         characteristic = document.createElement('dl');
         characteristic.className = 'row';
@@ -382,10 +384,12 @@ function proplabel(property, masterword, options={}) {
             selectSectId = 'selcolitm' + selcol++;
             value.setAttribute("id", selectSectId);
 
-            let options = { apostr, 
-                    linksIdxFrom:linksIdxLabFrom, 
-                    linksIdxSelectFrom:linksIdxLabSelectFrom, 
-                    selectSectId, linksIdxTo:100000, origin };
+            let options = {
+                apostr,
+                linksIdxFrom: linksIdxLabFrom,
+                linksIdxSelectFrom: linksIdxLabSelectFrom,
+                selectSectId, linksIdxTo: 100000, origin
+            };
 
             createas(label, property.label, masterword, comma, options);
 
@@ -610,10 +614,10 @@ function selectSectionAll(selectSectId) {
     } else {
         selsects[selectSectId] = ++selsect;
     }
-    console.log(selectSectId+" : "+selsect);
+    console.log(selectSectId + " : " + selsect);
 
     let lpall = selectElemAll(`#${selectSectId} div.il0`);
-    if (selsect === lpall.length+1) {
+    if (selsect === lpall.length + 1) {
         selsects[selectSectId] = selsect = 1;
     }
 
@@ -919,7 +923,7 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
             };
             sil = val.similar.length;
         }
-        let v0,v;
+        let v0, v;
         if (v0 = val.inflections) {
 
             if ((v = v0.verb_forms) && v.shortform) {
@@ -934,11 +938,13 @@ function clusterBody(data, wordInfoTbl, withmainword, modalMode, origin) {
         }
 
         //const def = proplabel_wargs(property, word, true, labarr.length, sil, "", comma, apostr, origin);
-        const def = proplabel(property, word, { parselabel:true, 
-            linksIdxLabFrom:labarr.length, linksIdxLabSelectFrom:0,
-            linksIdxValTo:sil, 
-            prefix:"", comma, apostr, origin });
-    
+        const def = proplabel(property, word, {
+            parselabel: true,
+            linksIdxLabFrom: labarr.length, linksIdxLabSelectFrom: 0,
+            linksIdxValTo: sil,
+            prefix: "", comma, apostr, origin
+        });
+
         if (def) {
             thissect = document.createElement("div");
             cmp.appendChild(thissect);
