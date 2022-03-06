@@ -3,6 +3,8 @@ node_modules
 .netlify
 dist
 package-lock.json
+cache/de/google/words/aux
+cache/de/google/words/con
 cache/wordsapi/words/c.o.d.
 cache/wordsapi/words/d.o.a.
 cache/wordsapi/words/o.k.
