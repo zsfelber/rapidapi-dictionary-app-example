@@ -308,6 +308,7 @@ function createas(cont, words, masterword, sep, options = {}) {
                     a = createpopoverlink(word, masterword, "", apostr, origin);
                     if (mobileAndTabletCheck()) {
                         delete a.onmouseover;
+                        delete a.onfocus;
                     }
                 } else if (linksIdxSelectFrom <= index && index < linksIdxTo) {
                     a = createpopoverlink(word, masterword, "", apostr);
