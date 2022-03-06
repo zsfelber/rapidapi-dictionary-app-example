@@ -306,6 +306,9 @@ function createas(cont, words, masterword, sep, options = {}) {
             if (typeof word == "string") {
                 if (linksIdxFrom <= index && index < linksIdxTo) {
                     a = createpopoverlink(word, masterword, "", apostr, origin);
+                    if (mobileAndTabletCheck()) {
+                        delete a.onmouseover;
+                    }
                 } else if (linksIdxSelectFrom <= index && index < linksIdxTo) {
                     a = createpopoverlink(word, masterword, "", apostr);
                     a.href = `javascript:selectSectionAll("${selectSectId}")`;
