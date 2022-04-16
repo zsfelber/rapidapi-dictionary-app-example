@@ -163,6 +163,7 @@ function labelled(label, value) {
 
 function selectElementContents(el) {
     if (!el) el = this;
+    if (altdown) return null;
     var range = document.createRange();
     range.selectNodeContents(el);
     var sel = window.getSelection();
